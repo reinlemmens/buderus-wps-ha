@@ -5,6 +5,16 @@
 **Status**: Draft
 **Input**: User description: "in the library and in the CLI, foresee functionality to read and - where posible - write all parameters that are exposed on the CAN bus, preferably using their human-readable name"
 
+## Clarifications
+
+### Session 2025-10-23
+
+- Q: When CAN bus communication fails, should the system retry or fail immediately? → A: Immediate failure with clear error message indicating bus unavailability and suggesting checks
+- Q: How should the library handle concurrent read/write operations? → A: No concurrency support - library assumes single-threaded sequential usage, concurrent calls are undefined behavior
+- Q: What is the canonical case form for parameter names? → A: Normalize to uppercase, store and display all parameter names in uppercase
+- Q: What should the timeout be when the device doesn't respond to a read/write request? → A: Timeout after 5 seconds with specific "device not responding" error message
+- Q: What logging strategy should the library implement? → A: Full debug logging available via verbosity flag (all operations, requests, responses), default to error-only logging. Implement a log rotating strategy limiting log file size to 10MB
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Read Parameters Using Human-Readable Names (Priority: P1)
@@ -60,12 +70,12 @@ A system administrator needs command-line tools to read and write heat pump para
 
 ### Edge Cases
 
-- What happens when attempting to read a parameter while the CAN bus is not connected?
-- How does the system handle concurrent read/write operations on the same parameter?
-- What happens when a parameter name exists but the device doesn't respond to the read request?
+- **CAN Bus Disconnection**: When attempting to read/write a parameter while the CAN bus is not connected, the system fails immediately with a clear error message indicating bus unavailability and suggesting connection checks (no automatic retries)
+- **Concurrent Operations**: The library does not support concurrent read/write operations; it assumes single-threaded sequential usage and concurrent calls result in undefined behavior
+- **Device Non-Response**: When a parameter read/write request is sent but the device doesn't respond within 5 seconds, the operation times out with a specific "device not responding" error message
 - How are parameters with special naming characters or spaces handled?
 - What happens when writing a parameter that takes time to apply on the device?
-- How does the system handle case sensitivity in parameter names (e.g., "compressor_alarm" vs. "COMPRESSOR_ALARM")?
+- **Case Sensitivity**: Parameter names are case-insensitive for lookup, but all parameter names are normalized to uppercase for storage and display (e.g., "compressor_alarm" is accepted but stored/returned as "COMPRESSOR_ALARM")
 - What happens when the device firmware doesn't support a parameter defined in the configuration?
 - How are parameters with complex data types (beyond simple integers) handled?
 
@@ -77,14 +87,24 @@ A system administrator needs command-line tools to read and write heat pump para
 - **FR-002**: The library MUST support writing parameter values using human-readable parameter names
 - **FR-003**: The library MUST validate write operations against parameter constraints (min/max values)
 - **FR-004**: The library MUST distinguish between read-only and writable parameters and reject writes to read-only parameters
-- **FR-005**: The library MUST map human-readable names to the appropriate CAN bus addresses (extid) for communication
+- **FR-005**: The library MUST map human-readable names to the appropriate CAN bus addresses (extid) for communication; parameter names MUST be normalized to uppercase for storage and display, while accepting case-insensitive input
 - **FR-006**: The library MUST handle data format conversion between raw CAN values and user-friendly representations
-- **FR-007**: The library MUST provide clear error messages for invalid parameter names, invalid values, or communication failures
+- **FR-007**: The library MUST provide clear error messages for invalid parameter names, invalid values, or communication failures; CAN bus communication failures MUST fail immediately with diagnostic suggestions (no automatic retries); device read/write operations MUST timeout after 5 seconds if no response is received
 - **FR-008**: The CLI MUST provide commands to read parameters with both human-readable and machine-parseable output formats
 - **FR-009**: The CLI MUST provide commands to write parameters with value validation and confirmation
 - **FR-010**: The CLI MUST return appropriate exit codes for success and various error conditions
 - **FR-011**: The library MUST support accessing all 400+ parameters exposed on the CAN bus
 - **FR-012**: The library MUST handle parameter name lookups efficiently (sub-second response for name resolution)
+- **FR-013**: The library MUST support configurable logging with error-only logging by default and optional debug verbosity for all operations, requests, and responses
+- **FR-014**: The library MUST implement log rotation limiting individual log files to 10MB maximum size
+
+### Non-Functional Requirements
+
+- **NFR-001**: The library MUST default to error-only logging to minimize log volume in production environments
+- **NFR-002**: The library MUST support a debug/verbose mode that logs all CAN operations including parameter names, values, requests, and responses
+- **NFR-003**: Log files MUST automatically rotate when reaching 10MB size limit to prevent unbounded disk usage
+- **NFR-004**: All error messages MUST include sufficient context for debugging (parameter name, operation type, failure reason)
+- **NFR-005**: The library MUST complete parameter name lookups in under 100 milliseconds for any of the 400+ parameters
 
 ### Key Entities
 
@@ -94,13 +114,14 @@ A system administrator needs command-line tools to read and write heat pump para
 - **CAN Read Operation**: Request to retrieve a parameter value from the heat pump via CAN bus
 - **CAN Write Operation**: Request to set a parameter value on the heat pump via CAN bus, subject to validation
 - **CLI Command**: User-facing command-line interface for parameter operations (read/write)
+- **Log Entry**: Structured record of library operations, errors, or debug information with timestamp and context
 
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
 
-- **SC-001**: Users can read any parameter using its human-readable name in under 2 seconds
-- **SC-002**: Users can write any writable parameter using its human-readable name in under 3 seconds
+- **SC-001**: Users can read any parameter using its human-readable name in under 2 seconds (under normal conditions; 5-second timeout enforced)
+- **SC-002**: Users can write any writable parameter using its human-readable name in under 3 seconds (under normal conditions; 5-second timeout enforced)
 - **SC-003**: 100% of parameter write attempts are validated against min/max constraints before CAN transmission
 - **SC-004**: CLI commands provide clear, actionable error messages for 100% of failure scenarios
 - **SC-005**: Parameter name lookups complete in under 100 milliseconds for any of the 400+ parameters
@@ -111,8 +132,9 @@ A system administrator needs command-line tools to read and write heat pump para
 - The CAN bus communication layer (from feature 001) is functional and provides read/write primitives
 - The Python class (from feature 002) provides parameter metadata access
 - Parameter names in the configuration match the FHEM reference implementation exactly
-- Case-insensitive parameter name matching is acceptable (system will normalize to uppercase or lowercase)
+- Parameter names are case-insensitive for lookup, but all names are normalized to uppercase for storage and display
 - The library will use synchronous blocking operations for read/write (async support is out of scope)
+- The library assumes single-threaded sequential usage; no thread-safety guarantees are provided
 - CLI commands will be single-shot operations (not an interactive shell)
 - Users have appropriate permissions to access the CAN bus hardware
 
