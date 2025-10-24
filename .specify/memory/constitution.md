@@ -1,19 +1,19 @@
 <!--
 Sync Impact Report
 ==================
-Version Change: 1.0.0 → 1.1.0 (Minor - expanded testing guidance)
+Version Change: 1.2.0 → 1.2.1 (Patch - added deployment target clarification)
 Modified Principles:
-  - Principle IV: "Test-First Development (NON-NEGOTIABLE)" → Enhanced to require comprehensive test coverage for all described functionality
-Added Sections: None
+  - None (no principles changed)
+Added Sections:
+  - "Deployment Environment" subsection under Technical Standards specifying Raspberry Pi + Linux + USBtin target
 Removed Sections: None
 Templates Requiring Updates:
-  ✅ plan-template.md - Already requires "Constitution Check" verification
-  ✅ spec-template.md - Already emphasizes "User Scenarios & Testing" as mandatory with "Independent Test" requirements
-  ✅ tasks-template.md - Already includes test tasks with "(OPTIONAL - only if tests requested)" - will update to make tests mandatory when functionality is described in spec
-  ⚠ commands/*.md - May need updates to reference enhanced testing requirements
+  ✅ plan-template.md - No updates needed (deployment-agnostic planning)
+  ✅ spec-template.md - No updates needed (functional requirements remain platform-agnostic)
+  ✅ tasks-template.md - No updates needed (implementation tasks can reference deployment target as needed)
+  ✅ All templates verified for consistency
 Follow-up TODOs:
-  - Ensure /speckit.tasks command generates tests for ALL functionality described in spec.md
-  - Update task template to indicate tests are NOT optional when functionality is specified
+  - None (clarification only, no breaking changes)
 -->
 
 # Buderus WPS Heat Pump Controller Constitution
@@ -117,6 +117,30 @@ The CLI tool MUST provide both human and machine interfaces:
 - **Optional Dependencies**: Feature-specific extras (e.g., `[homeassistant]` extra)
 - **Type Hints**: Mandatory for all public APIs and recommended for internal code
 - **Async Support**: Required for Home Assistant integration, optional for library core
+
+### Development Environment
+
+- **Virtual Environment**: MUST use Python virtual environments for all development and testing
+  - Create venv before installing dependencies: `python3 -m venv venv`
+  - Activate before work: `source venv/bin/activate` (Unix) or `venv\Scripts\activate` (Windows)
+  - All `pip install` commands MUST run inside activated virtual environment
+  - CI/CD pipelines MUST use isolated virtual environments
+- **Dependency Management**: Use `pyproject.toml` for dependency specification
+- **Reproducibility**: Lock files (e.g., `requirements.txt` or `poetry.lock`) SHOULD be maintained for exact version reproduction
+
+**Rationale**: Virtual environments prevent system Python pollution, ensure reproducible builds, avoid permission issues with system packages, and enable isolation between projects. This is a Python best practice that prevents the "works on my machine" problem and respects externally-managed Python installations.
+
+### Deployment Environment
+
+- **Target Platform**: Linux on Raspberry Pi (primary deployment target)
+- **Hardware**: USBtin CAN adapter connected via USB port
+- **Serial Port**: Typically `/dev/ttyACM0` or `/dev/ttyUSB0` on Linux
+- **Permissions**: User must be member of `dialout` group for serial port access
+- **System Requirements**: Python 3.9+ available on target system
+- **USB Auto-detection**: Library SHOULD support automatic USB device detection
+- **Cross-Platform Support**: While Raspberry Pi/Linux is the primary target, library MUST remain cross-platform compatible (Linux/macOS/Windows)
+
+**Rationale**: Raspberry Pi provides reliable, low-cost, always-on hardware for home automation integration. Linux environment ensures compatibility with Home Assistant OS. Documenting the primary deployment target guides implementation decisions (e.g., serial port paths, permission handling) while maintaining cross-platform library design.
 
 ### Code Quality & Style
 
@@ -229,4 +253,4 @@ This constitution supersedes all other practices and conventions. When conflicts
 - **MINOR**: New principles added, materially expanded guidance
 - **PATCH**: Clarifications, wording improvements, non-semantic refinements
 
-**Version**: 1.1.0 | **Ratified**: 2025-10-21 | **Last Amended**: 2025-10-21
+**Version**: 1.2.1 | **Ratified**: 2025-10-21 | **Last Amended**: 2025-10-24
