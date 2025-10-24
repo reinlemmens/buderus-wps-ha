@@ -10,7 +10,8 @@ Exception Hierarchy:
     │   ├── DeviceNotFoundError
     │   ├── DevicePermissionError
     │   ├── DeviceDisconnectedError
-    │   └── DeviceInitializationError
+    │   ├── DeviceInitializationError
+    │   └── DeviceCommunicationError
     ├── TimeoutError
     │   ├── ReadTimeoutError
     │   └── WriteTimeoutError
@@ -86,6 +87,12 @@ class DeviceDisconnectedError(ConnectionError):
 
 class DeviceInitializationError(ConnectionError):
     """USBtin initialization sequence failed."""
+
+    pass
+
+
+class DeviceCommunicationError(ConnectionError):
+    """Communication error with device during operation."""
 
     pass
 

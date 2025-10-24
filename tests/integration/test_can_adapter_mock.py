@@ -4,11 +4,13 @@ Tests cover:
 - T022: USBtinAdapter.connect() with mocked serial
 - T023: USBtinAdapter.disconnect() with mocked serial
 - T024: USBtinAdapter.is_open property
+- T039: Sequential message transmission
 """
 
 import pytest
 from unittest.mock import Mock, patch, MagicMock
 from buderus_wps.can_adapter import USBtinAdapter
+from buderus_wps.can_message import CANMessage
 from buderus_wps.exceptions import DeviceNotFoundError, DeviceInitializationError
 
 
@@ -252,3 +254,146 @@ class TestUSBtinAdapterIsOpen:
         adapter.disconnect()
         mock_serial.is_open = False
         assert adapter.is_open is False
+
+
+class TestSequentialMessageTransmission:
+    """Test sequential message transmission (T039)."""
+
+    @patch('serial.Serial')
+    def test_send_multiple_frames_sequentially(self, mock_serial_class):
+        """T039: Send multiple CAN frames in sequence."""
+        # Setup mock serial port with buffer for responses
+        mock_serial = MagicMock()
+        mock_serial.is_open = True
+        mock_serial.in_waiting = 10
+
+        # Simulate initialization + 3 message responses
+        init_responses = [b'\r'] * 7  # 7 init commands
+        message_responses = [
+            b't12344AABBCCDD\r',  # Response 1 (ID=0x123, DLC=4, Data=AABBCCDD)
+            b't23454455666777\r',  # Response 2 (ID=0x234, DLC=5, Data=4455666777)
+            b'T31D011E9100\r',     # Response 3 (ID=0x31D011E9, DLC=1, Data=00)
+        ]
+        mock_serial.read.side_effect = init_responses + message_responses
+        mock_serial_class.return_value = mock_serial
+
+        # Create and connect adapter
+        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter.connect()
+
+        # Send first message
+        msg1 = CANMessage(arbitration_id=0x123, data=b'\xAA\xBB\xCC\xDD')
+        response1 = adapter.send_frame(msg1, timeout=1.0)
+
+        assert response1 is not None
+        assert response1.arbitration_id == 0x123
+        assert response1.data == b'\xAA\xBB\xCC\xDD'
+
+        # Send second message
+        msg2 = CANMessage(arbitration_id=0x234, data=b'\x44\x55\x66\x67\x77')
+        response2 = adapter.send_frame(msg2, timeout=1.0)
+
+        assert response2 is not None
+        assert response2.arbitration_id == 0x234
+        assert response2.data == b'\x44\x55\x66\x67\x77'
+
+        # Send third message (extended ID)
+        msg3 = CANMessage(arbitration_id=0x31D011E9, data=b'\x00', is_extended_id=True)
+        response3 = adapter.send_frame(msg3, timeout=1.0)
+
+        assert response3 is not None
+        assert response3.arbitration_id == 0x31D011E9
+        assert response3.is_extended_id is True
+
+        # Verify all three messages were written in order
+        write_calls = [call[0][0] for call in mock_serial.write.call_args_list]
+        # Skip the 7 init commands and verify message order
+        message_writes = write_calls[7:]
+        assert b't12344AABBCCDD\r' in message_writes
+        assert b't23454455666777\r' in message_writes  # DLC=5, 5 bytes = 10 hex chars
+        assert b'T31D011E9100\r' in message_writes
+
+    @patch('serial.Serial')
+    def test_receive_multiple_frames_passively(self, mock_serial_class):
+        """Receive multiple CAN frames passively in sequence."""
+        # Setup mock serial port
+        mock_serial = MagicMock()
+        mock_serial.is_open = True
+        mock_serial.in_waiting = 10
+
+        # Simulate initialization + passive frames
+        init_responses = [b'\r'] * 7
+        passive_frames = [
+            b't11121122\r',        # Frame 1 (ID=0x111, DLC=2, Data=1122)
+            b't22222244\r',        # Frame 2 (ID=0x222, DLC=2, Data=2244)
+            b'T31D011E928666\r',   # Frame 3 (ID=0x31D011E9, DLC=2, Data=8666)
+        ]
+        mock_serial.read.side_effect = init_responses + passive_frames
+        mock_serial_class.return_value = mock_serial
+
+        # Create and connect adapter
+        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter.connect()
+
+        # Receive first frame
+        frame1 = adapter.receive_frame(timeout=1.0)
+        assert frame1.arbitration_id == 0x111
+        assert frame1.data == b'\x11\x22'
+
+        # Receive second frame
+        frame2 = adapter.receive_frame(timeout=1.0)
+        assert frame2.arbitration_id == 0x222
+        assert frame2.data == b'\x22\x44'
+
+        # Receive third frame (extended ID)
+        frame3 = adapter.receive_frame(timeout=1.0)
+        assert frame3.arbitration_id == 0x31D011E9
+        assert frame3.data == b'\x86\x66'
+        assert frame3.is_extended_id is True
+
+    @patch('serial.Serial')
+    def test_send_and_receive_mixed_operations(self, mock_serial_class):
+        """Mix send and receive operations in sequence."""
+        # Setup mock serial port
+        mock_serial = MagicMock()
+        mock_serial.is_open = True
+        mock_serial.in_waiting = 10
+
+        # Simulate initialization + mixed responses
+        init_responses = [b'\r'] * 7
+        responses = [
+            b't1232AABB\r',       # Response to send 1 (ID=0x123, DLC=2, Data=AABB)
+            b't79928877\r',       # Passive receive 1 (ID=0x799, DLC=2, Data=8877)
+            b't2344455\r',        # Response to send 2 (ID=0x234, DLC=2, Data=4455)
+            b't78821122\r',       # Passive receive 2 (ID=0x788, DLC=2, Data=1122)
+        ]
+        mock_serial.read.side_effect = init_responses + responses
+        mock_serial_class.return_value = mock_serial
+
+        # Create and connect adapter
+        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter.connect()
+
+        # Send message 1
+        msg1 = CANMessage(arbitration_id=0x123, data=b'\xAA\xBB')
+        response1 = adapter.send_frame(msg1, timeout=1.0)
+        assert response1.arbitration_id == 0x123
+
+        # Receive passive frame 1
+        frame1 = adapter.receive_frame(timeout=1.0)
+        assert frame1.arbitration_id == 0x799
+
+        # Send message 2
+        msg2 = CANMessage(arbitration_id=0x234, data=b'\x44\x55')
+        response2 = adapter.send_frame(msg2, timeout=1.0)
+        assert response2.arbitration_id == 0x234
+
+        # Receive passive frame 2
+        frame2 = adapter.receive_frame(timeout=1.0)
+        assert frame2.arbitration_id == 0x788
+
+        # Verify operations completed without interference
+        assert response1.data == b'\xAA\xBB'
+        assert frame1.data == b'\x88\x77'
+        assert response2.data == b'\x44\x55'
+        assert frame2.data == b'\x11\x22'

@@ -25,7 +25,9 @@ from .exceptions import (
     DeviceNotFoundError,
     DevicePermissionError,
     DeviceInitializationError,
-    DeviceDisconnectedError
+    DeviceDisconnectedError,
+    DeviceCommunicationError,
+    TimeoutError
 )
 
 
@@ -334,5 +336,189 @@ class USBtinAdapter:
         except serial.SerialException as e:
             raise DeviceDisconnectedError(
                 f"Serial read error: {e}",
+                context={"port": self.port, "error": str(e)}
+            )
+
+    def _read_frame(self, timeout: float = 5.0) -> Optional[CANMessage]:
+        """Read a single CAN frame from the serial port with timeout (T041).
+
+        Uses polling to read until a complete SLCAN frame (terminated by \\r)
+        is received or timeout occurs.
+
+        Args:
+            timeout: Maximum time to wait for frame (seconds)
+
+        Returns:
+            CANMessage if frame received, None if timeout
+
+        Raises:
+            DeviceCommunicationError: Device not connected
+        """
+        if not self.is_open or not self._serial:
+            raise DeviceCommunicationError(
+                "Device not connected",
+                context={"port": self.port}
+            )
+
+        start_time = time.time()
+        buffer = b''
+
+        try:
+            while time.time() - start_time < timeout:
+                # Check for available data
+                if self._serial.in_waiting > 0:
+                    chunk = self._serial.read(self._serial.in_waiting)
+                    buffer += chunk
+
+                    # Check for complete frame (terminated by \r)
+                    if b'\r' in buffer:
+                        # Extract frame up to terminator
+                        frame_bytes, remaining = buffer.split(b'\r', 1)
+                        buffer = remaining  # Keep remaining data for next read
+
+                        # Parse and return frame
+                        frame_str = frame_bytes.decode('ascii', errors='ignore').strip()
+                        if frame_str:
+                            return CANMessage.from_usbtin_format(frame_str)
+
+                # Poll every 10ms for real-time CAN
+                time.sleep(0.01)
+
+            # Timeout - no complete frame received
+            return None
+
+        except serial.SerialException as e:
+            raise DeviceCommunicationError(
+                f"Serial read error: {e}",
+                context={"port": self.port, "error": str(e)}
+            )
+        except Exception as e:
+            raise DeviceCommunicationError(
+                f"Frame parsing error: {e}",
+                context={"port": self.port, "buffer": buffer.decode('ascii', errors='ignore')}
+            )
+
+    def send_frame(self, message: CANMessage, timeout: float = 5.0) -> CANMessage:
+        """Send CAN frame and wait for response (T042).
+
+        Transmits a CAN message via SLCAN protocol and waits for a response
+        frame within the timeout period.
+
+        Args:
+            message: CANMessage to send
+            timeout: Maximum time to wait for response (seconds)
+
+        Returns:
+            Response CANMessage
+
+        Raises:
+            DeviceCommunicationError: Device not connected
+            TimeoutError: No response received within timeout
+        """
+        if not self.is_open or not self._serial:
+            raise DeviceCommunicationError(
+                "Device not connected",
+                context={"port": self.port}
+            )
+
+        # Guard against concurrent operations
+        if self._in_operation:
+            raise RuntimeError("Operation already in progress")
+
+        try:
+            self._in_operation = True
+
+            # Flush input buffer before sending
+            self.flush_input_buffer()
+
+            # Convert message to SLCAN format and send
+            slcan_frame = message.to_usbtin_format()
+            self._write_command(slcan_frame.encode('ascii'))
+
+            # Wait for response
+            response = self._read_frame(timeout=timeout)
+
+            if response is None:
+                raise TimeoutError(
+                    "No response received within timeout",
+                    context={
+                        "port": self.port,
+                        "timeout": timeout,
+                        "request_id": f"0x{message.arbitration_id:X}",
+                        "extended": message.is_extended_id
+                    }
+                )
+
+            return response
+
+        finally:
+            self._in_operation = False
+
+    def receive_frame(self, timeout: float = 5.0) -> CANMessage:
+        """Receive CAN frame passively (T043).
+
+        Waits for a CAN frame to arrive on the bus without sending a request.
+        Used for passive monitoring or receiving unsolicited messages.
+
+        Args:
+            timeout: Maximum time to wait for frame (seconds)
+
+        Returns:
+            Received CANMessage
+
+        Raises:
+            DeviceCommunicationError: Device not connected
+            TimeoutError: No frame received within timeout
+        """
+        if not self.is_open or not self._serial:
+            raise DeviceCommunicationError(
+                "Device not connected",
+                context={"port": self.port}
+            )
+
+        # Guard against concurrent operations
+        if self._in_operation:
+            raise RuntimeError("Operation already in progress")
+
+        try:
+            self._in_operation = True
+
+            # Wait for frame
+            frame = self._read_frame(timeout=timeout)
+
+            if frame is None:
+                raise TimeoutError(
+                    "No frame received within timeout",
+                    context={
+                        "port": self.port,
+                        "timeout": timeout
+                    }
+                )
+
+            return frame
+
+        finally:
+            self._in_operation = False
+
+    def flush_input_buffer(self) -> None:
+        """Flush serial input buffer to clear old data (T044).
+
+        Discards any pending data in the serial input buffer. Useful before
+        sending a new request to ensure old responses don't interfere.
+
+        Raises:
+            DeviceCommunicationError: Device not connected
+        """
+        if not self.is_open or not self._serial:
+            raise DeviceCommunicationError(
+                "Device not connected",
+                context={"port": self.port}
+            )
+
+        try:
+            self._serial.reset_input_buffer()
+        except serial.SerialException as e:
+            raise DeviceCommunicationError(
+                f"Failed to flush buffer: {e}",
                 context={"port": self.port, "error": str(e)}
             )
