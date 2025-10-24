@@ -5,7 +5,7 @@ Tests cover:
 """
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch, MagicMock, PropertyMock
 from buderus_wps.can_adapter import USBtinAdapter
 from buderus_wps.can_message import CANMessage
 
@@ -19,7 +19,7 @@ class TestSLCANProtocolCompliance:
         # Setup mock
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 0
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
         mock_serial.read.return_value = b'\r'  # ACK
         mock_serial_class.return_value = mock_serial
 
@@ -50,10 +50,10 @@ class TestSLCANProtocolCompliance:
         # Setup mock
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 10
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
 
         init_responses = [b'\r'] * 7
-        mock_serial.read.side_effect = init_responses + [b't12344AABBCCDD\r']
+        mock_serial.read.side_effect = init_responses + [b't1234AABBCCDD\r']
         mock_serial_class.return_value = mock_serial
 
         # Connect and send standard frame
@@ -72,7 +72,7 @@ class TestSLCANProtocolCompliance:
         write_calls = [call[0][0] for call in mock_serial.write.call_args_list]
         frame_writes = write_calls[7:]  # Skip init commands
 
-        assert b't12344AABBCCDD\r' in frame_writes
+        assert b't1234AABBCCDD\r' in frame_writes
 
     @patch('serial.Serial')
     def test_extended_frame_format_compliance(self, mock_serial_class):
@@ -80,7 +80,7 @@ class TestSLCANProtocolCompliance:
         # Setup mock
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 10
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
 
         init_responses = [b'\r'] * 7
         mock_serial.read.side_effect = init_responses + [b'T31D011E93123445\r']
@@ -114,7 +114,7 @@ class TestSLCANProtocolCompliance:
         # Setup mock
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 10
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
 
         init_responses = [b'\r'] * 7
         # Remote frames have no data, just DLC
@@ -159,7 +159,7 @@ class TestSLCANProtocolCompliance:
         # Setup mock
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 10
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
 
         init_responses = [b'\r'] * 7
         mock_serial.read.side_effect = init_responses + [b't1231AA\r']
@@ -184,7 +184,7 @@ class TestSLCANProtocolCompliance:
         # Setup mock
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 0
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
         mock_serial.read.return_value = b'\r'
         mock_serial_class.return_value = mock_serial
 
@@ -202,7 +202,7 @@ class TestSLCANProtocolCompliance:
         # Setup mock
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 10
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
 
         init_responses = [b'\r'] * 7
         mock_serial.read.side_effect = init_responses + [b'T31D011E94DEADBEEF\r']
@@ -239,7 +239,7 @@ class TestSLCANProtocolCompliance:
         # Setup mock
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 0
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
         mock_serial.read.return_value = b'\r'
         mock_serial_class.return_value = mock_serial
 
@@ -260,7 +260,7 @@ class TestSLCANProtocolCompliance:
         # Setup mock
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 0
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
         mock_serial.read.return_value = b'\r'
         mock_serial_class.return_value = mock_serial
 

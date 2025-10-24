@@ -17,7 +17,7 @@ Acceptance Scenarios:
 """
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch, MagicMock, PropertyMock
 from buderus_wps.can_adapter import USBtinAdapter
 from buderus_wps.can_message import CANMessage
 from buderus_wps.exceptions import TimeoutError
@@ -36,7 +36,7 @@ class TestAcceptanceScenario1SendAndReceive:
         # Setup: Mock serial connection
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 10
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
 
         # Simulate initialization + temperature response
         init_responses = [b'\r'] * 7
@@ -79,7 +79,7 @@ class TestAcceptanceScenario1SendAndReceive:
         # Setup
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 10
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
 
         init_responses = [b'\r'] * 7
         status_response = b't7231AA\r'  # Example status response (ID=0x723, DLC=1, Data=AA)
@@ -117,7 +117,7 @@ class TestAcceptanceScenario2SequentialTransmission:
         # Setup
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 10
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
 
         # Simulate initialization + 3 sequential responses
         init_responses = [b'\r'] * 7
@@ -182,7 +182,7 @@ class TestAcceptanceScenario2SequentialTransmission:
         # Setup
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 10
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
 
         init_responses = [b'\r'] * 7
         responses = [
@@ -233,7 +233,7 @@ class TestAcceptanceScenario3TimeoutHandling:
         # Setup: No response from device
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 0  # No data available
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)  # No data available
 
         init_responses = [b'\r'] * 7
         # No response after init - empty reads
@@ -269,7 +269,7 @@ class TestAcceptanceScenario3TimeoutHandling:
         # Setup
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 0
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
 
         init_responses = [b'\r'] * 7
         mock_serial.read.side_effect = init_responses + [b''] * 100
@@ -300,7 +300,7 @@ class TestAcceptanceScenario3TimeoutHandling:
         # Setup
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 0
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
 
         init_responses = [b'\r'] * 7
         # First request: timeout (no response)

@@ -8,10 +8,10 @@ Tests cover:
 """
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch, MagicMock, PropertyMock
 from buderus_wps.can_adapter import USBtinAdapter
 from buderus_wps.can_message import CANMessage
-from buderus_wps.exceptions import DeviceNotFoundError, DeviceInitializationError
+from buderus_wps.exceptions import DeviceNotFoundError, DevicePermissionError, DeviceInitializationError
 
 
 class TestUSBtinAdapterConnect:
@@ -23,7 +23,7 @@ class TestUSBtinAdapterConnect:
         # Setup mock serial port
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 0
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)  # Data available
         mock_serial.read.return_value = b'\r'  # ACK response
         mock_serial_class.return_value = mock_serial
 
@@ -76,7 +76,7 @@ class TestUSBtinAdapterConnect:
         mock_serial_class.side_effect = PermissionError("Permission denied")
 
         adapter = USBtinAdapter('/dev/ttyACM0')
-        with pytest.raises(DeviceNotFoundError, match="Permission denied"):
+        with pytest.raises(DevicePermissionError, match="Permission denied"):
             adapter.connect()
 
     @patch('serial.Serial')
@@ -84,7 +84,9 @@ class TestUSBtinAdapterConnect:
         """Connect fails when device returns NAK (\\a) during init."""
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 0
+
+        # Mock in_waiting to report data available
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
         mock_serial.read.return_value = b'\a'  # NAK/Error response
         mock_serial_class.return_value = mock_serial
 
@@ -99,7 +101,7 @@ class TestUSBtinAdapterConnect:
         """Connect when already connected should raise error."""
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 0
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
         mock_serial.read.return_value = b'\r'
         mock_serial_class.return_value = mock_serial
 
@@ -115,7 +117,7 @@ class TestUSBtinAdapterConnect:
         """Connect using context manager (with statement)."""
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 0
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
         mock_serial.read.return_value = b'\r'
         mock_serial_class.return_value = mock_serial
 
@@ -134,7 +136,7 @@ class TestUSBtinAdapterDisconnect:
         """Successfully disconnect from USBtin device."""
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 0
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
         mock_serial.read.return_value = b'\r'
         mock_serial_class.return_value = mock_serial
 
@@ -165,7 +167,7 @@ class TestUSBtinAdapterDisconnect:
         """Disconnect should not raise errors during cleanup."""
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 0
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
         mock_serial.read.return_value = b'\r'
         mock_serial.close.side_effect = Exception("Serial port error")
         mock_serial_class.return_value = mock_serial
@@ -182,7 +184,7 @@ class TestUSBtinAdapterDisconnect:
         """Disconnect automatically when exiting context manager."""
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 0
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
         mock_serial.read.return_value = b'\r'
         mock_serial_class.return_value = mock_serial
 
@@ -209,7 +211,7 @@ class TestUSBtinAdapterIsOpen:
         """is_open should be True after successful connect."""
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 0
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
         mock_serial.read.return_value = b'\r'
         mock_serial_class.return_value = mock_serial
 
@@ -222,7 +224,7 @@ class TestUSBtinAdapterIsOpen:
         """is_open should be False after disconnect."""
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        mock_serial.in_waiting = 0
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
         mock_serial.read.return_value = b'\r'
         mock_serial_class.return_value = mock_serial
 
@@ -235,24 +237,30 @@ class TestUSBtinAdapterIsOpen:
     def test_is_open_reflects_serial_state(self, mock_serial_class):
         """is_open should reflect actual serial port state."""
         mock_serial = MagicMock()
-        mock_serial.in_waiting = 0
+        type(mock_serial).in_waiting = PropertyMock(return_value=10)
         mock_serial.read.return_value = b'\r'
+
+        # Use PropertyMock for is_open so we can change it dynamically
+        is_open_mock = PropertyMock(side_effect=[False, True, True, False])
+        type(mock_serial).is_open = is_open_mock
+
         mock_serial_class.return_value = mock_serial
 
         adapter = USBtinAdapter('/dev/ttyACM0')
 
-        # Initially closed
-        mock_serial.is_open = False
+        # Initially closed (first call to is_open)
         assert adapter.is_open is False
 
-        # After connect
+        # After connect (second call - returns True during connect)
+        # Need to temporarily set is_open to True for connect to work
+        is_open_mock.side_effect = None
+        is_open_mock.return_value = True
         adapter.connect()
-        mock_serial.is_open = True
         assert adapter.is_open is True
 
         # After disconnect
+        is_open_mock.return_value = False
         adapter.disconnect()
-        mock_serial.is_open = False
         assert adapter.is_open is False
 
 
@@ -270,7 +278,7 @@ class TestSequentialMessageTransmission:
         # Simulate initialization + 3 message responses
         init_responses = [b'\r'] * 7  # 7 init commands
         message_responses = [
-            b't12344AABBCCDD\r',  # Response 1 (ID=0x123, DLC=4, Data=AABBCCDD)
+            b't1234AABBCCDD\r',  # Response 1 (ID=0x123, DLC=4, Data=AABBCCDD)
             b't23454455666777\r',  # Response 2 (ID=0x234, DLC=5, Data=4455666777)
             b'T31D011E9100\r',     # Response 3 (ID=0x31D011E9, DLC=1, Data=00)
         ]
@@ -309,7 +317,7 @@ class TestSequentialMessageTransmission:
         write_calls = [call[0][0] for call in mock_serial.write.call_args_list]
         # Skip the 7 init commands and verify message order
         message_writes = write_calls[7:]
-        assert b't12344AABBCCDD\r' in message_writes
+        assert b't1234AABBCCDD\r' in message_writes
         assert b't23454455666777\r' in message_writes  # DLC=5, 5 bytes = 10 hex chars
         assert b'T31D011E9100\r' in message_writes
 
@@ -364,7 +372,7 @@ class TestSequentialMessageTransmission:
         responses = [
             b't1232AABB\r',       # Response to send 1 (ID=0x123, DLC=2, Data=AABB)
             b't79928877\r',       # Passive receive 1 (ID=0x799, DLC=2, Data=8877)
-            b't2344455\r',        # Response to send 2 (ID=0x234, DLC=2, Data=4455)
+            b't23424455\r',       # Response to send 2 (ID=0x234, DLC=2, Data=4455)
             b't78821122\r',       # Passive receive 2 (ID=0x788, DLC=2, Data=1122)
         ]
         mock_serial.read.side_effect = init_responses + responses
