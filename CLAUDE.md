@@ -161,7 +161,7 @@ Cross-reference FHEM with line numbers. Use `# PROTOCOL:` tags. Maintain protoco
 
 Current features in `specs/`:
 - **001-can-usb-serial**: CAN over USB serial connection
-- **002-buderus-wps-python-class**: Parameter definitions from FHEM
+- **002-buderus-wps-python-class**: Parameter definitions from FHEM (completed)
 - **003-program-switching-control**: DHW/heating program switching
 - **004-perl-config-parser**: Parse FHEM parameter definitions
 - **005-can-parameter-access**: Read/write parameters by name (in progress)
