@@ -81,6 +81,12 @@ class TestUSBtinAdapterInitialization:
         adapter = USBtinAdapter('/dev/ttyACM0')
         assert adapter.is_open is False
 
+    def test_init_read_only_flag(self):
+        """Adapter supports read-only mode flag."""
+        adapter = USBtinAdapter('/dev/ttyACM0', read_only=True)
+        assert adapter.read_only is True
+        assert adapter.status == "closed"
+
     def test_init_does_not_auto_connect(self):
         """Initialization should not automatically open connection."""
         adapter = USBtinAdapter('/dev/ttyACM0')
@@ -182,6 +188,16 @@ class TestUSBtinAdapterSendFrame:
 
         # Attempt to send without connecting
         with pytest.raises(DeviceCommunicationError, match="not connected"):
+            adapter.send_frame(request)
+
+    @patch('serial.Serial')
+    def test_send_frame_read_only_mode(self, mock_serial_class):
+        """Sending in read-only mode is blocked."""
+        adapter = USBtinAdapter('/dev/ttyACM0', read_only=True)
+        adapter._serial = Mock()
+        adapter._serial.is_open = True
+        request = CANMessage(arbitration_id=0x123, data=b'\x00')
+        with pytest.raises(PermissionError, match="read-only"):
             adapter.send_frame(request)
 
     @patch('serial.Serial')
