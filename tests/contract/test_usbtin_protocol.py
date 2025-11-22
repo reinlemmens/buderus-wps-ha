@@ -72,7 +72,7 @@ class TestSLCANProtocolCompliance:
         write_calls = [call[0][0] for call in mock_serial.write.call_args_list]
         frame_writes = write_calls[7:]  # Skip init commands
 
-        assert b't12344AABBCCDD\r' in frame_writes
+        assert b't1234AABBCCDD\r' in frame_writes
 
     @patch('serial.Serial')
     def test_extended_frame_format_compliance(self, mock_serial_class):

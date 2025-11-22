@@ -53,6 +53,17 @@ with USBtinAdapter('/dev/ttyACM0') as adapter:
     print(f"Outdoor Temperature: {temp_celsius}°C")
 ```
 
+## CLI (local USBtin)
+
+After `pip install -e .`, a `wps-cli` command is available:
+
+```bash
+wps-cli read ACCESS_LEVEL                 # read by name (uses /dev/ttyACM0, 115200)
+wps-cli write ACCESS_LEVEL 2              # write (validates range/format)
+wps-cli list --filter ACCESS              # list parameters with optional filter
+wps-cli --read-only write ACCESS_LEVEL 2  # blocks writes in read-only/dry-run
+```
+
 ## Finding Your Serial Port
 
 **Linux/macOS:**

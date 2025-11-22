@@ -73,7 +73,7 @@ class DeviceNotFoundError(ConnectionError):
     pass
 
 
-class DevicePermissionError(ConnectionError):
+class DevicePermissionError(DeviceNotFoundError):
     """Insufficient permissions to access serial port."""
 
     pass

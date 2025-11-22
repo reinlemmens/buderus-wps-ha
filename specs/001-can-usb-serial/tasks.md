@@ -119,27 +119,27 @@ This document provides a dependency-ordered task list for implementing the CAN o
 
 ### Tests First (TDD)
 
-- [ ] T036 [P] [US2] Write unit test for `USBtinAdapter.send_frame()` with successful response in `tests/unit/test_usbtin_adapter.py`
-- [ ] T037 [P] [US2] Write unit test for `USBtinAdapter.send_frame()` timeout handling in `tests/unit/test_usbtin_adapter.py`
-- [ ] T038 [P] [US2] Write unit test for `USBtinAdapter.receive_frame()` in `tests/unit/test_usbtin_adapter.py`
-- [ ] T039 [P] [US2] Write integration test for sequential message transmission in `tests/integration/test_can_adapter_mock.py`
-- [ ] T040 [P] [US2] Write contract test for SLCAN protocol compliance in `tests/contract/test_usbtin_protocol.py`
+- [X] T036 [P] [US2] Write unit test for `USBtinAdapter.send_frame()` with successful response in `tests/unit/test_usbtin_adapter.py`
+- [X] T037 [P] [US2] Write unit test for `USBtinAdapter.send_frame()` timeout handling in `tests/unit/test_usbtin_adapter.py`
+- [X] T038 [P] [US2] Write unit test for `USBtinAdapter.receive_frame()` in `tests/unit/test_usbtin_adapter.py`
+- [X] T039 [P] [US2] Write integration test for sequential message transmission in `tests/integration/test_can_adapter_mock.py`
+- [X] T040 [P] [US2] Write contract test for SLCAN protocol compliance in `tests/contract/test_usbtin_protocol.py`
 
 ### Implementation
 
-- [ ] T041 [US2] Implement `USBtinAdapter._read_frame()` private method with timeout and polling
-- [ ] T042 [US2] Implement `USBtinAdapter.send_frame()` method with frame transmission and response handling
-- [ ] T043 [US2] Implement `USBtinAdapter.receive_frame()` method for passive message reception
-- [ ] T044 [US2] Implement `USBtinAdapter.flush_input_buffer()` method for buffer management
-- [ ] T045 [US2] Add concurrent operation guard (`_in_operation` flag) to prevent simultaneous calls
+- [X] T041 [US2] Implement `USBtinAdapter._read_frame()` private method with timeout and polling
+- [X] T042 [US2] Implement `USBtinAdapter.send_frame()` method with frame transmission and response handling
+- [X] T043 [US2] Implement `USBtinAdapter.receive_frame()` method for passive message reception
+- [X] T044 [US2] Implement `USBtinAdapter.flush_input_buffer()` method for buffer management
+- [X] T045 [US2] Add concurrent operation guard (`_in_operation` flag) to prevent simultaneous calls
 
 ### Acceptance Tests
 
-- [ ] T046 [US2] Write acceptance test for AS1: Send CAN read request and receive response in `tests/contract/test_acceptance_us2.py`
-- [ ] T047 [US2] Write acceptance test for AS2: Sequential message transmission in `tests/contract/test_acceptance_us2.py`
-- [ ] T048 [US2] Write acceptance test for AS3: Timeout error when no response in `tests/contract/test_acceptance_us2.py`
+- [X] T046 [US2] Write acceptance test for AS1: Send CAN read request and receive response in `tests/contract/test_acceptance_us2.py`
+- [X] T047 [US2] Write acceptance test for AS2: Sequential message transmission in `tests/contract/test_acceptance_us2.py`
+- [X] T048 [US2] Write acceptance test for AS3: Timeout error when no response in `tests/contract/test_acceptance_us2.py`
 
-**Completion Criteria**:
+**Completion Criteria**: ✅ COMPLETE
 - All US2 tests passing (100% coverage for message transmission)
 - Can send/receive CAN messages via mocked serial
 - Timeout handling works correctly

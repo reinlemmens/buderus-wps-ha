@@ -29,5 +29,45 @@ __version__ = "0.1.0"
 __author__ = "Buderus WPS HA Project"
 __license__ = "MIT"
 
-# Public API will be exported here after implementation
-__all__ = []
+from .can_message import CANMessage
+from .can_adapter import USBtinAdapter
+from .exceptions import (
+    BuderusCANException,
+    ConnectionError,
+    DeviceCommunicationError,
+    DeviceDisconnectedError,
+    DeviceInitializationError,
+    DeviceNotFoundError,
+    DevicePermissionError,
+    TimeoutError,
+)
+from .program_switching import (
+    ProgramSwitchingController,
+    ProgramSwitchConfig,
+    ProgramState,
+    ParameterIO,
+)
+from .value_encoder import ValueEncoder
+from .parameter_registry import ParameterRegistry, Parameter
+from .heat_pump import HeatPumpClient
+
+__all__ = [
+    "BuderusCANException",
+    "CANMessage",
+    "ConnectionError",
+    "DeviceCommunicationError",
+    "DeviceDisconnectedError",
+    "DeviceInitializationError",
+    "DeviceNotFoundError",
+    "DevicePermissionError",
+    "Parameter",
+    "ParameterIO",
+    "ParameterRegistry",
+    "ProgramState",
+    "ProgramSwitchConfig",
+    "ProgramSwitchingController",
+    "HeatPumpClient",
+    "TimeoutError",
+    "USBtinAdapter",
+    "ValueEncoder",
+]

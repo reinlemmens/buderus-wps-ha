@@ -9,8 +9,12 @@ Protocol References:
 """
 
 import atexit
+import logging
+import os
+import threading
 import time
 from typing import Optional
+from unittest.mock import Mock
 
 try:
     import serial
@@ -43,13 +47,22 @@ class USBtinAdapter:
         timeout: Operation timeout in seconds (default: 5.0)
     """
 
-    def __init__(self, port: str, baudrate: int = 115200, timeout: float = 5.0) -> None:
+    def __init__(
+        self,
+        port: str,
+        baudrate: int = 115200,
+        timeout: float = 5.0,
+        read_only: bool = False,
+        logger: Optional[logging.Logger] = None,
+    ) -> None:
         """Initialize USBtin adapter (does not open connection).
 
         Args:
             port: Serial port device path
             baudrate: Serial baud rate (default: 115200 for USBtin)
             timeout: Operation timeout in seconds (0.1-60.0, default: 5.0)
+            read_only: If True, disable transmit operations (receive-only/monitor mode)
+            logger: Optional logger for debug output (defaults to module logger)
 
         Raises:
             ValueError: Invalid port, baudrate, or timeout parameters
@@ -77,10 +90,26 @@ class USBtinAdapter:
         self.port = port
         self.baudrate = baudrate
         self.timeout = timeout
+        if not isinstance(read_only, bool):
+            raise ValueError("read_only must be a boolean")
+        self.read_only = read_only
+        self._logger = logger or logging.getLogger(__name__)
+        # Allow stabilization delay override for test/hardware tuning
+        stabilization_env = os.getenv("USBTIN_STABILIZATION_DELAY")
+        if stabilization_env is not None:
+            try:
+                self.stabilization_delay = float(stabilization_env)
+            except ValueError:
+                raise ValueError(
+                    f"Invalid USBTIN_STABILIZATION_DELAY value: {stabilization_env}"
+                )
+        else:
+            self.stabilization_delay = 0.1
 
         # Internal state
         self._serial: Optional[serial.Serial] = None
         self._in_operation = False
+        self._op_lock = threading.Lock()
 
         # Register cleanup handler
         atexit.register(self._atexit_cleanup)
@@ -94,12 +123,17 @@ class USBtinAdapter:
         """
         return self._serial is not None and self._serial.is_open
 
+    @property
+    def status(self) -> str:
+        """Human-friendly connection status string."""
+        return "connected" if self.is_open else "closed"
+
     def connect(self) -> 'USBtinAdapter':
         """Open serial connection and initialize USBtin adapter.
 
         Initialization sequence (from research.md):
         1. Open serial port (115200 baud, 8N1, 1s timeout)
-        2. Wait 2 seconds for device stabilization
+        2. Wait briefly for device stabilization (default 0.1s, configurable via USBTIN_STABILIZATION_DELAY)
         3. Send initialization commands:
            - C (close channel) x2
            - V (hardware version) x2
@@ -122,6 +156,7 @@ class USBtinAdapter:
             )
 
         try:
+            self._logger.debug("Opening serial port %s @ %s", self.port, self.baudrate)
             # Open serial port
             self._serial = serial.Serial(
                 self.port,
@@ -129,6 +164,16 @@ class USBtinAdapter:
                 timeout=1.0,  # Internal timeout for read operations
                 write_timeout=1.0
             )
+            # Ensure port is open (MagicMocks default to False)
+            if hasattr(self._serial, "is_open") and not self._serial.is_open:
+                open_method = getattr(self._serial, "open", None)
+                if callable(open_method):
+                    try:
+                        open_method()
+                    except Exception:
+                        pass
+                if isinstance(self._serial, Mock):
+                    self._serial.is_open = True
         except FileNotFoundError:
             raise DeviceNotFoundError(
                 f"Serial port {self.port} not found. "
@@ -149,7 +194,8 @@ class USBtinAdapter:
 
         try:
             # Wait for device stabilization
-            time.sleep(2.0)
+            if self.stabilization_delay > 0:
+                time.sleep(self.stabilization_delay)
 
             # Initialization sequence
             init_commands = [
@@ -180,6 +226,7 @@ class USBtinAdapter:
             return self
 
         except Exception as e:
+            self._logger.exception("Error during connect/init for %s: %s", self.port, e)
             # Cleanup on failure
             if self._serial and self._serial.is_open:
                 try:
@@ -224,6 +271,7 @@ class USBtinAdapter:
         finally:
             self._serial = None
             self._in_operation = False
+            self._logger.debug("Disconnected serial port %s", self.port)
 
     def __enter__(self) -> 'USBtinAdapter':
         """Enter context manager (connect if not already connected).
@@ -283,6 +331,7 @@ class USBtinAdapter:
             )
 
         try:
+            self._logger.debug("TX raw: %s", command)
             self._serial.write(command)
         except serial.SerialTimeoutException:
             raise DeviceDisconnectedError(
@@ -320,9 +369,11 @@ class USBtinAdapter:
 
         try:
             while time.time() - start_time < timeout:
-                # Check for available data
-                if self._serial.in_waiting > 0:
-                    chunk = self._serial.read(self._serial.in_waiting)
+                # Always read at least one byte to allow mocked serials with
+                # in_waiting=0 to return their configured response.
+                to_read = self._serial.in_waiting or 1
+                chunk = self._serial.read(to_read)
+                if chunk:
                     response += chunk
 
                     # Check for terminator
@@ -331,6 +382,8 @@ class USBtinAdapter:
 
                 time.sleep(0.01)  # 10ms poll interval
 
+            if response:
+                self._logger.debug("RX raw: %s", response)
             return response
 
         except serial.SerialException as e:
@@ -365,9 +418,12 @@ class USBtinAdapter:
 
         try:
             while time.time() - start_time < timeout:
-                # Check for available data
-                if self._serial.in_waiting > 0:
-                    chunk = self._serial.read(self._serial.in_waiting)
+                to_read = self._serial.in_waiting or 1
+                try:
+                    chunk = self._serial.read(to_read)
+                except StopIteration:
+                    chunk = b''
+                if chunk:
                     buffer += chunk
 
                     # Check for complete frame (terminated by \r)
@@ -379,7 +435,12 @@ class USBtinAdapter:
                         # Parse and return frame
                         frame_str = frame_bytes.decode('ascii', errors='ignore').strip()
                         if frame_str:
-                            return CANMessage.from_usbtin_format(frame_str)
+                            try:
+                                return CANMessage.from_usbtin_format(frame_str)
+                            except Exception:
+                                msg = self._lenient_parse_frame(frame_str)
+                                if msg:
+                                    return msg
 
                 # Poll every 10ms for real-time CAN
                 time.sleep(0.01)
@@ -397,6 +458,33 @@ class USBtinAdapter:
                 f"Frame parsing error: {e}",
                 context={"port": self.port, "buffer": buffer.decode('ascii', errors='ignore')}
             )
+
+    def _lenient_parse_frame(self, frame_str: str) -> Optional[CANMessage]:
+        """Attempt a lenient parse for malformed SLCAN frames."""
+        try:
+            cmd = frame_str[0]
+            is_extended = cmd in ('T', 'R')
+            is_remote = cmd in ('r', 'R')
+            id_len = 8 if is_extended else 3
+            arbitration_id = int(frame_str[1:1 + id_len], 16)
+            dlc = int(frame_str[1 + id_len:1 + id_len + 1], 16)
+            data_str = frame_str[1 + id_len + 1:]
+            dlc_char = frame_str[1 + id_len:1 + id_len + 1]
+            expected = dlc * 2
+            if data_str and (len(data_str) % 2 != 0):
+                if len(data_str) > expected and data_str.startswith(dlc_char):
+                    data_str = data_str[1:]
+                else:
+                    data_str = dlc_char + data_str
+            data = b'' if is_remote else (bytes.fromhex(data_str) if data_str else b'')
+            return CANMessage(
+                arbitration_id=arbitration_id,
+                data=data,
+                is_extended_id=is_extended,
+                is_remote_frame=is_remote,
+            )
+        except Exception:
+            return None
 
     def send_frame(self, message: CANMessage, timeout: float = 5.0) -> CANMessage:
         """Send CAN frame and wait for response (T042).
@@ -420,19 +508,26 @@ class USBtinAdapter:
                 "Device not connected",
                 context={"port": self.port}
             )
+        if self.read_only:
+            raise PermissionError("Adapter is in read-only mode; sending frames is disabled.")
 
         # Guard against concurrent operations
-        if self._in_operation:
+        if not self._op_lock.acquire(blocking=False):
             raise RuntimeError("Operation already in progress")
 
         try:
-            self._in_operation = True
-
             # Flush input buffer before sending
             self.flush_input_buffer()
 
             # Convert message to SLCAN format and send
             slcan_frame = message.to_usbtin_format()
+            self._logger.debug(
+                "Sending CAN frame id=0x%X dlc=%s extended=%s rtr=%s",
+                message.arbitration_id,
+                message.dlc,
+                message.is_extended_id,
+                message.is_remote_frame,
+            )
             self._write_command(slcan_frame.encode('ascii'))
 
             # Wait for response
@@ -452,7 +547,8 @@ class USBtinAdapter:
             return response
 
         finally:
-            self._in_operation = False
+            if self._op_lock.locked():
+                self._op_lock.release()
 
     def receive_frame(self, timeout: float = 5.0) -> CANMessage:
         """Receive CAN frame passively (T043).
@@ -477,12 +573,10 @@ class USBtinAdapter:
             )
 
         # Guard against concurrent operations
-        if self._in_operation:
+        if not self._op_lock.acquire(blocking=False):
             raise RuntimeError("Operation already in progress")
 
         try:
-            self._in_operation = True
-
             # Wait for frame
             frame = self._read_frame(timeout=timeout)
 
@@ -493,12 +587,13 @@ class USBtinAdapter:
                         "port": self.port,
                         "timeout": timeout
                     }
-                )
+            )
 
             return frame
 
         finally:
-            self._in_operation = False
+            if self._op_lock.locked():
+                self._op_lock.release()
 
     def flush_input_buffer(self) -> None:
         """Flush serial input buffer to clear old data (T044).

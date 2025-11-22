@@ -30,6 +30,9 @@ dependencies = [
     "pyserial>=3.5",
 ]
 
+[project.scripts]
+wps-cli = "buderus_wps_cli.main:main"
+
 [project.optional-dependencies]
 dev = [
     "pytest>=7.4.0",
@@ -47,7 +50,7 @@ Issues = "https://github.com/reinlemmens/buderus-wps-ha/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["buderus_wps*"]
+include = ["buderus_wps*", "buderus_wps_cli*"]
 exclude = ["tests*", "specs*", "fhem*"]
 
 [tool.pytest.ini_options]

@@ -309,7 +309,7 @@ class TestSequentialMessageTransmission:
         write_calls = [call[0][0] for call in mock_serial.write.call_args_list]
         # Skip the 7 init commands and verify message order
         message_writes = write_calls[7:]
-        assert b't12344AABBCCDD\r' in message_writes
+        assert b't1234AABBCCDD\r' in message_writes
         assert b't23454455666777\r' in message_writes  # DLC=5, 5 bytes = 10 hex chars
         assert b'T31D011E9100\r' in message_writes
 
