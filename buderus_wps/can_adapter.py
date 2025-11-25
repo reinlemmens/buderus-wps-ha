@@ -54,6 +54,7 @@ class USBtinAdapter:
         timeout: float = 5.0,
         read_only: bool = False,
         logger: Optional[logging.Logger] = None,
+        skip_init: bool = False,
     ) -> None:
         """Initialize USBtin adapter (does not open connection).
 
@@ -93,6 +94,7 @@ class USBtinAdapter:
         if not isinstance(read_only, bool):
             raise ValueError("read_only must be a boolean")
         self.read_only = read_only
+        self.skip_init = skip_init
         self._logger = logger or logging.getLogger(__name__)
         # Allow stabilization delay override for test/hardware tuning
         stabilization_env = os.getenv("USBTIN_STABILIZATION_DELAY")
@@ -197,44 +199,45 @@ class USBtinAdapter:
             if self.stabilization_delay > 0:
                 time.sleep(self.stabilization_delay)
 
-            # Initialization sequence
-            init_commands = [
-                b'C\r',  # Close channel (1st)
-                b'C\r',  # Close channel (2nd, safety)
-                b'V\r',  # Hardware version (1st)
-                b'V\r',  # Hardware version (2nd)
-                b'v\r',  # Firmware version
-                b'S4\r', # Set bitrate to 125 kbps (Buderus standard)
-                b'O\r'   # Open channel
-            ]
-            allow_nak_close = 1  # tolerate NAK on first close if channel already closed
-            allow_nak_version = 1  # tolerate one NAK on version query
-            for cmd in init_commands:
-                self._write_command(cmd)
-                response = self._read_response(timeout=2.0)
+            # Initialization sequence (can be skipped when skip_init=True)
+            if not self.skip_init:
+                init_commands = [
+                    b'C\r',  # Close channel (1st)
+                    b'C\r',  # Close channel (2nd, safety)
+                    b'V\r',  # Hardware version (1st)
+                    b'V\r',  # Hardware version (2nd)
+                    b'v\r',  # Firmware version
+                    b'S4\r', # Set bitrate to 125 kbps (Buderus standard)
+                    b'O\r'   # Open channel
+                ]
+                allow_nak_close = 1  # tolerate NAK on first close if channel already closed
+                allow_nak_version = 1  # tolerate one NAK on version query
+                for cmd in init_commands:
+                    self._write_command(cmd)
+                    response = self._read_response(timeout=2.0)
 
-                # Check for error response
-                if response == b'\a':  # Bell = NAK/Error
-                    if cmd == b'C\r' and allow_nak_close > 0:
-                        allow_nak_close -= 1
-                        continue
-                    if cmd in (b'V\r', b'v\r') and allow_nak_version > 0:
-                        allow_nak_version -= 1
-                        continue
-                    if cmd == b'S4\r':
-                        # Bitrate already set; proceed
-                        continue
-                    if cmd == b'O\r':
-                        # Channel may already be open; proceed
-                        continue
-                    raise DeviceInitializationError(
-                        f"Device returned error during initialization (command: {cmd.decode('utf-8', 'ignore').strip()})",
-                        context={
-                            "port": self.port,
-                            "command": cmd.decode('utf-8', 'ignore'),
-                            "response": "NAK"
-                        }
-                    )
+                    # Check for error response
+                    if response == b'\a':  # Bell = NAK/Error
+                        if cmd == b'C\r' and allow_nak_close > 0:
+                            allow_nak_close -= 1
+                            continue
+                        if cmd in (b'V\r', b'v\r') and allow_nak_version > 0:
+                            allow_nak_version -= 1
+                            continue
+                        if cmd == b'S4\r':
+                            # Bitrate already set; proceed
+                            continue
+                        if cmd == b'O\r':
+                            # Channel may already be open; proceed
+                            continue
+                        raise DeviceInitializationError(
+                            f"Device returned error during initialization (command: {cmd.decode('utf-8', 'ignore').strip()})",
+                            context={
+                                "port": self.port,
+                                "command": cmd.decode('utf-8', 'ignore'),
+                                "response": "NAK"
+                            }
+                        )
 
             return self
 
