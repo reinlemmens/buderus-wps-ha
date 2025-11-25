@@ -94,6 +94,23 @@ class HeatPumpClient:
             )
         return frame.data
 
+    def read_parameter(self, name_or_idx: Any, timeout: float = 2.0) -> Dict[str, Any]:
+        """Read and decode parameter, returning metadata + raw/decoded values."""
+        param = self.get(name_or_idx)
+        raw = self.read_value(param.text, timeout=timeout)
+        decoded = self._decode_value(param, raw)
+        return {
+            "name": param.text,
+            "idx": param.idx,
+            "extid": param.extid,
+            "format": param.format,
+            "min": param.min,
+            "max": param.max,
+            "read": param.read,
+            "raw": raw,
+            "decoded": decoded,
+        }
+
     def write_value(self, name_or_idx: Any, value: Any, timeout: float = 2.0) -> None:
         param = self.get(name_or_idx)
         if param.read == 1:
@@ -140,3 +157,25 @@ class HeatPumpClient:
             size = 8
         signed = param.min < 0
         return ivalue.to_bytes(size, "big", signed=signed)
+
+    def _decode_value(self, param: Parameter, raw: bytes) -> Any:
+        fmt = param.format
+        if fmt.startswith("temp"):
+            try:
+                return ValueEncoder.decode_temperature(raw[:2], "temp")
+            except Exception:
+                return raw.hex()
+        if fmt.startswith("dp") or fmt.startswith("rp"):
+            try:
+                precision = int(fmt[2]) if len(fmt) > 2 and fmt[2].isdigit() else 0
+            except Exception:
+                precision = 0
+            signed = fmt.startswith("dp")
+            val = int.from_bytes(raw, "big", signed=signed)
+            factor = 10 ** precision if precision > 0 else 1
+            return val / factor
+        try:
+            signed = param.min < 0
+            return int.from_bytes(raw, "big", signed=signed)
+        except Exception:
+            return raw.hex()

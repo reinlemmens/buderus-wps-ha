@@ -37,10 +37,13 @@ class DummyClient:
     def write_value(self, name, value, timeout=5.0):
         self.write_value_args = (name, value)
 
+    def _decode_value(self, param, raw):
+        return 0
+
 
 def test_cmd_read_success(monkeypatch, capsys):
     client = DummyClient()
-    args = argparse.Namespace(param="X")
+    args = argparse.Namespace(param="X", json=False)
     rc = cli.cmd_read(client, args)
     assert rc == 0
     out = capsys.readouterr().out

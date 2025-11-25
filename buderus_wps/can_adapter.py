@@ -207,13 +207,26 @@ class USBtinAdapter:
                 b'S4\r', # Set bitrate to 125 kbps (Buderus standard)
                 b'O\r'   # Open channel
             ]
-
+            allow_nak_close = 1  # tolerate NAK on first close if channel already closed
+            allow_nak_version = 1  # tolerate one NAK on version query
             for cmd in init_commands:
                 self._write_command(cmd)
                 response = self._read_response(timeout=2.0)
 
                 # Check for error response
                 if response == b'\a':  # Bell = NAK/Error
+                    if cmd == b'C\r' and allow_nak_close > 0:
+                        allow_nak_close -= 1
+                        continue
+                    if cmd in (b'V\r', b'v\r') and allow_nak_version > 0:
+                        allow_nak_version -= 1
+                        continue
+                    if cmd == b'S4\r':
+                        # Bitrate already set; proceed
+                        continue
+                    if cmd == b'O\r':
+                        # Channel may already be open; proceed
+                        continue
                     raise DeviceInitializationError(
                         f"Device returned error during initialization (command: {cmd.decode('utf-8', 'ignore').strip()})",
                         context={

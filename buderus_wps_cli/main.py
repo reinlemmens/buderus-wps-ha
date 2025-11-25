@@ -10,6 +10,9 @@ from __future__ import annotations
 import argparse
 import sys
 from typing import Any
+import logging
+import logging.handlers
+import os
 
 from buderus_wps import USBtinAdapter, HeatPumpClient, ParameterRegistry
 
@@ -21,12 +24,15 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--timeout", type=float, default=5.0, help="Operation timeout seconds (default: 5)")
     parser.add_argument("--read-only", action="store_true", help="Force read-only mode (block writes)")
     parser.add_argument("--dry-run", action="store_true", help="Validate writes without sending to device")
+    parser.add_argument("--verbose", action="store_true", help="Enable debug logging")
+    parser.add_argument("--log-file", default=None, help="Log file path (default: ~/.cache/buderus-wps/buderus.log)")
 
     sub = parser.add_subparsers(dest="command", required=True)
 
     # read
     read_p = sub.add_parser("read", help="Read a parameter by name or index")
     read_p.add_argument("param", help="Parameter name or index")
+    read_p.add_argument("--json", action="store_true", help="Output JSON (decoded + raw)")
 
     # write
     write_p = sub.add_parser("write", help="Write a parameter by name or index")
@@ -48,11 +54,36 @@ def resolve_param(client: HeatPumpClient, param: str) -> Any:
         return client.get(param)
 
 
+def _configure_logging(args: argparse.Namespace) -> None:
+    level = logging.DEBUG if args.verbose else logging.ERROR
+    logging.basicConfig(level=level)
+    log_file = args.log_file or os.path.expanduser("~/.cache/buderus-wps/buderus.log")
+    try:
+        os.makedirs(os.path.dirname(log_file), exist_ok=True)
+        handler = logging.handlers.RotatingFileHandler(log_file, maxBytes=10 * 1024 * 1024, backupCount=3)
+        handler.setLevel(level)
+        formatter = logging.Formatter("%(asctime)s %(levelname)s %(name)s: %(message)s")
+        handler.setFormatter(formatter)
+        root = logging.getLogger()
+        root.addHandler(handler)
+    except Exception:
+        pass
+
+
 def cmd_read(client: HeatPumpClient, args: argparse.Namespace) -> int:
     try:
-        param = resolve_param(client, args.param)
-        data = client.read_value(param.text)
-        print(f"{param.text}: value raw={data.hex()} idx={param.idx} extid={param.extid} fmt={param.format} min={param.min} max={param.max} read={param.read}")
+        if args.json:
+            result = client.read_parameter(args.param)
+            # Convert raw bytes to hex for JSON
+            result["raw"] = result["raw"].hex() if isinstance(result["raw"], (bytes, bytearray)) else result["raw"]
+            import json
+
+            print(json.dumps(result))
+        else:
+            param = resolve_param(client, args.param)
+            data = client.read_value(param.text)
+            decoded = client._decode_value(param, data)
+            print(f"{param.text}: decoded={decoded} raw={data.hex()} idx={param.idx} extid={param.extid} fmt={param.format} min={param.min} max={param.max} read={param.read}")
         return 0
     except Exception as e:
         print(f"ERROR: {e}", file=sys.stderr)
@@ -86,6 +117,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
+    _configure_logging(args)
     adapter = USBtinAdapter(args.port, baudrate=args.baud, timeout=args.timeout, read_only=args.read_only or args.dry_run)
     registry = ParameterRegistry()
     client = HeatPumpClient(adapter, registry)
