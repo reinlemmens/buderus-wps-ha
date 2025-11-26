@@ -210,7 +210,7 @@ class USBtinAdapter:
                     b'S4\r', # Set bitrate to 125 kbps (Buderus standard)
                     b'O\r'   # Open channel
                 ]
-                allow_nak_close = 1  # tolerate NAK on first close if channel already closed
+                allow_nak_close = 2  # tolerate NAK on both close attempts if channel already closed/in use
                 allow_nak_version = 1  # tolerate one NAK on version query
                 for cmd in init_commands:
                     self._write_command(cmd)
