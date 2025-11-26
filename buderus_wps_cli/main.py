@@ -43,6 +43,10 @@ def build_parser() -> argparse.ArgumentParser:
     list_p = sub.add_parser("list", help="List parameters")
     list_p.add_argument("--filter", default=None, help="Substring filter (case-insensitive) on name")
 
+    # dump
+    dump_p = sub.add_parser("dump", help="Dump all parameter values")
+    dump_p.add_argument("--json", action="store_true", help="Output JSON for all parameters")
+
     return parser
 
 
@@ -73,7 +77,7 @@ def _configure_logging(args: argparse.Namespace) -> None:
 def cmd_read(client: HeatPumpClient, args: argparse.Namespace) -> int:
     try:
         if args.json:
-            result = client.read_parameter(args.param)
+            result = client.read_parameter(args.param, timeout=args.timeout)
             # Convert raw bytes to hex for JSON
             result["raw"] = result["raw"].hex() if isinstance(result["raw"], (bytes, bytearray)) else result["raw"]
             import json
@@ -81,7 +85,7 @@ def cmd_read(client: HeatPumpClient, args: argparse.Namespace) -> int:
             print(json.dumps(result))
         else:
             param = resolve_param(client, args.param)
-            data = client.read_value(param.text)
+            data = client.read_value(param.text, timeout=args.timeout)
             decoded = client._decode_value(param, data)
             print(f"{param.text}: decoded={decoded} raw={data.hex()} idx={param.idx} extid={param.extid} fmt={param.format} min={param.min} max={param.max} read={param.read}")
         return 0
@@ -95,7 +99,7 @@ def cmd_write(client: HeatPumpClient, args: argparse.Namespace) -> int:
         if client._adapter.read_only or args.dry_run:
             raise PermissionError("Adapter is in read-only/dry-run mode")
         param = resolve_param(client, args.param)
-        client.write_value(param.text, args.value)
+        client.write_value(param.text, args.value, timeout=args.timeout)
         print(f"OK: wrote {param.text}={args.value}")
         return 0
     except Exception as e:
@@ -111,6 +115,31 @@ def cmd_list(client: HeatPumpClient, args: argparse.Namespace) -> int:
             continue
         print(f"{p.idx:4d} {p.extid:>14} {p.text:<40} fmt={p.format:<6} min={p.min:<6} max={p.max:<6} read={p.read}")
     return 0
+
+
+def cmd_dump(client: HeatPumpClient, args: argparse.Namespace) -> int:
+    errors: list[str] = []
+    results = []
+    for p in client.registry.parameters:
+        try:
+            res = client.read_parameter(p.text, timeout=args.timeout)
+            if args.json:
+                res_copy = dict(res)
+                res_copy["raw"] = res_copy["raw"].hex() if isinstance(res_copy["raw"], (bytes, bytearray)) else res_copy["raw"]
+                results.append(res_copy)
+            else:
+                raw = res["raw"]
+                raw_hex = raw.hex() if isinstance(raw, (bytes, bytearray)) else raw
+                print(f"{p.idx:4d} {p.extid:>14} {p.text:<40} decoded={res['decoded']} raw={raw_hex} fmt={p.format} min={p.min} max={p.max} read={p.read}")
+        except Exception as e:
+            msg = f"{p.text}: {e}"
+            errors.append(msg)
+            if not args.json:
+                print(f"ERROR: {msg}", file=sys.stderr)
+    if args.json:
+        import json
+        print(json.dumps({"results": results, "errors": errors}))
+    return 0 if not errors else 1
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -134,6 +163,8 @@ def main(argv: list[str] | None = None) -> int:
             return cmd_write(client, args)
         if args.command == "list":
             return cmd_list(client, args)
+        if args.command == "dump":
+            return cmd_dump(client, args)
         print("Unknown command", file=sys.stderr)
         return 1
     finally:

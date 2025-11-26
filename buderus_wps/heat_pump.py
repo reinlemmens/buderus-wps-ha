@@ -79,14 +79,16 @@ class HeatPumpClient:
             raise KeyError(f"Unknown parameter: {name_or_idx}")
         return param
 
-    def read_value(self, name_or_idx: Any, timeout: float = 2.0) -> bytes:
+    def read_value(self, name_or_idx: Any, timeout: Optional[float] = None) -> bytes:
         param = self.get(name_or_idx)
+        adapter_timeout = getattr(self._adapter, "timeout", 2.0)
+        effective_timeout = timeout if timeout is not None else adapter_timeout
         request_id = 0x04003FE0 | (param.idx << 14)
         response_id = 0x0C003FE0 | (param.idx << 14)
         request = CANMessage(arbitration_id=request_id, data=b"", is_extended_id=True, is_remote_frame=True)
         self._adapter.flush_input_buffer()
-        self._adapter.send_frame(request, timeout=timeout)
-        frame = self._adapter.receive_frame(timeout=timeout)
+        self._adapter.send_frame(request, timeout=effective_timeout)
+        frame = self._adapter.receive_frame(timeout=effective_timeout)
         if frame.arbitration_id != response_id:
             raise DeviceCommunicationError(
                 f"Unexpected response id 0x{frame.arbitration_id:X} (expected 0x{response_id:X})",
@@ -94,7 +96,7 @@ class HeatPumpClient:
             )
         return frame.data
 
-    def read_parameter(self, name_or_idx: Any, timeout: float = 2.0) -> Dict[str, Any]:
+    def read_parameter(self, name_or_idx: Any, timeout: Optional[float] = None) -> Dict[str, Any]:
         """Read and decode parameter, returning metadata + raw/decoded values."""
         param = self.get(name_or_idx)
         raw = self.read_value(param.text, timeout=timeout)
@@ -111,7 +113,7 @@ class HeatPumpClient:
             "decoded": decoded,
         }
 
-    def write_value(self, name_or_idx: Any, value: Any, timeout: float = 2.0) -> None:
+    def write_value(self, name_or_idx: Any, value: Any, timeout: Optional[float] = None) -> None:
         param = self.get(name_or_idx)
         if param.read == 1:
             raise PermissionError(f"Parameter {param.text} is read-only")
@@ -119,7 +121,8 @@ class HeatPumpClient:
         request_id = int(param.extid, 16)
         msg = CANMessage(arbitration_id=request_id, data=encoded, is_extended_id=True)
         self._adapter.flush_input_buffer()
-        self._adapter.send_frame(msg, timeout=timeout)
+        adapter_timeout = getattr(self._adapter, "timeout", 2.0)
+        self._adapter.send_frame(msg, timeout=timeout if timeout is not None else adapter_timeout)
 
     # Internal helpers
     def _lookup(self, name_or_idx: Any) -> Optional[Parameter]:

@@ -502,7 +502,7 @@ class USBtinAdapter:
         except Exception:
             return None
 
-    def send_frame(self, message: CANMessage, timeout: float = 5.0) -> CANMessage:
+    def send_frame(self, message: CANMessage, timeout: Optional[float] = None) -> CANMessage:
         """Send CAN frame and wait for response (T042).
 
         Transmits a CAN message via SLCAN protocol and waits for a response
@@ -532,6 +532,7 @@ class USBtinAdapter:
             raise RuntimeError("Operation already in progress")
 
         try:
+            effective_timeout = timeout if timeout is not None else self.timeout
             # Flush input buffer before sending
             self.flush_input_buffer()
 
@@ -547,14 +548,14 @@ class USBtinAdapter:
             self._write_command(slcan_frame.encode('ascii'))
 
             # Wait for response
-            response = self._read_frame(timeout=timeout)
+            response = self._read_frame(timeout=effective_timeout)
 
             if response is None:
                 raise TimeoutError(
                     "No response received within timeout",
                     context={
                         "port": self.port,
-                        "timeout": timeout,
+                        "timeout": effective_timeout,
                         "request_id": f"0x{message.arbitration_id:X}",
                         "extended": message.is_extended_id
                     }
@@ -566,7 +567,7 @@ class USBtinAdapter:
             if self._op_lock.locked():
                 self._op_lock.release()
 
-    def receive_frame(self, timeout: float = 5.0) -> CANMessage:
+    def receive_frame(self, timeout: Optional[float] = None) -> CANMessage:
         """Receive CAN frame passively (T043).
 
         Waits for a CAN frame to arrive on the bus without sending a request.
@@ -593,15 +594,16 @@ class USBtinAdapter:
             raise RuntimeError("Operation already in progress")
 
         try:
+            effective_timeout = timeout if timeout is not None else self.timeout
             # Wait for frame
-            frame = self._read_frame(timeout=timeout)
+            frame = self._read_frame(timeout=effective_timeout)
 
             if frame is None:
                 raise TimeoutError(
                     "No frame received within timeout",
                     context={
                         "port": self.port,
-                        "timeout": timeout
+                        "timeout": effective_timeout
                     }
             )
 

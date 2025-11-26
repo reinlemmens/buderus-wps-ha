@@ -22,12 +22,17 @@ As a user, I can list/search parameters (filter by name/format/read-only) with s
 
 **Independent Test**: Run `wps-cli list --filter access` and see rows with idx/extid/name/format/min/max/read flag; filtering works.
 
-### User Story 4 - Live Refresh (Priority: P3, optional)
+### User Story 4 - Dump All Values (Priority: P2)
+As a user, I can dump all parameter values in one command (human-readable or JSON) for backup/diagnostics.
+
+**Independent Test**: Run `wps-cli dump --json` and receive a JSON array of all parameters with decoded/raw values; failures are reported with a nonzero exit code and per-parameter error details.
+
+### User Story 5 - Live Refresh (Priority: P3, optional)
 As a user, I can refresh the parameter registry from the heat pump (KM273_ReadElementList) and see a summary of changes.
 
 **Independent Test**: Run `wps-cli refresh` to trigger KM273_ReadElementList; report added/removed/modified counts; fall back to defaults on failure.
 
-### User Story 5 - Safe Mode (Priority: P1)
+### User Story 6 - Safe Mode (Priority: P1)
 As a user, I can run in read-only mode to prevent writes.
 
 **Independent Test**: Run `wps-cli --read-only write ACCESS_LEVEL 2` and verify write is blocked with clear messaging.
@@ -46,6 +51,7 @@ As a user, I can run in read-only mode to prevent writes.
 - **FR-008**: Optional refresh: trigger KM273_ReadElementList and summarize changes; fall back to defaults on failure.
 - **FR-009**: Operations MUST time out within 5 seconds by default.
 - **FR-010**: Output MUST be deterministic for the same inputs.
+- **FR-011**: CLI MUST provide a `dump`/bulk-read command that iterates all parameters, outputs decoded + raw values (human and JSON), and reports per-parameter failures while returning nonzero on any error.
 
 ---
 
@@ -54,6 +60,7 @@ As a user, I can run in read-only mode to prevent writes.
 - **SC-001**: `read` completes under 5s with decoded value + raw bytes + metadata.
 - **SC-002**: `write` enforces validation/read-only and reports success/failure; dry-run/read-only blocks transmission.
 - **SC-003**: `list`/`search` shows required fields and honors filters; JSON output works.
+- **SC-003a**: `dump` returns all readable parameters with decoded/raw values; JSON output is valid and includes an errors collection; exit code >0 if any parameter fails.
 - **SC-004**: `refresh` (if used) reports added/removed/modified counts or a clear fallback message.
 - **SC-005**: Nonzero exit codes on any error; zero on success.
 

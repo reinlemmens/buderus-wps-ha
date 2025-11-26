@@ -61,6 +61,7 @@ After `pip install -e .`, a `wps-cli` command is available:
 wps-cli read ACCESS_LEVEL                 # read by name (uses /dev/ttyACM0, 115200)
 wps-cli write ACCESS_LEVEL 2              # write (validates range/format)
 wps-cli list --filter ACCESS              # list parameters with optional filter
+wps-cli dump --json > params.json         # dump all parameters with decoded/raw values
 wps-cli --read-only write ACCESS_LEVEL 2  # blocks writes in read-only/dry-run
 ```
 
