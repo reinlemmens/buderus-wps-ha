@@ -11,6 +11,7 @@ Behavior:
 from __future__ import annotations
 
 import logging
+import time
 from typing import Optional, Dict, Any, List
 
 from .can_message import CANMessage
@@ -87,14 +88,24 @@ class HeatPumpClient:
         response_id = 0x0C003FE0 | (param.idx << 14)
         request = CANMessage(arbitration_id=request_id, data=b"", is_extended_id=True, is_remote_frame=True)
         self._adapter.flush_input_buffer()
-        self._adapter.send_frame(request, timeout=effective_timeout)
-        frame = self._adapter.receive_frame(timeout=effective_timeout)
-        if frame.arbitration_id != response_id:
-            raise DeviceCommunicationError(
-                f"Unexpected response id 0x{frame.arbitration_id:X} (expected 0x{response_id:X})",
-                context={"expected": response_id, "got": frame.arbitration_id, "param": param.text},
-            )
-        return frame.data
+        start = time.time()
+        frame = self._adapter.send_frame(request, timeout=effective_timeout)
+        if frame.arbitration_id == response_id:
+            return frame.data
+
+        # If the first frame is unrelated traffic, keep listening until timeout for the expected id.
+        while time.time() - start < effective_timeout:
+            remaining = max(effective_timeout - (time.time() - start), 0.01)
+            next_frame = self._adapter.receive_frame(timeout=remaining)
+            if next_frame is None:
+                break
+            if next_frame.arbitration_id == response_id:
+                return next_frame.data
+
+        raise DeviceCommunicationError(
+            f"Unexpected response id 0x{frame.arbitration_id:X} (expected 0x{response_id:X})",
+            context={"expected": response_id, "got": frame.arbitration_id, "param": param.text},
+        )
 
     def read_parameter(self, name_or_idx: Any, timeout: Optional[float] = None) -> Dict[str, Any]:
         """Read and decode parameter, returning metadata + raw/decoded values."""

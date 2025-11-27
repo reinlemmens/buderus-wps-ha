@@ -21,7 +21,9 @@ class FakeAdapter:
 
     def send_frame(self, message: CANMessage, timeout: float = 1.0):
         self.sent.append(message)
-        # no-op
+        if self.recv_queue:
+            return self.recv_queue.pop(0)
+        return None
 
     def receive_frame(self, timeout: float = 1.0):
         if self.recv_queue:
@@ -42,6 +44,32 @@ def test_read_value_builds_ids_and_validates_response_id():
 
     req = adapter.sent[0]
     assert req.is_remote_frame is True
+
+
+def test_read_value_ignores_unrelated_frames():
+    reg = ParameterRegistry([{"idx": 1, "extid": "ABCD", "min": 0, "max": 10, "format": "int", "read": 1, "text": "FOO"}])
+
+    class Adapter(FakeAdapter):
+        def __init__(self):
+            super().__init__()
+            self.timeout = 1.0
+            self.receive_calls = 0
+
+        def send_frame(self, message: CANMessage, timeout: float = 1.0):
+            # First response is unrelated
+            return CANMessage(arbitration_id=0x123, data=b"\x00", is_extended_id=True)
+
+        def receive_frame(self, timeout: float = 1.0):
+            self.receive_calls += 1
+            if self.receive_calls == 1:
+                return CANMessage(arbitration_id=0x0C003FE0 | (1 << 14), data=b"\x02", is_extended_id=True)
+            raise TimeoutError("no frame")
+
+    adapter = Adapter()
+    client = HeatPumpClient(adapter, reg)
+    data = client.read_value("foo", timeout=0.5)
+    assert data == b"\x02"
+    assert adapter.receive_calls == 1
 
 
 def test_write_value_encodes_and_sends():
