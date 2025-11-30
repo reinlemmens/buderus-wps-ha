@@ -22,25 +22,30 @@ class TestCLIRead:
     """Test CLI read operations."""
 
     def test_read_gt3_temp(self):
-        """Read DHW tank temperature - should return 2-byte temperature."""
+        """Read DHW tank temperature via RTR request.
+
+        Note: RTR requests return 1-byte ACK responses from the KM273 gateway.
+        Actual sensor data is broadcast on different CAN ID bases (0x0060-0x0063).
+        Use 'wps-cli monitor --temps-only' to read actual temperatures.
+        """
         result = run_cli("read", "GT3_TEMP")
         print(f"stdout: {result.stdout}")
         print(f"stderr: {result.stderr}")
 
         assert result.returncode == 0, f"Command failed: {result.stderr}"
         assert "GT3_TEMP =" in result.stdout
-        assert "°C" in result.stdout
 
-        # Extract raw hex value - should be 2+ bytes for temperature
-        # Format: "GT3_TEMP = 52.3°C  (raw=0x020B, idx=681)"
+        # RTR requests return 1-byte ACK, not actual temperature data
+        # The CLI still displays it with °C suffix based on parameter format
         import re
         match = re.search(r"raw=0x([0-9A-F]+)", result.stdout)
         assert match, f"Could not find raw value in: {result.stdout}"
         raw_hex = match.group(1)
         print(f"Raw hex: {raw_hex} ({len(raw_hex)//2} bytes)")
 
-        # Temperature should be 2 bytes (4 hex chars)
-        assert len(raw_hex) >= 4, f"Expected 2+ bytes, got {len(raw_hex)//2} bytes: 0x{raw_hex}"
+        # Accept 1-byte response (ACK) - this is the actual hardware behavior
+        # Actual temperatures must be read via broadcast monitoring
+        assert len(raw_hex) >= 2, f"Expected at least 1 byte, got: 0x{raw_hex}"
 
     def test_read_xdhw_time(self):
         """Read extra DHW time - integer parameter."""
@@ -163,6 +168,60 @@ class TestCLIList:
         assert "XDHW_STOP_TEMP" in result.stdout
         # Should NOT contain unrelated params
         assert "GT3_TEMP" not in result.stdout
+
+
+class TestCLIMonitor:
+    """Test CLI broadcast monitoring operations."""
+
+    def test_monitor_temps_only(self):
+        """Monitor broadcast traffic for temperature readings."""
+        result = run_cli("monitor", "--duration", "3", "--temps-only")
+        print(f"stdout: {result.stdout}")
+        print(f"stderr: {result.stderr}")
+
+        assert result.returncode == 0
+        # Should show temperature readings in degrees
+        assert "°C" in result.stdout or "Captured" in result.stdout
+
+    def test_monitor_json_output(self):
+        """Test monitor JSON output format."""
+        result = run_cli("monitor", "--duration", "3", "--json")
+        print(f"stdout (first 500): {result.stdout[:500]}")
+
+        assert result.returncode == 0
+
+        import json
+        data = json.loads(result.stdout)
+        assert "count" in data
+        assert "readings" in data
+        assert isinstance(data["readings"], list)
+
+        if data["count"] > 0:
+            reading = data["readings"][0]
+            assert "can_id" in reading
+            assert "temperature" in reading
+            assert "is_temperature" in reading
+
+    def test_monitor_captures_temperatures(self):
+        """Verify monitor captures real temperature broadcasts."""
+        result = run_cli("monitor", "--duration", "5", "--temps-only", "--json")
+
+        assert result.returncode == 0
+
+        import json
+        data = json.loads(result.stdout)
+
+        # Should capture at least some temperature readings in 5 seconds
+        temps = [r for r in data["readings"] if r["is_temperature"]]
+        print(f"Captured {len(temps)} temperature readings")
+
+        # The heat pump broadcasts temperatures regularly
+        assert len(temps) >= 1, "Expected at least 1 temperature reading"
+
+        # Check reasonable temperature range (0-120°C)
+        for t in temps:
+            temp = t["temperature"]
+            assert 0 <= temp <= 120, f"Temperature out of range: {temp}°C"
 
 
 if __name__ == "__main__":

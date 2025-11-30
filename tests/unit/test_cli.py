@@ -68,7 +68,7 @@ def test_cmd_read_success(monkeypatch, capsys):
     rc = cli.cmd_read(client, args)
     assert rc == 0
     out = capsys.readouterr().out
-    assert "X:" in out
+    assert "X =" in out  # Format: "X = <value>  (raw=0x<hex>, idx=<n>)"
 
 
 def test_cmd_write_blocks_read_only(monkeypatch):

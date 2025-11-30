@@ -79,7 +79,10 @@ def test_write_value_encodes_and_sends():
 
     client.write_value("bar", 5)
     sent = adapter.sent[-1]
-    assert sent.arbitration_id == 1
+    # Write CAN ID formula: 0x04003FE0 | (idx << 14)
+    # For idx=1: 0x04003FE0 | 0x4000 = 0x04007FE0
+    expected_write_id = 0x04003FE0 | (1 << 14)
+    assert sent.arbitration_id == expected_write_id
     assert sent.data == b"\x05"
 
 
