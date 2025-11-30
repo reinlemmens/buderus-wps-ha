@@ -151,8 +151,10 @@ class HeatPumpClient:
             # Signed/unsigned decimals with two decimal places?
             # Fallback to int for now.
             return self._encode_int_like(param, value)
-        if fmt.startswith("temp"):
-            return ValueEncoder.encode_temperature(float(value), "temp")
+        if fmt == "tem" or fmt.startswith("temp"):
+            # For "tem" format, value is already in tenths (530 = 53.0°C)
+            # min/max are also in tenths, so use int encoding directly
+            return self._encode_int_like(param, value)
         return self._encode_int_like(param, value)
 
     def _encode_int_like(self, param: Parameter, value: Any) -> bytes:
