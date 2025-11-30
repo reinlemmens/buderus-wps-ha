@@ -32,14 +32,21 @@ __license__ = "MIT"
 from .can_message import CANMessage
 from .can_adapter import USBtinAdapter
 from .exceptions import (
+    AlarmNotClearableError,
     BuderusCANException,
+    CircuitNotAvailableError,
     ConnectionError,
     DeviceCommunicationError,
     DeviceDisconnectedError,
     DeviceInitializationError,
     DeviceNotFoundError,
     DevicePermissionError,
+    MenuAPIError,
+    MenuNavigationError,
+    ParameterNotFoundError,
+    ReadOnlyError,
     TimeoutError,
+    ValidationError,
 )
 from .program_switching import (
     ProgramSwitchingController,
@@ -50,24 +57,78 @@ from .program_switching import (
 from .value_encoder import ValueEncoder
 from .parameter_registry import ParameterRegistry, Parameter
 from .heat_pump import HeatPumpClient
+from .enums import (
+    AlarmCategory,
+    CircuitType,
+    DHWProgramMode,
+    OperatingMode,
+    RoomProgramMode,
+)
+from .schedule_codec import ScheduleCodec, ScheduleSlot, WeeklySchedule
+from .menu_api import (
+    Alarm,
+    AlarmController,
+    Circuit,
+    EnergyView,
+    HotWaterController,
+    MenuAPI,
+    MenuNavigator,
+    StatusSnapshot,
+    StatusView,
+    VacationController,
+    VacationPeriod,
+)
+from .menu_structure import MenuItem
 
 __all__ = [
+    # Exceptions
+    "AlarmNotClearableError",
     "BuderusCANException",
-    "CANMessage",
+    "CircuitNotAvailableError",
     "ConnectionError",
     "DeviceCommunicationError",
     "DeviceDisconnectedError",
     "DeviceInitializationError",
     "DeviceNotFoundError",
     "DevicePermissionError",
+    "MenuAPIError",
+    "MenuNavigationError",
+    "ParameterNotFoundError",
+    "ReadOnlyError",
+    "TimeoutError",
+    "ValidationError",
+    # Core classes
+    "CANMessage",
+    "HeatPumpClient",
     "Parameter",
     "ParameterIO",
     "ParameterRegistry",
     "ProgramState",
     "ProgramSwitchConfig",
     "ProgramSwitchingController",
-    "HeatPumpClient",
-    "TimeoutError",
     "USBtinAdapter",
     "ValueEncoder",
+    # Menu API enums
+    "AlarmCategory",
+    "CircuitType",
+    "DHWProgramMode",
+    "OperatingMode",
+    "RoomProgramMode",
+    # Menu API data classes
+    "Alarm",
+    "MenuItem",
+    "ScheduleSlot",
+    "StatusSnapshot",
+    "VacationPeriod",
+    "WeeklySchedule",
+    # Menu API controllers
+    "AlarmController",
+    "Circuit",
+    "EnergyView",
+    "HotWaterController",
+    "MenuAPI",
+    "MenuNavigator",
+    "ScheduleCodec",
+    "StatusView",
+    "VacationController",
 ]
