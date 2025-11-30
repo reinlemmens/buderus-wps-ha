@@ -14992,7 +14992,7 @@ PARAMETER_DATA = [
         "max": 650,
         "min": 500,
         "format": "tem",
-        "read": 1,
+        "read": 0,
         "text": "XDHW_STOP_TEMP"
     },
     {
@@ -15001,7 +15001,7 @@ PARAMETER_DATA = [
         "max": 48,
         "min": 0,
         "format": "int",
-        "read": 1,
+        "read": 0,
         "text": "XDHW_TIME"
     },
     {
