@@ -129,7 +129,9 @@ class HeatPumpClient:
         if param.read == 1:
             raise PermissionError(f"Parameter {param.text} is read-only")
         encoded = self._encode_value(param, value)
-        request_id = int(param.extid, 16)
+        # PROTOCOL: Write uses same CAN ID as read request (0x04003FE0 | idx << 14)
+        # See FHEM 26_KM273v018.pm line 2229, 2678, 2746
+        request_id = 0x04003FE0 | (param.idx << 14)
         msg = CANMessage(arbitration_id=request_id, data=encoded, is_extended_id=True)
         self._adapter.flush_input_buffer()
         adapter_timeout = getattr(self._adapter, "timeout", 2.0)
