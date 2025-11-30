@@ -450,12 +450,17 @@ class USBtinAdapter:
 
                         # Parse and return frame
                         frame_str = frame_bytes.decode('ascii', errors='ignore').strip()
+                        self._logger.debug("RX frame: %r", frame_str)
                         if frame_str:
                             try:
-                                return CANMessage.from_usbtin_format(frame_str)
-                            except Exception:
+                                msg = CANMessage.from_usbtin_format(frame_str)
+                                self._logger.debug("Parsed CAN: id=0x%X dlc=%d data=%s", msg.arbitration_id, msg.dlc, msg.data.hex() if msg.data else "")
+                                return msg
+                            except Exception as e:
+                                self._logger.debug("Parse failed: %s, trying lenient", e)
                                 msg = self._lenient_parse_frame(frame_str)
                                 if msg:
+                                    self._logger.debug("Lenient parsed: id=0x%X dlc=%d data=%s", msg.arbitration_id, msg.dlc, msg.data.hex() if msg.data else "")
                                     return msg
 
                 # Poll every 10ms for real-time CAN

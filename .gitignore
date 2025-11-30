@@ -21,9 +21,16 @@ build/
 .coverage
 htmlcov/
 
+# Data dumps
+parameter_dump.json
+
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+
+# Copyright
+docs/gebruikershandleiding
+docs/installatiehandleiding
