@@ -174,7 +174,7 @@ class HeatPumpClient:
 
     def _decode_value(self, param: Parameter, raw: bytes) -> Any:
         fmt = param.format
-        if fmt.startswith("temp"):
+        if fmt == "tem" or fmt.startswith("temp"):
             try:
                 return ValueEncoder.decode_temperature(raw[:2], "temp")
             except Exception:
