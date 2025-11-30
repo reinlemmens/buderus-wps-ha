@@ -14,7 +14,7 @@ import logging
 import logging.handlers
 import os
 
-from buderus_wps import USBtinAdapter, HeatPumpClient, ParameterRegistry
+from buderus_wps import USBtinAdapter, HeatPumpClient, ParameterRegistry, BroadcastMonitor
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -46,6 +46,12 @@ def build_parser() -> argparse.ArgumentParser:
     # dump
     dump_p = sub.add_parser("dump", help="Dump all parameter values")
     dump_p.add_argument("--json", action="store_true", help="Output JSON for all parameters")
+
+    # monitor
+    monitor_p = sub.add_parser("monitor", help="Monitor broadcast traffic for sensor values")
+    monitor_p.add_argument("--duration", type=float, default=10.0, help="Collection duration in seconds (default: 10)")
+    monitor_p.add_argument("--json", action="store_true", help="Output JSON format")
+    monitor_p.add_argument("--temps-only", action="store_true", help="Only show temperature readings")
 
     return parser
 
@@ -155,6 +161,52 @@ def cmd_dump(client: HeatPumpClient, args: argparse.Namespace) -> int:
     return 0 if not errors else 1
 
 
+def cmd_monitor(adapter: "USBtinAdapter", args: argparse.Namespace) -> int:
+    """Monitor broadcast traffic and display sensor readings."""
+    monitor = BroadcastMonitor(adapter)
+    print(f"Monitoring CAN bus for {args.duration} seconds...", file=sys.stderr)
+
+    filter_func = None
+    if args.temps_only:
+        filter_func = lambda r: r.is_temperature
+
+    cache = monitor.collect(duration=args.duration, filter_func=filter_func)
+
+    if args.json:
+        import json
+        results = []
+        for can_id, reading in sorted(cache.readings.items()):
+            results.append({
+                "can_id": f"0x{can_id:08X}",
+                "base": f"0x{reading.base:04X}",
+                "idx": reading.idx,
+                "dlc": reading.dlc,
+                "raw_hex": reading.raw_data.hex(),
+                "raw_value": reading.raw_value,
+                "temperature": reading.temperature,
+                "is_temperature": reading.is_temperature,
+            })
+        print(json.dumps({"count": len(results), "readings": results}))
+    else:
+        if not cache.readings:
+            print("No broadcast readings captured.")
+            return 0
+
+        print(f"\nCaptured {len(cache.readings)} unique CAN IDs:\n")
+        print(f"{'CAN ID':<12} {'Base':<8} {'Idx':<6} {'DLC':<5} {'Raw':<12} {'Value':<10}")
+        print("-" * 60)
+
+        for can_id, reading in sorted(cache.readings.items()):
+            raw_hex = reading.raw_data.hex().upper()
+            if reading.is_temperature:
+                value_str = f"{reading.temperature:.1f}°C"
+            else:
+                value_str = str(reading.raw_value)
+            print(f"0x{can_id:08X}  0x{reading.base:04X}   {reading.idx:<6} {reading.dlc:<5} 0x{raw_hex:<10} {value_str}")
+
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -178,6 +230,8 @@ def main(argv: list[str] | None = None) -> int:
             return cmd_list(client, args)
         if args.command == "dump":
             return cmd_dump(client, args)
+        if args.command == "monitor":
+            return cmd_monitor(adapter, args)
         print("Unknown command", file=sys.stderr)
         return 1
     finally:
