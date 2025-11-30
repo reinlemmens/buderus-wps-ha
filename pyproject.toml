@@ -32,6 +32,7 @@ dependencies = [
 
 [project.scripts]
 wps-cli = "buderus_wps_cli.main:main"
+buderus-tui = "buderus_wps_cli.tui:run_tui"
 
 [project.optional-dependencies]
 dev = [
