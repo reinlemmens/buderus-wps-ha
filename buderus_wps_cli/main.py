@@ -58,6 +58,17 @@ def resolve_param(client: HeatPumpClient, param: str) -> Any:
         return client.get(param)
 
 
+def format_value(decoded: Any, fmt: str) -> str:
+    """Format decoded value with appropriate unit based on format type."""
+    if fmt == "tem" or fmt.startswith("temp"):
+        return f"{decoded}°C"
+    elif fmt.startswith("dp") or fmt.startswith("rp"):
+        # Decimal point formats - value already scaled
+        return str(decoded)
+    else:
+        return str(decoded)
+
+
 def _configure_logging(args: argparse.Namespace) -> None:
     level = logging.DEBUG if args.verbose else logging.ERROR
     logging.basicConfig(level=level)
@@ -87,7 +98,9 @@ def cmd_read(client: HeatPumpClient, args: argparse.Namespace) -> int:
             param = resolve_param(client, args.param)
             data = client.read_value(param.text, timeout=args.timeout)
             decoded = client._decode_value(param, data)
-            print(f"{param.text}: decoded={decoded} raw={data.hex()} idx={param.idx} extid={param.extid} fmt={param.format} min={param.min} max={param.max} read={param.read}")
+            formatted = format_value(decoded, param.format)
+            raw_hex = data.hex().upper()
+            print(f"{param.text} = {formatted}  (raw=0x{raw_hex}, idx={param.idx})")
         return 0
     except Exception as e:
         print(f"ERROR: {e}", file=sys.stderr)
