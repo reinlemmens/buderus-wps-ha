@@ -148,13 +148,14 @@ class TestStatusView:
         assert snapshot.operating_mode == OperatingMode.HEATING
         assert snapshot.compressor_running is True
 
-    def test_outdoor_temp_missing_raises(self, mock_client):
-        """Raise ParameterNotFoundError when outdoor temp unavailable."""
-        mock_client.read_parameter.side_effect = ParameterNotFoundError("OUTDOOR_TEMP")
+    def test_outdoor_temp_missing_returns_none(self, mock_client):
+        """Return None when outdoor temp unavailable (RTR reads are unreliable)."""
+        mock_client.read_parameter.side_effect = ParameterNotFoundError("GT2_TEMP")
         view = StatusView(mock_client)
 
-        with pytest.raises(ParameterNotFoundError):
-            _ = view.outdoor_temperature
+        # StatusView now returns None instead of raising, since RTR reads
+        # are unreliable and broadcast monitoring should be used instead
+        assert view.outdoor_temperature is None
 
 
 # =============================================================================
