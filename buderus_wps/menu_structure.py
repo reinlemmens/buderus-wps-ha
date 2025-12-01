@@ -53,14 +53,17 @@ class MenuItem:
 # =============================================================================
 
 # Status/Temperature Parameters
+# GT sensor mapping (from FHEM/IVT documentation):
+#   GT1 = Brine inlet, GT2 = Outdoor, GT3 = DHW tank
+#   GT5 = Evaporator, GT6 = Compressor, GT8 = Supply, GT9 = Return
 STATUS_PARAMS = {
-    "outdoor_temp": "OUTDOOR_TEMP",
-    "supply_temp": "SUPPLY_TEMP",
-    "return_temp": "RETURN_TEMP",
-    "dhw_temp": "DHW_TEMP",
+    "outdoor_temp": "GT2_TEMP",
+    "supply_temp": "GT8_TEMP",
+    "return_temp": "GT9_TEMP",
+    "dhw_temp": "GT3_TEMP",
     "room_temp": "ROOM_TEMP_C1",
-    "operating_mode": "OPERATING_MODE",
-    "compressor_status": "COMPRESSOR_STATUS",
+    "operating_mode": "DRIFTTILLSTAND",
+    "compressor_status": "COMPRESSOR_STATE",
     "compressor_hours": "COMPRESSOR_OPERATING_HOURS",
 }
 

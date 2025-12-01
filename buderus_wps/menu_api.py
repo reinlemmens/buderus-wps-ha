@@ -59,11 +59,15 @@ if TYPE_CHECKING:
 
 @dataclass
 class StatusSnapshot:
-    """Complete status reading from a single operation."""
+    """Complete status reading from a single operation.
 
-    outdoor_temperature: float
-    supply_temperature: float
-    hot_water_temperature: float
+    Note: Temperature values may be None if RTR reads fail due to CAN bus
+    traffic. Use BroadcastMonitor for reliable temperature readings.
+    """
+
+    outdoor_temperature: Optional[float]
+    supply_temperature: Optional[float]
+    hot_water_temperature: Optional[float]
     room_temperature: Optional[float]
     operating_mode: OperatingMode
     compressor_running: bool
@@ -103,39 +107,35 @@ class StatusView:
         self._client = client
 
     def _read_temp(self, param_name: str) -> Optional[float]:
-        """Read a temperature parameter, returning None if not available."""
+        """Read a temperature parameter, returning None if not available.
+
+        Note: RTR-based reads often fail due to CAN bus traffic. Consider
+        using BroadcastMonitor for reliable temperature readings.
+        """
         try:
             result = self._client.read_parameter(param_name)
             decoded = result.get("decoded")
             if decoded is not None:
                 return float(decoded)
             return None
-        except (KeyError, ParameterNotFoundError):
+        except Exception:
+            # RTR reads are unreliable - broadcast traffic can interfere
             return None
 
     @property
-    def outdoor_temperature(self) -> float:
-        """Outdoor temperature in degrees Celsius."""
-        temp = self._read_temp(STATUS_PARAMS["outdoor_temp"])
-        if temp is None:
-            raise ParameterNotFoundError(STATUS_PARAMS["outdoor_temp"])
-        return temp
+    def outdoor_temperature(self) -> Optional[float]:
+        """Outdoor temperature in degrees Celsius, or None if unavailable."""
+        return self._read_temp(STATUS_PARAMS["outdoor_temp"])
 
     @property
-    def supply_temperature(self) -> float:
-        """Supply line temperature in degrees Celsius."""
-        temp = self._read_temp(STATUS_PARAMS["supply_temp"])
-        if temp is None:
-            raise ParameterNotFoundError(STATUS_PARAMS["supply_temp"])
-        return temp
+    def supply_temperature(self) -> Optional[float]:
+        """Supply line temperature in degrees Celsius, or None if unavailable."""
+        return self._read_temp(STATUS_PARAMS["supply_temp"])
 
     @property
-    def hot_water_temperature(self) -> float:
-        """DHW tank temperature in degrees Celsius."""
-        temp = self._read_temp(STATUS_PARAMS["dhw_temp"])
-        if temp is None:
-            raise ParameterNotFoundError(STATUS_PARAMS["dhw_temp"])
-        return temp
+    def hot_water_temperature(self) -> Optional[float]:
+        """DHW tank temperature in degrees Celsius, or None if unavailable."""
+        return self._read_temp(STATUS_PARAMS["dhw_temp"])
 
     @property
     def room_temperature(self) -> Optional[float]:
