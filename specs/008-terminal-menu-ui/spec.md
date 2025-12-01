@@ -16,6 +16,11 @@ A terminal-based application that provides an interactive menu interface to cont
 
 - Q: Should dashboard auto-refresh or manual refresh only? → A: Manual refresh only (press 'r' to update values)
 
+### Session 2025-12-01
+
+- Q: How are temperature values read? → A: Via CAN bus broadcast monitoring (3-second collection window), not RTR requests. This provides actual sensor values instead of 1-byte ACK responses.
+- Note: RTR request/response mechanism returns 1-byte ACKs rather than actual sensor data. Broadcast monitoring passively captures real temperature values from CAN bus traffic.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - View System Status Dashboard (Priority: P1)

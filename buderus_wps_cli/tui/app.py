@@ -7,17 +7,50 @@ terminal interface.
 import argparse
 import curses
 import sys
-from typing import Any, Optional
+import time
+from dataclasses import dataclass
+from typing import Any, Dict, Optional
 
 from buderus_wps_cli.tui.keyboard import setup_keypad, get_action
 from buderus_wps_cli.tui.state import AppState, ConnectionState, ScreenType
+
+
+@dataclass
+class BroadcastTemperatures:
+    """Temperature readings from CAN broadcast monitoring.
+
+    These are actual sensor values captured from broadcast traffic,
+    which are more reliable than RTR request/response readings.
+    """
+    outdoor: Optional[float] = None      # GT2 - Outdoor
+    supply: Optional[float] = None       # GT8 - Supply line
+    return_temp: Optional[float] = None  # GT9 - Return line
+    dhw: Optional[float] = None          # GT3 - DHW tank
+    brine_in: Optional[float] = None     # GT1 - Brine inlet
+    timestamp: float = 0.0
+
+
+# Known broadcast temperature mappings
+# Format: (base, idx) -> attribute name
+# These mappings are derived from actual CAN bus broadcast observations
+TEMP_BROADCAST_MAP = {
+    # Base 0x0060 - Circuit 0 (main heat pump controller)
+    (0x0060, 33): "outdoor",      # Outdoor temperature (~22°C)
+    (0x0060, 58): "dhw",          # DHW tank temperature (~54°C)
+    (0x0061, 58): "dhw",          # DHW (alternative circuit)
+    (0x0062, 58): "dhw",          # DHW (alternative circuit)
+    # Base 0x0270 - Status/flow data
+    (0x0270, 7): "supply",        # Supply/flow temperature (~66°C)
+    (0x0270, 0): "return_temp",   # Return temperature (~47°C)
+}
 
 
 class TUIApp:
     """Main TUI application class.
 
     Manages the application lifecycle, screen transitions,
-    and connection to the Menu API.
+    and connection to the Menu API. Uses broadcast monitoring
+    for reliable temperature readings.
     """
 
     def __init__(self, device_path: str, read_only: bool = False) -> None:
@@ -35,7 +68,11 @@ class TUIApp:
         )
         self.running = False
         self.api: Any = None
+        self.adapter: Any = None
+        self.monitor: Any = None
         self.stdscr: Any = None
+        self.temps = BroadcastTemperatures()
+        self._last_refresh = 0.0
 
     def connect(self) -> bool:
         """Connect to the heat pump via Menu API.
@@ -44,17 +81,20 @@ class TUIApp:
             True if connection successful, False otherwise
         """
         try:
-            from buderus_wps import USBtinAdapter, HeatPumpClient, ParameterRegistry
+            from buderus_wps import USBtinAdapter, HeatPumpClient, ParameterRegistry, BroadcastMonitor
             from buderus_wps.menu_api import MenuAPI
 
             self.state.connection = ConnectionState.CONNECTING
 
-            adapter = USBtinAdapter(self.device_path)
-            adapter.connect()
+            self.adapter = USBtinAdapter(self.device_path)
+            self.adapter.connect()
 
             registry = ParameterRegistry()
-            client = HeatPumpClient(adapter, registry)
+            client = HeatPumpClient(self.adapter, registry)
             self.api = MenuAPI(client)
+
+            # Create broadcast monitor for reliable temperature readings
+            self.monitor = BroadcastMonitor(self.adapter)
 
             self.state.connection = ConnectionState.CONNECTED
             return True
@@ -65,13 +105,43 @@ class TUIApp:
 
     def disconnect(self) -> None:
         """Disconnect from the heat pump."""
-        if self.api is not None:
+        if self.adapter is not None:
             try:
-                # The adapter is accessible through the client
-                pass  # API cleanup if needed
+                self.adapter.disconnect()
             except Exception:
                 pass
+        self.api = None
+        self.monitor = None
+        self.adapter = None
         self.state.connection = ConnectionState.DISCONNECTED
+
+    def refresh_temperatures(self, duration: float = 10.0) -> None:
+        """Refresh temperature readings from CAN broadcast traffic.
+
+        Args:
+            duration: How long to monitor for broadcasts (seconds).
+                      Needs ~10s to capture all temperature broadcasts.
+        """
+        if self.monitor is None:
+            return
+
+        try:
+            # Collect all broadcast readings (some temps broadcast infrequently)
+            cache = self.monitor.collect(duration=duration)
+
+            # Update temperatures from broadcast data
+            for can_id, reading in cache.readings.items():
+                key = (reading.base, reading.idx)
+                if key in TEMP_BROADCAST_MAP:
+                    attr = TEMP_BROADCAST_MAP[key]
+                    if reading.temperature is not None:
+                        setattr(self.temps, attr, reading.temperature)
+
+            self.temps.timestamp = time.time()
+            self._last_refresh = time.time()
+
+        except Exception:
+            pass  # Keep existing values on error
 
     def run(self, stdscr: Any) -> None:
         """Main application loop.
@@ -90,7 +160,17 @@ class TUIApp:
         stdscr.nodelay(False)
         stdscr.timeout(100)  # 100ms timeout for getch
 
+        # Initial temperature refresh
+        if self.state.connection == ConnectionState.CONNECTED:
+            self._show_loading("Loading temperatures...")
+            self.refresh_temperatures(duration=3.0)
+
         while self.running:
+            # Auto-refresh temperatures every 30 seconds
+            if (self.state.connection == ConnectionState.CONNECTED
+                    and time.time() - self._last_refresh > 30.0):
+                self.refresh_temperatures(duration=2.0)
+
             # Render current screen
             self._render()
 
@@ -101,6 +181,17 @@ class TUIApp:
                     self._handle_key(key)
             except KeyboardInterrupt:
                 self.running = False
+
+    def _show_loading(self, message: str) -> None:
+        """Show a loading message."""
+        if self.stdscr is None:
+            return
+        try:
+            self.stdscr.clear()
+            self.stdscr.addstr(10, 30, message)
+            self.stdscr.refresh()
+        except curses.error:
+            pass
 
     def _render(self) -> None:
         """Render the current screen."""
@@ -160,21 +251,46 @@ class TUIApp:
             pass
 
     def _render_status_values(self) -> None:
-        """Render status values from the API."""
-        if self.stdscr is None or self.api is None:
+        """Render status values from broadcast monitoring."""
+        if self.stdscr is None:
             return
 
-        try:
-            snapshot = self.api.status.read_all()
+        def fmt_temp(val: Optional[float]) -> str:
+            """Format temperature value or show ---."""
+            return f"{val:.1f}" if val is not None else "---"
 
-            self.stdscr.addstr(3, 2, f"Outdoor Temperature:    {snapshot.outdoor_temperature or '---'}°C")
-            self.stdscr.addstr(4, 2, f"Supply Temperature:     {snapshot.supply_temperature or '---'}°C")
-            self.stdscr.addstr(5, 2, f"Hot Water Temperature:  {snapshot.hot_water_temperature or '---'}°C")
-            self.stdscr.addstr(6, 2, f"Operating Mode:         {snapshot.operating_mode.name if snapshot.operating_mode else '---'}")
-            self.stdscr.addstr(7, 2, f"Compressor:             {'Running' if snapshot.compressor_running else 'Stopped'}")
+        try:
+            # Temperature readings from broadcast monitoring
+            self.stdscr.addstr(3, 2, f"Outdoor Temperature:    {fmt_temp(self.temps.outdoor)}°C")
+            self.stdscr.addstr(4, 2, f"Supply Temperature:     {fmt_temp(self.temps.supply)}°C")
+            self.stdscr.addstr(5, 2, f"Return Temperature:     {fmt_temp(self.temps.return_temp)}°C")
+            self.stdscr.addstr(6, 2, f"Hot Water Temperature:  {fmt_temp(self.temps.dhw)}°C")
+
+            # Operating mode from API (if available)
+            mode_str = "---"
+            compressor_str = "---"
+            if self.api:
+                try:
+                    mode = self.api.status.operating_mode
+                    mode_str = mode.name if mode else "---"
+                except Exception:
+                    pass
+                try:
+                    running = self.api.status.compressor_running
+                    compressor_str = "Running" if running else "Stopped"
+                except Exception:
+                    pass
+
+            self.stdscr.addstr(8, 2, f"Operating Mode:         {mode_str}")
+            self.stdscr.addstr(9, 2, f"Compressor:             {compressor_str}")
+
+            # Show last refresh time
+            if self.temps.timestamp > 0:
+                age = int(time.time() - self.temps.timestamp)
+                self.stdscr.addstr(11, 2, f"Last update: {age}s ago", curses.A_DIM)
 
         except Exception as e:
-            self.stdscr.addstr(3, 2, f"Error reading status: {e}")
+            self.stdscr.addstr(3, 2, f"Error: {e}")
 
     def _handle_key(self, key: int) -> None:
         """Handle a key press.
@@ -192,8 +308,10 @@ class TUIApp:
         if action == "quit":
             self.running = False
         elif action == "refresh":
-            # Will re-render on next loop
-            pass
+            # Manual refresh - show loading and collect new temps
+            if self.state.connection == ConnectionState.CONNECTED:
+                self._show_loading("Refreshing temperatures...")
+                self.refresh_temperatures(duration=3.0)
 
 
 def run_tui() -> None:

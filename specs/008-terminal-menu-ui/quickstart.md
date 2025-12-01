@@ -81,10 +81,13 @@ ls /dev/cu.usbserial* /dev/cu.usbmodem*
 |   Operating Mode:         HEATING                                            |
 |   Compressor:             Running                                            |
 |                                                                              |
+|   Last update: 5s ago                                                        |
 +------------------------------------------------------------------------------+
 | ↑↓ Navigate  Enter Select  Esc Back  r Refresh  q Quit                       |
 +------------------------------------------------------------------------------+
 ```
+
+**Note**: Temperatures are read via CAN bus broadcast monitoring (3 seconds), which provides accurate sensor values. Press 'r' to manually refresh temperatures.
 
 - **Header**: Shows application name, connection status, and time
 - **Breadcrumb**: Shows your current location in the menu
