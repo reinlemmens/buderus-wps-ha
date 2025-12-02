@@ -206,6 +206,76 @@ def create_api(device_path: str) -> MenuAPI:
 
 ---
 
+### 8. Broadcast Temperature Integration
+
+**Question**: How to obtain reliable temperature readings for the dashboard?
+
+**Decision**: Use CAN broadcast monitoring from feature 009
+
+**Rationale**:
+- RTR request/response returns unreliable 1-byte ACKs
+- Broadcast monitoring captures actual sensor values from CAN traffic
+- 3-second collection window provides all temperature data
+- TEMP_BROADCAST_MAP defines sensor-to-name mappings
+
+**Implementation**:
+```python
+from buderus_wps.config import get_default_sensor_map
+from buderus_wps.broadcast import BroadcastMonitor
+
+monitor = BroadcastMonitor(adapter, get_default_sensor_map())
+readings = monitor.collect(duration=3.0)
+temps = {r.sensor_name: r.temperature for r in readings}
+```
+
+---
+
+### 9. Dynamic Circuit Configuration
+
+**Question**: How to support configurable number of heating circuits (1-4)?
+
+**Decision**: Load circuit configuration from buderus-wps.yaml at startup
+
+**Rationale**:
+- Different installations have different numbers of circuits
+- Menu structure adapts based on configuration
+- YAML already used for sensor mappings (feature 009)
+- Graceful fallback if config missing
+
+**Configuration Format**:
+```yaml
+circuits:
+  - number: 1
+    name: "Ground Floor"
+    room_temp_sensor: "room_temp_c1"
+  - number: 2
+    name: "First Floor"
+    room_temp_sensor: "room_temp_c2"
+```
+
+---
+
+### 10. Compressor Status Display
+
+**Question**: How to show compressor running state, frequency, and mode?
+
+**Decision**: Use verified COMPRESSOR_REAL_FREQUENCY and request parameters
+
+**Rationale** (verified 2024-12-02):
+- `COMPRESSOR_REAL_FREQUENCY > 0` = compressor running
+- `COMPRESSOR_DHW_REQUEST > 0` = DHW mode
+- `COMPRESSOR_HEATING_REQUEST > 0` = Heating mode
+- `COMPRESSOR_STATE` returns state code (not boolean), not reliable for running detection
+
+**Dashboard Display**:
+```
+Compressor: Running at 45 Hz (DHW)
+   - or -
+Compressor: Stopped (Idle)
+```
+
+---
+
 ## Summary
 
 All research questions resolved. Key decisions:

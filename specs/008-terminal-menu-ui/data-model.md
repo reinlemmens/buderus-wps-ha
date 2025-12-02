@@ -60,7 +60,7 @@ Enumeration of available screens.
 
 ### DashboardModel
 
-Data displayed on the status dashboard screen.
+Data displayed on the status dashboard screen. All temperatures read via broadcast monitoring.
 
 ```
 DashboardModel
@@ -68,9 +68,12 @@ DashboardModel
 ├── supply_temp: float | None
 ├── return_temp: float | None
 ├── dhw_temp: float | None
-├── room_temp: float | None
+├── brine_in_temp: float | None
+├── circuit_temps: list[CircuitTempModel]
 ├── operating_mode: OperatingMode | None
-├── compressor_running: bool | None
+├── compressor_running: bool
+├── compressor_frequency: int
+├── compressor_mode: str
 ├── aux_heater_active: bool | None
 ├── defrost_active: bool | None
 └── error_active: bool
@@ -78,16 +81,40 @@ DashboardModel
 
 | Field | Type | Description |
 |-------|------|-------------|
-| outdoor_temp | float | None | Outdoor temperature in °C |
-| supply_temp | float | None | Supply water temperature in °C |
-| return_temp | float | None | Return water temperature in °C |
-| dhw_temp | float | None | DHW (hot water) temperature in °C |
-| room_temp | float | None | Room temperature in °C |
+| outdoor_temp | float | None | Outdoor temperature in °C (GT2) |
+| supply_temp | float | None | Supply water temperature in °C (GT8) |
+| return_temp | float | None | Return water temperature in °C (GT9) |
+| dhw_temp | float | None | DHW (hot water) temperature in °C (GT3) |
+| brine_in_temp | float | None | Brine inlet temperature in °C (GT1) |
+| circuit_temps | list[CircuitTempModel] | Per-circuit room temperatures |
 | operating_mode | OperatingMode | None | Current operating mode |
-| compressor_running | bool | None | Whether compressor is running |
+| compressor_running | bool | Whether compressor is running (frequency > 0) |
+| compressor_frequency | int | Compressor frequency in Hz (0 = stopped) |
+| compressor_mode | str | Compressor mode: "DHW", "Heating", or "Idle" |
 | aux_heater_active | bool | None | Whether auxiliary heater is active |
 | defrost_active | bool | None | Whether defrost cycle is active |
 | error_active | bool | Whether any alarm is active |
+
+### CircuitTempModel
+
+Temperature data for a single heating circuit.
+
+```
+CircuitTempModel
+├── circuit_number: int
+├── circuit_name: str
+├── room_temp: float | None
+├── setpoint: float | None
+└── program_mode: str | None
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| circuit_number | int | Circuit number (1-4) |
+| circuit_name | str | Display name from config |
+| room_temp | float | None | Room temperature in °C |
+| setpoint | float | None | Target setpoint in °C |
+| program_mode | str | None | Active program mode |
 
 ### MenuModel
 
@@ -434,3 +461,43 @@ VIEW_MODE ──[Enter]──> EDIT_MODE
 | q | Quit | Quit | - | Quit |
 | Backspace | - | Go to parent | Delete char | - |
 | 0-9 | - | - | Input digit | Input time |
+
+---
+
+## Configuration Models
+
+### CircuitConfiguration
+
+Configuration for heating circuits loaded from buderus-wps.yaml.
+
+```
+CircuitConfiguration
+├── circuits: list[CircuitConfig]
+└── default_circuit_count: int
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| circuits | list[CircuitConfig] | Configured heating circuits |
+| default_circuit_count | int | Default if config missing (1) |
+
+### CircuitConfig
+
+Single circuit configuration entry.
+
+```
+CircuitConfig
+├── number: int
+├── name: str
+├── room_temp_sensor: str
+├── setpoint_param: str
+└── program_param: str
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| number | int | Circuit number (1-4) |
+| name | str | Display name for UI |
+| room_temp_sensor | str | Sensor name for broadcast monitoring |
+| setpoint_param | str | Parameter name for setpoint |
+| program_param | str | Parameter name for program mode |

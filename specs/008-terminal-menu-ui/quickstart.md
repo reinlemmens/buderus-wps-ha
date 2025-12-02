@@ -131,7 +131,8 @@ The default screen shown on startup. Displays real-time status:
 
 - **Temperatures**: Outdoor, supply, return, hot water, room
 - **Operating Mode**: Off, Heating, Cooling, DHW, Auto
-- **Compressor Status**: Running or stopped
+- **Compressor Status**: Running/Stopped, frequency (Hz), mode (DHW/Heating/Idle)
+- **Heating Circuits**: Per-circuit room temperatures and setpoints (configured in buderus-wps.yaml)
 - **Auxiliary Heater**: Active or inactive
 - **Alarms**: Error indicator if alarms are active
 
