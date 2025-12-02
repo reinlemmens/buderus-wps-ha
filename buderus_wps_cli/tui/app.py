@@ -33,16 +33,24 @@ class BroadcastTemperatures:
 # Known broadcast temperature mappings
 # Format: (base, idx) -> attribute name
 # These mappings are derived from actual CAN bus broadcast observations (2024-12-02)
+# Multiple bases can broadcast the same sensor - we map all observed sources
 TEMP_BROADCAST_MAP = {
-    # Base 0x0402 - External sensor data
-    (0x0402, 38): "outdoor",      # GT2 - Outdoor temperature
-    # Base 0x0060-0x0063 - Heat pump controller circuits
-    (0x0061, 58): "dhw",          # GT3 - DHW tank temperature
-    (0x0062, 58): "dhw",          # GT3 - DHW (alternative broadcast)
-    (0x0060, 12): "brine_in",     # GT1 - Brine inlet temperature
-    # Base 0x0270 - Status/flow data
-    (0x0270, 1): "supply",        # GT8 - Supply/flow temperature
-    (0x0270, 0): "return_temp",   # GT9 - Return temperature
+    # GT2 - Outdoor temperature
+    (0x0402, 38): "outdoor",
+    # GT3 - DHW tank temperature (broadcasts from multiple circuits)
+    (0x0060, 58): "dhw",
+    (0x0061, 58): "dhw",
+    (0x0062, 58): "dhw",
+    (0x0063, 58): "dhw",
+    # GT1 - Brine inlet temperature
+    (0x0060, 12): "brine_in",
+    (0x0061, 12): "brine_in",
+    (0x0063, 12): "brine_in",
+    # GT8 - Supply/flow temperature
+    (0x0270, 1): "supply",
+    (0x0270, 7): "supply",        # Alternative index observed
+    # GT9 - Return temperature
+    (0x0270, 0): "return_temp",
 }
 
 
