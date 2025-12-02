@@ -23,9 +23,10 @@ A terminal-based application that provides an interactive menu interface to cont
 
 ### Session 2025-12-02
 
-- Q: How many heating circuits are supported? → A: 4 heating circuits, configured in buderus-wps.yaml
+- Q: How many heating circuits are supported? → A: Configurable via buderus-wps.yaml (typically 1-4 circuits, system adapts to configuration)
 - Q: What per-circuit data is displayed? → A: Each circuit shows room temperature, setpoint, and its own program/schedule
 - Requirement: ALL temperature readings (dashboard, menu status) MUST use broadcast monitoring, not RTR requests
+- Q: Is the menu structure fixed or dynamic? → A: Dynamic - the Heating Circuits menu adapts to show only the circuits defined in buderus-wps.yaml. Different installations may have 1, 2, 3, or 4 circuits.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -82,19 +83,21 @@ As a homeowner, I want to adjust the DHW temperature setpoint so I can control h
 
 ### User Story 4 - Monitor and Control Heating Circuits (Priority: P2)
 
-As a homeowner with multiple heating zones, I want to view and control all 4 heating circuits independently so I can manage temperature and schedules for different areas of my home.
+As a homeowner with multiple heating zones, I want to view and control all configured heating circuits independently so I can manage temperature and schedules for different areas of my home.
 
 **Why this priority**: Multi-zone heating control is essential for comfort and energy efficiency. Users need per-circuit visibility and control.
 
-**Independent Test**: Navigate to Circuits menu, verify all 4 circuits display room temperature, setpoint, and program. Modify circuit 1 setpoint, verify change persists.
+**Independent Test**: Navigate to Circuits menu, verify all configured circuits display room temperature, setpoint, and program. Modify circuit 1 setpoint, verify change persists.
 
 **Acceptance Scenarios**:
 
-1. **Given** I navigate to Heating Circuits, **When** circuits are displayed, **Then** I see all 4 circuits with room temperature, setpoint, and active program for each
+1. **Given** I navigate to Heating Circuits, **When** circuits are displayed, **Then** I see all configured circuits with room temperature, setpoint, and active program for each
 2. **Given** I select a circuit, **When** I view details, **Then** I see current room temperature (from broadcast monitoring), target setpoint, and program mode
 3. **Given** I am editing a circuit setpoint, **When** I enter a valid temperature, **Then** the new setpoint is written to the heat pump
 4. **Given** I am viewing circuit temperatures, **When** the system reads values, **Then** ALL room temperatures are obtained via broadcast monitoring
 5. **Given** circuit configuration exists in buderus-wps.yaml, **When** the application loads, **Then** it uses the configured circuit mappings for display
+6. **Given** a configuration with 2 circuits, **When** I view the Heating Circuits menu, **Then** I see only 2 circuit entries (not empty slots for unused circuits)
+7. **Given** a configuration with 4 circuits, **When** I view the Heating Circuits menu, **Then** I see all 4 circuit entries with their configured names
 
 ---
 
@@ -174,6 +177,10 @@ As a homeowner, I want to set vacation mode so the system reduces heating while 
   - Redraw interface to fit new dimensions
 - What happens if user presses Ctrl+C?
   - Graceful shutdown, disconnect from heat pump cleanly
+- What happens when no circuits are configured in buderus-wps.yaml?
+  - Display "No heating circuits configured" message in the Circuits menu, skip circuit-related menu items
+- What happens when configuration file is missing or invalid?
+  - Use sensible defaults (e.g., assume single circuit) and log a warning
 
 ## Requirements *(mandatory)*
 
@@ -193,11 +200,12 @@ As a homeowner, I want to set vacation mode so the system reduces heating while 
 - **FR-012**: Application MUST display schedules in a readable weekly format
 - **FR-013**: Application MUST validate schedule times are on 30-minute boundaries before writing
 - **FR-014**: Application MUST read ALL temperature values via CAN bus broadcast monitoring (not RTR requests)
-- **FR-015**: Application MUST support 4 heating circuits with independent room temperatures and setpoints
+- **FR-015**: Application MUST support a configurable number of heating circuits (1-4) with independent room temperatures and setpoints
 - **FR-016**: Application MUST display per-circuit room temperature, target setpoint, and active program
 - **FR-017**: Application MUST load circuit configuration from buderus-wps.yaml configuration file
 - **FR-018**: Application MUST support per-circuit weekly program schedules (each circuit has its own schedule)
 - **FR-019**: Application MUST display compressor status including running state, frequency (Hz), and mode (DHW/Heating/Idle)
+- **FR-020**: Application MUST dynamically build menu structure based on configured circuits (show only circuits defined in configuration, not empty placeholders)
 
 ### Key Entities
 
@@ -205,8 +213,8 @@ As a homeowner, I want to set vacation mode so the system reduces heating while 
 - **Parameter Value**: A readable or writable setting with current value, valid range, and units
 - **Schedule**: Weekly time slots with start/end times for each day
 - **Alarm**: Active or historical alarm with code, description, timestamp, and status
-- **Heating Circuit**: One of 4 independent heating zones with room temperature, setpoint, and program schedule
-- **Circuit Configuration**: YAML-based mapping of circuit numbers to sensor addresses and display names
+- **Heating Circuit**: One of up to 4 independent heating zones with room temperature, setpoint, and program schedule (number determined by configuration)
+- **Circuit Configuration**: YAML-based mapping defining which circuits are active, their sensor addresses, display names, and broadcast monitoring indices
 
 ## Success Criteria *(mandatory)*
 
