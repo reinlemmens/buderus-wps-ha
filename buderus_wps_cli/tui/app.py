@@ -36,9 +36,9 @@ class BroadcastTemperatures:
 TEMP_BROADCAST_MAP = {
     # Base 0x0402 - External sensor data
     (0x0402, 38): "outdoor",      # GT2 - Outdoor temperature
-    # Base 0x0060 - Circuit 0 (main heat pump controller)
-    (0x0060, 58): "dhw",          # GT3 - DHW tank temperature
-    (0x0062, 58): "dhw",          # GT3 - DHW (alternative circuit)
+    # Base 0x0060-0x0063 - Heat pump controller circuits
+    (0x0061, 58): "dhw",          # GT3 - DHW tank temperature
+    (0x0062, 58): "dhw",          # GT3 - DHW (alternative broadcast)
     (0x0060, 12): "brine_in",     # GT1 - Brine inlet temperature
     # Base 0x0270 - Status/flow data
     (0x0270, 1): "supply",        # GT8 - Supply/flow temperature
