@@ -65,6 +65,13 @@ STATUS_PARAMS = {
     "operating_mode": "DRIFTTILLSTAND",
     "compressor_status": "COMPRESSOR_STATE",
     "compressor_hours": "COMPRESSOR_OPERATING_HOURS",
+    # Compressor running detection (verified 2024-12-02):
+    # - COMPRESSOR_REAL_FREQUENCY > 0 means compressor is running
+    # - COMPRESSOR_DHW_REQUEST > 0 means DHW mode requested
+    # - COMPRESSOR_HEATING_REQUEST > 0 means heating mode requested
+    "compressor_frequency": "COMPRESSOR_REAL_FREQUENCY",
+    "compressor_dhw_request": "COMPRESSOR_DHW_REQUEST",
+    "compressor_heating_request": "COMPRESSOR_HEATING_REQUEST",
 }
 
 # DHW (Hot Water) Parameters

@@ -15,6 +15,21 @@ from buderus_wps.config import get_default_sensor_map
 from buderus_wps_cli.tui.keyboard import setup_keypad, get_action
 from buderus_wps_cli.tui.state import AppState, ConnectionState, ScreenType
 
+from typing import List
+
+
+@dataclass
+class MenuItem:
+    """A menu item for display."""
+    name: str
+    item_type: str  # "submenu" or "parameter"
+    value: Optional[str] = None
+    children: List["MenuItem"] = None
+
+    def __post_init__(self):
+        if self.children is None:
+            self.children = []
+
 
 @dataclass
 class BroadcastTemperatures:
@@ -66,6 +81,11 @@ class TUIApp:
         self.stdscr: Any = None
         self.temps = BroadcastTemperatures()
         self._last_refresh = 0.0
+        # Menu navigation state
+        self._in_menu = False
+        self._menu_items: List[MenuItem] = []
+        self._menu_selected = 0
+        self._menu_path: List[str] = []  # Breadcrumb path
 
     def connect(self) -> bool:
         """Connect to the heat pump via Menu API.
@@ -136,6 +156,80 @@ class TUIApp:
         except Exception:
             pass  # Keep existing values on error
 
+    def _load_menu_items(self) -> None:
+        """Load menu items from the API's menu navigator."""
+        if not self.api:
+            return
+
+        try:
+            # Get current menu items from API
+            items = self.api.menu.items()
+            self._menu_items = []
+            for item in items:
+                menu_item = MenuItem(
+                    name=item.name,
+                    item_type="submenu" if item.children else "parameter",
+                    value=None,
+                    children=[],
+                )
+                # Try to read value for parameter items
+                if item.parameter and not item.children:
+                    try:
+                        self.api.menu.navigate("/".join(self._menu_path + [item.name]))
+                        val = self.api.menu.get_value()
+                        menu_item.value = str(val) if val is not None else "---"
+                        self.api.menu.navigate("/".join(self._menu_path) if self._menu_path else "")
+                    except Exception:
+                        menu_item.value = "---"
+                self._menu_items.append(menu_item)
+            self._menu_selected = min(self._menu_selected, max(0, len(self._menu_items) - 1))
+        except Exception:
+            self._menu_items = []
+
+    def _enter_menu(self) -> None:
+        """Enter menu mode."""
+        self._in_menu = True
+        self._menu_path = []
+        self._menu_selected = 0
+        if self.api:
+            self.api.menu.navigate("")  # Go to root
+        self._load_menu_items()
+
+    def _exit_menu(self) -> None:
+        """Exit menu mode back to dashboard."""
+        self._in_menu = False
+        self._menu_path = []
+        self._menu_selected = 0
+
+    def _menu_back(self) -> None:
+        """Go back one level in menu."""
+        if not self._menu_path:
+            # At root, exit to dashboard
+            self._exit_menu()
+            return
+
+        self._menu_path.pop()
+        self._menu_selected = 0
+        if self.api:
+            path = "/".join(self._menu_path) if self._menu_path else ""
+            self.api.menu.navigate(path)
+        self._load_menu_items()
+
+    def _menu_select(self) -> None:
+        """Select current menu item."""
+        if not self._menu_items:
+            return
+
+        item = self._menu_items[self._menu_selected]
+        if item.item_type == "submenu":
+            # Enter submenu
+            self._menu_path.append(item.name)
+            self._menu_selected = 0
+            if self.api:
+                self.api.menu.navigate("/".join(self._menu_path))
+            self._load_menu_items()
+        # For parameter items, we'd open an editor (not implemented yet)
+
     def run(self, stdscr: Any) -> None:
         """Main application loop.
 
@@ -198,6 +292,8 @@ class TUIApp:
         # Check minimum size
         if height < 24 or width < 80:
             self._render_size_warning()
+        elif self._in_menu:
+            self._render_menu()
         else:
             self._render_dashboard()
 
@@ -237,7 +333,65 @@ class TUIApp:
 
             # Help bar
             self.stdscr.hline(22, 0, curses.ACS_HLINE, 80)
-            help_text = "r Refresh  q Quit"
+            help_text = "Enter Menu  r Refresh  q Quit"
+            self.stdscr.addstr(23, 2, help_text)
+
+        except curses.error:
+            pass
+
+    def _render_menu(self) -> None:
+        """Render the menu screen."""
+        if self.stdscr is None:
+            return
+
+        try:
+            # Header
+            title = "BUDERUS WPS HEAT PUMP"
+            status = "[MENU]"
+            self.stdscr.addstr(0, 0, title, curses.A_BOLD)
+            self.stdscr.addstr(0, 60, status)
+
+            # Separator
+            self.stdscr.hline(1, 0, curses.ACS_HLINE, 80)
+
+            # Breadcrumb
+            if self._menu_path:
+                breadcrumb = " > ".join(["Root"] + self._menu_path)
+            else:
+                breadcrumb = "Root"
+            self.stdscr.addstr(2, 2, breadcrumb, curses.A_DIM)
+
+            # Menu title
+            menu_title = self._menu_path[-1] if self._menu_path else "Main Menu"
+            self.stdscr.addstr(4, 2, menu_title, curses.A_BOLD)
+            self.stdscr.hline(5, 2, ord("-"), 60)
+
+            # Menu items
+            start_row = 7
+            for i, item in enumerate(self._menu_items):
+                row = start_row + i
+                if row >= 21:  # Leave room for help bar
+                    break
+
+                # Format item
+                if item.item_type == "submenu":
+                    prefix = "> "
+                    suffix = " ..."
+                else:
+                    prefix = "  "
+                    suffix = ""
+
+                label = f"{prefix}{item.name}{suffix}"
+                if item.value is not None:
+                    label = label.ljust(40) + item.value
+
+                # Highlight selected item
+                attr = curses.A_REVERSE if i == self._menu_selected else curses.A_NORMAL
+                self.stdscr.addstr(row, 2, label[:76], attr)
+
+            # Help bar
+            self.stdscr.hline(22, 0, curses.ACS_HLINE, 80)
+            help_text = "↑↓ Navigate  Enter Select  Esc Back  q Quit"
             self.stdscr.addstr(23, 2, help_text)
 
         except curses.error:
@@ -307,12 +461,33 @@ class TUIApp:
         action = get_action(key)
 
         if action == "quit":
-            self.running = False
+            if self._in_menu:
+                self._exit_menu()
+            else:
+                self.running = False
+        elif action == "back":
+            if self._in_menu:
+                self._menu_back()
+        elif action == "select":
+            if self._in_menu:
+                self._menu_select()
+            elif self.state.connection == ConnectionState.CONNECTED:
+                # Enter menu from dashboard
+                self._enter_menu()
+        elif action == "move_up":
+            if self._in_menu and self._menu_items:
+                self._menu_selected = (self._menu_selected - 1) % len(self._menu_items)
+        elif action == "move_down":
+            if self._in_menu and self._menu_items:
+                self._menu_selected = (self._menu_selected + 1) % len(self._menu_items)
         elif action == "refresh":
             # Manual refresh - show loading and collect new temps
             if self.state.connection == ConnectionState.CONNECTED:
-                self._show_loading("Refreshing temperatures...")
-                self.refresh_temperatures(duration=3.0)
+                self._show_loading("Refreshing...")
+                if self._in_menu:
+                    self._load_menu_items()
+                else:
+                    self.refresh_temperatures(duration=3.0)
 
 
 def run_tui() -> None:

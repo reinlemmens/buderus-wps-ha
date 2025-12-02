@@ -154,12 +154,49 @@ class StatusView:
 
     @property
     def compressor_running(self) -> bool:
-        """Whether compressor is currently running."""
+        """Whether compressor is currently running.
+
+        Uses COMPRESSOR_REAL_FREQUENCY > 0 as the reliable indicator.
+        Verified 2024-12-02: frequency shows actual Hz when running, 0 when stopped.
+        """
         try:
-            result = self._client.read_parameter(STATUS_PARAMS["compressor_status"])
-            return bool(result.get("decoded", 0))
+            result = self._client.read_parameter(STATUS_PARAMS["compressor_frequency"])
+            return int(result.get("decoded", 0)) > 0
         except KeyError:
             return False
+
+    @property
+    def compressor_frequency(self) -> int:
+        """Current compressor frequency in Hz (0 = stopped)."""
+        try:
+            result = self._client.read_parameter(STATUS_PARAMS["compressor_frequency"])
+            return int(result.get("decoded", 0))
+        except KeyError:
+            return 0
+
+    @property
+    def compressor_mode(self) -> str:
+        """Current compressor mode: 'DHW', 'Heating', or 'Idle'.
+
+        Based on COMPRESSOR_DHW_REQUEST and COMPRESSOR_HEATING_REQUEST parameters.
+        """
+        try:
+            dhw_result = self._client.read_parameter(STATUS_PARAMS["compressor_dhw_request"])
+            dhw_active = int(dhw_result.get("decoded", 0)) > 0
+            if dhw_active:
+                return "DHW"
+        except KeyError:
+            pass
+
+        try:
+            heat_result = self._client.read_parameter(STATUS_PARAMS["compressor_heating_request"])
+            heat_active = int(heat_result.get("decoded", 0)) > 0
+            if heat_active:
+                return "Heating"
+        except KeyError:
+            pass
+
+        return "Idle"
 
     @property
     def compressor_hours(self) -> int:
