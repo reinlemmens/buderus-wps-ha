@@ -28,6 +28,7 @@ keywords = ["buderus", "heat-pump", "can-bus", "usbtin", "home-assistant"]
 
 dependencies = [
     "pyserial>=3.5",
+    "pyyaml>=6.0",
 ]
 
 [project.scripts]

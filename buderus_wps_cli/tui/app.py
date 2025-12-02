@@ -11,6 +11,7 @@ import time
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
+from buderus_wps.config import get_default_sensor_map
 from buderus_wps_cli.tui.keyboard import setup_keypad, get_action
 from buderus_wps_cli.tui.state import AppState, ConnectionState, ScreenType
 
@@ -31,27 +32,10 @@ class BroadcastTemperatures:
 
 
 # Known broadcast temperature mappings
-# Format: (base, idx) -> attribute name
-# These mappings are derived from actual CAN bus broadcast observations (2024-12-02)
-# Multiple bases can broadcast the same sensor - we map all observed sources
-TEMP_BROADCAST_MAP = {
-    # GT2 - Outdoor temperature
-    (0x0402, 38): "outdoor",
-    # GT3 - DHW tank temperature (broadcasts from multiple circuits)
-    (0x0060, 58): "dhw",
-    (0x0061, 58): "dhw",
-    (0x0062, 58): "dhw",
-    (0x0063, 58): "dhw",
-    # GT1 - Brine inlet temperature
-    (0x0060, 12): "brine_in",
-    (0x0061, 12): "brine_in",
-    (0x0063, 12): "brine_in",
-    # GT8 - Supply/flow temperature
-    (0x0270, 1): "supply",
-    (0x0270, 7): "supply",        # Alternative index observed
-    # GT9 - Return temperature
-    (0x0270, 0): "return_temp",
-}
+# Format: (base, idx) -> sensor name (attribute name)
+# Mappings are loaded from shared config module (buderus_wps.config)
+# These are derived from actual CAN bus broadcast observations (2024-12-02)
+TEMP_BROADCAST_MAP = get_default_sensor_map()
 
 
 class TUIApp:
@@ -278,6 +262,8 @@ class TUIApp:
             # Operating mode from API (if available)
             mode_str = "---"
             compressor_str = "---"
+            compressor_mode = "---"
+            compressor_freq = 0
             if self.api:
                 try:
                     mode = self.api.status.operating_mode
@@ -286,17 +272,23 @@ class TUIApp:
                     pass
                 try:
                     running = self.api.status.compressor_running
-                    compressor_str = "Running" if running else "Stopped"
+                    compressor_freq = self.api.status.compressor_frequency
+                    compressor_mode = self.api.status.compressor_mode
+                    if running:
+                        compressor_str = f"Running ({compressor_freq} Hz)"
+                    else:
+                        compressor_str = "Stopped"
                 except Exception:
                     pass
 
             self.stdscr.addstr(8, 2, f"Operating Mode:         {mode_str}")
             self.stdscr.addstr(9, 2, f"Compressor:             {compressor_str}")
+            self.stdscr.addstr(10, 2, f"Compressor Mode:        {compressor_mode}")
 
             # Show last refresh time
             if self.temps.timestamp > 0:
                 age = int(time.time() - self.temps.timestamp)
-                self.stdscr.addstr(11, 2, f"Last update: {age}s ago", curses.A_DIM)
+                self.stdscr.addstr(12, 2, f"Last update: {age}s ago", curses.A_DIM)
 
         except Exception as e:
             self.stdscr.addstr(3, 2, f"Error: {e}")

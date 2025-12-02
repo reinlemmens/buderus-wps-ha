@@ -87,6 +87,17 @@ from .broadcast_monitor import (
     encode_can_id,
     KNOWN_BROADCASTS,
 )
+from .config import (
+    CircuitConfig,
+    DHWConfig,
+    HeatingType,
+    InstallationConfig,
+    SensorMapping,
+    SensorType,
+    get_default_config,
+    get_default_sensor_map,
+    load_config,
+)
 
 __all__ = [
     # Exceptions
@@ -146,4 +157,14 @@ __all__ = [
     "decode_can_id",
     "encode_can_id",
     "KNOWN_BROADCASTS",
+    # Configuration
+    "CircuitConfig",
+    "DHWConfig",
+    "HeatingType",
+    "InstallationConfig",
+    "SensorMapping",
+    "SensorType",
+    "get_default_config",
+    "get_default_sensor_map",
+    "load_config",
 ]
