@@ -58,3 +58,11 @@ Added dynamic menu structure based on configuration:
 - Menu adapts to show 1, 2, 3, or 4 circuits based on buderus-wps.yaml
 
 All new requirements have testable acceptance scenarios and are technology-agnostic.
+
+### Update 2025-12-02 (clarify session)
+
+Clarification session resolved edit mode UX ambiguities:
+- Direct typing for numeric input (digits 0-9, backspace to correct)
+- Stay in edit mode until explicit Enter (confirm) or Escape (cancel)
+- Validation errors keep user in edit mode for retry
+- User Story 3 updated with 6 acceptance scenarios for complete edit flow

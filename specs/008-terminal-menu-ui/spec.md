@@ -27,6 +27,8 @@ A terminal-based application that provides an interactive menu interface to cont
 - Q: What per-circuit data is displayed? → A: Each circuit shows room temperature, setpoint, and its own program/schedule
 - Requirement: ALL temperature readings (dashboard, menu status) MUST use broadcast monitoring, not RTR requests
 - Q: Is the menu structure fixed or dynamic? → A: Dynamic - the Heating Circuits menu adapts to show only the circuits defined in buderus-wps.yaml. Different installations may have 1, 2, 3, or 4 circuits.
+- Q: How should users enter numeric values in edit mode? → A: Direct typing (user types digits, backspace to correct)
+- Q: When should user exit edit mode? → A: Stay in edit until explicit confirm (Enter) or cancel (Escape); validation errors keep user in edit mode for retry
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -74,10 +76,12 @@ As a homeowner, I want to adjust the DHW temperature setpoint so I can control h
 
 **Acceptance Scenarios**:
 
-1. **Given** I am at the Temperature setting, **When** I press Enter to edit, **Then** I enter edit mode with current value displayed
-2. **Given** I am in edit mode, **When** I type a new value within 20-65, **Then** the value is accepted
-3. **Given** I am in edit mode, **When** I type a value outside 20-65, **Then** an error is shown and the value is rejected
-4. **Given** I have entered a valid value, **When** I press Enter to confirm, **Then** the new value is written to the heat pump
+1. **Given** I am at the Temperature setting, **When** I press Enter to edit, **Then** I enter edit mode with current value displayed and cursor ready for input
+2. **Given** I am in edit mode, **When** I type digits (0-9) and use backspace to correct, **Then** the input field updates accordingly
+3. **Given** I am in edit mode, **When** I type a value within 20-65 and press Enter, **Then** the value is accepted and written
+4. **Given** I am in edit mode, **When** I type a value outside 20-65 and press Enter, **Then** an error is shown and I remain in edit mode to correct
+5. **Given** I have entered a valid value, **When** I press Enter to confirm, **Then** the new value is written to the heat pump and I return to the menu
+6. **Given** I am in edit mode, **When** I press Escape, **Then** I cancel the edit (discard changes) and return to the menu
 
 ---
 
