@@ -21,6 +21,12 @@ A terminal-based application that provides an interactive menu interface to cont
 - Q: How are temperature values read? → A: Via CAN bus broadcast monitoring (3-second collection window), not RTR requests. This provides actual sensor values instead of 1-byte ACK responses.
 - Note: RTR request/response mechanism returns 1-byte ACKs rather than actual sensor data. Broadcast monitoring passively captures real temperature values from CAN bus traffic.
 
+### Session 2025-12-02
+
+- Q: How many heating circuits are supported? → A: 4 heating circuits, configured in buderus-wps.yaml
+- Q: What per-circuit data is displayed? → A: Each circuit shows room temperature, setpoint, and its own program/schedule
+- Requirement: ALL temperature readings (dashboard, menu status) MUST use broadcast monitoring, not RTR requests
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - View System Status Dashboard (Priority: P1)
@@ -29,13 +35,14 @@ As a homeowner, I want to see a dashboard showing current temperatures and syste
 
 **Why this priority**: This is the most common use case - users check status far more often than changing settings. It provides immediate value with read-only access.
 
-**Independent Test**: Launch application, verify dashboard displays outdoor temp, supply temp, DHW temp, operating mode, and compressor status. Compare values to physical display.
+**Independent Test**: Launch application, verify dashboard displays outdoor temp, supply temp, DHW temp, compressor status/frequency/mode. All temperatures read via broadcast monitoring.
 
 **Acceptance Scenarios**:
 
 1. **Given** the application is launched, **When** it connects to the heat pump, **Then** a status dashboard is displayed showing all key temperatures and operating status
 2. **Given** the dashboard is displayed, **When** the user presses 'r' to refresh, **Then** the dashboard updates with current values within 5 seconds
 3. **Given** the heat pump is unreachable, **When** the application is launched, **Then** a clear error message is displayed with troubleshooting hints
+4. **Given** temperatures are displayed, **When** the system reads values, **Then** ALL temperatures are obtained via broadcast monitoring (not RTR)
 
 ---
 
@@ -73,13 +80,31 @@ As a homeowner, I want to adjust the DHW temperature setpoint so I can control h
 
 ---
 
-### User Story 4 - View and Edit Weekly Schedules (Priority: P2)
+### User Story 4 - Monitor and Control Heating Circuits (Priority: P2)
 
-As a homeowner, I want to view and modify DHW weekly schedules so I can optimize heating times.
+As a homeowner with multiple heating zones, I want to view and control all 4 heating circuits independently so I can manage temperature and schedules for different areas of my home.
+
+**Why this priority**: Multi-zone heating control is essential for comfort and energy efficiency. Users need per-circuit visibility and control.
+
+**Independent Test**: Navigate to Circuits menu, verify all 4 circuits display room temperature, setpoint, and program. Modify circuit 1 setpoint, verify change persists.
+
+**Acceptance Scenarios**:
+
+1. **Given** I navigate to Heating Circuits, **When** circuits are displayed, **Then** I see all 4 circuits with room temperature, setpoint, and active program for each
+2. **Given** I select a circuit, **When** I view details, **Then** I see current room temperature (from broadcast monitoring), target setpoint, and program mode
+3. **Given** I am editing a circuit setpoint, **When** I enter a valid temperature, **Then** the new setpoint is written to the heat pump
+4. **Given** I am viewing circuit temperatures, **When** the system reads values, **Then** ALL room temperatures are obtained via broadcast monitoring
+5. **Given** circuit configuration exists in buderus-wps.yaml, **When** the application loads, **Then** it uses the configured circuit mappings for display
+
+---
+
+### User Story 5 - View and Edit Weekly Schedules (Priority: P2)
+
+As a homeowner, I want to view and modify DHW and per-circuit heating schedules so I can optimize heating times for different zones.
 
 **Why this priority**: Schedule management is a key feature for energy optimization.
 
-**Independent Test**: Navigate to Programs > DHW Program 1, view Monday schedule, modify start/end times, verify change on heat pump.
+**Independent Test**: Navigate to Programs > DHW Program 1, view Monday schedule, modify start/end times, verify change on heat pump. Also test per-circuit programs.
 
 **Acceptance Scenarios**:
 
@@ -87,10 +112,12 @@ As a homeowner, I want to view and modify DHW weekly schedules so I can optimize
 2. **Given** I am viewing a schedule, **When** I select a day, **Then** I can edit the start and end times
 3. **Given** I enter schedule times, **When** times are not on 30-minute boundaries, **Then** an error is shown
 4. **Given** I save a schedule change, **When** the write completes, **Then** a confirmation message is displayed
+5. **Given** I navigate to a heating circuit, **When** I view its program, **Then** I see the circuit's weekly schedule (each circuit has independent schedules)
+6. **Given** I modify a circuit's program, **When** the change is saved, **Then** only that circuit's schedule is affected
 
 ---
 
-### User Story 5 - Monitor Energy Statistics (Priority: P3)
+### User Story 6 - Monitor Energy Statistics (Priority: P3)
 
 As a homeowner, I want to view energy consumption statistics so I can monitor efficiency.
 
@@ -105,7 +132,7 @@ As a homeowner, I want to view energy consumption statistics so I can monitor ef
 
 ---
 
-### User Story 6 - View Active Alarms (Priority: P3)
+### User Story 7 - View Active Alarms (Priority: P3)
 
 As a homeowner, I want to see active alarms and alarm history so I can respond to issues.
 
@@ -121,7 +148,7 @@ As a homeowner, I want to see active alarms and alarm history so I can respond t
 
 ---
 
-### User Story 7 - Configure Vacation Mode (Priority: P3)
+### User Story 8 - Configure Vacation Mode (Priority: P3)
 
 As a homeowner, I want to set vacation mode so the system reduces heating while I'm away.
 
@@ -165,6 +192,12 @@ As a homeowner, I want to set vacation mode so the system reduces heating while 
 - **FR-011**: Application MUST exit cleanly when user presses 'q' or Ctrl+C
 - **FR-012**: Application MUST display schedules in a readable weekly format
 - **FR-013**: Application MUST validate schedule times are on 30-minute boundaries before writing
+- **FR-014**: Application MUST read ALL temperature values via CAN bus broadcast monitoring (not RTR requests)
+- **FR-015**: Application MUST support 4 heating circuits with independent room temperatures and setpoints
+- **FR-016**: Application MUST display per-circuit room temperature, target setpoint, and active program
+- **FR-017**: Application MUST load circuit configuration from buderus-wps.yaml configuration file
+- **FR-018**: Application MUST support per-circuit weekly program schedules (each circuit has its own schedule)
+- **FR-019**: Application MUST display compressor status including running state, frequency (Hz), and mode (DHW/Heating/Idle)
 
 ### Key Entities
 
@@ -172,6 +205,8 @@ As a homeowner, I want to set vacation mode so the system reduces heating while 
 - **Parameter Value**: A readable or writable setting with current value, valid range, and units
 - **Schedule**: Weekly time slots with start/end times for each day
 - **Alarm**: Active or historical alarm with code, description, timestamp, and status
+- **Heating Circuit**: One of 4 independent heating zones with room temperature, setpoint, and program schedule
+- **Circuit Configuration**: YAML-based mapping of circuit numbers to sensor addresses and display names
 
 ## Success Criteria *(mandatory)*
 

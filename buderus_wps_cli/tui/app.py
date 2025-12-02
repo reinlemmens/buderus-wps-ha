@@ -177,7 +177,21 @@ class TUIApp:
                     try:
                         self.api.menu.navigate("/".join(self._menu_path + [item.name]))
                         val = self.api.menu.get_value()
-                        menu_item.value = str(val) if val is not None else "---"
+                        # Format value based on item.format hint
+                        if val is not None:
+                            fmt = getattr(item, 'format', None)
+                            if fmt == "temp":
+                                # Temperature in tenths of degree
+                                try:
+                                    menu_item.value = f"{float(val) / 10:.1f}°C"
+                                except (ValueError, TypeError):
+                                    menu_item.value = str(val)
+                            elif fmt == "enum":
+                                menu_item.value = str(val)
+                            else:
+                                menu_item.value = str(val)
+                        else:
+                            menu_item.value = "---"
                         self.api.menu.navigate("/".join(self._menu_path) if self._menu_path else "")
                     except Exception:
                         menu_item.value = "---"
