@@ -388,3 +388,93 @@ class TestUSBtinAdapterReceiveFrame:
         assert frame.is_remote_frame is True
         assert frame.arbitration_id == 0x123
         assert frame.dlc == 4
+
+
+class TestConnectionStateDetection:
+    """Test connection state detection (T049).
+
+    Tests cover:
+    - Detection of serial port disconnection
+    - Status property reflects actual connection state
+    - Operations detect stale connections
+    """
+
+    @patch('serial.Serial')
+    def test_connection_state_after_serial_close(self, mock_serial_class):
+        """T049: Detect when serial port is closed externally."""
+        mock_serial = Mock()
+        mock_serial.is_open = True
+        mock_serial.in_waiting = 0
+        mock_serial.read.return_value = b'\r'
+        mock_serial_class.return_value = mock_serial
+
+        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter.connect()
+        assert adapter.is_open is True
+
+        # Simulate serial port being closed (USB disconnection)
+        mock_serial.is_open = False
+
+        # is_open should now report false
+        assert adapter.is_open is False
+
+    @patch('serial.Serial')
+    def test_status_reflects_connection_state(self, mock_serial_class):
+        """T049: Status property reports connection state accurately."""
+        mock_serial = Mock()
+        mock_serial.is_open = True
+        mock_serial.in_waiting = 0
+        mock_serial.read.return_value = b'\r'
+        mock_serial_class.return_value = mock_serial
+
+        adapter = USBtinAdapter('/dev/ttyACM0')
+
+        # Before connect
+        assert adapter.status == "closed"
+
+        # After connect
+        adapter.connect()
+        assert adapter.status == "connected"
+
+        # After external disconnection
+        mock_serial.is_open = False
+        assert adapter.status == "closed"
+
+    @patch('serial.Serial')
+    def test_send_frame_detects_disconnection(self, mock_serial_class):
+        """T049: send_frame detects when connection is lost."""
+        mock_serial = Mock()
+        mock_serial.is_open = True
+        mock_serial.in_waiting = 0
+        mock_serial.read.return_value = b'\r'
+        mock_serial_class.return_value = mock_serial
+
+        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter.connect()
+
+        # Simulate disconnection
+        mock_serial.is_open = False
+
+        # send_frame should detect and raise error
+        request = CANMessage(arbitration_id=0x123, data=b'\x00')
+        with pytest.raises(DeviceCommunicationError, match="not connected"):
+            adapter.send_frame(request)
+
+    @patch('serial.Serial')
+    def test_receive_frame_detects_disconnection(self, mock_serial_class):
+        """T049: receive_frame detects when connection is lost."""
+        mock_serial = Mock()
+        mock_serial.is_open = True
+        mock_serial.in_waiting = 0
+        mock_serial.read.return_value = b'\r'
+        mock_serial_class.return_value = mock_serial
+
+        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter.connect()
+
+        # Simulate disconnection
+        mock_serial.is_open = False
+
+        # receive_frame should detect and raise error
+        with pytest.raises(DeviceCommunicationError, match="not connected"):
+            adapter.receive_frame()

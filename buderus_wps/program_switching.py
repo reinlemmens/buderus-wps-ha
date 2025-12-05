@@ -19,7 +19,9 @@ class ParameterIO(Protocol):
     def read(self, parameter: str) -> int:  # pragma: no cover - interface only
         ...
 
-    def write(self, parameter: str, value: int) -> None:  # pragma: no cover - interface only
+    def write(
+        self, parameter: str, value: int
+    ) -> None:  # pragma: no cover - interface only
         ...
 
 
@@ -30,7 +32,7 @@ class ProgramSwitchConfig:
     dhw_program_param: str = "DHW_PROGRAM_MODE"
     buffer_program_param: str = "ROOM_PROGRAM_MODE"
     program_off: int = 1  # program1: always-off
-    program_on: int = 2   # program2: always-on
+    program_on: int = 2  # program2: always-on
 
 
 @dataclass(frozen=True)
@@ -50,7 +52,9 @@ class ProgramSwitchingController:
     program. Unknown program values raise ValueError to surface misconfiguration.
     """
 
-    def __init__(self, io: ParameterIO, config: ProgramSwitchConfig | None = None) -> None:
+    def __init__(
+        self, io: ParameterIO, config: ProgramSwitchConfig | None = None
+    ) -> None:
         if io is None:
             raise ValueError("io cannot be None")
         self._io = io
@@ -111,6 +115,4 @@ class ProgramSwitchingController:
     @staticmethod
     def _validate_program_value(value: int) -> None:
         if value not in (1, 2):
-            raise ValueError(
-                f"Program values must be 1 (off) or 2 (on). Got {value}."
-            )
+            raise ValueError(f"Program values must be 1 (off) or 2 (on). Got {value}.")

@@ -7,11 +7,12 @@ Tests cover:
 - T039: Sequential message transmission
 """
 
+import gc
 import pytest
 from unittest.mock import Mock, patch, MagicMock
 from buderus_wps.can_adapter import USBtinAdapter
 from buderus_wps.can_message import CANMessage
-from buderus_wps.exceptions import DeviceNotFoundError, DeviceInitializationError
+from buderus_wps.exceptions import DeviceNotFoundError, DeviceInitializationError, DeviceCommunicationError
 
 
 class TestUSBtinAdapterConnect:
@@ -397,3 +398,218 @@ class TestSequentialMessageTransmission:
         assert frame1.data == b'\x88\x77'
         assert response2.data == b'\x44\x55'
         assert frame2.data == b'\x11\x22'
+
+
+class TestUSBDisconnectionDetection:
+    """Test USB disconnection detection (T050).
+
+    Tests cover:
+    - Detection of USB cable disconnection during operation
+    - Appropriate error raised when connection lost
+    - State correctly reflects disconnection
+    """
+
+    @patch('serial.Serial')
+    def test_detect_disconnection_during_send(self, mock_serial_class):
+        """T050: Detect USB disconnection during send operation."""
+        mock_serial = MagicMock()
+        mock_serial.is_open = True
+        mock_serial.in_waiting = 0
+        mock_serial.read.return_value = b'\r'
+        mock_serial_class.return_value = mock_serial
+
+        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter.connect()
+
+        # Simulate USB disconnection by making write raise OSError
+        mock_serial.write.side_effect = OSError("USB device disconnected")
+
+        request = CANMessage(arbitration_id=0x123, data=b'\x00')
+        with pytest.raises(DeviceCommunicationError):
+            adapter.send_frame(request)
+
+    @patch('serial.Serial')
+    def test_detect_disconnection_during_receive(self, mock_serial_class):
+        """T050: Detect USB disconnection during receive operation."""
+        mock_serial = MagicMock()
+        mock_serial.is_open = True
+        mock_serial.in_waiting = 10
+        mock_serial_class.return_value = mock_serial
+
+        # Successful init, then disconnect on receive
+        init_responses = [b'\r'] * 7
+        mock_serial.read.side_effect = init_responses + [
+            OSError("USB device disconnected")
+        ]
+
+        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter.connect()
+
+        with pytest.raises(DeviceCommunicationError):
+            adapter.receive_frame(timeout=1.0)
+
+    @patch('serial.Serial')
+    def test_state_after_disconnection_error(self, mock_serial_class):
+        """T050: Adapter state reflects disconnection after error."""
+        mock_serial = MagicMock()
+        mock_serial.is_open = True
+        mock_serial.in_waiting = 0
+        mock_serial.read.return_value = b'\r'
+        mock_serial_class.return_value = mock_serial
+
+        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter.connect()
+        assert adapter.is_open is True
+
+        # Simulate disconnection on is_open check
+        mock_serial.is_open = False
+
+        # State should reflect disconnection
+        assert adapter.is_open is False
+        assert adapter.status == "closed"
+
+
+class TestResourceCleanupOnError:
+    """Test resource cleanup on abnormal termination (T051).
+
+    Tests cover:
+    - Resources released when error occurs during operation
+    - Serial port closed even after exceptions
+    - No resource leaks on abnormal termination
+    """
+
+    @patch('serial.Serial')
+    def test_cleanup_after_connect_failure(self, mock_serial_class):
+        """T051: Resources cleaned up after connection failure."""
+        mock_serial = MagicMock()
+        mock_serial.is_open = True
+        mock_serial.in_waiting = 0
+        mock_serial_class.return_value = mock_serial
+
+        # Fail during initialization sequence
+        mock_serial.read.side_effect = OSError("Hardware failure")
+
+        adapter = USBtinAdapter('/dev/ttyACM0')
+
+        with pytest.raises(Exception):
+            adapter.connect()
+
+        # Verify cleanup was attempted
+        # After failed connect, should attempt to close
+        assert adapter.is_open is False
+
+    @patch('serial.Serial')
+    def test_cleanup_after_operation_error(self, mock_serial_class):
+        """T051: Resources cleaned up after operation error."""
+        mock_serial = MagicMock()
+        mock_serial.is_open = True
+        mock_serial.in_waiting = 0
+        mock_serial.read.return_value = b'\r'
+        mock_serial_class.return_value = mock_serial
+
+        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter.connect()
+
+        # Error during operation
+        mock_serial.write.side_effect = OSError("Device removed")
+
+        request = CANMessage(arbitration_id=0x123, data=b'\x00')
+        try:
+            adapter.send_frame(request)
+        except Exception:
+            pass
+
+        # Explicitly disconnect - should not raise even after error
+        adapter.disconnect()
+        assert adapter.is_open is False
+
+    @patch('serial.Serial')
+    def test_context_manager_cleanup_on_error(self, mock_serial_class):
+        """T051: Context manager cleans up after exception."""
+        mock_serial = MagicMock()
+        mock_serial.is_open = True
+        mock_serial.in_waiting = 0
+        mock_serial.read.return_value = b'\r'
+        mock_serial_class.return_value = mock_serial
+
+        try:
+            with USBtinAdapter('/dev/ttyACM0') as adapter:
+                assert adapter.is_open is True
+                # Simulate error inside context
+                raise ValueError("Test error")
+        except ValueError:
+            pass
+
+        # Verify close was called despite exception
+        mock_serial.close.assert_called()
+
+
+class TestDestructorCleanup:
+    """Test __del__ destructor cleanup (T052).
+
+    Tests cover:
+    - Destructor cleans up if disconnect not called
+    - No errors raised during garbage collection
+    - Resources released on object deletion
+    """
+
+    @patch('serial.Serial')
+    def test_del_closes_connection(self, mock_serial_class):
+        """T052: __del__ closes connection if still open."""
+        mock_serial = MagicMock()
+        mock_serial.is_open = True
+        mock_serial.in_waiting = 0
+        mock_serial.read.return_value = b'\r'
+        mock_serial_class.return_value = mock_serial
+
+        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter.connect()
+        assert adapter.is_open is True
+
+        # Explicitly call destructor (simulates garbage collection behavior)
+        adapter.__del__()
+
+        # Verify close was called (disconnect() calls close() on the serial port)
+        mock_serial.close.assert_called()
+
+    @patch('serial.Serial')
+    def test_del_handles_already_closed(self, mock_serial_class):
+        """T052: __del__ handles already-closed connection gracefully."""
+        mock_serial = MagicMock()
+        mock_serial.is_open = True
+        mock_serial.in_waiting = 0
+        mock_serial.read.return_value = b'\r'
+        mock_serial_class.return_value = mock_serial
+
+        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter.connect()
+        adapter.disconnect()
+
+        # Should not raise on deletion
+        del adapter  # No assertion needed - just shouldn't raise
+
+    @patch('serial.Serial')
+    def test_del_handles_never_connected(self, mock_serial_class):
+        """T052: __del__ handles adapter that was never connected."""
+        adapter = USBtinAdapter('/dev/ttyACM0')
+
+        # Should not raise on deletion even without connecting
+        del adapter  # No assertion needed - just shouldn't raise
+
+    @patch('serial.Serial')
+    def test_del_suppresses_errors(self, mock_serial_class):
+        """T052: __del__ suppresses errors during cleanup."""
+        mock_serial = MagicMock()
+        mock_serial.is_open = True
+        mock_serial.in_waiting = 0
+        mock_serial.read.return_value = b'\r'
+        mock_serial_class.return_value = mock_serial
+
+        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter.connect()
+
+        # Make close raise an error
+        mock_serial.close.side_effect = OSError("Cannot close")
+
+        # Destructor should not propagate exception
+        del adapter  # Should not raise

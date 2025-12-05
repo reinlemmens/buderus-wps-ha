@@ -11,13 +11,13 @@ Behavior:
 from __future__ import annotations
 
 import logging
-from typing import Optional, Dict, Any, List
+from typing import Any, Dict, List, Optional
 
-from .can_message import CANMessage
 from .can_adapter import USBtinAdapter
-from .parameter_registry import ParameterRegistry, Parameter
-from .value_encoder import ValueEncoder
+from .can_message import CANMessage
 from .exceptions import DeviceCommunicationError, TimeoutError
+from .parameter_registry import Parameter, ParameterRegistry
+from .value_encoder import ValueEncoder
 
 
 class HeatPumpClient:
@@ -53,15 +53,22 @@ class HeatPumpClient:
             self._adapter.connect()
 
         read_cmd = CANMessage(
-            arbitration_id=0x01FD7FE0, data=b"", is_extended_id=True, is_remote_frame=True
+            arbitration_id=0x01FD7FE0,
+            data=b"",
+            is_extended_id=True,
+            is_remote_frame=True,
         )
         try:
             self._adapter.send_frame(read_cmd, timeout=timeout)
         except TimeoutError:
-            self._logger.warning("No response to initial element list length request; using defaults")
+            self._logger.warning(
+                "No response to initial element list length request; using defaults"
+            )
             return self._registry
         except Exception as e:
-            self._logger.warning("Element list length request failed: %s; using defaults", e)
+            self._logger.warning(
+                "Element list length request failed: %s; using defaults", e
+            )
             return self._registry
 
         # Attempt to read pages; KM273 uses 4096-byte chunks, but we don't have full protocol details.
@@ -83,14 +90,23 @@ class HeatPumpClient:
         param = self.get(name_or_idx)
         request_id = 0x04003FE0 | (param.idx << 14)
         response_id = 0x0C003FE0 | (param.idx << 14)
-        request = CANMessage(arbitration_id=request_id, data=b"", is_extended_id=True, is_remote_frame=True)
+        request = CANMessage(
+            arbitration_id=request_id,
+            data=b"",
+            is_extended_id=True,
+            is_remote_frame=True,
+        )
         self._adapter.flush_input_buffer()
         self._adapter.send_frame(request, timeout=timeout)
         frame = self._adapter.receive_frame(timeout=timeout)
         if frame.arbitration_id != response_id:
             raise DeviceCommunicationError(
                 f"Unexpected response id 0x{frame.arbitration_id:X} (expected 0x{response_id:X})",
-                context={"expected": response_id, "got": frame.arbitration_id, "param": param.text},
+                context={
+                    "expected": response_id,
+                    "got": frame.arbitration_id,
+                    "param": param.text,
+                },
             )
         return frame.data
 
@@ -128,7 +144,9 @@ class HeatPumpClient:
         except Exception as e:
             raise ValueError(f"Invalid value for {param.text}: {value}") from e
         if ivalue < param.min or ivalue > param.max:
-            raise ValueError(f"Value {ivalue} out of range for {param.text} [{param.min}, {param.max}]")
+            raise ValueError(
+                f"Value {ivalue} out of range for {param.text} [{param.min}, {param.max}]"
+            )
         # Determine byte width from range
         if param.max <= 0xFF:
             size = 1

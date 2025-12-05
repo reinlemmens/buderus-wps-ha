@@ -20,18 +20,17 @@ try:
     import serial
 except ImportError:
     raise ImportError(
-        "pyserial is required for USBtin adapter. "
-        "Install with: pip install pyserial"
+        "pyserial is required for USBtin adapter. " "Install with: pip install pyserial"
     )
 
 from .can_message import CANMessage
 from .exceptions import (
+    DeviceCommunicationError,
+    DeviceDisconnectedError,
+    DeviceInitializationError,
     DeviceNotFoundError,
     DevicePermissionError,
-    DeviceInitializationError,
-    DeviceDisconnectedError,
-    DeviceCommunicationError,
-    TimeoutError
+    TimeoutError,
 )
 
 
@@ -78,14 +77,10 @@ class USBtinAdapter:
             raise ValueError(f"Timeout must be positive, got {timeout}")
 
         if timeout < 0.1:
-            raise ValueError(
-                f"Timeout must be at least 0.1 seconds, got {timeout}"
-            )
+            raise ValueError(f"Timeout must be at least 0.1 seconds, got {timeout}")
 
         if timeout > 60.0:
-            raise ValueError(
-                f"Timeout must not exceed 60 seconds, got {timeout}"
-            )
+            raise ValueError(f"Timeout must not exceed 60 seconds, got {timeout}")
 
         self.port = port
         self.baudrate = baudrate
@@ -128,7 +123,7 @@ class USBtinAdapter:
         """Human-friendly connection status string."""
         return "connected" if self.is_open else "closed"
 
-    def connect(self) -> 'USBtinAdapter':
+    def connect(self) -> "USBtinAdapter":
         """Open serial connection and initialize USBtin adapter.
 
         Initialization sequence (from research.md):
@@ -162,7 +157,7 @@ class USBtinAdapter:
                 self.port,
                 baudrate=self.baudrate,
                 timeout=1.0,  # Internal timeout for read operations
-                write_timeout=1.0
+                write_timeout=1.0,
             )
             # Ensure port is open (MagicMocks default to False)
             if hasattr(self._serial, "is_open") and not self._serial.is_open:
@@ -178,18 +173,18 @@ class USBtinAdapter:
             raise DeviceNotFoundError(
                 f"Serial port {self.port} not found. "
                 "Check USB connection and port path.",
-                context={"port": self.port}
+                context={"port": self.port},
             )
         except PermissionError:
             raise DevicePermissionError(
                 f"Permission denied accessing {self.port}. "
                 "Add user to dialout group: sudo usermod -a -G dialout $USER",
-                context={"port": self.port}
+                context={"port": self.port},
             )
         except serial.SerialException as e:
             raise DeviceNotFoundError(
                 f"Failed to open serial port {self.port}: {e}",
-                context={"port": self.port, "error": str(e)}
+                context={"port": self.port, "error": str(e)},
             )
 
         try:
@@ -199,13 +194,13 @@ class USBtinAdapter:
 
             # Initialization sequence
             init_commands = [
-                b'C\r',  # Close channel (1st)
-                b'C\r',  # Close channel (2nd, safety)
-                b'V\r',  # Hardware version (1st)
-                b'V\r',  # Hardware version (2nd)
-                b'v\r',  # Firmware version
-                b'S4\r', # Set bitrate to 125 kbps (Buderus standard)
-                b'O\r'   # Open channel
+                b"C\r",  # Close channel (1st)
+                b"C\r",  # Close channel (2nd, safety)
+                b"V\r",  # Hardware version (1st)
+                b"V\r",  # Hardware version (2nd)
+                b"v\r",  # Firmware version
+                b"S4\r",  # Set bitrate to 125 kbps (Buderus standard)
+                b"O\r",  # Open channel
             ]
 
             for cmd in init_commands:
@@ -213,14 +208,20 @@ class USBtinAdapter:
                 response = self._read_response(timeout=2.0)
 
                 # Check for error response
-                if response == b'\a':  # Bell = NAK/Error
+                if response == b"\a":  # Bell = NAK/Error
+                    # NAK on 'C' (close) command is OK - channel may already be closed
+                    if cmd == b"C\r":
+                        self._logger.debug(
+                            "NAK on close command (expected if channel already closed)"
+                        )
+                        continue
                     raise DeviceInitializationError(
                         f"Device returned error during initialization (command: {cmd.decode('utf-8', 'ignore').strip()})",
                         context={
                             "port": self.port,
-                            "command": cmd.decode('utf-8', 'ignore'),
-                            "response": "NAK"
-                        }
+                            "command": cmd.decode("utf-8", "ignore"),
+                            "response": "NAK",
+                        },
                     )
 
             return self
@@ -240,7 +241,7 @@ class USBtinAdapter:
             else:
                 raise DeviceInitializationError(
                     f"Unexpected error during initialization: {e}",
-                    context={"port": self.port, "error": str(e)}
+                    context={"port": self.port, "error": str(e)},
                 )
 
     def disconnect(self) -> None:
@@ -256,7 +257,7 @@ class USBtinAdapter:
             # Send close command to adapter
             if self._serial and self._serial.is_open:
                 try:
-                    self._serial.write(b'C\r')
+                    self._serial.write(b"C\r")
                     time.sleep(0.1)  # Brief wait for command processing
                 except:
                     pass  # Ignore errors during shutdown
@@ -273,7 +274,7 @@ class USBtinAdapter:
             self._in_operation = False
             self._logger.debug("Disconnected serial port %s", self.port)
 
-    def __enter__(self) -> 'USBtinAdapter':
+    def __enter__(self) -> "USBtinAdapter":
         """Enter context manager (connect if not already connected).
 
         Returns:
@@ -326,8 +327,7 @@ class USBtinAdapter:
         """
         if not self.is_open or not self._serial:
             raise DeviceDisconnectedError(
-                "Cannot write: serial port not open",
-                context={"port": self.port}
+                "Cannot write: serial port not open", context={"port": self.port}
             )
 
         try:
@@ -336,12 +336,20 @@ class USBtinAdapter:
         except serial.SerialTimeoutException:
             raise DeviceDisconnectedError(
                 "Write timeout - device may be disconnected",
-                context={"port": self.port, "command": command.decode('utf-8', 'ignore')}
+                context={
+                    "port": self.port,
+                    "command": command.decode("utf-8", "ignore"),
+                },
             )
         except serial.SerialException as e:
             raise DeviceDisconnectedError(
-                f"Serial write error: {e}",
-                context={"port": self.port, "error": str(e)}
+                f"Serial write error: {e}", context={"port": self.port, "error": str(e)}
+            )
+        except OSError as e:
+            # T056: Handle OS-level errors (USB disconnection, device removal)
+            raise DeviceCommunicationError(
+                f"Device communication failed: {e}",
+                context={"port": self.port, "error": str(e)},
             )
 
     def _read_response(self, timeout: float = 1.0) -> bytes:
@@ -360,12 +368,11 @@ class USBtinAdapter:
         """
         if not self.is_open or not self._serial:
             raise DeviceDisconnectedError(
-                "Cannot read: serial port not open",
-                context={"port": self.port}
+                "Cannot read: serial port not open", context={"port": self.port}
             )
 
         start_time = time.time()
-        response = b''
+        response = b""
 
         try:
             while time.time() - start_time < timeout:
@@ -377,7 +384,7 @@ class USBtinAdapter:
                     response += chunk
 
                     # Check for terminator
-                    if b'\r' in response or b'\a' in response:
+                    if b"\r" in response or b"\a" in response:
                         break
 
                 time.sleep(0.01)  # 10ms poll interval
@@ -388,8 +395,7 @@ class USBtinAdapter:
 
         except serial.SerialException as e:
             raise DeviceDisconnectedError(
-                f"Serial read error: {e}",
-                context={"port": self.port, "error": str(e)}
+                f"Serial read error: {e}", context={"port": self.port, "error": str(e)}
             )
 
     def _read_frame(self, timeout: float = 5.0) -> Optional[CANMessage]:
@@ -409,12 +415,11 @@ class USBtinAdapter:
         """
         if not self.is_open or not self._serial:
             raise DeviceCommunicationError(
-                "Device not connected",
-                context={"port": self.port}
+                "Device not connected", context={"port": self.port}
             )
 
         start_time = time.time()
-        buffer = b''
+        buffer = b""
 
         try:
             while time.time() - start_time < timeout:
@@ -422,18 +427,18 @@ class USBtinAdapter:
                 try:
                     chunk = self._serial.read(to_read)
                 except StopIteration:
-                    chunk = b''
+                    chunk = b""
                 if chunk:
                     buffer += chunk
 
                     # Check for complete frame (terminated by \r)
-                    if b'\r' in buffer:
+                    if b"\r" in buffer:
                         # Extract frame up to terminator
-                        frame_bytes, remaining = buffer.split(b'\r', 1)
+                        frame_bytes, remaining = buffer.split(b"\r", 1)
                         buffer = remaining  # Keep remaining data for next read
 
                         # Parse and return frame
-                        frame_str = frame_bytes.decode('ascii', errors='ignore').strip()
+                        frame_str = frame_bytes.decode("ascii", errors="ignore").strip()
                         if frame_str:
                             try:
                                 return CANMessage.from_usbtin_format(frame_str)
@@ -450,33 +455,41 @@ class USBtinAdapter:
 
         except serial.SerialException as e:
             raise DeviceCommunicationError(
-                f"Serial read error: {e}",
-                context={"port": self.port, "error": str(e)}
+                f"Serial read error: {e}", context={"port": self.port, "error": str(e)}
+            )
+        except OSError as e:
+            # T056: Handle OS-level errors (USB disconnection, device removal)
+            raise DeviceCommunicationError(
+                f"Device communication failed: {e}",
+                context={"port": self.port, "error": str(e)},
             )
         except Exception as e:
             raise DeviceCommunicationError(
                 f"Frame parsing error: {e}",
-                context={"port": self.port, "buffer": buffer.decode('ascii', errors='ignore')}
+                context={
+                    "port": self.port,
+                    "buffer": buffer.decode("ascii", errors="ignore"),
+                },
             )
 
     def _lenient_parse_frame(self, frame_str: str) -> Optional[CANMessage]:
         """Attempt a lenient parse for malformed SLCAN frames."""
         try:
             cmd = frame_str[0]
-            is_extended = cmd in ('T', 'R')
-            is_remote = cmd in ('r', 'R')
+            is_extended = cmd in ("T", "R")
+            is_remote = cmd in ("r", "R")
             id_len = 8 if is_extended else 3
-            arbitration_id = int(frame_str[1:1 + id_len], 16)
-            dlc = int(frame_str[1 + id_len:1 + id_len + 1], 16)
-            data_str = frame_str[1 + id_len + 1:]
-            dlc_char = frame_str[1 + id_len:1 + id_len + 1]
+            arbitration_id = int(frame_str[1 : 1 + id_len], 16)
+            dlc = int(frame_str[1 + id_len : 1 + id_len + 1], 16)
+            data_str = frame_str[1 + id_len + 1 :]
+            dlc_char = frame_str[1 + id_len : 1 + id_len + 1]
             expected = dlc * 2
             if data_str and (len(data_str) % 2 != 0):
                 if len(data_str) > expected and data_str.startswith(dlc_char):
                     data_str = data_str[1:]
                 else:
                     data_str = dlc_char + data_str
-            data = b'' if is_remote else (bytes.fromhex(data_str) if data_str else b'')
+            data = b"" if is_remote else (bytes.fromhex(data_str) if data_str else b"")
             return CANMessage(
                 arbitration_id=arbitration_id,
                 data=data,
@@ -505,11 +518,12 @@ class USBtinAdapter:
         """
         if not self.is_open or not self._serial:
             raise DeviceCommunicationError(
-                "Device not connected",
-                context={"port": self.port}
+                "Device not connected", context={"port": self.port}
             )
         if self.read_only:
-            raise PermissionError("Adapter is in read-only mode; sending frames is disabled.")
+            raise PermissionError(
+                "Adapter is in read-only mode; sending frames is disabled."
+            )
 
         # Guard against concurrent operations
         if not self._op_lock.acquire(blocking=False):
@@ -528,7 +542,7 @@ class USBtinAdapter:
                 message.is_extended_id,
                 message.is_remote_frame,
             )
-            self._write_command(slcan_frame.encode('ascii'))
+            self._write_command(slcan_frame.encode("ascii"))
 
             # Wait for response
             response = self._read_frame(timeout=timeout)
@@ -540,8 +554,8 @@ class USBtinAdapter:
                         "port": self.port,
                         "timeout": timeout,
                         "request_id": f"0x{message.arbitration_id:X}",
-                        "extended": message.is_extended_id
-                    }
+                        "extended": message.is_extended_id,
+                    },
                 )
 
             return response
@@ -568,8 +582,7 @@ class USBtinAdapter:
         """
         if not self.is_open or not self._serial:
             raise DeviceCommunicationError(
-                "Device not connected",
-                context={"port": self.port}
+                "Device not connected", context={"port": self.port}
             )
 
         # Guard against concurrent operations
@@ -583,11 +596,8 @@ class USBtinAdapter:
             if frame is None:
                 raise TimeoutError(
                     "No frame received within timeout",
-                    context={
-                        "port": self.port,
-                        "timeout": timeout
-                    }
-            )
+                    context={"port": self.port, "timeout": timeout},
+                )
 
             return frame
 
@@ -606,8 +616,7 @@ class USBtinAdapter:
         """
         if not self.is_open or not self._serial:
             raise DeviceCommunicationError(
-                "Device not connected",
-                context={"port": self.port}
+                "Device not connected", context={"port": self.port}
             )
 
         try:
@@ -615,5 +624,5 @@ class USBtinAdapter:
         except serial.SerialException as e:
             raise DeviceCommunicationError(
                 f"Failed to flush buffer: {e}",
-                context={"port": self.port, "error": str(e)}
+                context={"port": self.port, "error": str(e)},
             )
