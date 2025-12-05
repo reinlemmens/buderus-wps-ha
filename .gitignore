@@ -31,6 +31,14 @@ parameter_dump.json
 *.swo
 *~
 
-# Copyright
-docs/gebruikershandleiding
-docs/installatiehandleiding
+# Runtime files
+logfile
+
+# Large binary documentation (PDFs, images)
+docs/
+
+# Reference output files
+fhem/fhemoutput.txt
+
+# Tool output
+tools/scan_results.json

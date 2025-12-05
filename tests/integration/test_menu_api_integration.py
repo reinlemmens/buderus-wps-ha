@@ -41,20 +41,21 @@ class TestStatusIntegration:
 
     def test_full_status_read_workflow(self, mock_client):
         """Complete status reading workflow."""
-        # Simulate realistic responses
+        # Simulate realistic responses using actual parameter names from STATUS_PARAMS
         responses = {
-            "OUTDOOR_TEMP": {"decoded": 8.5},
-            "SUPPLY_TEMP": {"decoded": 35.0},
-            "DHW_TEMP": {"decoded": 52.0},
-            "ROOM_TEMP": {"decoded": 21.5},
-            "OPERATING_MODE": {"decoded": 1},
-            "COMPRESSOR_STATUS": {"decoded": 1},
+            "GT2_TEMP": {"decoded": 8.5},       # outdoor_temp
+            "GT8_TEMP": {"decoded": 35.0},      # supply_temp
+            "GT3_TEMP": {"decoded": 52.0},      # dhw_temp
+            "ROOM_TEMP_C1": {"decoded": 21.5},  # room_temp
+            "DRIFTTILLSTAND": {"decoded": 1},   # operating_mode
+            "COMPRESSOR": {"decoded": 1},       # compressor_status (matches partial)
         }
 
         def read_param(name):
-            # Normalize to uppercase
+            # Check for exact match or partial match
+            name_upper = name.upper()
             for key, val in responses.items():
-                if key in name.upper():
+                if key in name_upper or name_upper in key:
                     return val
             return {"decoded": 0}
 

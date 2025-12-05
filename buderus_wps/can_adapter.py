@@ -359,6 +359,12 @@ class USBtinAdapter:
                 f"Serial write error: {e}",
                 context={"port": self.port, "error": str(e)}
             )
+        except OSError as e:
+            # T056: Handle OS-level errors (USB disconnection, device removal)
+            raise DeviceCommunicationError(
+                f"Device communication failed: {e}",
+                context={"port": self.port, "error": str(e)}
+            )
 
     def _read_response(self, timeout: float = 1.0) -> bytes:
         """Read response from serial port with timeout.

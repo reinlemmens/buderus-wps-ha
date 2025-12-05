@@ -29,8 +29,19 @@ __version__ = "0.1.0"
 __author__ = "Buderus WPS HA Project"
 __license__ = "MIT"
 
-from .can_message import CANMessage
 from .can_adapter import USBtinAdapter
+from .can_message import (
+    CANMessage,
+    CAN_PREFIX_COUNTER,
+    CAN_PREFIX_DATA,
+    CAN_PREFIX_STATUS,
+    ELEMENT_CONFIG,
+    ELEMENT_COUNTER,
+    ELEMENT_E21,
+    ELEMENT_E22,
+    ELEMENT_E31,
+    ELEMENT_E32,
+)
 from .exceptions import (
     AlarmNotClearableError,
     BuderusCANException,
@@ -48,15 +59,15 @@ from .exceptions import (
     TimeoutError,
     ValidationError,
 )
+from .heat_pump import HeatPumpClient
+from .parameter_registry import Parameter, ParameterRegistry
 from .program_switching import (
-    ProgramSwitchingController,
-    ProgramSwitchConfig,
-    ProgramState,
     ParameterIO,
+    ProgramState,
+    ProgramSwitchConfig,
+    ProgramSwitchingController,
 )
 from .value_encoder import ValueEncoder
-from .parameter_registry import ParameterRegistry, Parameter
-from .heat_pump import HeatPumpClient
 from .enums import (
     AlarmCategory,
     CircuitType,
@@ -116,8 +127,20 @@ __all__ = [
     "ReadOnlyError",
     "TimeoutError",
     "ValidationError",
-    # Core classes
+    # CAN Message and Adapter
     "CANMessage",
+    "USBtinAdapter",
+    # CAN ID Constants (Hardware Verified 2025-12-05)
+    "CAN_PREFIX_COUNTER",
+    "CAN_PREFIX_DATA",
+    "CAN_PREFIX_STATUS",
+    "ELEMENT_CONFIG",
+    "ELEMENT_COUNTER",
+    "ELEMENT_E21",
+    "ELEMENT_E22",
+    "ELEMENT_E31",
+    "ELEMENT_E32",
+    # Heat Pump Interface
     "HeatPumpClient",
     "Parameter",
     "ParameterIO",
@@ -125,7 +148,7 @@ __all__ = [
     "ProgramState",
     "ProgramSwitchConfig",
     "ProgramSwitchingController",
-    "USBtinAdapter",
+    # Utilities
     "ValueEncoder",
     # Menu API enums
     "AlarmCategory",

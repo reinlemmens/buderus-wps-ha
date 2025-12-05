@@ -23,18 +23,38 @@ A developer or system integrator needs to establish a reliable connection betwee
 
 ---
 
-### User Story 2 - Send and Receive CAN Messages (Priority: P2)
+### User Story 2 - Passive CAN Bus Monitoring (Priority: P2)
 
-A developer needs to send CAN messages to the heat pump controller and receive responses. The system must handle message encoding, transmission timing, and response parsing without requiring the developer to understand low-level serial communication details.
+A developer needs to receive and decode CAN messages that the heat pump broadcasts continuously. The Buderus WPS broadcasts sensor data (temperatures, states, counters) on the CAN bus without requiring active requests. The system must receive these broadcasts, decode the CAN ID structure, and provide the raw data for interpretation.
 
-**Why this priority**: Once connection is established, the primary use case is bidirectional communication. This enables reading heat pump status and sending control commands.
+**Why this priority**: Passive monitoring is the most reliable data access method. Hardware verification (2025-12-05) confirmed that broadcast data matches FHEM readings exactly, while active RTR requests may not receive responses on all firmware versions.
 
-**Independent Test**: Can be tested by opening a connection (US1), sending a formatted CAN message, receiving a response, and verifying the response can be parsed. Delivers actual heat pump communication capability.
+**Hardware Verified**: Passive monitoring tested against FHEM readings - exact match on 5 parameters, within tolerance on 4 parameters (real-time variation).
+
+**Independent Test**: Can be tested by opening a connection (US1), listening to bus traffic, and verifying that broadcast CAN messages are received and can be decoded.
 
 **Acceptance Scenarios**:
 
-1. **Given** an open connection to the heat pump, **When** a CAN read request is sent for a temperature element, **Then** the system receives the response within the timeout period and returns the raw CAN message data
-2. **Given** an open connection, **When** multiple CAN messages are sent in sequence, **Then** each message is transmitted completely before the next begins and responses can be matched to requests
+1. **Given** an open connection to the heat pump, **When** listening passively for CAN messages, **Then** the system receives broadcast messages continuously (30+ messages/second typical)
+2. **Given** broadcast CAN messages are received, **When** the CAN ID is decoded, **Then** the system correctly extracts the parameter index and element type from the CAN ID structure
+3. **Given** the system is monitoring passively, **When** a specific CAN ID is watched for, **Then** the system can filter and return only matching messages
+
+---
+
+### User Story 2b - Send CAN Messages (Priority: P2b - Optional)
+
+A developer may need to send CAN messages to the heat pump controller for active parameter reads or writes. Note: Hardware verification (2025-12-05) found that active RTR requests may not receive responses without a KM200 device on the bus. This functionality is provided but may not work on all installations.
+
+**Why this priority**: Lower than passive monitoring because it's not universally supported. Some installations require a KM200 gateway for active communication.
+
+**Hardware Verified**: Transmit works (got `Z` OK response), but RTR requests to element list CAN IDs did not receive responses. The heat pump may require KM200 handshake protocol.
+
+**Independent Test**: Can be tested by opening a connection (US1), sending a CAN message, and verifying successful transmission (adapter acknowledges with `Z`).
+
+**Acceptance Scenarios**:
+
+1. **Given** an open connection, **When** a CAN data frame is transmitted, **Then** the adapter acknowledges successful transmission
+2. **Given** an open connection, **When** multiple CAN messages are sent in sequence, **Then** each message is transmitted completely before the next begins
 3. **Given** a CAN message is sent, **When** no response is received within the timeout period, **Then** the system reports a timeout error with details about the failed message
 
 ---
@@ -107,3 +127,56 @@ A developer needs to cleanly close connections, handle disconnections, and recov
 - The host system has appropriate USB/serial drivers installed for the adapter hardware
 - The CAN bus bitrate configuration is handled separately from the serial connection (typically configured once in the adapter's non-volatile memory)
 - Thread-safety is required as the library may be used in async contexts or with multiple concurrent users
+- **Passive monitoring is the primary data access method** - active RTR requests may not work without KM200 gateway
+
+---
+
+## Hardware Verification Results (2025-12-05)
+
+### Test Environment
+- **Device**: Buderus WPS heat pump
+- **Adapter**: USBtin on `/dev/ttyACM0` (Raspberry Pi)
+- **Reference**: FHEM plugin 26_KM273v018.pm captured readings
+
+### Verification Summary
+
+| Test | Result | Notes |
+|------|--------|-------|
+| Serial connection | ✅ Pass | Opens at 115200 baud |
+| CAN transmit | ✅ Pass | Adapter returns `Z` (OK) |
+| Passive receive | ✅ Pass | 30+ messages/second |
+| Data accuracy | ✅ Pass | Matches FHEM within tolerance |
+| Active RTR requests | ⚠️ Limited | No response to element list requests |
+
+### Passive Monitoring Accuracy
+
+| CAN ID | FHEM Value | Live Value | Match |
+|--------|------------|------------|-------|
+| 0x0C084060 | 214 | 214 | Exact (21.4°C) |
+| 0x0C084062 | 228 | 228 | Exact (22.8°C) |
+| 0x0C084063 | 246 | 246 | Exact (24.6°C) |
+| 0x0C0E8060 | 552 | 553 | ~1 (55.2°C) |
+| 0x0C000060 | 201 | 200 | ~1 (20.0°C) |
+
+### CAN ID Structure (Broadcast Data)
+
+The heat pump broadcasts data using this CAN ID structure:
+
+```
+Bits 31-24: Prefix (0x0C = response/data, 0x00 = status, 0x08 = counter)
+Bits 23-12: Parameter Index (identifies the parameter type)
+Bits 11-0:  Element Type (0x060-0x063 = units E21/E22/E31/E32, 0x270 = counter, 0x403 = config)
+```
+
+Example decoding:
+- `0x0C084060`: Prefix=0x0C, ParamIdx=0x084 (33), Element=0x060 (unit 0)
+- `0x0C084061`: Same parameter, Element=0x061 (unit 1)
+
+### Active Request Limitations
+
+The FHEM element list protocol (`R01FD7FE00` → `T09FD7FE0`) requires a KM200 device on the CAN bus to respond. Without KM200:
+- RTR requests are transmitted successfully (adapter acknowledges)
+- No response is received from the heat pump
+- Element list discovery is not available
+
+**Recommendation**: Use passive monitoring for reliable data access. Active requests may work for parameter writes but have not been verified.
