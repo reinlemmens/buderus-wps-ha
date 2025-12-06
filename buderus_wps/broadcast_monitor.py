@@ -87,6 +87,25 @@ class BroadcastCache:
 # Known broadcast ID mappings based on observed traffic
 # Format: (base, idx) -> (name, format)
 KNOWN_BROADCASTS: Dict[tuple, tuple] = {
+    # Outdoor temperature (idx=12 on all circuit bases) - Hardware verified
+    (0x0060, 12): ("OUTDOOR_TEMP_C0", "tem"),
+    (0x0061, 12): ("OUTDOOR_TEMP_C1", "tem"),
+    (0x0062, 12): ("OUTDOOR_TEMP_C2", "tem"),
+    (0x0063, 12): ("OUTDOOR_TEMP_C3", "tem"),
+
+    # RC10 Room Controller - Circuit 1 (base 0x0060) - Hardware verified
+    (0x0060, 0): ("RC10_C1_ROOM_TEMP", "tem"),      # Room temperature
+    (0x0060, 18): ("RC10_C1_DEMAND_TEMP", "tem"),   # Demand/setpoint temperature
+    (0x0060, 83): ("RC10_C1_ROOM_TEMP_COPY", "tem"),  # Room temperature (copy)
+
+    # RC10 Room Controller - Circuit 3 (base 0x0402) - Hardware verified
+    (0x0402, 55): ("RC10_C3_ROOM_TEMP", "tem"),     # Room temperature
+    (0x0402, 98): ("RC10_C3_ROOM_TEMP_COPY", "tem"),  # Room temperature (copy)
+    (0x0402, 107): ("RC10_C3_DEMAND_TEMP", "tem"),  # Demand/setpoint temperature
+
+    # Demand setpoint (idx=18 on circuit bases) - Hardware verified
+    (0x0062, 18): ("DEMAND_TEMP_C2", "tem"),  # Circuit 2 demand
+
     # Base 0x0060 - Circuit 0 / Main
     (0x0060, 33): ("SENSOR_TEMP_C0_33", "tem"),
     (0x0060, 58): ("DHW_TEMP_ACTUAL", "tem"),  # ~54°C observed

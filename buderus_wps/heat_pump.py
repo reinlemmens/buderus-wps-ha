@@ -157,32 +157,54 @@ class HeatPumpClient:
             return self._encode_int_like(param, value)
         return self._encode_int_like(param, value)
 
-    def _encode_int_like(self, param: Parameter, value: Any) -> bytes:
+    def _encode_int_like(self, param: Parameter, value: Any, dlc_hint: int = 0) -> bytes:
         try:
             ivalue = int(value)
         except Exception as e:
             raise ValueError(f"Invalid value for {param.text}: {value}") from e
         if ivalue < param.min or ivalue > param.max:
             raise ValueError(f"Value {ivalue} out of range for {param.text} [{param.min}, {param.max}]")
-        # Determine byte width from range
-        if param.max <= 0xFF:
-            size = 1
-        elif param.max <= 0xFFFF:
-            size = 2
-        elif param.max <= 0xFFFFFFFF:
-            size = 4
-        else:
-            size = 8
         signed = param.min < 0
+
+        # Use dlc_hint if provided (from actual device response)
+        if dlc_hint > 0:
+            size = dlc_hint
+        else:
+            # Determine minimum bytes needed for the actual value
+            # PROTOCOL: Heat pump may use smaller storage than min/max suggests
+            if signed:
+                if -128 <= ivalue <= 127:
+                    size = 1
+                elif -32768 <= ivalue <= 32767:
+                    size = 2
+                else:
+                    size = 4
+            else:
+                if ivalue <= 0xFF:
+                    size = 1
+                elif ivalue <= 0xFFFF:
+                    size = 2
+                elif ivalue <= 0xFFFFFFFF:
+                    size = 4
+                else:
+                    size = 8
         return ivalue.to_bytes(size, "big", signed=signed)
 
     def _decode_value(self, param: Parameter, raw: bytes) -> Any:
         fmt = param.format
         if fmt == "tem" or fmt.startswith("temp"):
-            try:
-                return ValueEncoder.decode_temperature(raw[:2], "temp")
-            except Exception:
-                return raw.hex()
+            # PROTOCOL: Some parameters return 1 byte despite min/max suggesting 2
+            if len(raw) >= 2:
+                try:
+                    return ValueEncoder.decode_temperature(raw[:2], "temp")
+                except Exception:
+                    pass
+            # Handle 1-byte temperature (factor 0.1)
+            if len(raw) == 1:
+                signed = param.min < 0
+                val = int.from_bytes(raw, "big", signed=signed)
+                return val / 10.0
+            return raw.hex()
         if fmt.startswith("dp") or fmt.startswith("rp"):
             try:
                 precision = int(fmt[2]) if len(fmt) > 2 and fmt[2].isdigit() else 0
