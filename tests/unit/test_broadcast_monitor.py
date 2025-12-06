@@ -241,3 +241,68 @@ class TestGetKnownName:
             )
             result = monitor.get_known_name(reading)
             assert result == name, f"Expected {name} for base=0x{base:04X}, idx={idx}"
+
+
+class TestParamToBroadcast:
+    """Test PARAM_TO_BROADCAST mapping and helper functions."""
+
+    def test_get_broadcast_for_gt2_temp(self) -> None:
+        """Test get_broadcast_for_param returns correct mapping for GT2_TEMP.
+
+        GT2_TEMP has base=None to search all circuit bases (0x0060-0x0063).
+        """
+        from buderus_wps.broadcast_monitor import get_broadcast_for_param
+        result = get_broadcast_for_param("GT2_TEMP")
+        assert result == (None, 12)
+
+    def test_get_broadcast_for_gt3_temp(self) -> None:
+        """Test get_broadcast_for_param returns correct mapping for GT3_TEMP.
+
+        GT3_TEMP has base=None to search all circuit bases (0x0060-0x0063).
+        """
+        from buderus_wps.broadcast_monitor import get_broadcast_for_param
+        result = get_broadcast_for_param("GT3_TEMP")
+        assert result == (None, 58)
+
+    def test_get_broadcast_case_insensitive(self) -> None:
+        """Test get_broadcast_for_param is case-insensitive."""
+        from buderus_wps.broadcast_monitor import get_broadcast_for_param
+        assert get_broadcast_for_param("gt2_temp") == (None, 12)
+        assert get_broadcast_for_param("Gt2_Temp") == (None, 12)
+        assert get_broadcast_for_param("GT2_TEMP") == (None, 12)
+
+    def test_get_broadcast_unknown_param(self) -> None:
+        """Test get_broadcast_for_param returns None for unknown parameter."""
+        from buderus_wps.broadcast_monitor import get_broadcast_for_param
+        result = get_broadcast_for_param("UNKNOWN_PARAM")
+        assert result is None
+
+    def test_get_broadcast_empty_string(self) -> None:
+        """Test get_broadcast_for_param handles empty string."""
+        from buderus_wps.broadcast_monitor import get_broadcast_for_param
+        result = get_broadcast_for_param("")
+        assert result is None
+
+
+class TestIsTemperatureParam:
+    """Test is_temperature_param helper function."""
+
+    def test_is_temperature_tem_format(self) -> None:
+        """Test is_temperature_param returns True for 'tem' format."""
+        from buderus_wps.broadcast_monitor import is_temperature_param
+        assert is_temperature_param("tem") is True
+
+    def test_is_temperature_temp_prefix(self) -> None:
+        """Test is_temperature_param returns True for 'temp*' formats."""
+        from buderus_wps.broadcast_monitor import is_temperature_param
+        assert is_temperature_param("temp") is True
+        assert is_temperature_param("temp1") is True
+        assert is_temperature_param("temperature") is True
+
+    def test_is_temperature_non_temp_format(self) -> None:
+        """Test is_temperature_param returns False for non-temperature formats."""
+        from buderus_wps.broadcast_monitor import is_temperature_param
+        assert is_temperature_param("int") is False
+        assert is_temperature_param("dp1") is False
+        assert is_temperature_param("str") is False
+        assert is_temperature_param("") is False

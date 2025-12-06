@@ -139,3 +139,53 @@ def test_main_list_connects(monkeypatch):
     assert rc == 0
     assert connect_called["value"] is True
     assert disconnect_called["value"] is True
+
+
+# Tests for broadcast read functionality (Feature 012)
+
+class TestBroadcastReadArguments:
+    """Test CLI argument parsing for broadcast read feature."""
+
+    def test_read_broadcast_flag_parsed(self):
+        """Test --broadcast flag is recognized."""
+        parser = cli.build_parser()
+        args = parser.parse_args(["read", "GT2_TEMP", "--broadcast"])
+        assert args.broadcast is True
+
+    def test_read_broadcast_flag_default_false(self):
+        """Test --broadcast flag defaults to False."""
+        parser = cli.build_parser()
+        args = parser.parse_args(["read", "GT2_TEMP"])
+        assert args.broadcast is False
+
+    def test_read_duration_argument(self):
+        """Test --duration argument is recognized."""
+        parser = cli.build_parser()
+        args = parser.parse_args(["read", "GT2_TEMP", "--broadcast", "--duration", "10"])
+        assert args.duration == 10.0
+
+    def test_read_duration_default(self):
+        """Test --duration has correct default value (5.0 seconds)."""
+        parser = cli.build_parser()
+        args = parser.parse_args(["read", "GT2_TEMP"])
+        assert args.duration == 5.0
+
+    def test_read_no_fallback_flag_parsed(self):
+        """Test --no-fallback flag is recognized."""
+        parser = cli.build_parser()
+        args = parser.parse_args(["read", "GT2_TEMP", "--no-fallback"])
+        assert args.no_fallback is True
+
+    def test_read_no_fallback_default_false(self):
+        """Test --no-fallback flag defaults to False."""
+        parser = cli.build_parser()
+        args = parser.parse_args(["read", "GT2_TEMP"])
+        assert args.no_fallback is False
+
+    def test_read_all_broadcast_args_combined(self):
+        """Test all broadcast-related arguments can be combined."""
+        parser = cli.build_parser()
+        args = parser.parse_args(["read", "GT2_TEMP", "--broadcast", "--duration", "15", "--json"])
+        assert args.broadcast is True
+        assert args.duration == 15.0
+        assert args.json is True

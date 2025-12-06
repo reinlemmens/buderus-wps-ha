@@ -14,7 +14,7 @@ import logging
 import logging.handlers
 import os
 
-from buderus_wps import USBtinAdapter, HeatPumpClient, ParameterRegistry, BroadcastMonitor
+from buderus_wps import USBtinAdapter, HeatPumpClient, ParameterRegistry, BroadcastMonitor, EnergyBlockingControl
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -33,6 +33,12 @@ def build_parser() -> argparse.ArgumentParser:
     read_p = sub.add_parser("read", help="Read a parameter by name or index")
     read_p.add_argument("param", help="Parameter name or index")
     read_p.add_argument("--json", action="store_true", help="Output JSON (decoded + raw)")
+    read_p.add_argument("--broadcast", action="store_true",
+                        help="Read from broadcast traffic instead of RTR")
+    read_p.add_argument("--duration", type=float, default=5.0,
+                        help="Broadcast collection duration in seconds (default: 5)")
+    read_p.add_argument("--no-fallback", action="store_true",
+                        help="Disable automatic broadcast fallback for invalid RTR responses")
 
     # write
     write_p = sub.add_parser("write", help="Write a parameter by name or index")
@@ -52,6 +58,32 @@ def build_parser() -> argparse.ArgumentParser:
     monitor_p.add_argument("--duration", type=float, default=10.0, help="Collection duration in seconds (default: 10)")
     monitor_p.add_argument("--json", action="store_true", help="Output JSON format")
     monitor_p.add_argument("--temps-only", action="store_true", help="Only show temperature readings")
+
+    # energy command group
+    energy_p = sub.add_parser("energy", help="Energy blocking control commands")
+    energy_sub = energy_p.add_subparsers(dest="energy_cmd", required=True)
+
+    # energy block-compressor
+    energy_sub.add_parser("block-compressor", help="Block compressor from running")
+
+    # energy unblock-compressor
+    energy_sub.add_parser("unblock-compressor", help="Unblock compressor, restore normal operation")
+
+    # energy block-aux-heater
+    energy_sub.add_parser("block-aux-heater", help="Block auxiliary heater from running")
+
+    # energy unblock-aux-heater
+    energy_sub.add_parser("unblock-aux-heater", help="Unblock auxiliary heater, restore normal operation")
+
+    # energy status
+    energy_status_p = energy_sub.add_parser("status", help="Show energy blocking status")
+    energy_status_p.add_argument("--format", choices=["text", "json"], default="text", help="Output format (default: text)")
+
+    # energy clear-all
+    energy_sub.add_parser("clear-all", help="Clear all energy blocking restrictions")
+
+    # energy block-all
+    energy_sub.add_parser("block-all", help="Block both compressor and auxiliary heater")
 
     return parser
 
@@ -91,22 +123,140 @@ def _configure_logging(args: argparse.Namespace) -> None:
         pass
 
 
-def cmd_read(client: HeatPumpClient, args: argparse.Namespace) -> int:
-    try:
-        if args.json:
-            result = client.read_parameter(args.param, timeout=args.timeout)
-            # Convert raw bytes to hex for JSON
-            result["raw"] = result["raw"].hex() if isinstance(result["raw"], (bytes, bytearray)) else result["raw"]
-            import json
+# --- Broadcast Read Helpers (T015, T025) ---
 
-            print(json.dumps(result))
+from typing import Optional, Tuple
+
+
+def read_from_broadcast(
+    adapter: "USBtinAdapter",
+    param_name: str,
+    duration: float = 5.0
+) -> Optional[Tuple[float, bytes]]:
+    """
+    Read parameter value from broadcast traffic.
+
+    Args:
+        adapter: Connected USBtin adapter
+        param_name: Parameter name to read
+        duration: How long to collect broadcast data (seconds)
+
+    Returns:
+        Tuple of (decoded_value, raw_bytes) or None if not found
+    """
+    from buderus_wps.broadcast_monitor import (
+        BroadcastMonitor, get_broadcast_for_param, CIRCUIT_BASES
+    )
+
+    mapping = get_broadcast_for_param(param_name)
+    if mapping is None:
+        return None
+
+    base, idx = mapping
+    monitor = BroadcastMonitor(adapter)
+    cache = monitor.collect(duration=duration)
+
+    # If base is None, search all circuit bases
+    if base is None:
+        for circuit_base in CIRCUIT_BASES:
+            reading = cache.get_by_idx_and_base(idx=idx, base=circuit_base)
+            if reading and reading.is_temperature and reading.temperature is not None:
+                return (reading.temperature, reading.raw_data)
+        return None
+
+    # Specific base lookup
+    reading = cache.get_by_idx_and_base(idx=idx, base=base)
+    if reading and reading.is_temperature and reading.temperature is not None:
+        return (reading.temperature, reading.raw_data)
+
+    return None
+
+
+def is_invalid_rtr_response(data: bytes, param_format: str) -> bool:
+    """
+    Check if RTR response is invalid and needs fallback.
+
+    For temperature parameters, a 1-byte response indicates an incomplete
+    read from the heat pump (returns 0x01 = 0.1°C instead of proper 2-byte value).
+
+    Args:
+        data: Raw bytes from RTR response
+        param_format: Parameter format string (e.g., "tem", "dec")
+
+    Returns:
+        True if response is invalid and fallback should be attempted
+    """
+    from buderus_wps.broadcast_monitor import is_temperature_param
+
+    # Only check for invalid response on temperature parameters
+    if not is_temperature_param(param_format):
+        return False
+
+    # Temperature parameters should have 2-byte response
+    # 1-byte response indicates protocol failure
+    return len(data) == 1
+
+
+def cmd_read(client: HeatPumpClient, args: argparse.Namespace, adapter: Optional["USBtinAdapter"] = None) -> int:
+    """Read a parameter value.
+
+    Supports:
+    - Standard RTR read (default)
+    - Broadcast read (--broadcast flag)
+    - Automatic fallback to broadcast for invalid RTR responses (unless --no-fallback)
+    """
+    try:
+        param = resolve_param(client, args.param)
+        source = "rtr"
+
+        # Explicit broadcast mode (T016)
+        if getattr(args, 'broadcast', False):
+            if adapter is None:
+                print("ERROR: Adapter required for broadcast read", file=sys.stderr)
+                return 1
+
+            result = read_from_broadcast(adapter, param.text, args.duration)
+            if result is None:
+                print(f"ERROR: {param.text} not available via broadcast", file=sys.stderr)
+                return 1
+
+            decoded, raw = result
+            source = "broadcast"
         else:
-            param = resolve_param(client, args.param)
-            data = client.read_value(param.text, timeout=args.timeout)
-            decoded = client._decode_value(param, data)
+            # Standard RTR read
+            raw = client.read_value(param.text, timeout=args.timeout)
+            decoded = client._decode_value(param, raw)
+
+            # Automatic fallback for invalid RTR response (US2 - but check flag here)
+            if (adapter is not None and
+                not getattr(args, 'no_fallback', False) and
+                is_invalid_rtr_response(raw, param.format)):
+
+                print("WARNING: RTR returned invalid data, using broadcast fallback", file=sys.stderr)
+                fallback = read_from_broadcast(adapter, param.text, args.duration)
+                if fallback:
+                    decoded, raw = fallback
+                    source = "broadcast"
+                else:
+                    print("WARNING: RTR returned invalid data, broadcast fallback failed", file=sys.stderr)
+                    # Continue with original invalid data
+
+        # Output result with source indication (US3)
+        if getattr(args, 'json', False):
+            import json
+            json_output = {
+                "name": param.text,
+                "idx": param.idx,
+                "raw": raw.hex() if isinstance(raw, bytes) else raw,
+                "decoded": decoded,
+                "source": source
+            }
+            print(json.dumps(json_output))
+        else:
             formatted = format_value(decoded, param.format)
-            raw_hex = data.hex().upper()
-            print(f"{param.text} = {formatted}  (raw=0x{raw_hex}, idx={param.idx})")
+            raw_hex = raw.hex().upper() if isinstance(raw, bytes) else str(raw)
+            print(f"{param.text} = {formatted}  (raw=0x{raw_hex}, idx={param.idx}, source={source})")
+
         return 0
     except Exception as e:
         print(f"ERROR: {e}", file=sys.stderr)
@@ -210,6 +360,102 @@ def cmd_monitor(adapter: "USBtinAdapter", args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_energy(client: HeatPumpClient, args: argparse.Namespace) -> int:
+    """Handle energy blocking commands."""
+    control = EnergyBlockingControl(client)
+
+    if args.energy_cmd == "block-compressor":
+        result = control.block_compressor(timeout=args.timeout)
+        if result.success:
+            print(f"OK: {result.message}")
+            return 0
+        else:
+            print(f"ERROR: {result.message}", file=sys.stderr)
+            if result.error:
+                print(f"  Detail: {result.error}", file=sys.stderr)
+            return 1
+
+    elif args.energy_cmd == "unblock-compressor":
+        result = control.unblock_compressor(timeout=args.timeout)
+        if result.success:
+            print(f"OK: {result.message}")
+            return 0
+        else:
+            print(f"ERROR: {result.message}", file=sys.stderr)
+            if result.error:
+                print(f"  Detail: {result.error}", file=sys.stderr)
+            return 1
+
+    elif args.energy_cmd == "block-aux-heater":
+        result = control.block_aux_heater(timeout=args.timeout)
+        if result.success:
+            print(f"OK: {result.message}")
+            return 0
+        else:
+            print(f"ERROR: {result.message}", file=sys.stderr)
+            if result.error:
+                print(f"  Detail: {result.error}", file=sys.stderr)
+            return 1
+
+    elif args.energy_cmd == "unblock-aux-heater":
+        result = control.unblock_aux_heater(timeout=args.timeout)
+        if result.success:
+            print(f"OK: {result.message}")
+            return 0
+        else:
+            print(f"ERROR: {result.message}", file=sys.stderr)
+            if result.error:
+                print(f"  Detail: {result.error}", file=sys.stderr)
+            return 1
+
+    elif args.energy_cmd == "status":
+        status = control.get_status(timeout=args.timeout)
+        if args.format == "json":
+            import json
+            output = {
+                "compressor": {
+                    "blocked": status.compressor.blocked,
+                    "source": status.compressor.source,
+                },
+                "aux_heater": {
+                    "blocked": status.aux_heater.blocked,
+                    "source": status.aux_heater.source,
+                },
+                "timestamp": status.timestamp,
+            }
+            print(json.dumps(output))
+        else:
+            print("Energy Blocking Status:")
+            print(f"  Compressor: {'BLOCKED' if status.compressor.blocked else 'Normal'} (source: {status.compressor.source})")
+            print(f"  Aux Heater: {'BLOCKED' if status.aux_heater.blocked else 'Normal'} (source: {status.aux_heater.source})")
+        return 0
+
+    elif args.energy_cmd == "clear-all":
+        result = control.clear_all_blocks(timeout=args.timeout)
+        if result.success:
+            print(f"OK: {result.message}")
+            return 0
+        else:
+            print(f"ERROR: {result.message}", file=sys.stderr)
+            if result.error:
+                print(f"  Detail: {result.error}", file=sys.stderr)
+            return 1
+
+    elif args.energy_cmd == "block-all":
+        result = control.block_all(timeout=args.timeout)
+        if result.success:
+            print(f"OK: {result.message}")
+            return 0
+        else:
+            print(f"ERROR: {result.message}", file=sys.stderr)
+            if result.error:
+                print(f"  Detail: {result.error}", file=sys.stderr)
+            return 1
+
+    print(f"Unknown energy command: {args.energy_cmd}", file=sys.stderr)
+    return 1
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -226,7 +472,7 @@ def main(argv: list[str] | None = None) -> int:
         return 1
     try:
         if args.command == "read":
-            return cmd_read(client, args)
+            return cmd_read(client, args, adapter)
         if args.command == "write":
             return cmd_write(client, args)
         if args.command == "list":
@@ -235,6 +481,8 @@ def main(argv: list[str] | None = None) -> int:
             return cmd_dump(client, args)
         if args.command == "monitor":
             return cmd_monitor(adapter, args)
+        if args.command == "energy":
+            return cmd_energy(client, args)
         print("Unknown command", file=sys.stderr)
         return 1
     finally:

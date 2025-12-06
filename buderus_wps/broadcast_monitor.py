@@ -68,9 +68,15 @@ class BroadcastCache:
         return self.readings.get(can_id)
 
     def get_by_idx_and_base(self, idx: int, base: int) -> Optional[BroadcastReading]:
-        """Get cached reading by idx and base."""
-        target_id = 0x0C000000 | (idx << 14) | base
-        return self.readings.get(target_id)
+        """Get cached reading by idx and base.
+
+        Searches all readings for one matching the given idx and base,
+        since the high bits of the CAN ID can vary.
+        """
+        for reading in self.readings.values():
+            if reading.idx == idx and reading.base == base:
+                return reading
+        return None
 
     def get_temperatures(self, circuit: Optional[int] = None) -> List[BroadcastReading]:
         """Get all temperature readings, optionally filtered by circuit."""
@@ -130,6 +136,52 @@ KNOWN_BROADCASTS: Dict[tuple, tuple] = {
     (0x0063, 59): ("SENSOR_TEMP_C3_59", "tem"),
     (0x0063, 60): ("SENSOR_TEMP_C3_60", "tem"),
 }
+
+
+# Mapping from standard parameter names to broadcast (base, idx)
+# Used by CLI read command for broadcast fallback
+# Maps FHEM parameter names to their broadcast equivalents
+# Mapping from standard parameter names to broadcast idx
+# For temperature sensors, we search across all circuit bases (0x0060-0x0063)
+# For other sensors, we specify the exact base
+PARAM_TO_BROADCAST: Dict[str, tuple] = {
+    # Outdoor temperature - idx=12, broadcasts on varying circuit bases
+    "GT2_TEMP": (None, 12),  # None = search all circuit bases
+    # DHW temperature - idx=58, broadcasts on varying circuit bases
+    "GT3_TEMP": (None, 58),  # None = search all circuit bases
+    # Room temperature sensors - specific circuits
+    "RC10_C1_ROOM_TEMP": (0x0060, 0),
+    "RC10_C3_ROOM_TEMP": (0x0402, 55),
+}
+
+# Circuit base addresses for temperature broadcasts
+CIRCUIT_BASES = [0x0060, 0x0061, 0x0062, 0x0063]
+
+
+def get_broadcast_for_param(param_name: str) -> Optional[tuple]:
+    """
+    Get broadcast (base, idx) tuple for a parameter name.
+
+    Args:
+        param_name: Parameter name (case-insensitive)
+
+    Returns:
+        Tuple of (base, idx) or None if not found in broadcast mapping
+    """
+    return PARAM_TO_BROADCAST.get(param_name.upper())
+
+
+def is_temperature_param(param_format: str) -> bool:
+    """
+    Check if a parameter format indicates a temperature value.
+
+    Args:
+        param_format: The format string from parameter definition
+
+    Returns:
+        True if parameter is a temperature type
+    """
+    return param_format == "tem" or param_format.startswith("temp")
 
 
 def decode_can_id(can_id: int) -> tuple:

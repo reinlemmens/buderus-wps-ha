@@ -109,6 +109,12 @@ from .config import (
     get_default_sensor_map,
     load_config,
 )
+from .energy_blocking import (
+    BlockingResult,
+    BlockingState,
+    BlockingStatus,
+    EnergyBlockingControl,
+)
 
 __all__ = [
     # Exceptions
@@ -190,4 +196,9 @@ __all__ = [
     "get_default_config",
     "get_default_sensor_map",
     "load_config",
+    # Energy Blocking
+    "BlockingResult",
+    "BlockingState",
+    "BlockingStatus",
+    "EnergyBlockingControl",
 ]
