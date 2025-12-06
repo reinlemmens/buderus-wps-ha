@@ -38,6 +38,7 @@ A developer needs to receive and decode CAN messages that the heat pump broadcas
 1. **Given** an open connection to the heat pump, **When** listening passively for CAN messages, **Then** the system receives broadcast messages continuously (30+ messages/second typical)
 2. **Given** broadcast CAN messages are received, **When** the CAN ID is decoded, **Then** the system correctly extracts the parameter index and element type from the CAN ID structure
 3. **Given** the system is monitoring passively, **When** a specific CAN ID is watched for, **Then** the system can filter and return only matching messages
+4. **Given** the CLI monitor command is run, **When** broadcast readings are displayed, **Then** known parameters show human-readable names (e.g., "OUTDOOR_TEMP_C0", "RC10_C1_ROOM_TEMP") alongside CAN ID and raw values
 
 ---
 

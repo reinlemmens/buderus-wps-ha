@@ -11,10 +11,11 @@
 
 This document provides a dependency-ordered task list for implementing the CAN over USB Serial Connection feature. Tasks are organized by user story (P1, P2, P3) to enable independent, incremental delivery with comprehensive test coverage per constitution requirements.
 
-**Total Tasks**: 78 (70 original + 8 Phase 7)
-**Test Tasks**: 27 (100% coverage per constitution Principle IV)
-**Implementation Tasks**: 21
+**Total Tasks**: 84 (70 original + 8 Phase 7 + 6 Phase 8)
+**Test Tasks**: 31 (100% coverage per constitution Principle IV)
+**Implementation Tasks**: 24
 **Hardware Verification**: 2025-12-05 (passive monitoring validated against FHEM)
+**RC10 Mapping Verification**: 2025-12-06 (C1/C3 demand change capture confirmed)
 
 ---
 
@@ -254,6 +255,39 @@ This document provides a dependency-ordered task list for implementing the CAN o
 
 ---
 
+## Phase 8: CLI Monitor Human-Readable Labels (P2 Enhancement)
+
+**Goal**: Add human-readable parameter names to CLI monitor output using KNOWN_BROADCASTS mapping
+
+**Context**: The `wps-cli monitor` command currently shows CAN ID, base, index, and raw values, but no human-readable parameter names. The `KNOWN_BROADCASTS` dictionary in `broadcast_monitor.py` already maps (base, idx) tuples to parameter names.
+
+**Tasks**:
+
+### Tests First (TDD)
+
+- [ ] T079 [P] [US2] Write unit test for `BroadcastMonitor.get_known_name()` returns correct name for known readings in `tests/unit/test_broadcast_monitor.py`
+- [ ] T080 [P] [US2] Write unit test for `BroadcastMonitor.get_known_name()` returns None for unknown readings in `tests/unit/test_broadcast_monitor.py`
+
+### Implementation
+
+- [ ] T081 [US2] Update `cmd_monitor()` in `buderus_wps_cli/main.py` to include "Name" column in output table
+- [ ] T082 [US2] Call `BroadcastMonitor.get_known_name()` for each reading and display name or "-" if unknown
+- [ ] T083 [US2] Update JSON output format to include "name" field when `--json` flag is used
+
+### Acceptance Tests
+
+- [ ] T084 [US2] Write acceptance test for AS4: Monitor output shows human-readable names in `tests/contract/test_acceptance_us2.py`
+
+**Completion Criteria**:
+- CLI monitor command shows human-readable names for known broadcasts
+- Unknown broadcasts show "-" or empty in name column
+- JSON output includes "name" field
+- All KNOWN_BROADCASTS entries display correctly
+
+**Dependencies**: Phase 7 complete
+
+---
+
 ## Dependencies & Execution Order
 
 ### Critical Path
@@ -271,7 +305,9 @@ Phase 5 (US3: Error Handling)
     ↓
 Phase 6 (Polish)
     ↓
-Phase 7 (CAN ID Decoding) → Optional Enhancement
+Phase 7 (CAN ID Decoding) → Enhancement
+    ↓
+Phase 8 (CLI Monitor Labels) → Human-readable output for AS4
 ```
 
 ### Parallelization Opportunities
@@ -377,7 +413,7 @@ tests/
 After completing all tasks, verify:
 
 ### Code Quality
-- [ ] All 78 tasks completed
+- [ ] All 84 tasks completed
 - [ ] All tests passing: `pytest tests/ --verbose`
 - [ ] Coverage ≥ 100% for described functionality: `pytest --cov=buderus_wps --cov-report=html`
 - [ ] Type checking passes: `mypy buderus_wps --strict`
