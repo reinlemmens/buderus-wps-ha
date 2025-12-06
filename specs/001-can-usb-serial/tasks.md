@@ -265,22 +265,22 @@ This document provides a dependency-ordered task list for implementing the CAN o
 
 ### Tests First (TDD)
 
-- [ ] T079 [P] [US2] Write unit test for `BroadcastMonitor.get_known_name()` returns correct name for known readings in `tests/unit/test_broadcast_monitor.py`
-- [ ] T080 [P] [US2] Write unit test for `BroadcastMonitor.get_known_name()` returns None for unknown readings in `tests/unit/test_broadcast_monitor.py`
+- [X] T079 [P] [US2] Write unit test for `BroadcastMonitor.get_known_name()` returns correct name for known readings in `tests/unit/test_broadcast_monitor.py`
+- [X] T080 [P] [US2] Write unit test for `BroadcastMonitor.get_known_name()` returns None for unknown readings in `tests/unit/test_broadcast_monitor.py`
 
 ### Implementation
 
-- [ ] T081 [US2] Update `cmd_monitor()` in `buderus_wps_cli/main.py` to include "Name" column in output table
-- [ ] T082 [US2] Call `BroadcastMonitor.get_known_name()` for each reading and display name or "-" if unknown
-- [ ] T083 [US2] Update JSON output format to include "name" field when `--json` flag is used
+- [X] T081 [US2] Update `cmd_monitor()` in `buderus_wps_cli/main.py` to include "Name" column in output table
+- [X] T082 [US2] Call `BroadcastMonitor.get_known_name()` for each reading and display name or "-" if unknown
+- [X] T083 [US2] Update JSON output format to include "name" field when `--json` flag is used
 
 ### Acceptance Tests
 
-- [ ] T084 [US2] Write acceptance test for AS4: Monitor output shows human-readable names in `tests/contract/test_acceptance_us2.py`
+- [X] T084 [US2] Write acceptance test for AS4: Monitor output shows human-readable names in `tests/contract/test_acceptance_us2.py`
 
-**Completion Criteria**:
+**Completion Criteria**: ✅ COMPLETE
 - CLI monitor command shows human-readable names for known broadcasts
-- Unknown broadcasts show "-" or empty in name column
+- Unknown broadcasts show "-" in name column
 - JSON output includes "name" field
 - All KNOWN_BROADCASTS entries display correctly
 

@@ -176,10 +176,12 @@ def cmd_monitor(adapter: "USBtinAdapter", args: argparse.Namespace) -> int:
         import json
         results = []
         for can_id, reading in sorted(cache.readings.items()):
+            name = monitor.get_known_name(reading)
             results.append({
                 "can_id": f"0x{can_id:08X}",
                 "base": f"0x{reading.base:04X}",
                 "idx": reading.idx,
+                "name": name,
                 "dlc": reading.dlc,
                 "raw_hex": reading.raw_data.hex(),
                 "raw_value": reading.raw_value,
@@ -193,16 +195,17 @@ def cmd_monitor(adapter: "USBtinAdapter", args: argparse.Namespace) -> int:
             return 0
 
         print(f"\nCaptured {len(cache.readings)} unique CAN IDs:\n")
-        print(f"{'CAN ID':<12} {'Base':<8} {'Idx':<6} {'DLC':<5} {'Raw':<12} {'Value':<10}")
-        print("-" * 60)
+        print(f"{'CAN ID':<12} {'Base':<8} {'Idx':<6} {'Name':<24} {'DLC':<5} {'Raw':<12} {'Value':<10}")
+        print("-" * 90)
 
         for can_id, reading in sorted(cache.readings.items()):
             raw_hex = reading.raw_data.hex().upper()
+            name = monitor.get_known_name(reading) or "-"
             if reading.is_temperature:
                 value_str = f"{reading.temperature:.1f}°C"
             else:
                 value_str = str(reading.raw_value)
-            print(f"0x{can_id:08X}  0x{reading.base:04X}   {reading.idx:<6} {reading.dlc:<5} 0x{raw_hex:<10} {value_str}")
+            print(f"0x{can_id:08X}  0x{reading.base:04X}   {reading.idx:<6} {name:<24} {reading.dlc:<5} 0x{raw_hex:<10} {value_str}")
 
     return 0
 

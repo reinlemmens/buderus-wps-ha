@@ -327,3 +327,222 @@ class TestAcceptanceScenario3TimeoutHandling:
         # Then: Second message succeeds
         assert response is not None
         assert response.arbitration_id == 0x123
+
+
+class TestAcceptanceScenario4HumanReadableLabels:
+    """AS4: Monitor output shows human-readable parameter names (T084)."""
+
+    def test_as4_get_known_name_returns_name_for_known_broadcast(self):
+        """
+        Given: A known broadcast CAN ID is received
+        When: The monitor processes the reading
+        Then: Human-readable name is available via get_known_name()
+        """
+        from buderus_wps.broadcast_monitor import BroadcastMonitor, BroadcastReading
+        from unittest.mock import MagicMock
+
+        # Setup: Mock adapter
+        adapter = MagicMock()
+        adapter.is_open = True
+        monitor = BroadcastMonitor(adapter)
+
+        # Given: A known broadcast reading (RC10 C1 room temp)
+        reading = BroadcastReading(
+            can_id=0x0C000060,
+            base=0x0060,
+            idx=0,
+            dlc=2,
+            raw_data=b"\x00\xCD",  # 205 = 20.5°C
+            raw_value=205,
+            timestamp=0.0,
+        )
+
+        # When: Get known name
+        name = monitor.get_known_name(reading)
+
+        # Then: Human-readable name is returned
+        assert name == "RC10_C1_ROOM_TEMP"
+
+    def test_as4_get_known_name_returns_none_for_unknown_broadcast(self):
+        """
+        Given: An unknown broadcast CAN ID is received
+        When: The monitor processes the reading
+        Then: get_known_name() returns None
+        """
+        from buderus_wps.broadcast_monitor import BroadcastMonitor, BroadcastReading
+        from unittest.mock import MagicMock
+
+        # Setup
+        adapter = MagicMock()
+        adapter.is_open = True
+        monitor = BroadcastMonitor(adapter)
+
+        # Given: An unknown broadcast reading
+        reading = BroadcastReading(
+            can_id=0x0CFFF000,
+            base=0xF000,  # Unknown base
+            idx=999,
+            dlc=2,
+            raw_data=b"\x00\x00",
+            raw_value=0,
+            timestamp=0.0,
+        )
+
+        # When: Get known name
+        name = monitor.get_known_name(reading)
+
+        # Then: Returns None
+        assert name is None
+
+    def test_as4_cmd_monitor_includes_name_in_output(self, capsys):
+        """
+        Given: CLI monitor command is run
+        When: Broadcast readings are captured
+        Then: Known parameters show human-readable names in output
+        """
+        from buderus_wps_cli.main import cmd_monitor
+        from buderus_wps.broadcast_monitor import BroadcastReading, BroadcastCache
+        from unittest.mock import MagicMock, patch
+        import argparse
+
+        # Setup: Mock adapter and broadcast monitor
+        adapter = MagicMock()
+        adapter.is_open = True
+
+        # Create mock cache with known readings
+        mock_cache = BroadcastCache()
+        mock_cache.update(BroadcastReading(
+            can_id=0x0C000060,
+            base=0x0060,
+            idx=0,
+            dlc=2,
+            raw_data=b"\x00\xCD",
+            raw_value=205,
+            timestamp=0.0,
+        ))
+        mock_cache.update(BroadcastReading(
+            can_id=0x00030060,
+            base=0x0060,
+            idx=12,
+            dlc=2,
+            raw_data=b"\x00\x69",
+            raw_value=105,
+            timestamp=0.0,
+        ))
+
+        with patch('buderus_wps_cli.main.BroadcastMonitor') as MockMonitor:
+            mock_monitor = MagicMock()
+            mock_monitor.collect.return_value = mock_cache
+            mock_monitor.get_known_name.side_effect = lambda r: {
+                (0x0060, 0): "RC10_C1_ROOM_TEMP",
+                (0x0060, 12): "OUTDOOR_TEMP_C0",
+            }.get((r.base, r.idx))
+            MockMonitor.return_value = mock_monitor
+
+            # Given: CLI monitor args
+            args = argparse.Namespace(duration=1.0, json=False, temps_only=False)
+
+            # When: Run cmd_monitor
+            result = cmd_monitor(adapter, args)
+
+            # Then: Output includes human-readable names
+            captured = capsys.readouterr()
+            assert result == 0
+            assert "RC10_C1_ROOM_TEMP" in captured.out
+            assert "OUTDOOR_TEMP_C0" in captured.out
+            assert "Name" in captured.out  # Header column
+
+    def test_as4_cmd_monitor_json_includes_name_field(self, capsys):
+        """
+        Given: CLI monitor command is run with --json flag
+        When: Broadcast readings are captured
+        Then: JSON output includes "name" field for each reading
+        """
+        from buderus_wps_cli.main import cmd_monitor
+        from buderus_wps.broadcast_monitor import BroadcastReading, BroadcastCache
+        from unittest.mock import MagicMock, patch
+        import argparse
+        import json
+
+        # Setup
+        adapter = MagicMock()
+        adapter.is_open = True
+
+        mock_cache = BroadcastCache()
+        mock_cache.update(BroadcastReading(
+            can_id=0x0C000060,
+            base=0x0060,
+            idx=0,
+            dlc=2,
+            raw_data=b"\x00\xCD",
+            raw_value=205,
+            timestamp=0.0,
+        ))
+
+        with patch('buderus_wps_cli.main.BroadcastMonitor') as MockMonitor:
+            mock_monitor = MagicMock()
+            mock_monitor.collect.return_value = mock_cache
+            mock_monitor.get_known_name.return_value = "RC10_C1_ROOM_TEMP"
+            MockMonitor.return_value = mock_monitor
+
+            # Given: CLI monitor args with JSON output
+            args = argparse.Namespace(duration=1.0, json=True, temps_only=False)
+
+            # When: Run cmd_monitor
+            result = cmd_monitor(adapter, args)
+
+            # Then: JSON output includes "name" field
+            captured = capsys.readouterr()
+            assert result == 0
+            output = json.loads(captured.out)
+            assert "readings" in output
+            assert len(output["readings"]) == 1
+            assert "name" in output["readings"][0]
+            assert output["readings"][0]["name"] == "RC10_C1_ROOM_TEMP"
+
+    def test_as4_unknown_broadcast_shows_dash_in_name_column(self, capsys):
+        """
+        Given: CLI monitor receives unknown broadcast
+        When: Output is displayed
+        Then: Unknown broadcasts show "-" in name column
+        """
+        from buderus_wps_cli.main import cmd_monitor
+        from buderus_wps.broadcast_monitor import BroadcastReading, BroadcastCache
+        from unittest.mock import MagicMock, patch
+        import argparse
+
+        # Setup
+        adapter = MagicMock()
+        adapter.is_open = True
+
+        mock_cache = BroadcastCache()
+        mock_cache.update(BroadcastReading(
+            can_id=0x0CFFF000,
+            base=0xF000,
+            idx=999,
+            dlc=2,
+            raw_data=b"\x00\x00",
+            raw_value=0,
+            timestamp=0.0,
+        ))
+
+        with patch('buderus_wps_cli.main.BroadcastMonitor') as MockMonitor:
+            mock_monitor = MagicMock()
+            mock_monitor.collect.return_value = mock_cache
+            mock_monitor.get_known_name.return_value = None  # Unknown
+            MockMonitor.return_value = mock_monitor
+
+            # Given: CLI monitor args
+            args = argparse.Namespace(duration=1.0, json=False, temps_only=False)
+
+            # When: Run cmd_monitor
+            result = cmd_monitor(adapter, args)
+
+            # Then: Unknown shows "-"
+            captured = capsys.readouterr()
+            assert result == 0
+            # Should contain a dash for unknown parameter
+            lines = captured.out.split('\n')
+            data_lines = [l for l in lines if '0x0CFFF000' in l]
+            assert len(data_lines) == 1
+            assert '-' in data_lines[0]
