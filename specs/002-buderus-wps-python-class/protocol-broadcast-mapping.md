@@ -251,10 +251,137 @@ response_id = 0x0C003FE0 | (459 << 14) # = 0x0F2FFFE0
 | Room: 22.1°C | 22.1°C | 0x0C0DC402 (idx=55, base=0x0402) |
 | Demand: 22.5°C | 22.5°C | 0x0C1AC402 (idx=107, base=0x0402) |
 
+## Parameter Write Access
+
+### Write Protocol
+
+Parameter writes use the same CAN ID formula as RTR requests:
+
+```python
+# Write CAN ID: 0x04003FE0 | (parameter_idx << 14)
+# Example: XDHW_TIME (idx=2475)
+can_id = 0x04003FE0 | (2475 << 14)  # = 0x066AFFE0
+
+# SLCAN format: T<8-digit-id><dlc><data>
+# Example: Write value 1 with 2 bytes
+frame = "T066AFFE020001\r"
+```
+
+### Write Frame Format
+
+| Component | Format | Example |
+|-----------|--------|---------|
+| Command | `T` (extended data frame) | `T` |
+| CAN ID | 8 hex digits | `066AFFE0` |
+| DLC | 1 hex digit (always `2`) | `2` |
+| Data | 4 hex digits (big-endian) | `0001` |
+| Terminator | `\r` | |
+
+**Note**: FHEM always uses 2-byte (DLC=2) writes regardless of value size.
+
+### Hardware-Verified Write Access (2025-12-07)
+
+| Parameter | idx | Write Works | Notes |
+|-----------|-----|-------------|-------|
+| XDHW_TIME | 2475 | **Yes** | Extra hot water duration (0-48 hours) |
+| XDHW_STOP_TEMP | 2473 | **Yes** | Extra hot water target temp (50.0-65.0°C) |
+| DHW_TIMEPROGRAM | 494 | **No** | Program selection (heat pump ignores) |
+| DHW_PROGRAM_1_* | 456-462 | **No** | Schedule times (returns stale data) |
+
+### Write Behavior Analysis
+
+**Successful Writes** (heat pump accepts and stores value):
+- CAN frame transmitted (USBtin returns `Z` acknowledgment)
+- Read-back confirms new value
+- Heat pump acts on the change
+
+**Failed Writes** (heat pump ignores):
+- CAN frame transmitted successfully
+- Read-back shows old/stale value
+- No visible change on heat pump
+
+### Writable Parameters (Confirmed)
+
+The following parameter types accept CAN writes:
+
+1. **Extra Hot Water (XDHW)**: Boost functions for on-demand hot water
+   - `XDHW_TIME`: Duration in hours (0=off, 1-48=hours) - **VERIFIED**
+   - `XDHW_STOP_TEMP`: Target temperature (raw value in 0.1°C) - **VERIFIED**
+
+**Note**: Only XDHW parameters have been verified to accept writes. All other parameter types tested (programs, modes, energy blocking) are ignored by the heat pump.
+
+### Read-Only Parameters (Write Ignored)
+
+The heat pump ignores CAN writes to these parameter types:
+
+1. **Time Programs**: Schedule settings protected from external changes
+   - `DHW_TIMEPROGRAM`, `ROOM_TIMEPROGRAM`
+   - `DHW_PROGRAM_*`, `ROOM_PROGRAM_*`
+   - `PUMP_DHW_PROGRAM*`
+
+2. **Operating Mode Selection**: Core operating modes
+   - `DHW_PROGRAM_MODE`, `ROOM_PROGRAM_MODE`
+   - `HEATING_SEASON_MODE`
+
+3. **Energy Blocking**: External control parameters
+   - `COMPRESSOR_EXTERN_BLOCK`, `ADDITIONAL_HEATER_EXTERN_BLOCK`
+   - Note: These appear writable (min < max) but heat pump ignores writes
+
+### Write Detection Heuristic
+
+To determine if a parameter is truly writable:
+
+```python
+def is_writable(param) -> bool:
+    """Check if parameter accepts CAN writes."""
+    # Basic check: must have valid range
+    if param.min >= param.max:
+        return False  # Read-only status value
+
+    # Known writable patterns (hardware verified)
+    if param.text.startswith('XDHW_') and param.text in ['XDHW_TIME', 'XDHW_STOP_TEMP']:
+        return True
+
+    # Known read-only patterns (heat pump ignores writes)
+    readonly_patterns = [
+        'TIMEPROGRAM', 'PROGRAM_MODE', '_PROGRAM_',
+        'EXTERN_BLOCK',  # Energy blocking doesn't work via CAN
+    ]
+    for pattern in readonly_patterns:
+        if pattern in param.text:
+            return False
+
+    # Unknown - needs hardware verification
+    return None  # Unknown, may or may not work
+```
+
+### Important Findings
+
+1. **CAN acknowledgment ≠ write success**: USBtin `Z` response only confirms transmission, not acceptance
+2. **Read-back required**: Always verify writes by reading back the parameter
+3. **Timing sensitive**: Some parameters need 500ms+ delay before read-back shows new value
+4. **Protected parameters**: Schedule/program settings cannot be changed via CAN (security feature)
+
+## Buffer Tank Temperature Broadcasts
+
+**Hardware Verified** (2025-12-07):
+
+| CAN ID | Base | Index | Name | Typical Value |
+|--------|------|-------|------|---------------|
+| 0x08014270 | 0x0270 | 5 | GT9_TEMP (bottom/return) | 43-48°C |
+| 0x08018270 | 0x0270 | 6 | GT8_TEMP (top/supply) | 46-50°C |
+
+These temperatures are available via broadcast monitoring with the `--broadcast` flag:
+```bash
+wps-cli read GT8_TEMP --broadcast
+wps-cli read GT9_TEMP --broadcast
+```
+
 ## Related Files
 
 - [buderus_wps/broadcast_monitor.py](../../buderus_wps/broadcast_monitor.py) - Passive monitoring implementation
 - [buderus_wps/can_message.py](../../buderus_wps/can_message.py) - CAN ID constants and structure
+- [buderus_wps/heat_pump.py](../../buderus_wps/heat_pump.py) - Parameter read/write implementation
 - [fhem/26_KM273v018.pm](../../fhem/26_KM273v018.pm) - FHEM reference implementation
 
 ## Revision History
@@ -264,3 +391,6 @@ response_id = 0x0C003FE0 | (459 << 14) # = 0x0F2FFFE0
 | 2025-12-06 | Initial documentation from hardware testing |
 | 2025-12-06 | Added C1 RC10 controller mappings; discovered circuit-specific broadcast patterns |
 | 2025-12-06 | Verified C3 demand change capture; discovered idx=18 demand pattern on circuit bases |
+| 2025-12-07 | Added buffer tank temperature mappings (GT8_TEMP, GT9_TEMP on base 0x0270) |
+| 2025-12-07 | Added Parameter Write Access section with hardware-verified findings |
+| 2025-12-07 | Documented XDHW_TIME/XDHW_STOP_TEMP as writable, DHW_TIMEPROGRAM as read-only |
