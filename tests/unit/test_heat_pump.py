@@ -83,7 +83,8 @@ def test_write_value_encodes_and_sends():
     # For idx=1: 0x04003FE0 | 0x4000 = 0x04007FE0
     expected_write_id = 0x04003FE0 | (1 << 14)
     assert sent.arbitration_id == expected_write_id
-    assert sent.data == b"\x05"
+    # PROTOCOL: FHEM always uses 2 bytes for writes (see line 2746)
+    assert sent.data == b"\x00\x05"
 
 
 def test_write_value_out_of_range_raises():

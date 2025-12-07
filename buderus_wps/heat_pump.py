@@ -126,8 +126,10 @@ class HeatPumpClient:
 
     def write_value(self, name_or_idx: Any, value: Any, timeout: Optional[float] = None) -> None:
         param = self.get(name_or_idx)
-        if param.read == 1:
-            raise PermissionError(f"Parameter {param.text} is read-only")
+        # FHEM: read=1 means "readable", not "read-only"
+        # A parameter is read-only if min >= max (no valid write range)
+        if param.min >= param.max:
+            raise PermissionError(f"Parameter {param.text} is read-only (min={param.min} >= max={param.max})")
         encoded = self._encode_value(param, value)
         # PROTOCOL: Write uses same CAN ID as read request (0x04003FE0 | idx << 14)
         # See FHEM 26_KM273v018.pm line 2229, 2678, 2746
@@ -170,24 +172,15 @@ class HeatPumpClient:
         if dlc_hint > 0:
             size = dlc_hint
         else:
-            # Determine minimum bytes needed for the actual value
-            # PROTOCOL: Heat pump may use smaller storage than min/max suggests
+            # PROTOCOL: FHEM always uses 2 bytes for writes (see line 2746)
+            # Always use at least 2 bytes for compatibility with heat pump
+            size = 2
             if signed:
-                if -128 <= ivalue <= 127:
-                    size = 1
-                elif -32768 <= ivalue <= 32767:
-                    size = 2
-                else:
+                if ivalue < -32768 or ivalue > 32767:
                     size = 4
             else:
-                if ivalue <= 0xFF:
-                    size = 1
-                elif ivalue <= 0xFFFF:
-                    size = 2
-                elif ivalue <= 0xFFFFFFFF:
+                if ivalue > 0xFFFF:
                     size = 4
-                else:
-                    size = 8
         return ivalue.to_bytes(size, "big", signed=signed)
 
     def _decode_value(self, param: Parameter, raw: bytes) -> Any:
@@ -206,14 +199,10 @@ class HeatPumpClient:
                 return val / 10.0
             return raw.hex()
         if fmt.startswith("dp") or fmt.startswith("rp"):
-            try:
-                precision = int(fmt[2]) if len(fmt) > 2 and fmt[2].isdigit() else 0
-            except Exception:
-                precision = 0
-            signed = fmt.startswith("dp")
-            val = int.from_bytes(raw, "big", signed=signed)
-            factor = 10 ** precision if precision > 0 else 1
-            return val / factor
+            # FHEM: dp1, dp2, rp1, rp2 are selector formats with factor=1
+            # The digit is part of the format name, NOT a precision indicator
+            val = int.from_bytes(raw, "big", signed=False)
+            return val
         try:
             signed = param.min < 0
             return int.from_bytes(raw, "big", signed=signed)

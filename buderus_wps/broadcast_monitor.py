@@ -135,6 +135,10 @@ KNOWN_BROADCASTS: Dict[tuple, tuple] = {
     (0x0063, 58): ("SENSOR_TEMP_C3_58", "tem"),
     (0x0063, 59): ("SENSOR_TEMP_C3_59", "tem"),
     (0x0063, 60): ("SENSOR_TEMP_C3_60", "tem"),
+
+    # Base 0x0270 - Buffer tank temperatures - Hardware verified
+    (0x0270, 5): ("GT9_TEMP", "tem"),   # Buffer tank bottom/return
+    (0x0270, 6): ("GT8_TEMP", "tem"),   # Buffer tank top/supply
 }
 
 
@@ -149,6 +153,9 @@ PARAM_TO_BROADCAST: Dict[str, tuple] = {
     "GT2_TEMP": (None, 12),  # None = search all circuit bases
     # DHW temperature - idx=58, broadcasts on varying circuit bases
     "GT3_TEMP": (None, 58),  # None = search all circuit bases
+    # Buffer tank temperatures - base 0x0270 - Hardware verified
+    "GT8_TEMP": (0x0270, 6),  # Buffer tank top/supply (~46°C observed)
+    "GT9_TEMP": (0x0270, 5),  # Buffer tank bottom/return (~43°C observed)
     # Room temperature sensors - specific circuits
     "RC10_C1_ROOM_TEMP": (0x0060, 0),
     "RC10_C3_ROOM_TEMP": (0x0402, 55),
