@@ -298,7 +298,7 @@ FHEM considers the following parameters writable based on `min < max` range chec
 | Parameter | Description | Hardware Verified |
 |-----------|-------------|-------------------|
 | DHW_TIMEPROGRAM | Program selection (1-3) | **NO - Ignored** |
-| DHW_PROGRAM_MODE | Operating mode | Untested |
+| DHW_PROGRAM_MODE | Operating mode (0=Auto, 1=On, 2=Off) | **YES - Works** |
 | DHW_PROGRAM_1_1MON - DHW_PROGRAM_1_7SUN | Program 1 schedule (7 days) | **NO - Ignored** |
 | DHW_PROGRAM_2_1MON - DHW_PROGRAM_2_7SUN | Program 2 schedule (7 days) | Untested |
 
@@ -348,6 +348,7 @@ FHEM considers the following parameters writable based on `min < max` range chec
 | XDHW_STOP_TEMP | 2473 | **Yes** | Extra hot water target temp (50.0-65.0°C) |
 | HOLIDAY_ACTIVE_GLOBAL | 901 | **Yes** | Circuit 1 holiday mode (0=off, 1=on) |
 | HEATING_SEASON_MODE | 884 | **Yes** | Season mode (0=Winter, 1=Auto, 2=Off/summer) |
+| DHW_PROGRAM_MODE | 489 | **Yes** | DHW mode (0=Auto, 1=Always_On, 2=Always_Off) |
 | DHW_TIMEPROGRAM | 494 | **No** | Program selection (heat pump ignores) |
 | DHW_PROGRAM_1_* | 456-462 | **No** | Schedule times (returns stale data) |
 
@@ -380,6 +381,11 @@ The following parameter types accept CAN writes:
    - Use case: Peak hour blocking by setting to 2 (summer mode = no heating)
    - **CRITICAL**: Heat pump reports idx=884, NOT idx=883 from static FHEM list
 
+4. **DHW Program Mode**: DHW enable/disable control
+   - `DHW_PROGRAM_MODE` (idx=489): Operating mode (0=Auto, 1=Always_On, 2=Always_Off) - **VERIFIED**
+   - Use case: Peak hour blocking by setting to 2 (Always_Off = no DHW heating)
+   - **CRITICAL**: Heat pump reports idx=489, NOT idx=488 from static FHEM list
+
 ### Read-Only Parameters (Write Ignored)
 
 The heat pump ignores CAN writes to these parameter types:
@@ -390,7 +396,8 @@ The heat pump ignores CAN writes to these parameter types:
    - `PUMP_DHW_PROGRAM*`
 
 2. **Operating Mode Selection**: Core operating modes
-   - `DHW_PROGRAM_MODE`, `ROOM_PROGRAM_MODE`
+   - `ROOM_PROGRAM_MODE`
+   - ~~`DHW_PROGRAM_MODE`~~ - **Now verified writable** (see below)
    - ~~`HEATING_SEASON_MODE`~~ - **Now verified writable** (see below)
 
 3. **Energy Blocking**: External control parameters
@@ -415,6 +422,8 @@ def is_writable(param) -> bool:
         return True
     if param.text == 'HEATING_SEASON_MODE':
         return True  # Peak hour blocking via summer mode
+    if param.text == 'DHW_PROGRAM_MODE':
+        return True  # DHW blocking via Always_Off mode
 
     # Known read-only patterns (heat pump ignores writes)
     readonly_patterns = [
@@ -541,6 +550,63 @@ wps-cli write HEATING_SEASON_MODE 1
 wps-cli write HEATING_SEASON_MODE 0
 ```
 
+## DHW Program Mode (DHW Blocking)
+
+**Hardware Verified** (2025-12-10):
+
+DHW_PROGRAM_MODE controls whether the heat pump heats domestic hot water. This can be used to disable DHW during electricity peak hours.
+
+| Parameter | idx | CAN ID (Write) | Values | Verified |
+|-----------|-----|----------------|--------|----------|
+| DHW_PROGRAM_MODE | 489 | 0x047ABFE0 | 0=Auto, 1=Always_On, 2=Always_Off | Read/Write |
+
+**CRITICAL INDEX DISCREPANCY**: The static FHEM parameter list shows idx=488, but the heat pump dynamically reports idx=489. Our implementation has been corrected to use idx=489.
+
+### Value Meanings
+
+| Value | FHEM Display | Heat Pump Menu | Behavior |
+|-------|--------------|----------------|----------|
+| 0 | Automatic | Automatic | Normal operation (follows time program) |
+| 1 | Always_On | Always On | DHW always active |
+| 2 | Always_Off | Always Off | **NO DHW** - no hot water heating |
+
+### Use Case: Peak Hour Blocking
+
+Setting `DHW_PROGRAM_MODE = 2` during electricity peak hours provides:
+- Complete DHW suspension (compressor won't run for hot water)
+- Space heating remains available (unless also blocked)
+- Quick restoration by setting back to 0 (Automatic)
+
+### CAN ID Calculation
+
+```python
+# DHW_PROGRAM_MODE (idx=489) - HARDWARE-VERIFIED
+write_id = 0x04003FE0 | (489 << 14)  # = 0x047ABFE0
+read_id  = 0x0C003FE0 | (489 << 14)  # = 0x0C7ABFE0
+
+# SLCAN write frame (disable DHW):
+frame = "T047ABFE020002\r"  # value=2
+
+# SLCAN write frame (restore automatic):
+frame = "T047ABFE020000\r"  # value=0
+```
+
+### CLI Usage
+
+```bash
+# Read current DHW mode
+wps-cli read DHW_PROGRAM_MODE
+
+# Disable DHW (Always Off / peak hour blocking)
+wps-cli write DHW_PROGRAM_MODE 2
+
+# Restore automatic operation
+wps-cli write DHW_PROGRAM_MODE 0
+
+# Force DHW always on
+wps-cli write DHW_PROGRAM_MODE 1
+```
+
 ## Buffer Tank Temperature Broadcasts
 
 **Hardware Verified** (2025-12-07):
@@ -581,3 +647,4 @@ wps-cli read GT9_TEMP --broadcast
 | 2025-12-10 | **CRITICAL FIX**: Corrected HEATING_SEASON_MODE idx from 883 to 884 (heat pump's dynamic value) |
 | 2025-12-10 | Corrected value meanings: 0=Winter (forced), 1=Auto, 2=Off (was incorrectly 0=Auto) |
 | 2025-12-10 | Updated parameter_data.py with hardware-verified idx values for HEATING_SEASON_* params |
+| 2025-12-10 | **NEW**: DHW_PROGRAM_MODE (idx=489) verified writable for DHW blocking (0=Auto, 1=On, 2=Off) |

@@ -3243,7 +3243,7 @@ PARAMETER_DEFAULTS = [
         "text": "DHW_PROGRAM_2_3WED",
     },
     {
-        "idx": 488,
+        "idx": 489,  # HARDWARE-VERIFIED: Heat pump reports idx=489 (not 488)
         "extid": "E1CAB0771C0952",
         "max": 2,
         "min": 0,
