@@ -279,12 +279,75 @@ frame = "T066AFFE020001\r"
 
 **Note**: FHEM always uses 2-byte (DLC=2) writes regardless of value size.
 
-### Hardware-Verified Write Access (2025-12-07)
+### FHEM-Deemed Writable Parameters (52 total)
+
+FHEM considers the following parameters writable based on `min < max` range checks. However, **not all of these actually work** - the heat pump ignores writes to many of them.
+
+#### 1. Extra Hot Water (XDHW) - 2 parameters
+| Parameter | Description | Hardware Verified |
+|-----------|-------------|-------------------|
+| XDHW_TIME | Extra hot water duration (0-48 hours) | **YES - Works** |
+| XDHW_STOP_TEMP | Extra hot water target temp | **YES - Works** |
+
+#### 2. DHW Setpoint - 1 parameter
+| Parameter | Description | Hardware Verified |
+|-----------|-------------|-------------------|
+| DHW_CALCULATED_SETPOINT_TEMP | Hot water setpoint | Untested |
+
+#### 3. DHW Time Programs - 16 parameters
+| Parameter | Description | Hardware Verified |
+|-----------|-------------|-------------------|
+| DHW_TIMEPROGRAM | Program selection (1-3) | **NO - Ignored** |
+| DHW_PROGRAM_MODE | Operating mode | Untested |
+| DHW_PROGRAM_1_1MON - DHW_PROGRAM_1_7SUN | Program 1 schedule (7 days) | **NO - Ignored** |
+| DHW_PROGRAM_2_1MON - DHW_PROGRAM_2_7SUN | Program 2 schedule (7 days) | Untested |
+
+#### 4. Room/Heating Programs - 17 parameters
+| Parameter | Description | Hardware Verified |
+|-----------|-------------|-------------------|
+| ROOM_TIMEPROGRAM | Program selection | Untested |
+| ROOM_PROGRAM_MODE | Operating mode | Untested |
+| ROOM_PROGRAM_1_1MON - ROOM_PROGRAM_1_7SUN | Program 1 schedule (7 days) | Untested |
+| ROOM_PROGRAM_2_1MON - ROOM_PROGRAM_2_7SUN | Program 2 schedule (7 days) | Untested |
+
+#### 5. Heating Season Mode - 1 parameter
+| Parameter | Description | Hardware Verified |
+|-----------|-------------|-------------------|
+| HEATING_SEASON_MODE | 0=Auto, 1=On, 2=Off | **YES - Works** |
+
+#### 6. Pump DHW Programs - 8 parameters
+| Parameter | Description | Hardware Verified |
+|-----------|-------------|-------------------|
+| PUMP_DHW_PROGRAM1_START_TIME | Program 1 start | Untested |
+| PUMP_DHW_PROGRAM1_STOP_TIME | Program 1 stop | Untested |
+| PUMP_DHW_PROGRAM2_START_TIME | Program 2 start | Untested |
+| PUMP_DHW_PROGRAM2_STOP_TIME | Program 2 stop | Untested |
+| PUMP_DHW_PROGRAM3_START_TIME | Program 3 start | Untested |
+| PUMP_DHW_PROGRAM3_STOP_TIME | Program 3 stop | Untested |
+| PUMP_DHW_PROGRAM4_START_TIME | Program 4 start | Untested |
+| PUMP_DHW_PROGRAM4_STOP_TIME | Program 4 stop | Untested |
+
+#### 7. Holiday Mode - 7 parameters
+| Parameter | Description | Hardware Verified |
+|-----------|-------------|-------------------|
+| HOLIDAY_ACTIVE | Holiday mode toggle (idx=900) | Read-only (use HOLIDAY_ACTIVE_GLOBAL) |
+| HOLIDAY_START_DAY | Start day | Untested |
+| HOLIDAY_START_MONTH | Start month | Untested |
+| HOLIDAY_START_YEAR | Start year | Untested |
+| HOLIDAY_STOP_DAY | Stop day | Untested |
+| HOLIDAY_STOP_MONTH | Stop month | Untested |
+| HOLIDAY_STOP_YEAR | Stop year | Untested |
+
+**Note**: FHEM lists `HOLIDAY_ACTIVE` (idx=900) but actually uses `HOLIDAY_ACTIVE_GLOBAL` (idx=901) for writes.
+
+### Hardware-Verified Write Access (2025-12-10)
 
 | Parameter | idx | Write Works | Notes |
 |-----------|-----|-------------|-------|
 | XDHW_TIME | 2475 | **Yes** | Extra hot water duration (0-48 hours) |
 | XDHW_STOP_TEMP | 2473 | **Yes** | Extra hot water target temp (50.0-65.0°C) |
+| HOLIDAY_ACTIVE_GLOBAL | 901 | **Yes** | Circuit 1 holiday mode (0=off, 1=on) |
+| HEATING_SEASON_MODE | 884 | **Yes** | Season mode (0=Winter, 1=Auto, 2=Off/summer) |
 | DHW_TIMEPROGRAM | 494 | **No** | Program selection (heat pump ignores) |
 | DHW_PROGRAM_1_* | 456-462 | **No** | Schedule times (returns stale data) |
 
@@ -308,7 +371,14 @@ The following parameter types accept CAN writes:
    - `XDHW_TIME`: Duration in hours (0=off, 1-48=hours) - **VERIFIED**
    - `XDHW_STOP_TEMP`: Target temperature (raw value in 0.1°C) - **VERIFIED**
 
-**Note**: Only XDHW parameters have been verified to accept writes. All other parameter types tested (programs, modes, energy blocking) are ignored by the heat pump.
+2. **Holiday Mode**: Vacation/absence control
+   - `HOLIDAY_ACTIVE_GLOBAL` (idx=901): Controls Circuit 1 holiday mode (0=off, 1=on) - **VERIFIED**
+   - Note: Despite the "GLOBAL" name, this only affects Circuit 1
+
+3. **Heating Season Mode**: Heating enable/disable control
+   - `HEATING_SEASON_MODE` (idx=884): Season mode (0=Winter, 1=Auto, 2=Off) - **VERIFIED**
+   - Use case: Peak hour blocking by setting to 2 (summer mode = no heating)
+   - **CRITICAL**: Heat pump reports idx=884, NOT idx=883 from static FHEM list
 
 ### Read-Only Parameters (Write Ignored)
 
@@ -321,7 +391,7 @@ The heat pump ignores CAN writes to these parameter types:
 
 2. **Operating Mode Selection**: Core operating modes
    - `DHW_PROGRAM_MODE`, `ROOM_PROGRAM_MODE`
-   - `HEATING_SEASON_MODE`
+   - ~~`HEATING_SEASON_MODE`~~ - **Now verified writable** (see below)
 
 3. **Energy Blocking**: External control parameters
    - `COMPRESSOR_EXTERN_BLOCK`, `ADDITIONAL_HEATER_EXTERN_BLOCK`
@@ -341,6 +411,10 @@ def is_writable(param) -> bool:
     # Known writable patterns (hardware verified)
     if param.text.startswith('XDHW_') and param.text in ['XDHW_TIME', 'XDHW_STOP_TEMP']:
         return True
+    if param.text == 'HOLIDAY_ACTIVE_GLOBAL':
+        return True
+    if param.text == 'HEATING_SEASON_MODE':
+        return True  # Peak hour blocking via summer mode
 
     # Known read-only patterns (heat pump ignores writes)
     readonly_patterns = [
@@ -361,6 +435,111 @@ def is_writable(param) -> bool:
 2. **Read-back required**: Always verify writes by reading back the parameter
 3. **Timing sensitive**: Some parameters need 500ms+ delay before read-back shows new value
 4. **Protected parameters**: Schedule/program settings cannot be changed via CAN (security feature)
+
+## Holiday Mode Parameters
+
+**Hardware Verified** (2025-12-10):
+
+The heat pump has two holiday-related parameters with confusing naming:
+
+| Parameter | idx | CAN ID (Write) | Purpose | Verified |
+|-----------|-----|----------------|---------|----------|
+| HOLIDAY_ACTIVE | 900 | 0x04E13FE0 | Unknown (always reads 0) | Read only |
+| HOLIDAY_ACTIVE_GLOBAL | 901 | 0x04E17FE0 | **Controls Circuit 1 holiday mode** | Read/Write |
+
+### Key Findings
+
+1. **FHEM uses idx=901**: Despite showing "HOLIDAY_ACTIVE" in the UI, FHEM internally writes to idx=901 (`HOLIDAY_ACTIVE_GLOBAL`)
+
+2. **Naming is misleading**: `HOLIDAY_ACTIVE_GLOBAL` (idx=901) only controls Circuit 1's holiday mode, not a global setting
+
+3. **idx=900 purpose unknown**: `HOLIDAY_ACTIVE` (idx=900) always reads 0 regardless of holiday mode state; may be a status flag or unused
+
+### CAN ID Calculation
+
+```python
+# HOLIDAY_ACTIVE_GLOBAL (idx=901)
+write_id = 0x04003FE0 | (901 << 14)  # = 0x04E17FE0
+read_id  = 0x0C003FE0 | (901 << 14)  # = 0x0CE17FE0
+
+# SLCAN write frame (enable holiday mode):
+frame = "T04E17FE020001\r"  # value=1
+
+# SLCAN write frame (disable holiday mode):
+frame = "T04E17FE020000\r"  # value=0
+```
+
+### CLI Usage
+
+```bash
+# Read holiday mode status
+wps-cli read HOLIDAY_ACTIVE_GLOBAL
+
+# Enable holiday mode on Circuit 1
+wps-cli write HOLIDAY_ACTIVE_GLOBAL 1
+
+# Disable holiday mode on Circuit 1
+wps-cli write HOLIDAY_ACTIVE_GLOBAL 0
+```
+
+## Heating Season Mode (Peak Hour Blocking)
+
+**Hardware Verified** (2025-12-10):
+
+HEATING_SEASON_MODE controls whether the heat pump provides space heating. This can be used for temporary heating blocking during electricity peak hours.
+
+| Parameter | idx | CAN ID (Write) | Values | Verified |
+|-----------|-----|----------------|--------|----------|
+| HEATING_SEASON_MODE | 884 | 0x04DD3FE0 | 0=Winter, 1=Auto, 2=Off | Read/Write |
+
+**CRITICAL INDEX DISCREPANCY**: The static FHEM parameter list shows idx=883, but the heat pump dynamically reports idx=884. FHEM works because it uses the dynamically-read index from the heat pump. Our implementation has been corrected to use idx=884.
+
+### Value Meanings
+
+| Value | FHEM Display | Heat Pump Menu | Behavior |
+|-------|--------------|----------------|----------|
+| 0 | Winter | Winter mode | **FORCED HEATING** - heating always enabled |
+| 1 | Automatic | Automatic | Normal operation (heating based on outdoor temp) |
+| 2 | Off | Summer mode | **NO HEATING** - hot water only |
+
+### Use Case: Peak Hour Blocking
+
+Setting `HEATING_SEASON_MODE = 2` during electricity peak hours provides:
+- Complete heating suspension (compressor won't run for heating)
+- Hot water production remains available
+- Quick restoration by setting back to 1 (Automatic)
+
+**Important**: Unlike EVU blocking (which the heat pump ignores via CAN), this method actually works to temporarily disable heating.
+
+### CAN ID Calculation
+
+```python
+# HEATING_SEASON_MODE (idx=884) - HARDWARE-VERIFIED
+write_id = 0x04003FE0 | (884 << 14)  # = 0x04DD3FE0
+read_id  = 0x0C003FE0 | (884 << 14)  # = 0x0CDD3FE0
+
+# SLCAN write frame (enable summer/off mode):
+frame = "T04DD3FE020002\r"  # value=2
+
+# SLCAN write frame (restore automatic):
+frame = "T04DD3FE020001\r"  # value=1 (not 0!)
+```
+
+### CLI Usage
+
+```bash
+# Read current season mode
+wps-cli read HEATING_SEASON_MODE
+
+# Disable heating (summer mode / peak hour blocking)
+wps-cli write HEATING_SEASON_MODE 2
+
+# Restore automatic operation
+wps-cli write HEATING_SEASON_MODE 1
+
+# Force heating (winter mode)
+wps-cli write HEATING_SEASON_MODE 0
+```
 
 ## Buffer Tank Temperature Broadcasts
 
@@ -394,3 +573,11 @@ wps-cli read GT9_TEMP --broadcast
 | 2025-12-07 | Added buffer tank temperature mappings (GT8_TEMP, GT9_TEMP on base 0x0270) |
 | 2025-12-07 | Added Parameter Write Access section with hardware-verified findings |
 | 2025-12-07 | Documented XDHW_TIME/XDHW_STOP_TEMP as writable, DHW_TIMEPROGRAM as read-only |
+| 2025-12-10 | Added Holiday Mode Parameters section; HOLIDAY_ACTIVE_GLOBAL (idx=901) controls Circuit 1 |
+| 2025-12-10 | Discovered FHEM uses idx=901 for holiday mode, not idx=900; verified read/write working |
+| 2025-12-10 | Added HEATING_SEASON_MODE as writable; verified via FHEM and heat pump menu |
+| 2025-12-10 | Documented peak hour blocking use case: set HEATING_SEASON_MODE=2 to disable heating |
+| 2025-12-10 | Added FHEM-Deemed Writable Parameters section: 52 parameters in 7 categories |
+| 2025-12-10 | **CRITICAL FIX**: Corrected HEATING_SEASON_MODE idx from 883 to 884 (heat pump's dynamic value) |
+| 2025-12-10 | Corrected value meanings: 0=Winter (forced), 1=Auto, 2=Off (was incorrectly 0=Auto) |
+| 2025-12-10 | Updated parameter_data.py with hardware-verified idx values for HEATING_SEASON_* params |

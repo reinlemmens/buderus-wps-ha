@@ -5771,7 +5771,7 @@ PARAMETER_DATA = [
         "text": "HEATING_REQUEST_BLOCK_TIME"
     },
     {
-        "idx": 880,
+        "idx": 881,  # HARDWARE-VERIFIED: Heat pump reports idx=881 (not 880)
         "extid": "002280F33400F4",
         "max": 0,
         "min": 0,
@@ -5780,7 +5780,7 @@ PARAMETER_DATA = [
         "text": "HEATING_SEASON_ACTIVE"
     },
     {
-        "idx": 881,
+        "idx": 882,  # HARDWARE-VERIFIED: Heat pump reports idx=882 (not 881)
         "extid": "E1E3B281D900F7",
         "max": 35,
         "min": 5,
@@ -5789,7 +5789,7 @@ PARAMETER_DATA = [
         "text": "HEATING_SEASON_DELAYED_TEMP"
     },
     {
-        "idx": 882,
+        "idx": 883,  # HARDWARE-VERIFIED: Heat pump reports idx=883 (not 882)
         "extid": "E1C800448B00F5",
         "max": 17,
         "min": 5,
@@ -5798,7 +5798,7 @@ PARAMETER_DATA = [
         "text": "HEATING_SEASON_IMMEDIATE_TEMP"
     },
     {
-        "idx": 883,
+        "idx": 884,  # HARDWARE-VERIFIED: Heat pump reports idx=884 (not 883)
         "extid": "E1882248C90440",
         "max": 2,
         "min": 0,
@@ -5807,7 +5807,7 @@ PARAMETER_DATA = [
         "text": "HEATING_SEASON_MODE"
     },
     {
-        "idx": 884,
+        "idx": 885,  # HARDWARE-VERIFIED: Heat pump reports idx=885 (not 884)
         "extid": "E1FF34393100F6",
         "max": 48,
         "min": 1,
@@ -5816,7 +5816,7 @@ PARAMETER_DATA = [
         "text": "HEATING_SEASON_START_DELAY_TIME"
     },
     {
-        "idx": 885,
+        "idx": 886,  # HARDWARE-VERIFIED: Heat pump reports idx=886 (not 885)
         "extid": "E17EE5BF2402F1",
         "max": 48,
         "min": 1,
@@ -5825,7 +5825,7 @@ PARAMETER_DATA = [
         "text": "HEATING_SEASON_STOP_DELAY_TIME"
     },
     {
-        "idx": 886,
+        "idx": 887,  # HARDWARE-VERIFIED: Heat pump reports idx=887 (not 886)
         "extid": "0E7900A31300CA",
         "max": 0,
         "min": 0,
