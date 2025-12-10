@@ -11,6 +11,7 @@ Behavior:
 from __future__ import annotations
 
 import logging
+import struct
 import time
 from typing import Optional, Dict, Any, List
 
@@ -19,6 +20,12 @@ from .can_adapter import USBtinAdapter
 from .parameter_registry import ParameterRegistry, Parameter
 from .value_encoder import ValueEncoder
 from .exceptions import DeviceCommunicationError, TimeoutError
+
+# PROTOCOL: CAN message ID base values for parameter access
+# Request (RTR) IDs use prefix 0x04, Response IDs use prefix 0x0C
+# Parameter index is shifted left by 14 bits and OR'd with base
+CAN_REQUEST_BASE = 0x04003FE0  # RTR request for parameter read
+CAN_RESPONSE_BASE = 0x0C003FE0  # Response to parameter read
 
 
 class HeatPumpClient:
@@ -84,8 +91,8 @@ class HeatPumpClient:
         param = self.get(name_or_idx)
         adapter_timeout = getattr(self._adapter, "timeout", 2.0)
         effective_timeout = timeout if timeout is not None else adapter_timeout
-        request_id = 0x04003FE0 | (param.idx << 14)
-        response_id = 0x0C003FE0 | (param.idx << 14)
+        request_id = CAN_REQUEST_BASE | (param.idx << 14)
+        response_id = CAN_RESPONSE_BASE | (param.idx << 14)
         request = CANMessage(arbitration_id=request_id, data=b"", is_extended_id=True, is_remote_frame=True)
         self._adapter.flush_input_buffer()
         start = time.time()
@@ -131,9 +138,9 @@ class HeatPumpClient:
         if param.min >= param.max:
             raise PermissionError(f"Parameter {param.text} is read-only (min={param.min} >= max={param.max})")
         encoded = self._encode_value(param, value)
-        # PROTOCOL: Write uses same CAN ID as read request (0x04003FE0 | idx << 14)
+        # PROTOCOL: Write uses same CAN ID as read request (CAN_REQUEST_BASE | idx << 14)
         # See FHEM 26_KM273v018.pm line 2229, 2678, 2746
-        request_id = 0x04003FE0 | (param.idx << 14)
+        request_id = CAN_REQUEST_BASE | (param.idx << 14)
         msg = CANMessage(arbitration_id=request_id, data=encoded, is_extended_id=True)
         self._adapter.flush_input_buffer()
         adapter_timeout = getattr(self._adapter, "timeout", 2.0)
@@ -190,8 +197,8 @@ class HeatPumpClient:
             if len(raw) >= 2:
                 try:
                     return ValueEncoder.decode_temperature(raw[:2], "temp")
-                except Exception:
-                    pass
+                except (ValueError, struct.error):
+                    pass  # Fall through to 1-byte or hex fallback
             # Handle 1-byte temperature (factor 0.1)
             if len(raw) == 1:
                 signed = param.min < 0
@@ -206,5 +213,5 @@ class HeatPumpClient:
         try:
             signed = param.min < 0
             return int.from_bytes(raw, "big", signed=signed)
-        except Exception:
-            return raw.hex()
+        except (ValueError, OverflowError):
+            return raw.hex()  # Return hex string as fallback

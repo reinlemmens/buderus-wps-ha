@@ -19,7 +19,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import time
-from typing import Optional
+from typing import List
 
 from .exceptions import ValidationError
 
@@ -79,6 +79,18 @@ class WeeklySchedule:
     saturday: ScheduleSlot
     sunday: ScheduleSlot
 
+    def _days_as_list(self) -> List[ScheduleSlot]:
+        """Return all days as a list (Monday=index 0, Sunday=index 6)."""
+        return [
+            self.monday,
+            self.tuesday,
+            self.wednesday,
+            self.thursday,
+            self.friday,
+            self.saturday,
+            self.sunday,
+        ]
+
     def get_day(self, day: int) -> ScheduleSlot:
         """
         Get schedule for day.
@@ -89,18 +101,9 @@ class WeeklySchedule:
         Returns:
             ScheduleSlot for the specified day
         """
-        days = [
-            self.monday,
-            self.tuesday,
-            self.wednesday,
-            self.thursday,
-            self.friday,
-            self.saturday,
-            self.sunday,
-        ]
         if not 0 <= day <= 6:
             raise ValueError(f"Day must be 0-6, got {day}")
-        return days[day]
+        return self._days_as_list()[day]
 
     def set_day(self, day: int, slot: ScheduleSlot) -> "WeeklySchedule":
         """
@@ -113,17 +116,9 @@ class WeeklySchedule:
         Returns:
             New WeeklySchedule with the modification
         """
-        days = [
-            self.monday,
-            self.tuesday,
-            self.wednesday,
-            self.thursday,
-            self.friday,
-            self.saturday,
-            self.sunday,
-        ]
         if not 0 <= day <= 6:
             raise ValueError(f"Day must be 0-6, got {day}")
+        days = self._days_as_list()
         days[day] = slot
         return WeeklySchedule(*days)
 

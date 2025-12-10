@@ -53,6 +53,14 @@ if TYPE_CHECKING:
 
 
 # =============================================================================
+# Constants
+# =============================================================================
+
+# Day names for schedule iteration (Monday=0, Sunday=6)
+WEEKDAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+
+
+# =============================================================================
 # Data Classes
 # =============================================================================
 
@@ -299,10 +307,9 @@ class HotWaterController:
             raise ValueError("Program must be 1 or 2")
 
         prefix = f"schedule_p{program}_"
-        days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
         slots = []
 
-        for day in days:
+        for day in WEEKDAYS:
             param_idx = DHW_PARAMS[f"{prefix}{day}"]
             # PROTOCOL: Use odd index (+1) for sw2 format to get both start and end times
             read_idx = ScheduleCodec.get_sw2_read_index(param_idx)
@@ -329,9 +336,8 @@ class HotWaterController:
             slot.validate(resolution_minutes=30)
 
         prefix = f"schedule_p{program}_"
-        days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 
-        for i, day in enumerate(days):
+        for i, day in enumerate(WEEKDAYS):
             param_idx = DHW_PARAMS[f"{prefix}{day}"]
             slot = schedule.get_day(i)
             encoded = ScheduleCodec.encode(slot)
@@ -407,10 +413,9 @@ class Circuit:
         if program not in (1, 2):
             raise ValueError("Program must be 1 or 2")
 
-        days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
         slots = []
 
-        for day in days:
+        for day in WEEKDAYS:
             param = self._get_param(f"schedule_p{program}_{day}")
             # sw1 format: documented indices work directly
             raw = self._client.read_value(param)
@@ -424,9 +429,7 @@ class Circuit:
         if program not in (1, 2):
             raise ValueError("Program must be 1 or 2")
 
-        days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
-
-        for i, day in enumerate(days):
+        for i, day in enumerate(WEEKDAYS):
             param = self._get_param(f"schedule_p{program}_{day}")
             slot = schedule.get_day(i)
             encoded = ScheduleCodec.encode(slot)

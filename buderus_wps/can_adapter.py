@@ -247,8 +247,8 @@ class USBtinAdapter:
             if self._serial and self._serial.is_open:
                 try:
                     self._serial.close()
-                except:
-                    pass
+                except Exception:
+                    pass  # Ignore cleanup errors
             self._serial = None
 
             if isinstance(e, (DeviceNotFoundError, DeviceInitializationError)):
@@ -274,14 +274,14 @@ class USBtinAdapter:
                 try:
                     self._serial.write(b'C\r')
                     time.sleep(0.1)  # Brief wait for command processing
-                except:
+                except Exception:
                     pass  # Ignore errors during shutdown
 
             # Close serial port
             if self._serial:
                 try:
                     self._serial.close()
-                except:
+                except Exception:
                     pass  # Ignore errors during cleanup
 
         finally:
@@ -321,14 +321,14 @@ class USBtinAdapter:
         """
         try:
             self.disconnect()
-        except:
+        except Exception:
             pass  # Ignore all errors in destructor
 
     def _atexit_cleanup(self) -> None:
         """Cleanup handler registered with atexit module."""
         try:
             self.disconnect()
-        except:
+        except Exception:
             pass  # Ignore all errors during exit
 
     def _write_command(self, command: bytes) -> None:
