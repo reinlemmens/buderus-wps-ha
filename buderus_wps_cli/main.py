@@ -263,13 +263,66 @@ def cmd_read(client: HeatPumpClient, args: argparse.Namespace, adapter: Optional
         return 1
 
 
+# Named value mappings for specific parameters
+# Maps (param_name, named_value) -> numeric_value
+NAMED_VALUES: dict[str, dict[str, int]] = {
+    "HEATING_SEASON_MODE": {
+        "winter": 0,
+        "automatic": 1,
+        "auto": 1,
+        "off": 2,
+        "summer": 2,
+    },
+    "DHW_PROGRAM_MODE": {
+        "automatic": 0,
+        "auto": 0,
+        "on": 1,
+        "always_on": 1,
+        "off": 2,
+        "always_off": 2,
+    },
+}
+
+
+def resolve_named_value(param_name: str, value: str) -> str:
+    """Resolve named value to numeric value if applicable.
+
+    Args:
+        param_name: Parameter name (e.g., HEATING_SEASON_MODE)
+        value: Value string (may be numeric or named like 'winter')
+
+    Returns:
+        Resolved value as string (numeric)
+    """
+    # Check if parameter has named values
+    param_upper = param_name.upper()
+    if param_upper not in NAMED_VALUES:
+        return value
+
+    # Check if value is a named value (case-insensitive)
+    value_lower = value.lower()
+    if value_lower in NAMED_VALUES[param_upper]:
+        return str(NAMED_VALUES[param_upper][value_lower])
+
+    return value
+
+
 def cmd_write(client: HeatPumpClient, args: argparse.Namespace) -> int:
     try:
         if client._adapter.read_only or args.dry_run:
             raise PermissionError("Adapter is in read-only/dry-run mode")
         param = resolve_param(client, args.param)
-        client.write_value(param.text, args.value, timeout=args.timeout)
-        print(f"OK: wrote {param.text}={args.value}")
+
+        # Resolve named values (e.g., 'winter' -> 0 for HEATING_SEASON_MODE)
+        resolved_value = resolve_named_value(param.text, args.value)
+
+        client.write_value(param.text, resolved_value, timeout=args.timeout)
+
+        # Show both original and resolved value if different
+        if resolved_value != args.value:
+            print(f"OK: wrote {param.text}={args.value} ({resolved_value})")
+        else:
+            print(f"OK: wrote {param.text}={args.value}")
         return 0
     except Exception as e:
         print(f"ERROR: {e}", file=sys.stderr)

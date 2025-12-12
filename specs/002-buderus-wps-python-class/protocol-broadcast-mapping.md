@@ -541,14 +541,21 @@ frame = "T04DD3FE020001\r"  # value=1 (not 0!)
 wps-cli read HEATING_SEASON_MODE
 
 # Disable heating (summer mode / peak hour blocking)
-wps-cli write HEATING_SEASON_MODE 2
+wps-cli write HEATING_SEASON_MODE summer    # or: off, 2
 
 # Restore automatic operation
-wps-cli write HEATING_SEASON_MODE 1
+wps-cli write HEATING_SEASON_MODE automatic # or: auto, 1
 
 # Force heating (winter mode)
-wps-cli write HEATING_SEASON_MODE 0
+wps-cli write HEATING_SEASON_MODE winter    # or: 0
 ```
+
+**Named Values**: The CLI supports named values (case-insensitive):
+| Name | Value | Effect |
+|------|-------|--------|
+| `winter` | 0 | Forced heating |
+| `automatic`, `auto` | 1 | Normal operation |
+| `summer`, `off` | 2 | No heating |
 
 ## DHW Program Mode (DHW Blocking)
 
@@ -598,14 +605,21 @@ frame = "T047ABFE020000\r"  # value=0
 wps-cli read DHW_PROGRAM_MODE
 
 # Disable DHW (Always Off / peak hour blocking)
-wps-cli write DHW_PROGRAM_MODE 2
+wps-cli write DHW_PROGRAM_MODE off        # or: always_off, 2
 
 # Restore automatic operation
-wps-cli write DHW_PROGRAM_MODE 0
+wps-cli write DHW_PROGRAM_MODE automatic  # or: auto, 0
 
 # Force DHW always on
-wps-cli write DHW_PROGRAM_MODE 1
+wps-cli write DHW_PROGRAM_MODE on         # or: always_on, 1
 ```
+
+**Named Values**: The CLI supports named values (case-insensitive):
+| Name | Value | Effect |
+|------|-------|--------|
+| `automatic`, `auto` | 0 | Follow time program |
+| `on`, `always_on` | 1 | DHW always active |
+| `off`, `always_off` | 2 | No DHW heating |
 
 ## Buffer Tank Temperature Broadcasts
 
@@ -648,3 +662,4 @@ wps-cli read GT9_TEMP --broadcast
 | 2025-12-10 | Corrected value meanings: 0=Winter (forced), 1=Auto, 2=Off (was incorrectly 0=Auto) |
 | 2025-12-10 | Updated parameter_data.py with hardware-verified idx values for HEATING_SEASON_* params |
 | 2025-12-10 | **NEW**: DHW_PROGRAM_MODE (idx=489) verified writable for DHW blocking (0=Auto, 1=On, 2=Off) |
+| 2025-12-12 | Added CLI named value support: `wps-cli write HEATING_SEASON_MODE winter/summer/automatic` |

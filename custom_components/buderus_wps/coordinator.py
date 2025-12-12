@@ -31,6 +31,8 @@ class BuderusData:
     compressor_running: bool
     energy_blocked: bool
     dhw_extra_active: bool
+    heating_season_mode: Optional[int]  # 0=Winter, 1=Auto, 2=Off
+    dhw_program_mode: Optional[int]     # 0=Auto, 1=On, 2=Off
 
 
 class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
@@ -178,11 +180,31 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         except Exception as err:
             _LOGGER.debug("Could not read DHW extra status: %s", err)
 
+        # Get heating season mode (idx=884)
+        # Used for peak hour blocking - set to 2 (Off) to disable heating
+        heating_season_mode: Optional[int] = None
+        try:
+            result = self._client.read_parameter("HEATING_SEASON_MODE")
+            heating_season_mode = int(result.get("decoded", 0))
+        except Exception as err:
+            _LOGGER.debug("Could not read heating season mode: %s", err)
+
+        # Get DHW program mode (idx=489)
+        # Used for peak hour blocking - set to 2 (Off) to disable DHW
+        dhw_program_mode: Optional[int] = None
+        try:
+            result = self._client.read_parameter("DHW_PROGRAM_MODE")
+            dhw_program_mode = int(result.get("decoded", 0))
+        except Exception as err:
+            _LOGGER.debug("Could not read DHW program mode: %s", err)
+
         return BuderusData(
             temperatures=temperatures,
             compressor_running=compressor_running,
             energy_blocked=energy_blocked,
             dhw_extra_active=dhw_extra_active,
+            heating_season_mode=heating_season_mode,
+            dhw_program_mode=dhw_program_mode,
         )
 
     async def async_set_energy_blocking(self, blocked: bool) -> None:
@@ -213,3 +235,37 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         else:
             self._api.hot_water.extra_duration = 0
             _LOGGER.info("Stopped DHW extra production")
+
+    async def async_set_heating_season_mode(self, mode: int) -> None:
+        """Set heating season mode for peak hour blocking.
+
+        Args:
+            mode: 0=Winter (forced), 1=Auto, 2=Off (summer/blocked)
+        """
+        async with self._lock:
+            await self.hass.async_add_executor_job(
+                self._sync_set_heating_season_mode, mode
+            )
+
+    def _sync_set_heating_season_mode(self, mode: int) -> None:
+        """Synchronous heating season mode set (runs in executor)."""
+        self._client.write_value("HEATING_SEASON_MODE", mode)
+        mode_names = {0: "Winter (forced)", 1: "Automatic", 2: "Off (summer)"}
+        _LOGGER.info("Set heating season mode to %s (%d)", mode_names.get(mode, "Unknown"), mode)
+
+    async def async_set_dhw_program_mode(self, mode: int) -> None:
+        """Set DHW program mode for peak hour blocking.
+
+        Args:
+            mode: 0=Auto, 1=Always On, 2=Always Off (blocked)
+        """
+        async with self._lock:
+            await self.hass.async_add_executor_job(
+                self._sync_set_dhw_program_mode, mode
+            )
+
+    def _sync_set_dhw_program_mode(self, mode: int) -> None:
+        """Synchronous DHW program mode set (runs in executor)."""
+        self._client.write_value("DHW_PROGRAM_MODE", mode)
+        mode_names = {0: "Automatic", 1: "Always On", 2: "Always Off"}
+        _LOGGER.info("Set DHW program mode to %s (%d)", mode_names.get(mode, "Unknown"), mode)
