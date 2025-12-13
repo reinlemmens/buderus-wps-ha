@@ -18,6 +18,8 @@ from .const import (
     SENSOR_RETURN,
     SENSOR_DHW,
     SENSOR_BRINE_IN,
+    BACKOFF_INITIAL,
+    BACKOFF_MAX,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -30,7 +32,7 @@ class BuderusData:
     temperatures: dict[str, Optional[float]]
     compressor_running: bool
     energy_blocked: bool
-    dhw_extra_active: bool
+    dhw_extra_duration: int  # Hours remaining (0-24), 0 = not active
     heating_season_mode: Optional[int]  # 0=Winter, 1=Auto, 2=Off
     dhw_program_mode: Optional[int]     # 0=Auto, 1=On, 2=Off
 
@@ -59,6 +61,9 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         self._api: Any = None
         self._lock = asyncio.Lock()
         self._connected = False
+        # Exponential backoff for reconnection
+        self._backoff_delay = BACKOFF_INITIAL
+        self._reconnect_task: Optional[asyncio.Task[None]] = None
 
     async def async_setup(self) -> bool:
         """Set up the connection to the heat pump."""
@@ -72,9 +77,46 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
 
     async def async_shutdown(self) -> None:
         """Shut down the connection."""
+        # Cancel any pending reconnection
+        if self._reconnect_task is not None:
+            self._reconnect_task.cancel()
+            self._reconnect_task = None
         if self._connected:
             await self.hass.async_add_executor_job(self._sync_disconnect)
             self._connected = False
+
+    async def _handle_connection_failure(self) -> None:
+        """Schedule reconnection with exponential backoff."""
+        if self._reconnect_task is not None:
+            return  # Already reconnecting
+
+        self._reconnect_task = self.hass.async_create_background_task(
+            self._reconnect_with_backoff(),
+            "buderus_wps_reconnect",
+        )
+
+    async def _reconnect_with_backoff(self) -> None:
+        """Attempt reconnection with exponential backoff."""
+        while not self._connected:
+            _LOGGER.info(
+                "Attempting reconnection to heat pump in %d seconds",
+                self._backoff_delay,
+            )
+            await asyncio.sleep(self._backoff_delay)
+
+            try:
+                await self.hass.async_add_executor_job(self._sync_connect)
+                self._connected = True
+                self._backoff_delay = BACKOFF_INITIAL  # Reset on success
+                _LOGGER.info("Successfully reconnected to heat pump")
+                # Trigger a data refresh
+                await self.async_request_refresh()
+            except Exception as err:
+                _LOGGER.warning("Reconnection failed: %s", err)
+                # Double the delay, but cap at max
+                self._backoff_delay = min(self._backoff_delay * 2, BACKOFF_MAX)
+
+        self._reconnect_task = None
 
     def _sync_connect(self) -> None:
         """Synchronous connection setup (runs in executor)."""
@@ -123,12 +165,17 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         """Fetch data from the heat pump."""
         async with self._lock:
             if not self._connected:
+                # Trigger reconnection if not already in progress
+                await self._handle_connection_failure()
                 raise UpdateFailed("Not connected to heat pump")
 
             try:
                 return await self.hass.async_add_executor_job(self._sync_fetch_data)
             except Exception as err:
                 _LOGGER.error("Error fetching data from heat pump: %s", err)
+                # Mark as disconnected and trigger reconnection
+                self._connected = False
+                await self._handle_connection_failure()
                 raise UpdateFailed(f"Error fetching data: {err}") from err
 
     def _sync_fetch_data(self) -> BuderusData:
@@ -172,13 +219,12 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         except Exception as err:
             _LOGGER.debug("Could not read energy blocking status: %s", err)
 
-        # Get DHW extra status
-        dhw_extra_active = False
+        # Get DHW extra duration (hours remaining)
+        dhw_extra_duration = 0
         try:
-            dhw_extra = self._api.hot_water.extra_duration
-            dhw_extra_active = dhw_extra > 0
+            dhw_extra_duration = self._api.hot_water.extra_duration
         except Exception as err:
-            _LOGGER.debug("Could not read DHW extra status: %s", err)
+            _LOGGER.debug("Could not read DHW extra duration: %s", err)
 
         # Get heating season mode (idx=884)
         # Used for peak hour blocking - set to 2 (Off) to disable heating
@@ -202,7 +248,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             temperatures=temperatures,
             compressor_running=compressor_running,
             energy_blocked=energy_blocked,
-            dhw_extra_active=dhw_extra_active,
+            dhw_extra_duration=dhw_extra_duration,
             heating_season_mode=heating_season_mode,
             dhw_program_mode=dhw_program_mode,
         )
@@ -220,20 +266,23 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         self._client.write_value("ADDITIONAL_BLOCKED", value)
         _LOGGER.info("Set energy blocking to %s", blocked)
 
-    async def async_set_dhw_extra(self, active: bool, duration: int = 60) -> None:
-        """Set DHW extra production state."""
+    async def async_set_dhw_extra_duration(self, hours: int) -> None:
+        """Set DHW extra production duration.
+
+        Args:
+            hours: Duration in hours (0-24). 0 stops extra production.
+        """
         async with self._lock:
             await self.hass.async_add_executor_job(
-                self._sync_set_dhw_extra, active, duration
+                self._sync_set_dhw_extra_duration, hours
             )
 
-    def _sync_set_dhw_extra(self, active: bool, duration: int) -> None:
-        """Synchronous DHW extra set (runs in executor)."""
-        if active:
-            self._api.hot_water.extra_duration = duration
-            _LOGGER.info("Started DHW extra production for %d minutes", duration)
+    def _sync_set_dhw_extra_duration(self, hours: int) -> None:
+        """Synchronous DHW extra duration set (runs in executor)."""
+        self._api.hot_water.extra_duration = hours
+        if hours > 0:
+            _LOGGER.info("Started DHW extra production for %d hours", hours)
         else:
-            self._api.hot_water.extra_duration = 0
             _LOGGER.info("Stopped DHW extra production")
 
     async def async_set_heating_season_mode(self, mode: int) -> None:

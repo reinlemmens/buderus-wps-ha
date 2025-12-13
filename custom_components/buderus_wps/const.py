@@ -12,6 +12,10 @@ CONF_SCAN_INTERVAL: Final = "scan_interval"
 DEFAULT_PORT: Final = "/dev/ttyACM0"
 DEFAULT_SCAN_INTERVAL: Final = 60  # seconds
 
+# Exponential backoff for reconnection
+BACKOFF_INITIAL: Final = 5    # Initial delay in seconds
+BACKOFF_MAX: Final = 120      # Maximum delay in seconds (2 minutes)
+
 # Sensor types
 SENSOR_OUTDOOR: Final = "outdoor"
 SENSOR_SUPPLY: Final = "supply"
@@ -19,13 +23,13 @@ SENSOR_RETURN: Final = "return_temp"
 SENSOR_DHW: Final = "dhw"
 SENSOR_BRINE_IN: Final = "brine_in"
 
-# Sensor display names
+# Sensor display names (with device prefix per spec clarification)
 SENSOR_NAMES: Final = {
-    SENSOR_OUTDOOR: "Outdoor Temperature",
-    SENSOR_SUPPLY: "Supply Temperature",
-    SENSOR_RETURN: "Return Temperature",
-    SENSOR_DHW: "Hot Water Temperature",
-    SENSOR_BRINE_IN: "Brine Inlet Temperature",
+    SENSOR_OUTDOOR: "Heat Pump Outdoor Temperature",
+    SENSOR_SUPPLY: "Heat Pump Supply Temperature",
+    SENSOR_RETURN: "Heat Pump Return Temperature",
+    SENSOR_DHW: "Heat Pump Hot Water Temperature",
+    SENSOR_BRINE_IN: "Heat Pump Brine Inlet Temperature",
 }
 
 # Device info

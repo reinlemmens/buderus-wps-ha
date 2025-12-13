@@ -25,9 +25,10 @@ async def async_setup_platform(
 
     coordinator: BuderusCoordinator = hass.data[DOMAIN]["coordinator"]
 
+    # Only register energy block switch
+    # DHW extra is now a NumberEntity (0-24 hours) - see number.py
     async_add_entities([
         BuderusEnergyBlockSwitch(coordinator),
-        BuderusDHWExtraSwitch(coordinator),
     ])
 
 
@@ -56,32 +57,4 @@ class BuderusEnergyBlockSwitch(BuderusEntity, SwitchEntity):
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Disable energy blocking."""
         await self.coordinator.async_set_energy_blocking(False)
-        await self.coordinator.async_request_refresh()
-
-
-class BuderusDHWExtraSwitch(BuderusEntity, SwitchEntity):
-    """Switch for DHW extra production control."""
-
-    _attr_name = "DHW Extra"
-    _attr_icon = "mdi:water-boiler"
-
-    def __init__(self, coordinator: BuderusCoordinator) -> None:
-        """Initialize the DHW extra switch."""
-        super().__init__(coordinator, "dhw_extra")
-
-    @property
-    def is_on(self) -> bool | None:
-        """Return true if DHW extra production is active."""
-        if self.coordinator.data is None:
-            return None
-        return self.coordinator.data.dhw_extra_active
-
-    async def async_turn_on(self, **kwargs: Any) -> None:
-        """Start DHW extra production (default 60 minutes)."""
-        await self.coordinator.async_set_dhw_extra(True, duration=60)
-        await self.coordinator.async_request_refresh()
-
-    async def async_turn_off(self, **kwargs: Any) -> None:
-        """Stop DHW extra production."""
-        await self.coordinator.async_set_dhw_extra(False)
         await self.coordinator.async_request_refresh()

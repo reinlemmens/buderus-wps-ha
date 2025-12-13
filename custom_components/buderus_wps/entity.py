@@ -29,7 +29,7 @@ class BuderusEntity(CoordinatorEntity[BuderusCoordinator]):
         """Return device information."""
         return DeviceInfo(
             identifiers={(DOMAIN, self.coordinator.port)},
-            name="Buderus WPS Heat Pump",
+            name="Heat Pump",
             manufacturer=MANUFACTURER,
             model=MODEL,
             sw_version="0.1.0",

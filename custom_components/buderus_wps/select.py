@@ -48,7 +48,7 @@ class BuderusHeatingSeasonModeSelect(BuderusEntity, SelectEntity):
     Hardware-verified parameter: HEATING_SEASON_MODE (idx=884)
     """
 
-    _attr_name = "Heating Season Mode"
+    _attr_name = "Heat Pump Heating Season Mode"
     _attr_icon = "mdi:home-thermometer"
 
     def __init__(self, coordinator: BuderusCoordinator) -> None:
@@ -87,7 +87,7 @@ class BuderusDHWProgramModeSelect(BuderusEntity, SelectEntity):
     Hardware-verified parameter: DHW_PROGRAM_MODE (idx=489)
     """
 
-    _attr_name = "DHW Program Mode"
+    _attr_name = "Heat Pump DHW Program Mode"
     _attr_icon = "mdi:water-boiler"
 
     def __init__(self, coordinator: BuderusCoordinator) -> None:
