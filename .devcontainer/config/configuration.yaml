@@ -1,0 +1,34 @@
+# Home Assistant configuration for Buderus WPS development
+
+homeassistant:
+  name: Buderus WPS Dev
+  unit_system: metric
+  time_zone: Europe/Amsterdam
+  currency: EUR
+
+# Enable debug logging for development
+logger:
+  default: info
+  logs:
+    custom_components.buderus_wps: debug
+
+# Buderus WPS Heat Pump integration
+# Note: Requires USB serial connection to heat pump
+buderus_wps:
+  port: /dev/ttyACM0
+  scan_interval: 60
+
+# Basic frontend
+frontend:
+
+# Enable configuration UI
+config:
+
+# System health
+system_health:
+
+# Logbook
+logbook:
+
+# History
+history:
