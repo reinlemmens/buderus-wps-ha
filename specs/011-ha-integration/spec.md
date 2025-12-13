@@ -66,10 +66,10 @@ As a homeowner, I want to start extra hot water production via Home Assistant so
 
 **Acceptance Scenarios**:
 
-1. **Given** DHW temperature is low, **When** I turn on DHW extra production, **Then** the heat pump begins heating the hot water tank
-2. **Given** DHW extra production is active, **When** I turn it off, **Then** the heat pump stops the extra heating cycle
-3. **Given** DHW extra is running, **When** I view the control in Home Assistant, **Then** it shows the active status
-4. **Given** an automation for morning hot water, **When** the scheduled time arrives, **Then** the automation can trigger extra DHW production
+1. **Given** DHW temperature is low, **When** I set DHW extra duration to 2 hours, **Then** the heat pump begins heating the hot water tank for 2 hours
+2. **Given** DHW extra production is active, **When** I set the duration to 0, **Then** the heat pump stops the extra heating cycle
+3. **Given** DHW extra is running, **When** I view the number control in Home Assistant, **Then** it shows the remaining duration
+4. **Given** an automation for morning hot water, **When** the scheduled time arrives, **Then** the automation can set a DHW extra duration (e.g., 1 hour)
 
 ---
 
@@ -89,18 +89,20 @@ As a homeowner, I want to start extra hot water production via Home Assistant so
 - **FR-003**: Integration MUST provide a binary sensor showing compressor running status
 - **FR-004**: Integration MUST provide a switch to enable/disable energy blocking
 - **FR-005**: Integration MUST provide a control to start/stop extra DHW production
-- **FR-006**: Integration MUST update sensor values periodically (default: every 60 seconds)
-- **FR-007**: Integration MUST handle connection failures gracefully with appropriate error states
+- **FR-006**: Integration MUST update sensor values periodically with configurable interval (default: 60 seconds, range: 10-300 seconds)
+- **FR-007**: Integration MUST handle connection failures gracefully with exponential backoff reconnection (5s initial, doubling up to 2 min max) and appropriate error states
 - **FR-008**: Integration MUST support configuration via YAML file
 - **FR-009**: Integration MUST log errors with sufficient detail for troubleshooting
 - **FR-010**: Integration MUST maintain a persistent connection to the heat pump (not reconnect on every poll)
 
 ### Key Entities
 
+Entity naming convention: Descriptive names prefixed with "Heat Pump" (e.g., "Heat Pump Outdoor Temperature", "Heat Pump Compressor").
+
 - **Temperature Sensor**: Represents a temperature reading from the heat pump. Key attributes: value (Celsius), sensor type (outdoor/supply/return/dhw/brine), last update timestamp
 - **Compressor Status**: Binary state indicating whether the compressor is running. Derived from compressor frequency parameter
 - **Energy Block Switch**: Toggle control for blocking heat pump energy usage. Maps to the ADDITIONAL_BLOCKED parameter
-- **DHW Extra Control**: Toggle or service for starting/stopping extra hot water production. Uses the DHW_EXTRA_DURATION parameter
+- **DHW Extra Control**: Number input (0-24 hours) for setting extra hot water production duration. Setting to 0 stops extra production; setting 1-24 starts heating for that duration. Uses the DHW_EXTRA_DURATION parameter
 
 ## Success Criteria *(mandatory)*
 
@@ -113,6 +115,16 @@ As a homeowner, I want to start extra hot water production via Home Assistant so
 - **SC-005**: Integration remains stable for 24+ hours of continuous operation without memory leaks or crashes
 - **SC-006**: Connection recovery completes within 2 minutes after USB device reconnection
 - **SC-007**: User can configure and use the integration within 5 minutes using YAML configuration
+
+## Clarifications
+
+### Session 2025-12-13
+
+- Q: What type of control should DHW Extra be (button/switch/number)? → A: Number input with duration in hours (0-24), matching heat pump native behavior
+- Q: Should polling interval be configurable? → A: Yes, configurable via YAML (default 60s, range 10-300s)
+- Q: How should reconnection work after USB disconnection? → A: Exponential backoff (5s initial, doubling up to 2 min max)
+- Q: Should the integration support remote socketcand connections? → A: No, local USB serial only (remote is out of scope)
+- Q: How should HA entities be named? → A: Descriptive names prefixed with "Heat Pump" (e.g., "Heat Pump Outdoor Temperature")
 
 ## Assumptions
 
@@ -132,3 +144,4 @@ As a homeowner, I want to start extra hot water production via Home Assistant so
 - Schedule programming (future enhancement)
 - Alarm management (future enhancement)
 - Multiple heat pump support (single device only)
+- Remote CAN connection via socketcand TCP/IP (local USB serial only)
