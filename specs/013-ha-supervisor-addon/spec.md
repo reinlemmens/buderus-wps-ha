@@ -93,11 +93,11 @@ As a user troubleshooting issues, I want to view add-on logs so that I can diagn
 
 ### Edge Cases
 
-- What happens when the MQTT broker is unavailable? The add-on should buffer messages briefly and retry, logging warnings but not crashing.
+- What happens when the MQTT broker is unavailable? The add-on should buffer messages for up to 60 seconds and retry, logging warnings but not crashing. Older messages are discarded if buffer fills.
 - How does the add-on handle USB device hot-unplug? It should detect the loss, mark entities as unavailable, and attempt reconnection.
 - What if Home Assistant restarts while the add-on is running? The add-on should re-publish discovery messages to restore entities.
 - What if the heat pump doesn't respond to a command? The add-on should log the timeout and mark the entity as unavailable temporarily.
-- What happens with concurrent command requests? Commands should be queued and processed sequentially to avoid CAN bus conflicts.
+- What happens with concurrent command requests? Commands should be queued and processed sequentially with a minimum 500ms delay between commands to avoid CAN bus conflicts.
 
 ## Requirements *(mandatory)*
 
@@ -107,7 +107,7 @@ As a user troubleshooting issues, I want to view add-on logs so that I can diagn
 - **FR-002**: Add-on MUST run as a Docker container managed by Home Assistant Supervisor
 - **FR-003**: Add-on MUST provide configuration options for serial device path and MQTT settings
 - **FR-004**: Add-on MUST access USB serial devices through Supervisor's device mapping
-- **FR-005**: Add-on MUST connect to the local MQTT broker (provided by Home Assistant's MQTT add-on or external broker)
+- **FR-005**: Add-on MUST auto-detect MQTT broker via Supervisor API when available, with fallback to manual configuration (host, port, credentials)
 - **FR-006**: Add-on MUST publish sensor data using MQTT Discovery protocol for automatic entity creation
 - **FR-007**: Add-on MUST publish 6 temperature sensors: outdoor, supply, return, DHW, buffer top, buffer bottom
 - **FR-008**: Add-on MUST publish compressor status as a binary sensor (on when running)
@@ -124,7 +124,7 @@ As a user troubleshooting issues, I want to view add-on logs so that I can diagn
 ### Key Entities
 
 - **Add-on Container**: Docker container running the Buderus WPS service. Managed by Supervisor with resource limits, restart policies, and device mappings.
-- **MQTT Discovery Payload**: Configuration message published to MQTT that instructs Home Assistant to create an entity. Includes entity type, unique ID, device info, and state/command topics.
+- **MQTT Discovery Payload**: Configuration message published to MQTT that instructs Home Assistant to create an entity. Includes entity type, unique ID (format: `buderus_wps_<entity_name>`), device info, and state/command topics.
 - **Device Info**: Metadata grouping all entities under a single device in Home Assistant. Includes manufacturer (Buderus), model (WPS), and serial device identifier.
 
 ### Sensor Entities (Read-Only)
@@ -190,6 +190,11 @@ These entities allow users to control heat pump operation. All have been hardwar
 - The existing buderus_wps Python library is packaged into the Docker image
 - User has basic familiarity with Home Assistant add-on installation
 
+## Technical Constraints
+
+- **Docker Base Image**: ghcr.io/home-assistant/amd64-base-python (includes S6 overlay for process supervision)
+- **Multi-architecture**: Must support amd64 and aarch64 for Raspberry Pi compatibility
+
 ## Dependencies
 
 - **Feature 001**: CAN USB Serial communication (provides USBtinAdapter)
@@ -197,6 +202,16 @@ These entities allow users to control heat pump operation. All have been hardwar
 - **Feature 005**: Parameter read/write (provides HeatPumpClient)
 - **Home Assistant Supervisor**: Provides add-on management infrastructure
 - **MQTT Broker**: Mosquitto add-on or external MQTT broker for entity communication
+
+## Clarifications
+
+### Session 2025-12-13
+
+- Q: How should MQTT broker connection be established? → A: Auto-detect via Supervisor API with manual fallback
+- Q: What Docker base image should be used? → A: ghcr.io/home-assistant/amd64-base-python (HA-optimized with S6 overlay)
+- Q: How long should MQTT messages be buffered when broker unavailable? → A: 60 seconds
+- Q: How should entity unique IDs be generated? → A: Static prefix (e.g., "buderus_wps_outdoor_temp")
+- Q: What minimum delay between CAN bus commands? → A: 500ms minimum
 
 ## Out of Scope
 
