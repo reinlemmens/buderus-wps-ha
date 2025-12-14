@@ -1,0 +1,1 @@
+addon/DOCS.md

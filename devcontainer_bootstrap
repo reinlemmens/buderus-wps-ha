@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Bootstrap script for Home Assistant add-on development container
+set -e
+
+echo "Starting Home Assistant add-on development environment..."
+
+# Wait for supervisor to be ready
+echo "Waiting for supervisor..."
+while ! ha supervisor info &>/dev/null; do
+    sleep 2
+done
+
+echo "Supervisor is ready!"
+
+# Show available commands
+echo ""
+echo "✓ Development environment ready!"
+echo ""
+echo "Available commands:"
+echo "  ha addons - Manage add-ons"
+echo "  ha supervisor - Supervisor commands"
+echo "  ha core - Home Assistant Core commands"
+echo ""
+echo "To test your add-on:"
+echo "  1. Install: ha addons install local_buderus-wps"
+echo "  2. Start: ha addons start local_buderus-wps"
+echo "  3. View logs: ha addons logs local_buderus-wps"
+echo ""

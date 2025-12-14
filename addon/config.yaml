@@ -1,0 +1,55 @@
+# Buderus WPS Heat Pump Add-on Configuration
+# See: https://developers.home-assistant.io/docs/add-ons/configuration
+
+name: Buderus WPS Heat Pump
+version: "1.0.0"
+slug: buderus-wps
+description: Control Buderus WPS heat pumps via CAN bus over USB serial
+url: "https://github.com/your-username/buderus-wps-ha"
+
+# Supported architectures
+arch:
+  - amd64
+  - aarch64
+
+# Startup configuration
+startup: application
+boot: auto
+
+# USB serial device access
+devices:
+  - "/dev/ttyUSB0"
+  - "/dev/ttyUSB1"
+  - "/dev/ttyACM0"
+  - "/dev/ttyACM1"
+uart: true
+
+# No web UI - configuration via Home Assistant
+ingress: false
+panel_icon: mdi:heat-pump
+
+# Default options
+options:
+  serial_device: "/dev/ttyACM0"
+  mqtt_host: "core-mosquitto"
+  mqtt_port: 1883
+  scan_interval: 60
+  log_level: "info"
+
+# Configuration schema
+schema:
+  serial_device: device
+  mqtt_host: str?
+  mqtt_port: port?
+  mqtt_username: str?
+  mqtt_password: password?
+  scan_interval: int?
+  log_level: list(debug|info|warning|error)?
+
+# Environment variables
+environment:
+  PYTHONUNBUFFERED: "1"
+
+# Resource limits (optional but recommended)
+# memory: 256m
+# cpu: 50

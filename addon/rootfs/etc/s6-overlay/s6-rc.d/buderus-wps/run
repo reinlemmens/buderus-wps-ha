@@ -1,0 +1,19 @@
+#!/command/with-contenv bashio
+# shellcheck shell=bash
+# ==============================================================================
+# Buderus WPS Heat Pump Add-on Service Script
+#
+# This script starts the main Python service that connects to the heat pump
+# via USB serial and publishes data to MQTT.
+# ==============================================================================
+
+declare log_level
+
+# Get log level from addon config
+log_level=$(bashio::config 'log_level')
+
+bashio::log.info "Starting Buderus WPS Heat Pump service..."
+bashio::log.debug "Log level: ${log_level}"
+
+# Start the Python service
+exec python3 -m buderus_wps_addon.main
