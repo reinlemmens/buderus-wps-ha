@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from homeassistant.components.switch import SwitchEntity
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -13,25 +14,31 @@ from .coordinator import BuderusCoordinator
 from .entity import BuderusEntity
 
 
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up switch platform from config entry."""
+    data = hass.data[DOMAIN][entry.entry_id]
+    coordinator: BuderusCoordinator = data["coordinator"]
+
+    async_add_entities([BuderusEnergyBlockSwitch(coordinator, entry)])
+
+
 async def async_setup_platform(
     hass: HomeAssistant,
     config: dict,
     async_add_entities: AddEntitiesCallback,
     discovery_info: dict | None = None,
 ) -> None:
-    """Set up the switch platform."""
+    """Set up the switch platform via YAML (legacy)."""
     if discovery_info is None:
         return
 
     coordinator: BuderusCoordinator = hass.data[DOMAIN]["coordinator"]
 
-    # Only register energy block switch
-    # DHW extra is now a NumberEntity (0-24 hours) - see number.py
-    async_add_entities(
-        [
-            BuderusEnergyBlockSwitch(coordinator),
-        ]
-    )
+    async_add_entities([BuderusEnergyBlockSwitch(coordinator)])
 
 
 class BuderusEnergyBlockSwitch(BuderusEntity, SwitchEntity):
@@ -40,9 +47,13 @@ class BuderusEnergyBlockSwitch(BuderusEntity, SwitchEntity):
     _attr_name = "Energy Block"
     _attr_icon = ICON_ENERGY_BLOCK
 
-    def __init__(self, coordinator: BuderusCoordinator) -> None:
+    def __init__(
+        self,
+        coordinator: BuderusCoordinator,
+        entry: ConfigEntry | None = None,
+    ) -> None:
         """Initialize the energy block switch."""
-        super().__init__(coordinator, "energy_block")
+        super().__init__(coordinator, "energy_block", entry)
 
     @property
     def is_on(self) -> bool | None:

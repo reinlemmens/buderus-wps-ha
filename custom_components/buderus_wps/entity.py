@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -19,19 +20,25 @@ class BuderusEntity(CoordinatorEntity[BuderusCoordinator]):
         self,
         coordinator: BuderusCoordinator,
         entity_key: str,
+        entry: ConfigEntry | None = None,
     ) -> None:
         """Initialize the entity."""
         super().__init__(coordinator)
-        self._attr_unique_id = f"{coordinator.port}_{entity_key}"
+
+        # Use entry_id for config entry setup, fall back to port for YAML setup
+        if entry is not None:
+            unique_prefix = entry.entry_id
+        else:
+            unique_prefix = coordinator.port
+
+        self._attr_unique_id = f"{unique_prefix}_{entity_key}"
         self.entity_key = entity_key
 
-    @property
-    def device_info(self) -> DeviceInfo:
-        """Return device information."""
-        return DeviceInfo(
-            identifiers={(DOMAIN, self.coordinator.port)},
+        # Set device_info as attribute for proper device registration
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, unique_prefix)},
             name="Heat Pump",
             manufacturer=MANUFACTURER,
             model=MODEL,
-            sw_version="0.1.0",
+            sw_version="1.0.0",
         )

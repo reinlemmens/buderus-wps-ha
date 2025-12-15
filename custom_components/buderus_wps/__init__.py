@@ -17,13 +17,14 @@ from typing import Any
 
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
-from homeassistant.const import Platform
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_SCAN_INTERVAL, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import discovery
 
 from .const import (
     CONF_PORT,
-    CONF_SCAN_INTERVAL,
+    CONF_SERIAL_DEVICE,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
@@ -57,6 +58,9 @@ CONFIG_SCHEMA = vol.Schema(
 
 async def async_setup(hass: HomeAssistant, config: dict[str, Any]) -> bool:
     """Set up the Buderus WPS integration from YAML configuration."""
+    # Initialize domain data
+    hass.data.setdefault(DOMAIN, {})
+
     if DOMAIN not in config:
         return True
 
@@ -65,7 +69,7 @@ async def async_setup(hass: HomeAssistant, config: dict[str, Any]) -> bool:
     scan_interval = conf.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
 
     _LOGGER.info(
-        "Setting up Buderus WPS integration (port=%s, scan_interval=%d)",
+        "Setting up Buderus WPS integration via YAML (port=%s, scan_interval=%d)",
         port,
         scan_interval,
     )
@@ -81,10 +85,10 @@ async def async_setup(hass: HomeAssistant, config: dict[str, Any]) -> bool:
     # Perform initial data fetch
     await coordinator.async_refresh()
 
-    # Store coordinator for platforms to use
-    hass.data[DOMAIN] = {"coordinator": coordinator}
+    # Store coordinator for platforms to use (YAML mode uses "coordinator" key)
+    hass.data[DOMAIN]["coordinator"] = coordinator
 
-    # Set up platforms
+    # Set up platforms via discovery (legacy YAML mode)
     for platform in PLATFORMS:
         hass.async_create_task(
             discovery.async_load_platform(hass, platform, DOMAIN, {}, config)
@@ -97,5 +101,65 @@ async def async_setup(hass: HomeAssistant, config: dict[str, Any]) -> bool:
 
     hass.bus.async_listen_once("homeassistant_stop", async_shutdown)
 
-    _LOGGER.info("Buderus WPS integration setup complete")
+    _LOGGER.info("Buderus WPS integration setup complete (YAML)")
     return True
+
+
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Set up Buderus WPS from a config entry."""
+    # Initialize domain data
+    hass.data.setdefault(DOMAIN, {})
+
+    port = entry.data.get(CONF_SERIAL_DEVICE, DEFAULT_PORT)
+    scan_interval = entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+
+    _LOGGER.info(
+        "Setting up Buderus WPS integration via config entry (port=%s, scan_interval=%d)",
+        port,
+        scan_interval,
+    )
+
+    # Create coordinator
+    coordinator = BuderusCoordinator(hass, port, scan_interval)
+
+    # Connect to heat pump
+    if not await coordinator.async_setup():
+        _LOGGER.error("Failed to connect to heat pump at %s", port)
+        return False
+
+    # Perform initial data fetch
+    await coordinator.async_config_entry_first_refresh()
+
+    # Store coordinator keyed by entry_id for config entry mode
+    hass.data[DOMAIN][entry.entry_id] = {
+        "coordinator": coordinator,
+        "entry": entry,
+    }
+
+    # Set up platforms via config entry
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+
+    # Register update listener for options
+    entry.async_on_unload(entry.add_update_listener(async_reload_entry))
+
+    _LOGGER.info("Buderus WPS integration setup complete (config entry)")
+    return True
+
+
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Unload a config entry."""
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+
+    if unload_ok:
+        entry_data = hass.data[DOMAIN].pop(entry.entry_id, None)
+        if entry_data:
+            coordinator = entry_data.get("coordinator")
+            if coordinator:
+                await coordinator.async_shutdown()
+
+    return unload_ok
+
+
+async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Reload config entry when options change."""
+    await hass.config_entries.async_reload(entry.entry_id)

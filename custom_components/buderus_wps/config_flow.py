@@ -76,7 +76,7 @@ class BuderusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         # Try to initialize adapter
         adapter = USBtinAdapter(port, timeout=DEFAULT_TIMEOUT)
-        adapter.open()
+        adapter.connect()
 
         try:
             # Try to create client and ping the heat pump
@@ -85,7 +85,7 @@ class BuderusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             # This doesn't actually communicate with the heat pump yet
             _ = client.registry
         finally:
-            adapter.close()
+            adapter.disconnect()
 
     @staticmethod
     @callback

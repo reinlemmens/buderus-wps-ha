@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from homeassistant.components.number import NumberEntity, NumberMode
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -11,23 +12,31 @@ from .coordinator import BuderusCoordinator
 from .entity import BuderusEntity
 
 
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up number platform from config entry."""
+    data = hass.data[DOMAIN][entry.entry_id]
+    coordinator: BuderusCoordinator = data["coordinator"]
+
+    async_add_entities([BuderusDHWExtraDurationNumber(coordinator, entry)])
+
+
 async def async_setup_platform(
     hass: HomeAssistant,
     config: dict,
     async_add_entities: AddEntitiesCallback,
     discovery_info: dict | None = None,
 ) -> None:
-    """Set up the number platform."""
+    """Set up the number platform via YAML (legacy)."""
     if discovery_info is None:
         return
 
     coordinator: BuderusCoordinator = hass.data[DOMAIN]["coordinator"]
 
-    async_add_entities(
-        [
-            BuderusDHWExtraDurationNumber(coordinator),
-        ]
-    )
+    async_add_entities([BuderusDHWExtraDurationNumber(coordinator)])
 
 
 class BuderusDHWExtraDurationNumber(BuderusEntity, NumberEntity):
@@ -41,9 +50,13 @@ class BuderusDHWExtraDurationNumber(BuderusEntity, NumberEntity):
     _attr_native_unit_of_measurement = "h"
     _attr_mode = NumberMode.SLIDER
 
-    def __init__(self, coordinator: BuderusCoordinator) -> None:
+    def __init__(
+        self,
+        coordinator: BuderusCoordinator,
+        entry: ConfigEntry | None = None,
+    ) -> None:
         """Initialize the DHW extra duration number."""
-        super().__init__(coordinator, "dhw_extra_duration")
+        super().__init__(coordinator, "dhw_extra_duration", entry)
 
     @property
     def native_value(self) -> int | None:

@@ -7,6 +7,7 @@ enabling peak hour blocking via automation.
 from __future__ import annotations
 
 from homeassistant.components.select import SelectEntity
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -19,24 +20,37 @@ from .coordinator import BuderusCoordinator
 from .entity import BuderusEntity
 
 
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up select platform from config entry."""
+    data = hass.data[DOMAIN][entry.entry_id]
+    coordinator: BuderusCoordinator = data["coordinator"]
+
+    async_add_entities([
+        BuderusHeatingSeasonModeSelect(coordinator, entry),
+        BuderusDHWProgramModeSelect(coordinator, entry),
+    ])
+
+
 async def async_setup_platform(
     hass: HomeAssistant,
     config: dict,
     async_add_entities: AddEntitiesCallback,
     discovery_info: dict | None = None,
 ) -> None:
-    """Set up the select platform."""
+    """Set up the select platform via YAML (legacy)."""
     if discovery_info is None:
         return
 
     coordinator: BuderusCoordinator = hass.data[DOMAIN]["coordinator"]
 
-    async_add_entities(
-        [
-            BuderusHeatingSeasonModeSelect(coordinator),
-            BuderusDHWProgramModeSelect(coordinator),
-        ]
-    )
+    async_add_entities([
+        BuderusHeatingSeasonModeSelect(coordinator),
+        BuderusDHWProgramModeSelect(coordinator),
+    ])
 
 
 class BuderusHeatingSeasonModeSelect(BuderusEntity, SelectEntity):
@@ -50,12 +64,16 @@ class BuderusHeatingSeasonModeSelect(BuderusEntity, SelectEntity):
     Hardware-verified parameter: HEATING_SEASON_MODE (idx=884)
     """
 
-    _attr_name = "Heat Pump Heating Season Mode"
+    _attr_name = "Heating Season Mode"
     _attr_icon = "mdi:home-thermometer"
 
-    def __init__(self, coordinator: BuderusCoordinator) -> None:
+    def __init__(
+        self,
+        coordinator: BuderusCoordinator,
+        entry: ConfigEntry | None = None,
+    ) -> None:
         """Initialize the heating season mode select."""
-        super().__init__(coordinator, "heating_season_mode")
+        super().__init__(coordinator, "heating_season_mode", entry)
         self._attr_options = list(HEATING_SEASON_OPTIONS.values())
         self._value_to_option = HEATING_SEASON_OPTIONS
         self._option_to_value = {v: k for k, v in HEATING_SEASON_OPTIONS.items()}
@@ -89,12 +107,16 @@ class BuderusDHWProgramModeSelect(BuderusEntity, SelectEntity):
     Hardware-verified parameter: DHW_PROGRAM_MODE (idx=489)
     """
 
-    _attr_name = "Heat Pump DHW Program Mode"
+    _attr_name = "DHW Program Mode"
     _attr_icon = "mdi:water-boiler"
 
-    def __init__(self, coordinator: BuderusCoordinator) -> None:
+    def __init__(
+        self,
+        coordinator: BuderusCoordinator,
+        entry: ConfigEntry | None = None,
+    ) -> None:
         """Initialize the DHW program mode select."""
-        super().__init__(coordinator, "dhw_program_mode")
+        super().__init__(coordinator, "dhw_program_mode", entry)
         self._attr_options = list(DHW_PROGRAM_OPTIONS.values())
         self._value_to_option = DHW_PROGRAM_OPTIONS
         self._option_to_value = {v: k for k, v in DHW_PROGRAM_OPTIONS.items()}
