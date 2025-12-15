@@ -1,5 +1,7 @@
 # Buderus WPS Heat Pump CAN Bus Communication Library
 
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
+
 Python library for communicating with Buderus WPS heat pumps via CAN bus using USBtin adapters.
 
 ## Features
@@ -78,7 +80,19 @@ A custom integration is available for monitoring and controlling your heat pump 
 - ✅ Automatic reconnection with exponential backoff
 - ✅ Fully tested (117 tests, all passing)
 
-### Installation
+### Installation via HACS (Recommended)
+
+1. Open HACS in your Home Assistant instance
+2. Click the three dots menu in the top right corner
+3. Select "Custom repositories"
+4. Add repository URL: `https://github.com/reinlemmens/buderus-wps-ha`
+5. Select category: "Integration"
+6. Click "Add"
+7. Search for "Buderus WPS" and click "Download"
+8. Restart Home Assistant
+9. Go to Settings → Devices & Services → Add Integration → Buderus WPS
+
+### Manual Installation (Alternative)
 
 1. Copy the `custom_components/buderus_wps` directory to your Home Assistant `config/custom_components/` folder
 2. Add configuration to `configuration.yaml`:
