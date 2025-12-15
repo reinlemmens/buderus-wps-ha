@@ -1,1 +1,0 @@
-addon/CHANGELOG.md

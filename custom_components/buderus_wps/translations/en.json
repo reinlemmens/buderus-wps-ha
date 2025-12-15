@@ -1,0 +1,32 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Buderus WPS Heat Pump",
+        "description": "Configure your Buderus WPS heat pump connection",
+        "data": {
+          "serial_device": "USB Serial Device"
+        }
+      }
+    },
+    "error": {
+      "device_not_found": "USB device not found. Please check the device path.",
+      "device_permission": "Permission denied accessing USB device. Check permissions.",
+      "cannot_connect": "Failed to connect to heat pump. Check device and try again."
+    },
+    "abort": {
+      "already_configured": "This device is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Buderus WPS Options",
+        "description": "Configure polling and behavior settings",
+        "data": {
+          "scan_interval": "Scan Interval (seconds)"
+        }
+      }
+    }
+  }
+}
