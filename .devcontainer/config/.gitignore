@@ -13,6 +13,7 @@ secrets.yaml
 automations.yaml
 scripts.yaml
 scenes.yaml
+custom_components/
 
 # Keep configuration.yaml
 !configuration.yaml
