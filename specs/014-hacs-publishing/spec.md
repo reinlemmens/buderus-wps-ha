@@ -2,7 +2,7 @@
 
 **Feature Branch**: `014-hacs-publishing`
 **Created**: 2025-12-15
-**Status**: Draft
+**Status**: Implementation Complete (Pending Push/Release)
 **Input**: User description: "Publish integration on HACS (Home Assistant Community Store)"
 
 ## User Scenarios & Testing *(mandatory)*
