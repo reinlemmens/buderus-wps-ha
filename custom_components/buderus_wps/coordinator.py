@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import time
 from dataclasses import dataclass
 from datetime import timedelta
 from typing import Any
@@ -64,6 +65,11 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         # Exponential backoff for reconnection
         self._backoff_delay = BACKOFF_INITIAL
         self._reconnect_task: asyncio.Task[None] | None = None
+        # Last-known-good data caching for graceful degradation
+        self._last_known_good_data: BuderusData | None = None
+        self._last_successful_update: float | None = None  # Timestamp
+        self._consecutive_failures: int = 0
+        self._stale_data_threshold: int = 3  # Failures before declaring disconnected
 
     async def async_setup(self) -> bool:
         """Set up the connection to the heat pump."""
@@ -94,6 +100,68 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             self._reconnect_with_backoff(),
             "buderus_wps_reconnect",
         )
+
+    def _classify_error(self, error: Exception) -> str:
+        """Classify error as persistent, transient, or partial.
+
+        Args:
+            error: Exception that occurred during data fetch
+
+        Returns:
+            "persistent": Requires reconnection (device lost, multiple failures)
+            "transient": Temporary issue, can use stale data
+            "partial": Some data available, some failed (unused currently)
+        """
+        # Import exception types from buderus_wps to avoid module-level conflicts
+        # with Python's built-in ConnectionError and TimeoutError
+        try:
+            from buderus_wps.exceptions import (
+                DeviceNotFoundError,
+                DeviceDisconnectedError,
+                DevicePermissionError,
+                DeviceCommunicationError,
+                TimeoutError as BuderusTimeoutError,
+                ReadTimeoutError,
+            )
+        except ImportError:
+            # If exceptions module not available, use conservative classification
+            _LOGGER.debug("Could not import buderus_wps.exceptions, using conservative error classification")
+            # Check consecutive failures
+            if self._consecutive_failures >= self._stale_data_threshold:
+                return "persistent"
+            return "transient"
+
+        # Persistent connection errors - device is gone or inaccessible
+        if isinstance(error, (DeviceNotFoundError, DeviceDisconnectedError, DevicePermissionError)):
+            return "persistent"
+
+        # Check if we've had multiple consecutive failures - likely persistent issue
+        if self._consecutive_failures >= self._stale_data_threshold:
+            return "persistent"
+
+        # Timeout errors are usually transient (CAN bus congestion, temporary USB glitch)
+        if isinstance(error, (BuderusTimeoutError, ReadTimeoutError)):
+            return "transient"
+
+        # Communication errors might be transient (USB glitch) or persistent (disconnected)
+        # Use consecutive failure count to decide
+        if isinstance(error, DeviceCommunicationError):
+            if self._consecutive_failures >= 2:
+                return "persistent"
+            return "transient"
+
+        # OSError/IOError often indicate hardware issues
+        if isinstance(error, (OSError, IOError)):
+            # Serial port errors might be transient (USB glitch) or persistent
+            # Use consecutive failure count to decide
+            if self._consecutive_failures >= 2:
+                return "persistent"
+            return "transient"
+
+        # Default: treat as transient on first occurrence, persistent after threshold
+        if self._consecutive_failures < self._stale_data_threshold:
+            return "transient"
+        return "persistent"
 
     async def _reconnect_with_backoff(self) -> None:
         """Attempt reconnection with exponential backoff."""
@@ -164,34 +232,89 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             self._api = None
 
     async def _async_update_data(self) -> BuderusData:
-        """Fetch data from the heat pump."""
+        """Fetch data from the heat pump with graceful degradation."""
         async with self._lock:
             if not self._connected:
-                # Trigger reconnection if not already in progress
+                # If we have recent stale data, return it while reconnecting
+                if self._last_known_good_data is not None and self._consecutive_failures < self._stale_data_threshold:
+                    _LOGGER.warning(
+                        "Not connected, returning stale data (age: %.1fs, failures: %d/%d)",
+                        time.time() - self._last_successful_update if self._last_successful_update else 0,
+                        self._consecutive_failures,
+                        self._stale_data_threshold
+                    )
+                    return self._last_known_good_data
+
+                # Truly disconnected, trigger reconnection
                 await self._handle_connection_failure()
                 raise UpdateFailed("Not connected to heat pump")
 
             try:
-                return await self.hass.async_add_executor_job(self._sync_fetch_data)
+                # Attempt to fetch fresh data
+                fresh_data = await self.hass.async_add_executor_job(self._sync_fetch_data)
+
+                # Success! Update cache and reset failure counter
+                self._last_known_good_data = fresh_data
+                self._last_successful_update = time.time()
+                self._consecutive_failures = 0
+
+                return fresh_data
+
             except Exception as err:
-                _LOGGER.error("Error fetching data from heat pump: %s", err)
-                # Mark as disconnected and trigger reconnection
-                self._connected = False
-                await self._handle_connection_failure()
-                raise UpdateFailed(f"Error fetching data: {err}") from err
+                self._consecutive_failures += 1
+
+                # Classify the error
+                error_type = self._classify_error(err)
+
+                if error_type == "persistent":
+                    # Persistent connection loss - mark disconnected and reconnect
+                    _LOGGER.error(
+                        "Persistent connection error (failure %d/%d): %s",
+                        self._consecutive_failures,
+                        self._stale_data_threshold,
+                        err
+                    )
+                    self._connected = False
+                    await self._handle_connection_failure()
+
+                    # Return stale data if available, otherwise fail
+                    if self._last_known_good_data is not None:
+                        _LOGGER.warning("Returning stale data during reconnection")
+                        return self._last_known_good_data
+                    raise UpdateFailed(f"Persistent error: {err}") from err
+
+                elif error_type == "transient":
+                    # Transient error - log and return stale data
+                    _LOGGER.warning(
+                        "Transient error during update (failure %d/%d): %s",
+                        self._consecutive_failures,
+                        self._stale_data_threshold,
+                        err
+                    )
+
+                    if self._last_known_good_data is not None:
+                        _LOGGER.info(
+                            "Returning stale data (age: %.1fs)",
+                            time.time() - self._last_successful_update if self._last_successful_update else 0
+                        )
+                        return self._last_known_good_data
+
+                    # No stale data available - this is a genuine failure
+                    raise UpdateFailed(f"Transient error with no cached data: {err}") from err
+
+                else:  # "partial"
+                    # Partial failure - already handled in _sync_fetch_data
+                    # This shouldn't happen, but treat as transient
+                    _LOGGER.warning("Unexpected partial failure classification: %s", err)
+                    if self._last_known_good_data is not None:
+                        return self._last_known_good_data
+                    raise UpdateFailed(f"Error fetching data: {err}") from err
 
     def _sync_fetch_data(self) -> BuderusData:
-        """Synchronous data fetch (runs in executor)."""
+        """Synchronous data fetch (runs in executor) with partial success handling."""
         from buderus_wps.config import get_default_sensor_map
 
-        # Get temperature readings from broadcast monitoring
-        # This is more reliable than RTR requests
-        sensor_map = get_default_sensor_map()
-
-        # Collect broadcast data for a short duration
-        cache = self._monitor.collect(duration=5.0)
-
-        # Extract temperatures from cache
+        # Start with empty/None data
         temperatures: dict[str, float | None] = {
             SENSOR_OUTDOOR: None,
             SENSOR_SUPPLY: None,
@@ -200,53 +323,77 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             SENSOR_BRINE_IN: None,
         }
 
-        for (base, idx), sensor_name in sensor_map.items():
-            reading = cache.get_by_idx_and_base(idx, base)
-            if reading is not None and sensor_name in temperatures:
-                temperatures[sensor_name] = reading.temperature
+        # Try to collect broadcast data
+        broadcast_success = False
+        try:
+            sensor_map = get_default_sensor_map()
+            cache = self._monitor.collect(duration=5.0)
 
-        # Get compressor status from MenuAPI
+            # Extract temperatures from cache
+            for (base, idx), sensor_name in sensor_map.items():
+                reading = cache.get_by_idx_and_base(idx, base)
+                if reading is not None and sensor_name in temperatures:
+                    temperatures[sensor_name] = reading.temperature
+
+            broadcast_success = True
+        except Exception as err:
+            _LOGGER.warning("Broadcast collection failed, using stale temperature data: %s", err)
+            # If we have stale data, use those temperatures
+            if self._last_known_good_data is not None:
+                temperatures = self._last_known_good_data.temperatures.copy()
+
+        # Get compressor status (best-effort)
         compressor_running = False
         try:
             status = self._api.status
             compressor_running = status.compressor_running
         except Exception as err:
-            _LOGGER.warning("Could not read compressor status: %s", err)
+            _LOGGER.debug("Could not read compressor status: %s", err)
+            # Use stale value if available
+            if self._last_known_good_data is not None:
+                compressor_running = self._last_known_good_data.compressor_running
 
-        # Get energy blocking status
+        # Get energy blocking status (best-effort)
         energy_blocked = False
         try:
             result = self._client.read_parameter("ADDITIONAL_BLOCKED")
             energy_blocked = int(result.get("decoded", 0)) > 0
         except Exception as err:
             _LOGGER.debug("Could not read energy blocking status: %s", err)
+            if self._last_known_good_data is not None:
+                energy_blocked = self._last_known_good_data.energy_blocked
 
-        # Get DHW extra duration (hours remaining)
+        # Get DHW extra duration (best-effort)
         dhw_extra_duration = 0
         try:
             dhw_extra_duration = self._api.hot_water.extra_duration
         except Exception as err:
             _LOGGER.debug("Could not read DHW extra duration: %s", err)
+            if self._last_known_good_data is not None:
+                dhw_extra_duration = self._last_known_good_data.dhw_extra_duration
 
-        # Get heating season mode (idx=884)
-        # Used for peak hour blocking - set to 2 (Off) to disable heating
+        # Get heating season mode (best-effort)
         heating_season_mode: int | None = None
         try:
             result = self._client.read_parameter("HEATING_SEASON_MODE")
             heating_season_mode = int(result.get("decoded", 0))
         except Exception as err:
             _LOGGER.debug("Could not read heating season mode: %s", err)
+            if self._last_known_good_data is not None:
+                heating_season_mode = self._last_known_good_data.heating_season_mode
 
-        # Get DHW program mode (idx=489)
-        # Used for peak hour blocking - set to 2 (Off) to disable DHW
+        # Get DHW program mode (best-effort)
         dhw_program_mode: int | None = None
         try:
             result = self._client.read_parameter("DHW_PROGRAM_MODE")
             dhw_program_mode = int(result.get("decoded", 0))
         except Exception as err:
             _LOGGER.debug("Could not read DHW program mode: %s", err)
+            if self._last_known_good_data is not None:
+                dhw_program_mode = self._last_known_good_data.dhw_program_mode
 
-        return BuderusData(
+        # Build result with mix of fresh and stale data
+        result = BuderusData(
             temperatures=temperatures,
             compressor_running=compressor_running,
             energy_blocked=energy_blocked,
@@ -254,6 +401,16 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             heating_season_mode=heating_season_mode,
             dhw_program_mode=dhw_program_mode,
         )
+
+        # Check if we got at least SOME fresh data
+        # If broadcast failed and ALL parameters used stale data, this is a problem
+        if not broadcast_success and self._last_known_good_data is not None:
+            # Check if result is identical to stale data (nothing was fresh)
+            if result == self._last_known_good_data:
+                # Complete failure - raise exception to trigger error handling
+                raise RuntimeError("All data reads failed, only stale data available")
+
+        return result
 
     async def async_set_energy_blocking(self, blocked: bool) -> None:
         """Set energy blocking state."""
