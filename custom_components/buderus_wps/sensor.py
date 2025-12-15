@@ -1,81 +1,75 @@
-"""Sensor platform for Buderus WPS Heat Pump."""
+"""Temperature sensors for Buderus WPS Heat Pump."""
+
 from __future__ import annotations
 
 from homeassistant.components.sensor import (
-    SensorEntity,
     SensorDeviceClass,
+    SensorEntity,
     SensorStateClass,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import BuderusConfigEntry
-from .const import DOMAIN, MANUFACTURER, MODEL
-from .coordinator import BuderusDataUpdateCoordinator
+from .const import (
+    DOMAIN,
+    SENSOR_BRINE_IN,
+    SENSOR_DHW,
+    SENSOR_NAMES,
+    SENSOR_OUTDOOR,
+    SENSOR_RETURN,
+    SENSOR_SUPPLY,
+)
+from .coordinator import BuderusCoordinator
+from .entity import BuderusEntity
 
 
-async def async_setup_entry(
+async def async_setup_platform(
     hass: HomeAssistant,
-    entry: BuderusConfigEntry,
+    config: dict,
     async_add_entities: AddEntitiesCallback,
+    discovery_info: dict | None = None,
 ) -> None:
-    """Set up Buderus sensor entities."""
-    coordinator = entry.runtime_data
-    
-    # Define sensors to create
-    # TODO: Expand this list based on available parameters
+    """Set up the sensor platform."""
+    if discovery_info is None:
+        return
+
+    coordinator: BuderusCoordinator = hass.data[DOMAIN]["coordinator"]
+
     sensors = [
-        BuderusSensor(
-            coordinator,
-            "example_sensor",
-            "Example Sensor",
-            SensorDeviceClass.TEMPERATURE,
-            UnitOfTemperature.CELSIUS,
-        ),
+        BuderusTemperatureSensor(coordinator, sensor_type)
+        for sensor_type in [
+            SENSOR_OUTDOOR,
+            SENSOR_SUPPLY,
+            SENSOR_RETURN,
+            SENSOR_DHW,
+            SENSOR_BRINE_IN,
+        ]
     ]
-    
+
     async_add_entities(sensors)
 
 
-class BuderusSensor(CoordinatorEntity[BuderusDataUpdateCoordinator], SensorEntity):
-    """Representation of a Buderus WPS sensor."""
+class BuderusTemperatureSensor(BuderusEntity, SensorEntity):
+    """Temperature sensor for Buderus WPS heat pump."""
 
-    _attr_has_entity_name = True
+    _attr_device_class = SensorDeviceClass.TEMPERATURE
+    _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
     _attr_state_class = SensorStateClass.MEASUREMENT
 
     def __init__(
         self,
-        coordinator: BuderusDataUpdateCoordinator,
-        sensor_id: str,
-        name: str,
-        device_class: SensorDeviceClass | None,
-        unit: str | None,
+        coordinator: BuderusCoordinator,
+        sensor_type: str,
     ) -> None:
-        """Initialize the sensor."""
-        super().__init__(coordinator)
-        
-        self._sensor_id = sensor_id
-        self._attr_name = name
-        self._attr_device_class = device_class
-        self._attr_native_unit_of_measurement = unit
-        
-        # Set unique ID
-        self._attr_unique_id = f"{coordinator._port}_{sensor_id}"
-        
-        # Device info for grouping entities
-        self._attr_device_info = {
-            "identifiers": {(DOMAIN, coordinator._port)},
-            "name": "Buderus WPS Heat Pump",
-            "manufacturer": MANUFACTURER,
-            "model": MODEL,
-        }
+        """Initialize the temperature sensor."""
+        super().__init__(coordinator, f"temp_{sensor_type}")
+        self._sensor_type = sensor_type
+        self._attr_name = SENSOR_NAMES.get(sensor_type, sensor_type)
 
     @property
-    def native_value(self) -> float | int | str | None:
-        """Return the state of the sensor."""
-        # TODO: Get actual value from coordinator data
-        # For now, return None
-        return self.coordinator.data.get(self._sensor_id)
+    def native_value(self) -> float | None:
+        """Return the temperature value."""
+        if self.coordinator.data is None:
+            return None
+        return self.coordinator.data.temperatures.get(self._sensor_type)

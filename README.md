@@ -65,6 +65,91 @@ wps-cli dump --json > params.json         # dump all parameters with decoded/raw
 wps-cli --read-only write ACCESS_LEVEL 2  # blocks writes in read-only/dry-run
 ```
 
+## Home Assistant Integration
+
+A custom integration is available for monitoring and controlling your heat pump directly from Home Assistant.
+
+### Features
+
+- ✅ 5 temperature sensors (Outdoor, Supply, Return, DHW, Brine Inlet)
+- ✅ Compressor status binary sensor
+- ✅ Energy blocking switch (disable heating during peak rates)
+- ✅ DHW extra production control (boost hot water on demand)
+- ✅ Automatic reconnection with exponential backoff
+- ✅ Fully tested (117 tests, all passing)
+
+### Installation
+
+1. Copy the `custom_components/buderus_wps` directory to your Home Assistant `config/custom_components/` folder
+2. Add configuration to `configuration.yaml`:
+
+```yaml
+buderus_wps:
+  port: /dev/ttyACM0        # USB serial port (required)
+  scan_interval: 60         # Update interval in seconds (optional, default: 60, range: 10-300)
+```
+
+3. Restart Home Assistant
+4. Verify 8 entities appear (5 sensors + 1 binary_sensor + 1 switch + 1 number)
+
+### Entity Names
+
+All entities are prefixed with "Heat Pump" for easy identification:
+
+- `sensor.heat_pump_outdoor_temperature`
+- `sensor.heat_pump_supply_temperature`
+- `sensor.heat_pump_return_temperature`
+- `sensor.heat_pump_hot_water_temperature`
+- `sensor.heat_pump_brine_inlet_temperature`
+- `binary_sensor.heat_pump_compressor`
+- `switch.heat_pump_energy_block`
+- `number.heat_pump_dhw_extra_duration`
+
+### Example Automations
+
+**Block heating during peak electricity rates:**
+```yaml
+automation:
+  - alias: "Block heat pump during peak rates"
+    trigger:
+      - platform: time
+        at: "17:00:00"  # Peak starts
+    action:
+      - service: switch.turn_on
+        target:
+          entity_id: switch.heat_pump_energy_block
+
+  - alias: "Resume heating after peak rates"
+    trigger:
+      - platform: time
+        at: "21:00:00"  # Peak ends
+    action:
+      - service: switch.turn_off
+        target:
+          entity_id: switch.heat_pump_energy_block
+```
+
+**Boost hot water before morning shower:**
+```yaml
+automation:
+  - alias: "Morning hot water boost"
+    trigger:
+      - platform: time
+        at: "05:30:00"
+    action:
+      - service: number.set_value
+        target:
+          entity_id: number.heat_pump_dhw_extra_duration
+        data:
+          value: 2  # Run for 2 hours
+```
+
+### Documentation
+
+- [Feature Specification](specs/011-ha-integration/spec.md)
+- [Implementation Plan](specs/011-ha-integration/plan.md)
+- [Data Model](specs/011-ha-integration/data-model.md)
+
 ## Finding Your Serial Port
 
 **Linux/macOS:**
@@ -145,8 +230,8 @@ sudo usermod -a -G dialout $USER
 ### Library-First Design
 
 - **buderus_wps**: Core library (independently usable)
-- **buderus_wps_cli**: Command-line tool (future)
-- **Home Assistant integration**: Smart home plugin (future)
+- **buderus_wps_cli**: Command-line tool
+- **Home Assistant integration**: Smart home plugin (custom_components/buderus_wps)
 
 ### Constitution Principles
 
