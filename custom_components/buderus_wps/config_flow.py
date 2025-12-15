@@ -1,22 +1,22 @@
 """Config flow for Buderus WPS Heat Pump integration."""
+
 from __future__ import annotations
 
 import logging
 from typing import Any
 
+import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
-
 from homeassistant import config_entries
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
-import homeassistant.helpers.config_validation as cv
 
 from .const import (
-    DOMAIN,
     CONF_SERIAL_DEVICE,
     DEFAULT_SCAN_INTERVAL,
     DEFAULT_TIMEOUT,
+    DOMAIN,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -50,7 +50,7 @@ class BuderusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 # Connection successful, create entry
                 await self.async_set_unique_id(user_input[CONF_SERIAL_DEVICE])
                 self._abort_if_unique_id_configured()
-                
+
                 return self.async_create_entry(
                     title=f"Heat Pump ({user_input[CONF_SERIAL_DEVICE]})",
                     data=user_input,
@@ -73,11 +73,11 @@ class BuderusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Test connection to heat pump (runs in executor)."""
         from buderus_wps.can_adapter import USBtinAdapter
         from buderus_wps.heat_pump import HeatPumpClient
-        
+
         # Try to initialize adapter
         adapter = USBtinAdapter(port, timeout=DEFAULT_TIMEOUT)
         adapter.open()
-        
+
         try:
             # Try to create client and ping the heat pump
             client = HeatPumpClient(adapter)

@@ -5,7 +5,7 @@ from __future__ import annotations
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN, MANUFACTURER, MODEL
+from .const import DOMAIN, ICON_HEAT_PUMP, MANUFACTURER, MODEL
 from .coordinator import BuderusCoordinator
 
 
@@ -13,6 +13,7 @@ class BuderusEntity(CoordinatorEntity[BuderusCoordinator]):
     """Base class for Buderus WPS entities."""
 
     _attr_has_entity_name = True
+    _attr_icon = ICON_HEAT_PUMP  # Default icon for all entities
 
     def __init__(
         self,

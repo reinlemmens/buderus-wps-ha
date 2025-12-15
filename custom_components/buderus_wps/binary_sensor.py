@@ -9,7 +9,7 @@ from homeassistant.components.binary_sensor import (
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN
+from .const import DOMAIN, ICON_COMPRESSOR
 from .coordinator import BuderusCoordinator
 from .entity import BuderusEntity
 
@@ -37,6 +37,7 @@ class BuderusCompressorSensor(BuderusEntity, BinarySensorEntity):
     """Binary sensor for compressor running status."""
 
     _attr_device_class = BinarySensorDeviceClass.RUNNING
+    _attr_icon = ICON_COMPRESSOR
     _attr_name = "Compressor"
 
     def __init__(self, coordinator: BuderusCoordinator) -> None:

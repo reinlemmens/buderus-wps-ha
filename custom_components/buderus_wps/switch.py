@@ -8,7 +8,7 @@ from homeassistant.components.switch import SwitchEntity
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN
+from .const import DOMAIN, ICON_ENERGY_BLOCK
 from .coordinator import BuderusCoordinator
 from .entity import BuderusEntity
 
@@ -38,7 +38,7 @@ class BuderusEnergyBlockSwitch(BuderusEntity, SwitchEntity):
     """Switch for energy blocking control."""
 
     _attr_name = "Energy Block"
-    _attr_icon = "mdi:power-plug-off"
+    _attr_icon = ICON_ENERGY_BLOCK
 
     def __init__(self, coordinator: BuderusCoordinator) -> None:
         """Initialize the energy block switch."""

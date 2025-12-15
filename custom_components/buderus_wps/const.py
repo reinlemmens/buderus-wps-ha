@@ -36,6 +36,13 @@ SENSOR_NAMES: Final = {
 MANUFACTURER: Final = "Buderus"
 MODEL: Final = "WPS Heat Pump"
 
+# Icons
+ICON_HEAT_PUMP: Final = "mdi:heat-pump"
+ICON_TEMPERATURE: Final = "mdi:thermometer"
+ICON_COMPRESSOR: Final = "mdi:engine"
+ICON_ENERGY_BLOCK: Final = "mdi:power-plug-off"
+ICON_WATER_HEATER: Final = "mdi:water-boiler"
+
 # Heating Season Mode (idx=884)
 # Used for peak hour blocking - set to OFF (2) to disable heating
 HEATING_SEASON_MODE_WINTER: Final = 0  # Forced heating

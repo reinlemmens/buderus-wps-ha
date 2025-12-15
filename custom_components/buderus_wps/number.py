@@ -6,7 +6,7 @@ from homeassistant.components.number import NumberEntity, NumberMode
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN
+from .const import DOMAIN, ICON_WATER_HEATER
 from .coordinator import BuderusCoordinator
 from .entity import BuderusEntity
 
@@ -34,7 +34,7 @@ class BuderusDHWExtraDurationNumber(BuderusEntity, NumberEntity):
     """Number entity for DHW extra production duration (0-24 hours)."""
 
     _attr_name = "DHW Extra Duration"
-    _attr_icon = "mdi:water-boiler"
+    _attr_icon = ICON_WATER_HEATER
     _attr_native_min_value = 0
     _attr_native_max_value = 24
     _attr_native_step = 1
