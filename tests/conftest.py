@@ -23,6 +23,7 @@ def setup_ha_mocks():
     sys.modules["homeassistant"] = MagicMock()
     sys.modules["homeassistant.core"] = MagicMock()
     sys.modules["homeassistant.config_entries"] = MagicMock()
+    sys.modules["homeassistant.exceptions"] = MagicMock()
 
     # Constants module with actual values we need
     const_mock = MagicMock()
