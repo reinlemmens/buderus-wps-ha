@@ -7,19 +7,18 @@ from homeassistant.components.sensor import (
     SensorEntity,
     SensorStateClass,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
     DOMAIN,
-    SENSOR_OUTDOOR,
-    SENSOR_SUPPLY,
-    SENSOR_RETURN,
-    SENSOR_DHW,
     SENSOR_BRINE_IN,
+    SENSOR_DHW,
     SENSOR_NAMES,
+    SENSOR_OUTDOOR,
+    SENSOR_RETURN,
+    SENSOR_SUPPLY,
 )
 from .coordinator import BuderusCoordinator
 from .entity import BuderusEntity

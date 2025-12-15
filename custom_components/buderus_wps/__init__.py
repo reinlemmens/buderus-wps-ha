@@ -15,34 +15,39 @@ from __future__ import annotations
 import logging
 from typing import Any
 
+import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
-
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import discovery
-import homeassistant.helpers.config_validation as cv
 
 from .const import (
-    DOMAIN,
     CONF_PORT,
     CONF_SCAN_INTERVAL,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
+    DOMAIN,
 )
 from .coordinator import BuderusCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORMS = [Platform.SENSOR, Platform.BINARY_SENSOR, Platform.SWITCH, Platform.SELECT, Platform.NUMBER]
+PLATFORMS = [
+    Platform.SENSOR,
+    Platform.BINARY_SENSOR,
+    Platform.SWITCH,
+    Platform.SELECT,
+    Platform.NUMBER,
+]
 
 CONFIG_SCHEMA = vol.Schema(
     {
         DOMAIN: vol.Schema(
             {
                 vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.string,
-                vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): vol.All(
-                    cv.positive_int, vol.Range(min=10, max=300)
-                ),
+                vol.Optional(
+                    CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL
+                ): vol.All(cv.positive_int, vol.Range(min=10, max=300)),
             }
         )
     },
@@ -82,9 +87,7 @@ async def async_setup(hass: HomeAssistant, config: dict[str, Any]) -> bool:
     # Set up platforms
     for platform in PLATFORMS:
         hass.async_create_task(
-            discovery.async_load_platform(
-                hass, platform, DOMAIN, {}, config
-            )
+            discovery.async_load_platform(hass, platform, DOMAIN, {}, config)
         )
 
     # Register shutdown handler

@@ -26,9 +26,11 @@ async def async_setup_platform(
 
     coordinator: BuderusCoordinator = hass.data[DOMAIN]["coordinator"]
 
-    async_add_entities([
-        BuderusCompressorSensor(coordinator),
-    ])
+    async_add_entities(
+        [
+            BuderusCompressorSensor(coordinator),
+        ]
+    )
 
 
 class BuderusCompressorSensor(BuderusEntity, BinarySensorEntity):

@@ -60,6 +60,7 @@ exclude = ["tests*", "specs*", "fhem*"]
 minversion = "7.0"
 addopts = "-ra -q --strict-markers --cov=buderus_wps --cov-report=term-missing --cov-report=html"
 testpaths = ["tests"]
+pythonpath = ["."]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]

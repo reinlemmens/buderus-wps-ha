@@ -11,9 +11,9 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
+    DHW_PROGRAM_OPTIONS,
     DOMAIN,
     HEATING_SEASON_OPTIONS,
-    DHW_PROGRAM_OPTIONS,
 )
 from .coordinator import BuderusCoordinator
 from .entity import BuderusEntity
@@ -31,10 +31,12 @@ async def async_setup_platform(
 
     coordinator: BuderusCoordinator = hass.data[DOMAIN]["coordinator"]
 
-    async_add_entities([
-        BuderusHeatingSeasonModeSelect(coordinator),
-        BuderusDHWProgramModeSelect(coordinator),
-    ])
+    async_add_entities(
+        [
+            BuderusHeatingSeasonModeSelect(coordinator),
+            BuderusDHWProgramModeSelect(coordinator),
+        ]
+    )
 
 
 class BuderusHeatingSeasonModeSelect(BuderusEntity, SelectEntity):

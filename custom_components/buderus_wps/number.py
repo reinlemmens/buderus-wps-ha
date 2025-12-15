@@ -23,9 +23,11 @@ async def async_setup_platform(
 
     coordinator: BuderusCoordinator = hass.data[DOMAIN]["coordinator"]
 
-    async_add_entities([
-        BuderusDHWExtraDurationNumber(coordinator),
-    ])
+    async_add_entities(
+        [
+            BuderusDHWExtraDurationNumber(coordinator),
+        ]
+    )
 
 
 class BuderusDHWExtraDurationNumber(BuderusEntity, NumberEntity):

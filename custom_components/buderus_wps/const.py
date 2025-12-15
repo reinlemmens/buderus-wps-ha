@@ -13,8 +13,8 @@ DEFAULT_PORT: Final = "/dev/ttyACM0"
 DEFAULT_SCAN_INTERVAL: Final = 60  # seconds
 
 # Exponential backoff for reconnection
-BACKOFF_INITIAL: Final = 5    # Initial delay in seconds
-BACKOFF_MAX: Final = 120      # Maximum delay in seconds (2 minutes)
+BACKOFF_INITIAL: Final = 5  # Initial delay in seconds
+BACKOFF_MAX: Final = 120  # Maximum delay in seconds (2 minutes)
 
 # Sensor types
 SENSOR_OUTDOOR: Final = "outdoor"
@@ -39,8 +39,8 @@ MODEL: Final = "WPS Heat Pump"
 # Heating Season Mode (idx=884)
 # Used for peak hour blocking - set to OFF (2) to disable heating
 HEATING_SEASON_MODE_WINTER: Final = 0  # Forced heating
-HEATING_SEASON_MODE_AUTO: Final = 1    # Normal operation
-HEATING_SEASON_MODE_OFF: Final = 2     # No heating (summer mode)
+HEATING_SEASON_MODE_AUTO: Final = 1  # Normal operation
+HEATING_SEASON_MODE_OFF: Final = 2  # No heating (summer mode)
 
 HEATING_SEASON_OPTIONS: Final = {
     HEATING_SEASON_MODE_WINTER: "Winter (Forced)",
@@ -50,9 +50,9 @@ HEATING_SEASON_OPTIONS: Final = {
 
 # DHW Program Mode (idx=489)
 # Used for peak hour blocking - set to OFF (2) to disable DHW
-DHW_PROGRAM_MODE_AUTO: Final = 0       # Follows time program
-DHW_PROGRAM_MODE_ON: Final = 1         # Always on
-DHW_PROGRAM_MODE_OFF: Final = 2        # Always off
+DHW_PROGRAM_MODE_AUTO: Final = 0  # Follows time program
+DHW_PROGRAM_MODE_ON: Final = 1  # Always on
+DHW_PROGRAM_MODE_OFF: Final = 2  # Always off
 
 DHW_PROGRAM_OPTIONS: Final = {
     DHW_PROGRAM_MODE_AUTO: "Automatic",

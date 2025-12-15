@@ -27,9 +27,11 @@ async def async_setup_platform(
 
     # Only register energy block switch
     # DHW extra is now a NumberEntity (0-24 hours) - see number.py
-    async_add_entities([
-        BuderusEnergyBlockSwitch(coordinator),
-    ])
+    async_add_entities(
+        [
+            BuderusEnergyBlockSwitch(coordinator),
+        ]
+    )
 
 
 class BuderusEnergyBlockSwitch(BuderusEntity, SwitchEntity):

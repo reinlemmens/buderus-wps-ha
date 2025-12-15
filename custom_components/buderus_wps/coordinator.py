@@ -6,20 +6,20 @@ import asyncio
 import logging
 from dataclasses import dataclass
 from datetime import timedelta
-from typing import Any, Optional
+from typing import Any
 
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
-    DOMAIN,
-    SENSOR_OUTDOOR,
-    SENSOR_SUPPLY,
-    SENSOR_RETURN,
-    SENSOR_DHW,
-    SENSOR_BRINE_IN,
     BACKOFF_INITIAL,
     BACKOFF_MAX,
+    DOMAIN,
+    SENSOR_BRINE_IN,
+    SENSOR_DHW,
+    SENSOR_OUTDOOR,
+    SENSOR_RETURN,
+    SENSOR_SUPPLY,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -29,12 +29,12 @@ _LOGGER = logging.getLogger(__name__)
 class BuderusData:
     """Data class for heat pump readings."""
 
-    temperatures: dict[str, Optional[float]]
+    temperatures: dict[str, float | None]
     compressor_running: bool
     energy_blocked: bool
     dhw_extra_duration: int  # Hours remaining (0-24), 0 = not active
-    heating_season_mode: Optional[int]  # 0=Winter, 1=Auto, 2=Off
-    dhw_program_mode: Optional[int]     # 0=Auto, 1=On, 2=Off
+    heating_season_mode: int | None  # 0=Winter, 1=Auto, 2=Off
+    dhw_program_mode: int | None  # 0=Auto, 1=On, 2=Off
 
 
 class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
@@ -63,7 +63,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         self._connected = False
         # Exponential backoff for reconnection
         self._backoff_delay = BACKOFF_INITIAL
-        self._reconnect_task: Optional[asyncio.Task[None]] = None
+        self._reconnect_task: asyncio.Task[None] | None = None
 
     async def async_setup(self) -> bool:
         """Set up the connection to the heat pump."""
@@ -121,19 +121,21 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
     def _sync_connect(self) -> None:
         """Synchronous connection setup (runs in executor)."""
         # Import here to avoid loading at module level
-        import sys
         import os
+        import sys
 
         # Add the parent directory to path so we can import buderus_wps
-        repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+        repo_root = os.path.dirname(
+            os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        )
         if repo_root not in sys.path:
             sys.path.insert(0, repo_root)
 
         from buderus_wps import (
-            USBtinAdapter,
+            BroadcastMonitor,
             HeatPumpClient,
             ParameterRegistry,
-            BroadcastMonitor,
+            USBtinAdapter,
         )
         from buderus_wps.menu_api import MenuAPI
 
@@ -190,7 +192,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         cache = self._monitor.collect(duration=5.0)
 
         # Extract temperatures from cache
-        temperatures: dict[str, Optional[float]] = {
+        temperatures: dict[str, float | None] = {
             SENSOR_OUTDOOR: None,
             SENSOR_SUPPLY: None,
             SENSOR_RETURN: None,
@@ -228,7 +230,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
 
         # Get heating season mode (idx=884)
         # Used for peak hour blocking - set to 2 (Off) to disable heating
-        heating_season_mode: Optional[int] = None
+        heating_season_mode: int | None = None
         try:
             result = self._client.read_parameter("HEATING_SEASON_MODE")
             heating_season_mode = int(result.get("decoded", 0))
@@ -237,7 +239,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
 
         # Get DHW program mode (idx=489)
         # Used for peak hour blocking - set to 2 (Off) to disable DHW
-        dhw_program_mode: Optional[int] = None
+        dhw_program_mode: int | None = None
         try:
             result = self._client.read_parameter("DHW_PROGRAM_MODE")
             dhw_program_mode = int(result.get("decoded", 0))
@@ -300,7 +302,9 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         """Synchronous heating season mode set (runs in executor)."""
         self._client.write_value("HEATING_SEASON_MODE", mode)
         mode_names = {0: "Winter (forced)", 1: "Automatic", 2: "Off (summer)"}
-        _LOGGER.info("Set heating season mode to %s (%d)", mode_names.get(mode, "Unknown"), mode)
+        _LOGGER.info(
+            "Set heating season mode to %s (%d)", mode_names.get(mode, "Unknown"), mode
+        )
 
     async def async_set_dhw_program_mode(self, mode: int) -> None:
         """Set DHW program mode for peak hour blocking.
@@ -317,4 +321,6 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         """Synchronous DHW program mode set (runs in executor)."""
         self._client.write_value("DHW_PROGRAM_MODE", mode)
         mode_names = {0: "Automatic", 1: "Always On", 2: "Always Off"}
-        _LOGGER.info("Set DHW program mode to %s (%d)", mode_names.get(mode, "Unknown"), mode)
+        _LOGGER.info(
+            "Set DHW program mode to %s (%d)", mode_names.get(mode, "Unknown"), mode
+        )
