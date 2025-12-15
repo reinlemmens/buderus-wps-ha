@@ -79,7 +79,7 @@ async def async_setup(hass: HomeAssistant, config: dict[str, Any]) -> bool:
         return False
 
     # Perform initial data fetch
-    await coordinator.async_config_entry_first_refresh()
+    await coordinator.async_refresh()
 
     # Store coordinator for platforms to use
     hass.data[DOMAIN] = {"coordinator": coordinator}

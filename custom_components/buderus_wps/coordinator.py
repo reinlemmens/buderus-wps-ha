@@ -201,9 +201,9 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         }
 
         for (base, idx), sensor_name in sensor_map.items():
-            reading = cache.get(base, idx)
+            reading = cache.get_by_idx_and_base(idx, base)
             if reading is not None and sensor_name in temperatures:
-                temperatures[sensor_name] = reading.value
+                temperatures[sensor_name] = reading.temperature
 
         # Get compressor status from MenuAPI
         compressor_running = False

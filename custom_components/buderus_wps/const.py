@@ -6,11 +6,13 @@ DOMAIN: Final = "buderus_wps"
 
 # Configuration keys
 CONF_PORT: Final = "port"
+CONF_SERIAL_DEVICE: Final = "serial_device"  # Alias for config flow
 CONF_SCAN_INTERVAL: Final = "scan_interval"
 
 # Default values
 DEFAULT_PORT: Final = "/dev/ttyACM0"
 DEFAULT_SCAN_INTERVAL: Final = 60  # seconds
+DEFAULT_TIMEOUT: Final = 5  # seconds
 
 # Exponential backoff for reconnection
 BACKOFF_INITIAL: Final = 5  # Initial delay in seconds
