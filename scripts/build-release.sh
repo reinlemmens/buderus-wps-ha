@@ -124,7 +124,7 @@ patch_coordinator_imports() {
         )
         from .buderus_wps.menu_api import MenuAPI
         from .buderus_wps.exceptions import (
-            BuderusTimeoutError,
+            TimeoutError as BuderusTimeoutError,
             DeviceCommunicationError,
             DeviceDisconnectedError,
             DeviceInitializationError,
