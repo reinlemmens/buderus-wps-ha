@@ -77,8 +77,8 @@ STATUS_PARAMS = {
 # DHW (Hot Water) Parameters
 DHW_PARAMS = {
     "setpoint": "DHW_SETPOINT",
-    "stop_temp": "DHW_STOP_TEMP",
-    "extra_duration": "DHW_EXTRA_DURATION",
+    "stop_temp": "XDHW_STOP_TEMP",  # Corrected from DHW_STOP_TEMP
+    "extra_duration": "XDHW_TIME",  # Corrected from DHW_EXTRA_DURATION
     "program_mode": "DHW_PROGRAM_MODE",
     # Schedule parameters (sw2 format - use odd indices for full data)
     "schedule_p1_monday": 460,  # Documented index; use +1 for reading
