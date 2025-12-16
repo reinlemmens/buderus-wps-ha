@@ -193,8 +193,8 @@ Icon represents a heat pump unit with Buderus brand colors."
 ## Success Criteria
 
 - [x] `hacs.json` created and valid
-- [ ] README updated with HACS badge and instructions
-- [ ] GitHub release v1.0.0 created
+- [x] README updated with HACS badge and instructions
+- [x] GitHub release v1.0.0 created
 - [ ] HACS validation passes (0 errors)
 - [ ] Integration installs via HACS
 - [ ] Integration configures successfully after HACS install

@@ -194,3 +194,9 @@ When adding CAN element support:
 - `fhem/26_KM273v018.pm`: FHEM reference plugin (READ-ONLY)
 - `benchmark_lookup.py`: Parameter lookup performance benchmarks
 - `specs/[###-name]/`: Feature specifications and plans
+
+## Active Technologies
+- N/A (JSON configuration files only) + HACS validation requirements, GitHub Releases API (014-hacs-publishing)
+
+## Recent Changes
+- 014-hacs-publishing: Added N/A (JSON configuration files only) + HACS validation requirements, GitHub Releases API

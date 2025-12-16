@@ -34,7 +34,9 @@ class TestUS3Scenario1TurnOnEnablesBlocking:
         When I turn on the Energy Block switch
         Then the heat pump stops heating (blocking enabled)
         """
-        mock_coordinator.data.energy_blocked = False
+        # Start with automatic operation (not blocked)
+        mock_coordinator.data.heating_season_mode = 1  # Automatic
+        mock_coordinator.data.dhw_program_mode = 0  # Automatic
         entities_added = []
         mock_hass.data[DOMAIN] = {"coordinator": mock_coordinator}
 
@@ -50,8 +52,9 @@ class TestUS3Scenario1TurnOnEnablesBlocking:
 
         await switch.async_turn_on()
 
-        # Coordinator method should be called to enable blocking
-        mock_coordinator.async_set_energy_blocking.assert_called_with(True)
+        # Coordinator methods should be called to set both modes to "Off"
+        mock_coordinator.async_set_heating_season_mode.assert_called_with(2)
+        mock_coordinator.async_set_dhw_program_mode.assert_called_with(2)
         mock_coordinator.async_request_refresh.assert_called()
 
 
@@ -67,7 +70,9 @@ class TestUS3Scenario2TurnOffDisablesBlocking:
         When I turn off the Energy Block switch
         Then the heat pump resumes heating (blocking disabled)
         """
-        mock_coordinator.data.energy_blocked = True
+        # Start with energy blocking enabled (both modes set to "Off")
+        mock_coordinator.data.heating_season_mode = 2  # Off (summer)
+        mock_coordinator.data.dhw_program_mode = 2  # Always Off
         entities_added = []
         mock_hass.data[DOMAIN] = {"coordinator": mock_coordinator}
 
@@ -83,8 +88,9 @@ class TestUS3Scenario2TurnOffDisablesBlocking:
 
         await switch.async_turn_off()
 
-        # Coordinator method should be called to disable blocking
-        mock_coordinator.async_set_energy_blocking.assert_called_with(False)
+        # Coordinator methods should be called to restore automatic operation
+        mock_coordinator.async_set_heating_season_mode.assert_called_with(1)
+        mock_coordinator.async_set_dhw_program_mode.assert_called_with(0)
         mock_coordinator.async_request_refresh.assert_called()
 
 
@@ -100,7 +106,9 @@ class TestUS3Scenario3StateReflectsOnLoad:
         When Home Assistant starts
         Then the switch shows ON state
         """
-        mock_coordinator.data.energy_blocked = True
+        # Energy blocking enabled (both modes set to "Off")
+        mock_coordinator.data.heating_season_mode = 2  # Off (summer)
+        mock_coordinator.data.dhw_program_mode = 2  # Always Off
         entities_added = []
         mock_hass.data[DOMAIN] = {"coordinator": mock_coordinator}
 
@@ -123,7 +131,9 @@ class TestUS3Scenario3StateReflectsOnLoad:
         When Home Assistant starts
         Then the switch shows OFF state
         """
-        mock_coordinator.data.energy_blocked = False
+        # Energy blocking disabled (automatic operation)
+        mock_coordinator.data.heating_season_mode = 1  # Automatic
+        mock_coordinator.data.dhw_program_mode = 0  # Automatic
         entities_added = []
         mock_hass.data[DOMAIN] = {"coordinator": mock_coordinator}
 

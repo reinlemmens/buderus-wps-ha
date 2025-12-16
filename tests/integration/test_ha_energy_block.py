@@ -63,7 +63,9 @@ class TestEnergyBlockSwitchDataFlow:
     ):
         """Energy block switch state must match coordinator data."""
         entities_added = []
-        mock_coordinator.data.energy_blocked = True
+        # Energy blocking is enabled when both modes are set to "Off"
+        mock_coordinator.data.heating_season_mode = 2  # Off (summer)
+        mock_coordinator.data.dhw_program_mode = 2  # Always Off
         mock_hass.data[DOMAIN] = {"coordinator": mock_coordinator}
 
         await async_setup_platform(
@@ -82,7 +84,9 @@ class TestEnergyBlockSwitchDataFlow:
     ):
         """Switch updates when coordinator data changes."""
         entities_added = []
-        mock_coordinator.data.energy_blocked = False
+        # Start with automatic operation (not blocked)
+        mock_coordinator.data.heating_season_mode = 1  # Automatic
+        mock_coordinator.data.dhw_program_mode = 0  # Automatic
         mock_hass.data[DOMAIN] = {"coordinator": mock_coordinator}
 
         await async_setup_platform(
@@ -95,7 +99,7 @@ class TestEnergyBlockSwitchDataFlow:
         switch = entities_added[0]
         assert switch.is_on is False
 
-        # Simulate state change
+        # Simulate state change to blocked
         mock_coordinator.data = MockBuderusData(
             temperatures={
                 "outdoor": 5.5,
@@ -107,6 +111,8 @@ class TestEnergyBlockSwitchDataFlow:
             compressor_running=True,
             energy_blocked=True,
             dhw_extra_duration=0,
+            heating_season_mode=2,  # Off (summer)
+            dhw_program_mode=2,  # Always Off
         )
 
         # Switch should reflect new state
@@ -134,7 +140,9 @@ class TestEnergyBlockCommands:
         switch = entities_added[0]
         await switch.async_turn_on()
 
-        mock_coordinator.async_set_energy_blocking.assert_called_with(True)
+        # Should set both modes to "Off" state
+        mock_coordinator.async_set_heating_season_mode.assert_called_with(2)
+        mock_coordinator.async_set_dhw_program_mode.assert_called_with(2)
 
     @pytest.mark.asyncio
     async def test_turn_off_disables_blocking(
@@ -154,4 +162,6 @@ class TestEnergyBlockCommands:
         switch = entities_added[0]
         await switch.async_turn_off()
 
-        mock_coordinator.async_set_energy_blocking.assert_called_with(False)
+        # Should restore both modes to automatic operation
+        mock_coordinator.async_set_heating_season_mode.assert_called_with(1)
+        mock_coordinator.async_set_dhw_program_mode.assert_called_with(0)

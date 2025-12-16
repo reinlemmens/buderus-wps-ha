@@ -57,17 +57,41 @@ class BuderusEnergyBlockSwitch(BuderusEntity, SwitchEntity):
 
     @property
     def is_on(self) -> bool | None:
-        """Return true if energy blocking is enabled."""
+        """Return true if energy blocking is enabled.
+
+        Energy blocking is active when both heating and DHW are set to "Off" mode.
+        """
         if self.coordinator.data is None:
             return None
-        return self.coordinator.data.energy_blocked
+
+        # Check if both heating and DHW are in blocked state
+        # HEATING_SEASON_MODE: 2 = Off (summer/blocked)
+        # DHW_PROGRAM_MODE: 2 = Always Off (blocked)
+        heating_blocked = self.coordinator.data.heating_season_mode == 2
+        dhw_blocked = self.coordinator.data.dhw_program_mode == 2
+
+        return heating_blocked and dhw_blocked
 
     async def async_turn_on(self, **kwargs: Any) -> None:
-        """Enable energy blocking."""
-        await self.coordinator.async_set_energy_blocking(True)
+        """Enable energy blocking.
+
+        Sets both heating and DHW to blocked state:
+        - HEATING_SEASON_MODE to 2 (Off/Summer)
+        - DHW_PROGRAM_MODE to 2 (Always Off)
+        """
+        # Block both heating and DHW
+        await self.coordinator.async_set_heating_season_mode(2)  # Off (summer)
+        await self.coordinator.async_set_dhw_program_mode(2)  # Always Off
         await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
-        """Disable energy blocking."""
-        await self.coordinator.async_set_energy_blocking(False)
+        """Disable energy blocking.
+
+        Restores normal operation:
+        - HEATING_SEASON_MODE to 1 (Automatic)
+        - DHW_PROGRAM_MODE to 0 (Automatic)
+        """
+        # Restore automatic operation
+        await self.coordinator.async_set_heating_season_mode(1)  # Automatic
+        await self.coordinator.async_set_dhw_program_mode(0)  # Automatic
         await self.coordinator.async_request_refresh()

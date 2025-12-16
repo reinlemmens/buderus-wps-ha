@@ -52,8 +52,8 @@
 - [x] T007 [P] [US1] Add HACS badge to top of README.md
 - [x] T008 [P] [US1] Add "Installation via HACS" section to README.md
 - [x] T009 [US1] Commit hacs.json and README changes with message "feat: add HACS support"
-- [ ] T010 [US1] Push changes to GitHub main branch
-- [ ] T011 [US1] Create GitHub release v1.0.0 matching manifest.json version
+- [x] T010 [US1] Push changes to GitHub main branch
+- [x] T011 [US1] Create GitHub release v1.0.0 matching manifest.json version
 - [ ] T012 [US1] [US2] Test HACS validation by adding as custom repository in HACS
 - [ ] T013 [US1] Test integration install flow via HACS
 - [ ] T014 [US2] Verify metadata displays correctly (name, version, documentation link, issue tracker)

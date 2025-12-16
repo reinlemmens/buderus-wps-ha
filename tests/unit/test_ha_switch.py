@@ -23,13 +23,17 @@ class TestEnergyBlockSwitch:
 
     def test_switch_returns_true_when_blocked(self, mock_coordinator):
         """Switch returns True when energy blocking is enabled."""
-        mock_coordinator.data.energy_blocked = True
+        # Energy blocking is enabled when both modes are set to "Off"
+        mock_coordinator.data.heating_season_mode = 2  # Off (summer)
+        mock_coordinator.data.dhw_program_mode = 2  # Always Off
         switch = BuderusEnergyBlockSwitch(mock_coordinator)
         assert switch.is_on is True
 
     def test_switch_returns_false_when_not_blocked(self, mock_coordinator):
         """Switch returns False when energy blocking is disabled."""
-        mock_coordinator.data.energy_blocked = False
+        # Energy blocking is disabled when modes are in automatic operation
+        mock_coordinator.data.heating_season_mode = 1  # Automatic
+        mock_coordinator.data.dhw_program_mode = 0  # Automatic
         switch = BuderusEnergyBlockSwitch(mock_coordinator)
         assert switch.is_on is False
 
@@ -47,20 +51,24 @@ class TestEnergyBlockSwitch:
 
     @pytest.mark.asyncio
     async def test_turn_on_calls_coordinator(self, mock_coordinator):
-        """Turning on switch should call coordinator.async_set_energy_blocking(True)."""
+        """Turning on switch should set both heating and DHW to blocked state."""
         switch = BuderusEnergyBlockSwitch(mock_coordinator)
         await switch.async_turn_on()
 
-        mock_coordinator.async_set_energy_blocking.assert_called_once_with(True)
+        # Should set both modes to "Off" state
+        mock_coordinator.async_set_heating_season_mode.assert_called_once_with(2)
+        mock_coordinator.async_set_dhw_program_mode.assert_called_once_with(2)
         mock_coordinator.async_request_refresh.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_turn_off_calls_coordinator(self, mock_coordinator):
-        """Turning off switch should call coordinator.async_set_energy_blocking(False)."""
+        """Turning off switch should restore automatic operation."""
         switch = BuderusEnergyBlockSwitch(mock_coordinator)
         await switch.async_turn_off()
 
-        mock_coordinator.async_set_energy_blocking.assert_called_once_with(False)
+        # Should restore both modes to automatic operation
+        mock_coordinator.async_set_heating_season_mode.assert_called_once_with(1)
+        mock_coordinator.async_set_dhw_program_mode.assert_called_once_with(0)
         mock_coordinator.async_request_refresh.assert_called_once()
 
 
