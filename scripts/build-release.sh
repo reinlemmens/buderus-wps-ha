@@ -183,6 +183,16 @@ patch_switch_imports() {
     log_info "Switch imports patched"
 }
 
+patch_config_flow_imports() {
+    local config_flow_file="$STAGING/custom_components/buderus_wps/config_flow.py"
+    log_info "Patching config_flow.py imports..."
+
+    # Replace all buderus_wps absolute imports with relative imports
+    sed -i 's/from buderus_wps\./from .buderus_wps./g' "$config_flow_file"
+
+    log_info "Config flow imports patched"
+}
+
 test_import_in_staging() {
     log_info "Testing imports in staging directory..."
 
@@ -203,9 +213,14 @@ test_import_in_staging() {
         die "sys.path manipulation still present in coordinator.py"
     fi
 
-    # Test 4: Verify relative imports
+    # Test 4: Verify relative imports in coordinator.py
     if ! grep -q "from \.buderus_wps import" "custom_components/buderus_wps/coordinator.py"; then
         die "Relative imports not found in coordinator.py"
+    fi
+
+    # Test 5: Verify relative imports in config_flow.py
+    if ! grep -q "from \.buderus_wps\." "custom_components/buderus_wps/config_flow.py"; then
+        die "Relative imports not found in config_flow.py"
     fi
 
     cd "$REPO_ROOT"
@@ -327,6 +342,7 @@ main() {
     bundle_library
     patch_coordinator_imports
     patch_switch_imports
+    patch_config_flow_imports
 
     # Phase 3: Test
     log_info ""
