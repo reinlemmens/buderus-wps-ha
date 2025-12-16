@@ -70,6 +70,9 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         self._last_successful_update: float | None = None  # Timestamp
         self._consecutive_failures: int = 0
         self._stale_data_threshold: int = 3  # Failures before declaring disconnected
+        self._manually_disconnected: bool = (
+            False  # Track intentional disconnect for CLI access
+        )
 
     async def async_setup(self) -> bool:
         """Set up the connection to the heat pump."""
@@ -90,6 +93,45 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         if self._connected:
             await self.hass.async_add_executor_job(self._sync_disconnect)
             self._connected = False
+
+    async def async_manual_disconnect(self) -> None:
+        """Manually disconnect USB for CLI tool usage.
+
+        Sets manual disconnect flag to prevent automatic reconnection.
+        This allows the CLI tool to access the USB port.
+        """
+        self._manually_disconnected = True
+
+        # Cancel any pending auto-reconnection
+        if self._reconnect_task is not None:
+            self._reconnect_task.cancel()
+            self._reconnect_task = None
+
+        # Disconnect if currently connected
+        if self._connected:
+            await self.hass.async_add_executor_job(self._sync_disconnect)
+            self._connected = False
+
+        _LOGGER.info("Manual disconnect: USB port released for CLI access")
+
+    async def async_manual_connect(self) -> None:
+        """Manually reconnect USB after CLI tool usage.
+
+        Clears manual disconnect flag and initiates connection.
+
+        Raises:
+            DeviceNotFoundError: If USB device not available (port in use by CLI)
+            DevicePermissionError: If user lacks USB device permissions
+            DeviceInitializationError: If device fails to initialize
+        """
+        self._manually_disconnected = False
+        self._backoff_delay = BACKOFF_INITIAL  # Reset backoff on manual connect
+
+        # Attempt immediate connection (bypass backoff)
+        await self.hass.async_add_executor_job(self._sync_connect)
+        self._connected = True
+
+        _LOGGER.info("Manual connect: USB port reconnected")
 
     async def _handle_connection_failure(self) -> None:
         """Schedule reconnection with exponential backoff."""
@@ -116,23 +158,29 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         # with Python's built-in ConnectionError and TimeoutError
         try:
             from buderus_wps.exceptions import (
-                DeviceNotFoundError,
-                DeviceDisconnectedError,
-                DevicePermissionError,
                 DeviceCommunicationError,
-                TimeoutError as BuderusTimeoutError,
+                DeviceDisconnectedError,
+                DeviceNotFoundError,
+                DevicePermissionError,
                 ReadTimeoutError,
+            )
+            from buderus_wps.exceptions import (
+                TimeoutError as BuderusTimeoutError,
             )
         except ImportError:
             # If exceptions module not available, use conservative classification
-            _LOGGER.debug("Could not import buderus_wps.exceptions, using conservative error classification")
+            _LOGGER.debug(
+                "Could not import buderus_wps.exceptions, using conservative error classification"
+            )
             # Check consecutive failures
             if self._consecutive_failures >= self._stale_data_threshold:
                 return "persistent"
             return "transient"
 
         # Persistent connection errors - device is gone or inaccessible
-        if isinstance(error, (DeviceNotFoundError, DeviceDisconnectedError, DevicePermissionError)):
+        if isinstance(
+            error, (DeviceNotFoundError, DeviceDisconnectedError, DevicePermissionError)
+        ):
             return "persistent"
 
         # Check if we've had multiple consecutive failures - likely persistent issue
@@ -166,6 +214,12 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
     async def _reconnect_with_backoff(self) -> None:
         """Attempt reconnection with exponential backoff."""
         while not self._connected:
+            # CRITICAL: Don't auto-reconnect if manually disconnected
+            if self._manually_disconnected:
+                _LOGGER.debug("Skipping auto-reconnect - manual disconnect active")
+                self._reconnect_task = None
+                return  # Exit loop immediately
+
             _LOGGER.info(
                 "Attempting reconnection to heat pump in %d seconds",
                 self._backoff_delay,
@@ -236,12 +290,19 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         async with self._lock:
             if not self._connected:
                 # If we have recent stale data, return it while reconnecting
-                if self._last_known_good_data is not None and self._consecutive_failures < self._stale_data_threshold:
+                if (
+                    self._last_known_good_data is not None
+                    and self._consecutive_failures < self._stale_data_threshold
+                ):
                     _LOGGER.warning(
                         "Not connected, returning stale data (age: %.1fs, failures: %d/%d)",
-                        time.time() - self._last_successful_update if self._last_successful_update else 0,
+                        (
+                            time.time() - self._last_successful_update
+                            if self._last_successful_update
+                            else 0
+                        ),
                         self._consecutive_failures,
-                        self._stale_data_threshold
+                        self._stale_data_threshold,
                     )
                     return self._last_known_good_data
 
@@ -251,7 +312,9 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
 
             try:
                 # Attempt to fetch fresh data
-                fresh_data = await self.hass.async_add_executor_job(self._sync_fetch_data)
+                fresh_data = await self.hass.async_add_executor_job(
+                    self._sync_fetch_data
+                )
 
                 # Success! Update cache and reset failure counter
                 self._last_known_good_data = fresh_data
@@ -272,7 +335,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                         "Persistent connection error (failure %d/%d): %s",
                         self._consecutive_failures,
                         self._stale_data_threshold,
-                        err
+                        err,
                     )
                     self._connected = False
                     await self._handle_connection_failure()
@@ -289,23 +352,31 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                         "Transient error during update (failure %d/%d): %s",
                         self._consecutive_failures,
                         self._stale_data_threshold,
-                        err
+                        err,
                     )
 
                     if self._last_known_good_data is not None:
                         _LOGGER.info(
                             "Returning stale data (age: %.1fs)",
-                            time.time() - self._last_successful_update if self._last_successful_update else 0
+                            (
+                                time.time() - self._last_successful_update
+                                if self._last_successful_update
+                                else 0
+                            ),
                         )
                         return self._last_known_good_data
 
                     # No stale data available - this is a genuine failure
-                    raise UpdateFailed(f"Transient error with no cached data: {err}") from err
+                    raise UpdateFailed(
+                        f"Transient error with no cached data: {err}"
+                    ) from err
 
                 else:  # "partial"
                     # Partial failure - already handled in _sync_fetch_data
                     # This shouldn't happen, but treat as transient
-                    _LOGGER.warning("Unexpected partial failure classification: %s", err)
+                    _LOGGER.warning(
+                        "Unexpected partial failure classification: %s", err
+                    )
                     if self._last_known_good_data is not None:
                         return self._last_known_good_data
                     raise UpdateFailed(f"Error fetching data: {err}") from err
@@ -329,15 +400,30 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             sensor_map = get_default_sensor_map()
             cache = self._monitor.collect(duration=5.0)
 
+            # DEBUG: Log ALL temperature readings to help diagnose DHW temp issue
+            _LOGGER.debug("=== ALL BROADCAST TEMPERATURES (20-70°C range) ===")
+            for reading in cache.readings.values():
+                if reading.is_temperature and 20.0 <= reading.temperature <= 70.0:
+                    _LOGGER.debug(
+                        f"  Base=0x{reading.base:04X}, Idx={reading.idx:3d}, "
+                        f"Temp={reading.temperature:5.1f}°C"
+                    )
+
             # Extract temperatures from cache
             for (base, idx), sensor_name in sensor_map.items():
                 reading = cache.get_by_idx_and_base(idx, base)
                 if reading is not None and sensor_name in temperatures:
                     temperatures[sensor_name] = reading.temperature
+                    _LOGGER.debug(
+                        f"Mapped sensor '{sensor_name}': {reading.temperature:.1f}°C "
+                        f"from base=0x{base:04X}, idx={idx}"
+                    )
 
             broadcast_success = True
         except Exception as err:
-            _LOGGER.warning("Broadcast collection failed, using stale temperature data: %s", err)
+            _LOGGER.warning(
+                "Broadcast collection failed, using stale temperature data: %s", err
+            )
             # If we have stale data, use those temperatures
             if self._last_known_good_data is not None:
                 temperatures = self._last_known_good_data.temperatures.copy()

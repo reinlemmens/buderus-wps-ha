@@ -23,7 +23,16 @@ def setup_ha_mocks():
     sys.modules["homeassistant"] = MagicMock()
     sys.modules["homeassistant.core"] = MagicMock()
     sys.modules["homeassistant.config_entries"] = MagicMock()
-    sys.modules["homeassistant.exceptions"] = MagicMock()
+
+    # Exceptions module with real exception classes
+    class HomeAssistantError(Exception):
+        """Base Home Assistant exception."""
+
+        pass
+
+    exceptions_mock = MagicMock()
+    exceptions_mock.HomeAssistantError = HomeAssistantError
+    sys.modules["homeassistant.exceptions"] = exceptions_mock
 
     # Constants module with actual values we need
     const_mock = MagicMock()
@@ -226,6 +235,11 @@ def mock_coordinator(mock_buderus_data: MockBuderusData) -> MagicMock:
     coordinator.async_set_dhw_extra_duration = AsyncMock()
     coordinator.async_set_heating_season_mode = AsyncMock()
     coordinator.async_set_dhw_program_mode = AsyncMock()
+    coordinator.async_manual_connect = AsyncMock()
+    coordinator.async_manual_disconnect = AsyncMock()
+
+    # Manual disconnect state
+    coordinator._manually_disconnected = False
 
     return coordinator
 
