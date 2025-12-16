@@ -15,6 +15,7 @@ venv/
 *.egg-info/
 dist/
 build/
+.build/  # Release staging directory
 
 # Testing
 .pytest_cache/
