@@ -133,6 +133,9 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
 
         _LOGGER.info("Manual connect: USB port reconnected")
 
+        # Trigger data refresh to update entities immediately
+        await self.async_request_refresh()
+
     async def _handle_connection_failure(self) -> None:
         """Schedule reconnection with exponential backoff."""
         if self._reconnect_task is not None:

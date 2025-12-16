@@ -71,6 +71,9 @@ class TestCoordinatorManualDisconnect:
         coordinator._backoff_delay = 120  # Maximum backoff
         coordinator._connected = False
 
+        # Add async_request_refresh method (inherited from base class in real usage)
+        coordinator.async_request_refresh = AsyncMock()
+
         # Mock _sync_connect to succeed
         with patch.object(coordinator, "_sync_connect"):
             # Manually reconnect
@@ -80,6 +83,9 @@ class TestCoordinatorManualDisconnect:
             assert coordinator._manually_disconnected is False
             assert coordinator._backoff_delay == BACKOFF_INITIAL
             assert coordinator._connected is True
+
+            # Verify refresh was called
+            coordinator.async_request_refresh.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_manual_disconnect_preserves_stale_data(
