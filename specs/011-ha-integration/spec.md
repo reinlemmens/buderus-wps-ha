@@ -19,7 +19,7 @@ As a homeowner, I want to see my heat pump's temperature readings in Home Assist
 
 1. **Given** the integration is configured with the correct serial port, **When** Home Assistant starts, **Then** five temperature sensors appear: Outdoor, Supply, Return, DHW (hot water tank), and Brine Inlet
 2. **Given** the heat pump is operating normally, **When** I view the sensors in Home Assistant, **Then** I see temperature values in Celsius that update periodically
-3. **Given** the serial connection is lost, **When** Home Assistant polls for data, **Then** sensors show "unavailable" status and an error is logged
+3. **Given** the serial connection is lost, **When** Home Assistant polls for data, **Then** sensors retain their last known values with a "stale" indicator in entity attributes, and reconnection is attempted with exponential backoff
 
 ---
 
@@ -79,6 +79,7 @@ As a homeowner, I want to start extra hot water production via Home Assistant so
 - How does the system handle communication timeouts? Failed operations should log errors but not crash; entities show unavailable status.
 - What happens if the heat pump is already blocking energy? The switch should reflect the current state correctly.
 - What if DHW extra is started when tank is already at target temperature? The heat pump handles this internally; the integration simply sends the command.
+- What happens when data is stale for extended periods? Entity attributes indicate staleness; user can use USB Connection switch to manually release/reconnect for troubleshooting. Stale data is preferred over "Unknown" for slow-changing values.
 
 ## Requirements *(mandatory)*
 
@@ -90,10 +91,11 @@ As a homeowner, I want to start extra hot water production via Home Assistant so
 - **FR-004**: Integration MUST provide a switch to enable/disable energy blocking
 - **FR-005**: Integration MUST provide a control to start/stop extra DHW production
 - **FR-006**: Integration MUST update sensor values periodically with configurable interval (default: 60 seconds, range: 10-300 seconds)
-- **FR-007**: Integration MUST handle connection failures gracefully with exponential backoff reconnection (5s initial, doubling up to 2 min max) and appropriate error states
+- **FR-007**: Integration MUST handle connection failures gracefully with exponential backoff reconnection (5s initial, doubling up to 2 min max) while retaining last-known-good sensor values indefinitely. Entity attributes MUST indicate data staleness (age in seconds, last successful update timestamp)
 - **FR-008**: Integration MUST support configuration via YAML file
 - **FR-009**: Integration MUST log errors with sufficient detail for troubleshooting
 - **FR-010**: Integration MUST maintain a persistent connection to the heat pump (not reconnect on every poll)
+- **FR-011**: Integration MUST retain last-known-good sensor values indefinitely when CAN bus communication is unavailable, displaying stale data with attributes indicating: `last_update_age_seconds`, `last_successful_update`, and `data_is_stale` (boolean). Sensors MUST only show "unavailable" before their first successful read.
 
 ### Key Entities
 

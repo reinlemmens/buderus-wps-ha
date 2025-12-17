@@ -215,10 +215,16 @@ The implementation follows all constitutional principles:
    - Alternative: Use HEATING_SEASON_MODE and DHW_PROGRAM_MODE (verified writable)
    - **ACTION**: Verify ADDITIONAL_BLOCKED write capability; document alternative if needed
 
-4. **Entity Availability on Disconnect** 🔍 NEEDS DESIGN
-   - How should entities behave when connection lost?
-   - Decision needed: Mark unavailable immediately or after backoff timeout?
-   - **ACTION**: Define availability strategy in Phase 1
+4. **Entity Availability on Disconnect** ✅ RESOLVED
+   - **Decision**: Entities retain last-known-good values indefinitely
+   - **Rationale**: Heat pump values change slowly; stale data more useful than "Unknown"
+   - **Implementation**: Remove 3-failure threshold; cache never expires
+   - **Staleness Indicators**: Entity attributes show data age and last update timestamp
+   - **Manual Override**: USB Connection switch allows user to force reconnection
+   - **Availability States**:
+     - "available" + fresh data: Normal operation
+     - "available" + stale data: Connection lost but showing cached values
+     - "unavailable": Only before first successful read (no cache yet)
 
 ### Research Findings Summary
 
@@ -266,9 +272,16 @@ buderus_wps:
 
 **Coordinator Contract**:
 - update_interval: configurable timedelta
-- _async_update_data() → BuderusData
+- _async_update_data() → BuderusData (returns cached data if fresh fetch fails)
+- _last_known_good_data: BuderusData | None (cached indefinitely)
+- _last_successful_update: float | None (timestamp for staleness calculation)
 - async_set_energy_blocking(blocked: bool)
 - async_set_dhw_extra_duration(hours: int)
+
+**Staleness Attributes** (added to all sensor entities):
+- `last_update_age_seconds`: Time since last successful CAN bus read (int)
+- `last_successful_update`: ISO 8601 timestamp of last successful read (str)
+- `data_is_stale`: Boolean indicating if data is from cache (bool)
 
 ### Quickstart (quickstart.md)
 
