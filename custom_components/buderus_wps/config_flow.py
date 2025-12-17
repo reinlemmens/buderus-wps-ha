@@ -71,8 +71,8 @@ class BuderusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     def _test_connection(self, port: str) -> None:
         """Test connection to heat pump (runs in executor)."""
-        from buderus_wps.can_adapter import USBtinAdapter
-        from buderus_wps.heat_pump import HeatPumpClient
+        from .buderus_wps.can_adapter import USBtinAdapter
+        from .buderus_wps.heat_pump import HeatPumpClient
 
         # Try to initialize adapter
         adapter = USBtinAdapter(port, timeout=DEFAULT_TIMEOUT)

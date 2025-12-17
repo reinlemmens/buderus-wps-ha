@@ -153,8 +153,8 @@ class BuderusUSBConnectionSwitch(BuderusEntity, SwitchEntity):
         Raises:
             HomeAssistantError: If USB port is still in use or connection fails
         """
-        # Import exception types from buderus_wps to avoid module-level conflicts
-        from buderus_wps.exceptions import (
+        # Import exception types from bundled library to avoid module-level conflicts
+        from .buderus_wps.exceptions import (
             DeviceInitializationError,
             DeviceNotFoundError,
             DevicePermissionError,

@@ -245,24 +245,23 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
 
     def _sync_connect(self) -> None:
         """Synchronous connection setup (runs in executor)."""
-        # Import here to avoid loading at module level
-        import os
-        import sys
-
-        # Add the parent directory to path so we can import buderus_wps
-        repo_root = os.path.dirname(
-            os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-        )
-        if repo_root not in sys.path:
-            sys.path.insert(0, repo_root)
-
-        from buderus_wps import (
+        # Import bundled library using relative imports
+        from .buderus_wps import (
             BroadcastMonitor,
             HeatPumpClient,
             ParameterRegistry,
             USBtinAdapter,
         )
-        from buderus_wps.menu_api import MenuAPI
+        from .buderus_wps.menu_api import MenuAPI
+        from .buderus_wps.exceptions import (
+            TimeoutError as BuderusTimeoutError,
+            DeviceCommunicationError,
+            DeviceDisconnectedError,
+            DeviceInitializationError,
+            DeviceNotFoundError,
+            DevicePermissionError,
+            ReadTimeoutError,
+        )
 
         _LOGGER.debug("Connecting to heat pump at %s", self.port)
 
