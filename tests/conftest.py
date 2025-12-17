@@ -155,6 +155,7 @@ def setup_ha_mocks():
     number_mock = MagicMock()
     number_mock.NumberMode = MagicMock()
     number_mock.NumberMode.SLIDER = "slider"
+    number_mock.NumberMode.BOX = "box"
 
     class MockNumberEntity:
         _attr_name = None

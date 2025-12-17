@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import pytest
+from homeassistant.components.number import NumberMode
 
 # conftest.py sets up HA mocks before we import
 from custom_components.buderus_wps.number import BuderusDHWExtraDurationNumber
@@ -41,10 +42,10 @@ class TestDHWExtraDurationNumber:
         number = BuderusDHWExtraDurationNumber(mock_coordinator)
         assert number._attr_native_unit_of_measurement == "h"
 
-    def test_number_has_slider_mode(self, mock_coordinator):
-        """DHW extra duration must use slider mode."""
+    def test_number_has_box_mode(self, mock_coordinator):
+        """DHW extra duration must use box mode for direct value input."""
         number = BuderusDHWExtraDurationNumber(mock_coordinator)
-        assert number._attr_mode == "slider"
+        assert number._attr_mode == NumberMode.BOX
 
     def test_number_returns_current_duration(self, mock_coordinator):
         """Number returns current DHW extra duration from coordinator."""

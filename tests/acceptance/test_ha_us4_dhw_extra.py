@@ -7,12 +7,13 @@ so that I can ensure sufficient hot water availability before guests arrive.
 Acceptance Scenarios:
 1. Given DHW extra is not active, When I set duration (1-24h), Then production starts
 2. Given DHW extra is active, When I set 0, Then production stops
-3. Given DHW extra is active (3h remaining), When I view, Then slider shows 3
+3. Given DHW extra is active (3h remaining), When I view, Then number input shows 3
 """
 
 from __future__ import annotations
 
 import pytest
+from homeassistant.components.number import NumberMode
 
 # conftest.py sets up HA mocks at import time
 from custom_components.buderus_wps.const import DOMAIN
@@ -56,11 +57,11 @@ class TestUS4Scenario1SettingDurationStartsProduction:
         mock_coordinator.async_request_refresh.assert_called()
 
     @pytest.mark.asyncio
-    async def test_slider_has_correct_range(
+    async def test_number_box_has_correct_range(
         self, mock_hass, mock_coordinator
     ):
         """
-        The slider should have range 0-24 hours with step 1.
+        The number input box should have range 0-24 hours with step 1.
         """
         entities_added = []
         mock_hass.data[DOMAIN] = {"coordinator": mock_coordinator}
@@ -76,7 +77,7 @@ class TestUS4Scenario1SettingDurationStartsProduction:
         assert number._attr_native_min_value == 0
         assert number._attr_native_max_value == 24
         assert number._attr_native_step == 1
-        assert number._attr_mode == "slider"
+        assert number._attr_mode == NumberMode.BOX
 
 
 class TestUS4Scenario2SettingZeroStopsProduction:

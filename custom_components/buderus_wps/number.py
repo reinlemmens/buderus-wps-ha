@@ -48,7 +48,7 @@ class BuderusDHWExtraDurationNumber(BuderusEntity, NumberEntity):
     _attr_native_max_value = 24
     _attr_native_step = 1
     _attr_native_unit_of_measurement = "h"
-    _attr_mode = NumberMode.SLIDER
+    _attr_mode = NumberMode.BOX
 
     def __init__(
         self,
