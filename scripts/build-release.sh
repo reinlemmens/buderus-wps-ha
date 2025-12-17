@@ -169,6 +169,10 @@ EOF
     # Cleanup
     rm -f /tmp/new_import.txt
 
+    # Patch ALL remaining absolute imports throughout the file
+    # This catches imports outside the _sync_connect function
+    sed -i 's/from buderus_wps\./from .buderus_wps./g' "$coordinator_file"
+
     log_info "Coordinator imports patched"
 }
 
