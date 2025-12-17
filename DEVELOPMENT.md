@@ -201,18 +201,42 @@ Hardware Verified: 2025-12-16 on Raspberry Pi with USBtin
 
 This checklist is **MANDATORY** before creating any release (major, minor, or patch):
 
-#### 1. Install Integration in Running HA Instance
+#### 1. Test the ACTUAL Release Artifact
+
+**CRITICAL**: You MUST test the actual release zip file, not the development directory!
+
+Development code ≠ Release artifact:
+- ❌ **Development directory** may have different imports/structure than release
+- ✅ **Release zip** is what users actually install via HACS
 
 ```bash
-# Option A: If in devcontainer with HA Supervisor
-# Integration is already at /mnt/supervisor/addons/local/buderus-wps-ha
-# Restart HA to reload code after changes
+# Step 1: Build the release (creates buderus-wps-ha-vX.Y.Z.zip)
+./scripts/build-release.sh vX.Y.Z
 
-# Option B: If using standalone HA instance
-# Copy integration to HA config directory
-cp -r custom_components/buderus_wps ~/.homeassistant/custom_components/
-# Then restart Home Assistant
+# Step 2: Extract to temporary location
+unzip -q buderus-wps-ha-vX.Y.Z.zip -d /tmp/release-test
+
+# Step 3: Verify bundled library exists
+ls /tmp/release-test/custom_components/buderus_wps/buderus_wps/
+# Should show: __init__.py, can_adapter.py, heat_pump.py, etc. (20 files)
+
+# Step 4: Install release artifact in HA (OVERWRITES development version)
+# In devcontainer:
+rm -rf /config/custom_components/buderus_wps
+cp -r /tmp/release-test/custom_components/buderus_wps /config/custom_components/
+
+# In standalone HA:
+rm -rf ~/.homeassistant/custom_components/buderus_wps
+cp -r /tmp/release-test/custom_components/buderus_wps ~/.homeassistant/custom_components/
+
+# Step 5: Restart Home Assistant to load release artifact
+# Check logs during startup for import errors
 ```
+
+**Why this is critical**:
+- v1.3.1 bug: Development version had absolute imports, release had relative imports
+- Testing dev version would miss this discrepancy
+- Only testing actual zip catches packaging/bundling issues
 
 #### 2. Monitor Startup Logs
 

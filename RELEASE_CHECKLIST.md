@@ -16,8 +16,14 @@ This checklist ensures all releases are properly validated before publication. *
 
 **See [DEVELOPMENT.md - End-to-End Validation](DEVELOPMENT.md#end-to-end-validation-required-before-release) for detailed instructions.**
 
-- [ ] Integration installed in running Home Assistant instance
-- [ ] HA startup logs checked - no AttributeError, ImportError, or exceptions
+**CRITICAL**: Test the ACTUAL release zip file, not the development directory!
+
+- [ ] **Release artifact built**: `./scripts/build-release.sh vX.Y.Z` creates zip file
+- [ ] **Bundled library verified**: Zip contains `custom_components/buderus_wps/buderus_wps/` directory with 20 Python files
+- [ ] **Release artifact extracted**: Unzipped to `/tmp/release-test` for inspection
+- [ ] **Release artifact installed in HA**: Copied to `/config/custom_components/` (overwrites dev version)
+- [ ] HA restarted to load release artifact (not development code)
+- [ ] HA startup logs checked - no AttributeError, ImportError, ModuleNotFoundError
 - [ ] Config entry created via UI without errors
 - [ ] All expected entities appear (5 sensors, 1 binary sensor, 1 switch, 1 number)
 - [ ] Entity attributes verified (no missing or undefined attributes)
@@ -151,6 +157,41 @@ git push origin main
 - Additional testing burden
 
 **Takeaway:** E2E validation is non-negotiable. Releases without it are considered incomplete.
+
+## Lessons Learned from v1.3.1 Bug
+
+**Context:** v1.3.1 was released to fix v1.3.0, but users reported `ModuleNotFoundError: No module named 'buderus_wps'` when running in devcontainer/development environments.
+
+**Root Cause:**
+- Release zip was CORRECT (build script properly bundled library and patched imports)
+- Development version in git had ABSOLUTE imports, release had RELATIVE imports
+- E2E validation tested development directory, NOT the actual release zip
+- Development version and release version had different import structures
+
+**Discovery:**
+- Release artifact inspection revealed all imports were correctly patched to relative
+- Development coordinator.py had 3 absolute imports (lines 164, 171, 396)
+- Build script patches imports during release, but git repo still had absolute imports
+- Testing dev directory ≠ testing what users actually install
+
+**Prevention:**
+- **ALWAYS test the actual release zip file** - this checklist now requires it
+- Extract and install the zip to HA before releasing
+- Verify bundled library exists in zip (`custom_components/buderus_wps/buderus_wps/`)
+- Development code can diverge from release artifact
+- Build process can introduce changes not visible in git
+
+**Fix Applied:**
+- Updated development version to use relative imports (matching release)
+- Now dev and release have consistent import structure
+- Commit 2365c8d: "fix: use relative imports for bundled library in development version"
+
+**Result:**
+- Development version now matches release version
+- Easier to test locally without running build script
+- Import consistency between dev and prod
+
+**Takeaway:** Development code ≠ Release artifact. Always test what users actually install, not what's in your git repo.
 
 ---
 
