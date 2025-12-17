@@ -3259,23 +3259,21 @@ PARAMETER_DATA = [
         "read": 1,
         "text": "DHW_PROGRAM_2_3WED"
     },
+    # PROTOCOL: Hardware-verified divergence from FHEM reference
+    # FHEM: fhem/26_KM273v018.pm:580 defines DHW_PROGRAM_MODE at idx=488
+    # HARDWARE: Actual device reports DHW_PROGRAM_MODE at idx=489 (verified 2024-12-02)
+    # CONFLICT: FHEM idx=489 is DHW_PROTECTIVE_ANODE_INSTALLED (line 581)
+    # RESOLUTION: Hardware verification takes precedence; PROTECTIVE_ANODE parameter
+    #             removed to resolve duplicate. Device variant may not have this feature.
+    # CRITICAL: This parameter controls DHW heating mode (see const.py:60-70)
     {
-        "idx": 489,  # HARDWARE-VERIFIED: Heat pump reports idx=489 (not 488)
+        "idx": 489,
         "extid": "E1CAB0771C0952",
         "max": 2,
         "min": 0,
         "format": "dp2",
         "read": 1,
         "text": "DHW_PROGRAM_MODE"
-    },
-    {
-        "idx": 489,
-        "extid": "E14502BDB103E4",
-        "max": 1,
-        "min": 0,
-        "format": "int",
-        "read": 0,
-        "text": "DHW_PROTECTIVE_ANODE_INSTALLED"
     },
     {
         "idx": 490,

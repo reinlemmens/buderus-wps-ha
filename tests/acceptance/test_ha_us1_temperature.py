@@ -73,12 +73,13 @@ class TestUS1Scenario1FiveSensorsAppear:
         self, mock_hass, mock_coordinator
     ):
         """
-        Sensors must have descriptive names with Heat Pump prefix:
-        - Heat Pump Outdoor Temperature
-        - Heat Pump Supply Temperature
-        - Heat Pump Return Temperature
-        - Heat Pump Hot Water Temperature
-        - Heat Pump Brine Inlet Temperature
+        Sensors must have entity-only descriptive names per HACS guidelines.
+        With has_entity_name=True, Home Assistant prepends device name "Heat Pump" in UI:
+        - Outdoor Temperature → Heat Pump Outdoor Temperature (in UI)
+        - Supply Temperature → Heat Pump Supply Temperature (in UI)
+        - Return Temperature → Heat Pump Return Temperature (in UI)
+        - Hot Water Temperature → Heat Pump Hot Water Temperature (in UI)
+        - Brine Inlet Temperature → Heat Pump Brine Inlet Temperature (in UI)
         """
         entities_added = []
         mock_hass.data[DOMAIN] = {"coordinator": mock_coordinator}
@@ -90,18 +91,19 @@ class TestUS1Scenario1FiveSensorsAppear:
             discovery_info={"platform": "buderus_wps"},
         )
 
+        # Entity-only names (HA prepends "Heat Pump" device name in UI)
         expected_names = {
-            "Heat Pump Outdoor Temperature",
-            "Heat Pump Supply Temperature",
-            "Heat Pump Return Temperature",
-            "Heat Pump Hot Water Temperature",
-            "Heat Pump Brine Inlet Temperature",
+            "Outdoor Temperature",
+            "Supply Temperature",
+            "Return Temperature",
+            "Hot Water Temperature",
+            "Brine Inlet Temperature",
         }
 
         actual_names = {s.name for s in entities_added}
         assert actual_names == expected_names, (
-            f"Expected names: {expected_names}\n"
-            f"Actual names: {actual_names}"
+            f"Expected entity names: {expected_names}\n"
+            f"Actual entity names: {actual_names}"
         )
 
 

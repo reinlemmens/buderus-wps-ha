@@ -97,7 +97,7 @@ As a homeowner, I want to start extra hot water production via Home Assistant so
 
 ### Key Entities
 
-Entity naming convention: Descriptive names prefixed with "Heat Pump" (e.g., "Heat Pump Outdoor Temperature", "Heat Pump Compressor").
+Entity naming convention: Entity-only names (e.g., "Outdoor Temperature", "Compressor") with `has_entity_name=True`. Home Assistant automatically prepends device name "Heat Pump" in the UI, resulting in "Heat Pump Outdoor Temperature", "Heat Pump Compressor", etc.
 
 - **Temperature Sensor**: Represents a temperature reading from the heat pump. Key attributes: value (Celsius), sensor type (outdoor/supply/return/dhw/brine), last update timestamp
 - **Compressor Status**: Binary state indicating whether the compressor is running. Derived from compressor frequency parameter
@@ -124,7 +124,7 @@ Entity naming convention: Descriptive names prefixed with "Heat Pump" (e.g., "He
 - Q: Should polling interval be configurable? → A: Yes, configurable via YAML (default 60s, range 10-300s)
 - Q: How should reconnection work after USB disconnection? → A: Exponential backoff (5s initial, doubling up to 2 min max)
 - Q: Should the integration support remote socketcand connections? → A: No, local USB serial only (remote is out of scope)
-- Q: How should HA entities be named? → A: Descriptive names prefixed with "Heat Pump" (e.g., "Heat Pump Outdoor Temperature")
+- Q: How should HA entities be named? → A: Use entity-only descriptive names (e.g., "Outdoor Temperature") with `has_entity_name=True`. Home Assistant prepends device name "Heat Pump" automatically for display.
 
 ## Assumptions
 

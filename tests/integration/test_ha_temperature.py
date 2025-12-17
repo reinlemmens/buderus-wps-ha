@@ -135,13 +135,15 @@ class TestTemperatureSensorDataFlow:
 
 
 class TestTemperatureSensorNames:
-    """Test temperature sensors have correct prefixed names."""
+    """Test temperature sensors have entity-only names per HACS guidelines."""
 
     @pytest.mark.asyncio
-    async def test_all_sensors_have_heat_pump_prefix(
+    async def test_all_sensors_have_entity_only_names(
         self, mock_hass, mock_coordinator
     ):
-        """All temperature sensors must have 'Heat Pump' prefix in name."""
+        """All temperature sensors use entity-only names (no device prefix)."""
+        # With has_entity_name=True, entity names should NOT include device name
+        # Home Assistant prepends "Heat Pump" device name automatically in UI
         entities_added = []
         mock_hass.data[DOMAIN] = {"coordinator": mock_coordinator}
 
@@ -153,15 +155,18 @@ class TestTemperatureSensorNames:
         )
 
         for sensor in entities_added:
-            assert sensor.name.startswith("Heat Pump "), (
-                f"Sensor name '{sensor.name}' must start with 'Heat Pump '"
+            # Entity names should not start with "Heat Pump" prefix
+            assert not sensor.name.startswith("Heat Pump "), (
+                f"Sensor name '{sensor.name}' should be entity-only (without 'Heat Pump' prefix). "
+                f"HA prepends device name automatically when has_entity_name=True."
             )
 
     @pytest.mark.asyncio
-    async def test_sensors_have_expected_full_names(
+    async def test_sensors_have_expected_entity_names(
         self, mock_hass, mock_coordinator
     ):
-        """Sensors must have expected full names with Heat Pump prefix."""
+        """Sensors must have expected entity-only names."""
+        # Entity names without device prefix (HA adds "Heat Pump" prefix in UI)
         entities_added = []
         mock_hass.data[DOMAIN] = {"coordinator": mock_coordinator}
 
@@ -173,16 +178,16 @@ class TestTemperatureSensorNames:
         )
 
         expected_names = {
-            SENSOR_OUTDOOR: "Heat Pump Outdoor Temperature",
-            SENSOR_SUPPLY: "Heat Pump Supply Temperature",
-            SENSOR_RETURN: "Heat Pump Return Temperature",
-            SENSOR_DHW: "Heat Pump Hot Water Temperature",
-            SENSOR_BRINE_IN: "Heat Pump Brine Inlet Temperature",
+            SENSOR_OUTDOOR: "Outdoor Temperature",
+            SENSOR_SUPPLY: "Supply Temperature",
+            SENSOR_RETURN: "Return Temperature",
+            SENSOR_DHW: "Hot Water Temperature",
+            SENSOR_BRINE_IN: "Brine Inlet Temperature",
         }
 
         for sensor in entities_added:
             expected = expected_names[sensor._sensor_type]
             assert sensor.name == expected, (
-                f"Sensor {sensor._sensor_type} name should be '{expected}', "
+                f"Sensor {sensor._sensor_type} name should be '{expected}' (entity-only), "
                 f"got '{sensor.name}'"
             )
