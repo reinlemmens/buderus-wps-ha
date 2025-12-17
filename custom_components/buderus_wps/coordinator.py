@@ -161,14 +161,14 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         # Import exception types from buderus_wps to avoid module-level conflicts
         # with Python's built-in ConnectionError and TimeoutError
         try:
-            from buderus_wps.exceptions import (
+            from .buderus_wps.exceptions import (
                 DeviceCommunicationError,
                 DeviceDisconnectedError,
                 DeviceNotFoundError,
                 DevicePermissionError,
                 ReadTimeoutError,
             )
-            from buderus_wps.exceptions import (
+            from .buderus_wps.exceptions import (
                 TimeoutError as BuderusTimeoutError,
             )
         except ImportError:
@@ -393,7 +393,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
 
     def _sync_fetch_data(self) -> BuderusData:
         """Synchronous data fetch (runs in executor) with partial success handling."""
-        from buderus_wps.config import get_default_sensor_map
+        from .buderus_wps.config import get_default_sensor_map
 
         # Start with empty/None data
         temperatures: dict[str, float | None] = {
