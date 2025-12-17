@@ -66,10 +66,11 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         self._backoff_delay = BACKOFF_INITIAL
         self._reconnect_task: asyncio.Task[None] | None = None
         # Last-known-good data caching for graceful degradation
+        # Cache is retained indefinitely - stale data preferred over "Unknown"
         self._last_known_good_data: BuderusData | None = None
         self._last_successful_update: float | None = None  # Timestamp
         self._consecutive_failures: int = 0
-        self._stale_data_threshold: int = 3  # Failures before declaring disconnected
+        # Removed _stale_data_threshold - cache never expires per FR-011
         self._manually_disconnected: bool = (
             False  # Track intentional disconnect for CLI access
         )
@@ -288,29 +289,29 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             self._api = None
 
     async def _async_update_data(self) -> BuderusData:
-        """Fetch data from the heat pump with graceful degradation."""
+        """Fetch data from the heat pump with graceful degradation.
+
+        Per FR-011: Always return cached data when available (indefinite retention).
+        Only raise UpdateFailed if no cache exists yet.
+        """
         async with self._lock:
             if not self._connected:
-                # If we have recent stale data, return it while reconnecting
-                if (
-                    self._last_known_good_data is not None
-                    and self._consecutive_failures < self._stale_data_threshold
-                ):
+                # Always return cached data if available (no threshold check)
+                if self._last_known_good_data is not None:
                     _LOGGER.warning(
-                        "Not connected, returning stale data (age: %.1fs, failures: %d/%d)",
+                        "Not connected, returning stale data (age: %.1fs, failures: %d)",
                         (
                             time.time() - self._last_successful_update
                             if self._last_successful_update
                             else 0
                         ),
                         self._consecutive_failures,
-                        self._stale_data_threshold,
                     )
                     return self._last_known_good_data
 
-                # Truly disconnected, trigger reconnection
+                # No cache exists yet, trigger reconnection and fail
                 await self._handle_connection_failure()
-                raise UpdateFailed("Not connected to heat pump")
+                raise UpdateFailed("Not connected to heat pump (no cached data)")
 
             try:
                 # Attempt to fetch fresh data
@@ -334,26 +335,31 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                 if error_type == "persistent":
                     # Persistent connection loss - mark disconnected and reconnect
                     _LOGGER.error(
-                        "Persistent connection error (failure %d/%d): %s",
+                        "Persistent connection error (failure %d): %s",
                         self._consecutive_failures,
-                        self._stale_data_threshold,
                         err,
                     )
                     self._connected = False
                     await self._handle_connection_failure()
 
-                    # Return stale data if available, otherwise fail
+                    # Always return stale data if available (no threshold)
                     if self._last_known_good_data is not None:
-                        _LOGGER.warning("Returning stale data during reconnection")
+                        _LOGGER.warning(
+                            "Returning stale data during reconnection (age: %.1fs)",
+                            (
+                                time.time() - self._last_successful_update
+                                if self._last_successful_update
+                                else 0
+                            ),
+                        )
                         return self._last_known_good_data
                     raise UpdateFailed(f"Persistent error: {err}") from err
 
                 elif error_type == "transient":
-                    # Transient error - log and return stale data
+                    # Transient error - always return stale data if available
                     _LOGGER.warning(
-                        "Transient error during update (failure %d/%d): %s",
+                        "Transient error during update (failure %d): %s",
                         self._consecutive_failures,
-                        self._stale_data_threshold,
                         err,
                     )
 
@@ -375,7 +381,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
 
                 else:  # "partial"
                     # Partial failure - already handled in _sync_fetch_data
-                    # This shouldn't happen, but treat as transient
+                    # Always return cached data if available
                     _LOGGER.warning(
                         "Unexpected partial failure classification: %s", err
                     )
@@ -440,7 +446,8 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                 compressor_running = reading.raw_value > 0
                 _LOGGER.debug(
                     "Compressor frequency from broadcast: %d Hz (running=%s)",
-                    reading.raw_value, compressor_running
+                    reading.raw_value,
+                    compressor_running,
                 )
             else:
                 _LOGGER.debug("No compressor frequency broadcast found in cache")
@@ -511,6 +518,24 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                 raise RuntimeError("All data reads failed, only stale data available")
 
         return result
+
+    def get_data_age_seconds(self) -> int | None:
+        """Get age of current data in seconds.
+
+        Returns:
+            Age in seconds since last successful update, or None if no data yet.
+        """
+        if self._last_successful_update is None:
+            return None
+        return int(time.time() - self._last_successful_update)
+
+    def is_data_stale(self) -> bool:
+        """Check if current data is stale (connection issues).
+
+        Returns:
+            True if there have been any consecutive failures, False otherwise.
+        """
+        return self._consecutive_failures > 0
 
     async def async_set_energy_blocking(self, blocked: bool) -> None:
         """Set energy blocking state."""
