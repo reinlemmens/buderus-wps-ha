@@ -430,13 +430,25 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             if self._last_known_good_data is not None:
                 temperatures = self._last_known_good_data.temperatures.copy()
 
-        # Get compressor status (best-effort)
+        # Get compressor status from broadcast cache (best-effort)
+        # Uses COMPRESSOR_REAL_FREQUENCY (idx=278) from broadcast instead of RTR
         compressor_running = False
         try:
-            status = self._api.status
-            compressor_running = status.compressor_running
+            # Read compressor frequency from broadcast cache (idx=278)
+            reading = cache.get_by_idx(278)  # COMPRESSOR_REAL_FREQUENCY idx
+            if reading is not None:
+                compressor_running = reading.raw_value > 0
+                _LOGGER.debug(
+                    "Compressor frequency from broadcast: %d Hz (running=%s)",
+                    reading.raw_value, compressor_running
+                )
+            else:
+                _LOGGER.debug("No compressor frequency broadcast found in cache")
+                # Use stale value if available
+                if self._last_known_good_data is not None:
+                    compressor_running = self._last_known_good_data.compressor_running
         except Exception as err:
-            _LOGGER.debug("Could not read compressor status: %s", err)
+            _LOGGER.debug("Could not read compressor status from broadcast: %s", err)
             # Use stale value if available
             if self._last_known_good_data is not None:
                 compressor_running = self._last_known_good_data.compressor_running

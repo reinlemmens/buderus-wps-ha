@@ -78,6 +78,17 @@ class BroadcastCache:
                 return reading
         return None
 
+    def get_by_idx(self, idx: int) -> Optional[BroadcastReading]:
+        """Get cached reading by idx only (searches all bases).
+
+        Useful for parameters that may broadcast on varying bases,
+        like COMPRESSOR_REAL_FREQUENCY (idx=278).
+        """
+        for reading in self.readings.values():
+            if reading.idx == idx:
+                return reading
+        return None
+
     def get_temperatures(self, circuit: Optional[int] = None) -> List[BroadcastReading]:
         """Get all temperature readings, optionally filtered by circuit."""
         temps = [r for r in self.readings.values() if r.is_temperature]
