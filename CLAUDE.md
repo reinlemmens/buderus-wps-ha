@@ -100,6 +100,24 @@ black . && ruff check . && mypy buderus_wps buderus_wps_cli
 - Main branch (`main`) must always be deployable
 - Pull requests required for all changes
 
+### Release Process
+
+**CRITICAL**: All releases MUST follow the complete release checklist. See [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md).
+
+**Non-Negotiable Requirements:**
+1. All pytest tests pass (unit, integration, acceptance)
+2. **End-to-end validation in running Home Assistant instance** (see [DEVELOPMENT.md - E2E Validation](DEVELOPMENT.md#end-to-end-validation-required-before-release))
+3. Version bumped in manifest.json and entity.py
+4. Changes tested in actual HA instance - verify entities exist, check logs for errors
+5. GitHub release created with release notes and E2E sign-off
+
+**Why E2E validation is mandatory:**
+- Pytest tests use mocks and don't catch runtime errors like missing attributes
+- v1.3.0 was released with an `AttributeError` that broke installations because E2E validation was skipped
+- Only a running HA instance can validate the complete integration startup sequence
+
+**Never skip E2E testing**, even for "trivial" patches. The v1.3.0 bug taught us that passing tests ≠ working integration.
+
 ### Hardware Access & Deployment
 
 **Home Assistant Host Access**:

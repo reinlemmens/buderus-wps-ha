@@ -183,11 +183,166 @@ Hardware Verified: 2025-12-16 on Raspberry Pi with USBtin
 # Run HA integration tests
 ./scripts/test-ha.sh
 
-# Test in actual HA instance (optional)
-# 1. Copy custom_components/buderus_wps to HA config/custom_components/
-# 2. Restart Home Assistant
-# 3. Add integration via UI
+# End-to-end validation in actual HA instance (REQUIRED before release)
+# See "End-to-End Validation" section below
 ```
+
+## End-to-End Validation (Required Before Release)
+
+**CRITICAL**: Pytest tests alone are insufficient. All releases MUST be validated in a running Home Assistant instance.
+
+### Why E2E Testing is Required
+
+- **Pytest tests use mocks**: They don't catch runtime errors like missing attributes, import failures, or integration initialization issues
+- **Real HA environment**: Only an actual HA instance can validate the complete startup sequence, entity registration, and coordinator instantiation
+- **User experience**: E2E testing verifies what users will actually see and experience
+
+### E2E Validation Checklist
+
+This checklist is **MANDATORY** before creating any release (major, minor, or patch):
+
+#### 1. Install Integration in Running HA Instance
+
+```bash
+# Option A: If in devcontainer with HA Supervisor
+# Integration is already at /mnt/supervisor/addons/local/buderus-wps-ha
+# Restart HA to reload code after changes
+
+# Option B: If using standalone HA instance
+# Copy integration to HA config directory
+cp -r custom_components/buderus_wps ~/.homeassistant/custom_components/
+# Then restart Home Assistant
+```
+
+#### 2. Monitor Startup Logs
+
+```bash
+# Watch logs for errors during HA startup
+tail -f /config/home-assistant.log
+
+# Or in HA UI: Settings > System > Logs
+# Filter for "buderus_wps" to see integration-specific logs
+```
+
+**Check for:**
+- ✅ No `AttributeError`, `ImportError`, or `ModuleNotFoundError`
+- ✅ No exceptions during coordinator initialization
+- ✅ Integration loads successfully with log: `"Successfully connected to heat pump"`
+
+#### 3. Create Config Entry via UI
+
+```bash
+# In Home Assistant UI:
+# 1. Settings > Devices & Services > Add Integration
+# 2. Search for "Buderus WPS Heat Pump"
+# 3. Configure serial port (or use mock device if testing)
+# 4. Submit configuration
+```
+
+**Check for:**
+- ✅ Config flow completes without errors
+- ✅ Device appears in device registry
+- ✅ No error notifications in UI
+
+#### 4. Verify Entities Exist
+
+```bash
+# In Home Assistant UI:
+# 1. Settings > Devices & Services > Buderus WPS Heat Pump
+# 2. Click on the device
+# 3. Verify all expected entities are present
+```
+
+**Expected entities (as of v1.3.x):**
+- ✅ 5 temperature sensors (Outdoor, Supply, Return, DHW, Brine Inlet)
+- ✅ 1 binary sensor (Compressor Running)
+- ✅ 1 switch (Energy Blocking)
+- ✅ 1 number (DHW Extra Duration)
+- ✅ All entities show values (or "unavailable" if no device connected)
+- ✅ No entities stuck in "Unknown" state after first data fetch
+
+#### 5. Check Entity Attributes
+
+```bash
+# In Home Assistant UI, click on any temperature sensor
+# Navigate to "Attributes" section
+```
+
+**Check for (as of v1.3.x with indefinite caching):**
+- ✅ `last_update_age_seconds` attribute present
+- ✅ `data_is_stale` attribute present (true/false)
+- ✅ `last_successful_update` timestamp present (ISO 8601 format)
+- ✅ No missing or undefined attributes
+
+#### 6. Test State Changes
+
+```bash
+# If physical device is connected:
+# 1. Toggle the Energy Blocking switch
+# 2. Verify switch state updates
+# 3. Check logs for write operation confirmation
+
+# If no device (testing with mocks):
+# 1. Verify entities show "unavailable" gracefully
+# 2. No crash or error spam in logs
+```
+
+#### 7. Test Error Handling
+
+```bash
+# Simulate connection loss (if using physical device):
+# 1. Unplug USB adapter
+# 2. Wait for coordinator to detect failure (check logs)
+# 3. Verify entities retain last known values with staleness indicators
+# 4. Reconnect USB adapter
+# 5. Verify entities update to fresh values
+```
+
+**Check for:**
+- ✅ No crashes during connection loss
+- ✅ Entities retain last values (not "Unknown")
+- ✅ `data_is_stale` becomes `true` during disconnection
+- ✅ `data_is_stale` becomes `false` after reconnection
+- ✅ Exponential backoff reconnection works (check logs)
+
+#### 8. Review HA Logs for Warnings
+
+```bash
+# Check for any unexpected warnings or errors
+grep -i "buderus_wps" /config/home-assistant.log | grep -E "(ERROR|WARNING|CRITICAL)"
+```
+
+**Check for:**
+- ✅ No unexpected errors or warnings
+- ✅ Only expected warnings (e.g., "Not connected, returning stale data" during disconnection)
+- ✅ No attribute access errors, import errors, or type errors
+
+### E2E Validation Sign-Off
+
+Before creating a release, document E2E validation in commit message or release notes:
+
+```
+Tested in Home Assistant 2024.12.0:
+✅ Integration loads without errors
+✅ All 8 entities created successfully
+✅ Entity attributes show staleness metadata
+✅ Coordinator handles connection failures gracefully
+✅ No AttributeError or runtime exceptions
+✅ Logs clean (no unexpected errors)
+
+Environment: HA Supervisor devcontainer on [OS/Platform]
+```
+
+### When to Skip E2E Testing
+
+**NEVER skip E2E testing for releases.** Even "trivial" changes can have unintended consequences.
+
+### Automation (Future Enhancement)
+
+Consider adding automated E2E tests using Home Assistant's test framework:
+- `pytest-homeassistant-custom-component` for automated integration testing
+- GitHub Actions workflow to spin up HA instance and run E2E tests
+- Prevent releases if E2E tests fail
 
 ## Pytest Markers
 
