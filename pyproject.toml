@@ -33,7 +33,6 @@ dependencies = [
 
 [project.scripts]
 wps-cli = "buderus_wps_cli.main:main"
-buderus-tui = "buderus_wps_cli.tui:run_tui"
 
 [project.optional-dependencies]
 dev = [
@@ -43,6 +42,7 @@ dev = [
     "black>=23.7.0",
     "ruff>=0.0.287",
     "mypy>=1.5.0",
+    "homeassistant>=2024.3.0",  # For integration testing
 ]
 
 [project.urls]
@@ -72,8 +72,12 @@ markers = [
 ]
 
 [tool.coverage.run]
-source = ["buderus_wps"]
-omit = ["*/tests/*", "*/test_*.py"]
+source = ["buderus_wps", "buderus_wps_cli"]
+omit = [
+    "*/tests/*",
+    "*/test_*.py",
+    "custom_components/*",  # HA integration not part of library coverage
+]
 
 [tool.coverage.report]
 precision = 2

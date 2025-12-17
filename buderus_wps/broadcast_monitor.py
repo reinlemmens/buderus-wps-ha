@@ -106,15 +106,17 @@ KNOWN_BROADCASTS: Dict[tuple, tuple] = {
 
     # RC10 Room Controller - Circuit 3 (base 0x0402) - Hardware verified
     (0x0402, 55): ("RC10_C3_ROOM_TEMP", "tem"),     # Room temperature
+    (0x0402, 78): ("DHW_TEMP_ACTUAL", "tem"),       # ACTUAL DHW tank temp (~27°C)
     (0x0402, 98): ("RC10_C3_ROOM_TEMP_COPY", "tem"),  # Room temperature (copy)
     (0x0402, 107): ("RC10_C3_DEMAND_TEMP", "tem"),  # Demand/setpoint temperature
+    (0x0403, 78): ("DHW_TEMP_ACTUAL_COPY", "tem"),  # ACTUAL DHW tank temp (copy)
 
     # Demand setpoint (idx=18 on circuit bases) - Hardware verified
     (0x0062, 18): ("DEMAND_TEMP_C2", "tem"),  # Circuit 2 demand
 
     # Base 0x0060 - Circuit 0 / Main
     (0x0060, 33): ("SENSOR_TEMP_C0_33", "tem"),
-    (0x0060, 58): ("DHW_TEMP_ACTUAL", "tem"),  # ~54°C observed
+    (0x0060, 58): ("DHW_SETPOINT_OR_SUPPLY", "tem"),  # ~54°C - NOT actual tank temp!
     (0x0060, 59): ("SENSOR_TEMP_C0_59", "tem"),
     (0x0060, 60): ("SENSOR_TEMP_C0_60", "tem"),
 
@@ -151,8 +153,9 @@ KNOWN_BROADCASTS: Dict[tuple, tuple] = {
 PARAM_TO_BROADCAST: Dict[str, tuple] = {
     # Outdoor temperature - idx=12, broadcasts on varying circuit bases
     "GT2_TEMP": (None, 12),  # None = search all circuit bases
-    # DHW temperature - idx=58, broadcasts on varying circuit bases
-    "GT3_TEMP": (None, 58),  # None = search all circuit bases
+    # DHW temperature - idx=78 on base 0x0402/0x0403 (CORRECTED 2025-12-16)
+    # Previous mapping (idx=58) was wrong, reading ~54°C instead of actual ~27°C
+    "GT3_TEMP": (0x0402, 78),  # Actual DHW tank temperature
     # Buffer tank temperatures - base 0x0270 - Hardware verified
     "GT8_TEMP": (0x0270, 6),  # Buffer tank top/supply (~46°C observed)
     "GT9_TEMP": (0x0270, 5),  # Buffer tank bottom/return (~43°C observed)

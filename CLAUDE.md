@@ -100,6 +100,39 @@ black . && ruff check . && mypy buderus_wps buderus_wps_cli
 - Main branch (`main`) must always be deployable
 - Pull requests required for all changes
 
+### Hardware Access & Deployment
+
+**Home Assistant Host Access**:
+- SSH: `hassio@homeassistant.local`
+- Project path: `/home/hassio/buderus-wps-ha` (git repository)
+- Serial device: `/dev/ttyACM0` (USBtin adapter, accessible via `audio` group)
+- The `hassio` user is a member of the `audio` group for serial port access
+
+**Virtual Environment Setup**:
+```bash
+ssh hassio@homeassistant.local
+cd ~/buderus-wps-ha
+python3 -m venv venv
+source venv/bin/activate
+pip install -e .
+```
+
+**CLI Usage on Hardware**:
+```bash
+# Read parameter (no sudo needed, hassio user in audio group)
+cd ~/buderus-wps-ha
+source venv/bin/activate
+wps-cli read COMPRESSOR_STATE
+
+# Monitor broadcasts
+wps-cli monitor
+
+# Check git status and pull updates
+cd ~/buderus-wps-ha
+git status
+git pull
+```
+
 ## Constitution & Core Principles
 
 **Governed by**: `.specify/memory/constitution.md` (v1.1.0)
@@ -179,12 +212,14 @@ When adding CAN element support:
 ## Important Constraints
 
 - **DO NOT** modify files in `fhem/` directory (read-only reference)
+- **DO NOT** modify `/config/custom_components/buderus_wps/` directly - HA integration is HACS-managed!
 - **DO NOT** skip tests (100% coverage for described functionality mandatory)
 - **DO NOT** commit without explicit user request
 - **ALWAYS** write tests before implementation (TDD required)
 - **ALWAYS** check constitution before architectural decisions
 - **ALWAYS** use uppercase for parameter names (normalization)
 - **ALWAYS** provide diagnostic context in error messages
+- **ALWAYS** deploy HA integration changes via HACS/GitHub releases, never direct file copy
 - Timeout after 5 seconds for all CAN operations
 - Protocol-critical code requires `# PROTOCOL:` tags
 
@@ -197,6 +232,8 @@ When adding CAN element support:
 
 ## Active Technologies
 - N/A (JSON configuration files only) + HACS validation requirements, GitHub Releases API (014-hacs-publishing)
+- Python 3.9+ + Home Assistant Core (>=2024.3.0), homeassistant.helpers.update_coordinator, homeassistant.components.switch (015-usb-connection-switch)
+- N/A (state is non-persistent by design) (015-usb-connection-switch)
 
 ## Recent Changes
 - 014-hacs-publishing: Added N/A (JSON configuration files only) + HACS validation requirements, GitHub Releases API

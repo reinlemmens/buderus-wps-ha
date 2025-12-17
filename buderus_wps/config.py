@@ -215,15 +215,15 @@ DEFAULT_SENSOR_LABELS: Dict[str, str] = {
 }
 
 # Default sensor mappings verified against actual CAN bus traffic (2024-12-02)
+# Updated 2025-12-16: Fixed DHW temperature mapping (was idx=58, now idx=78)
 # Multiple sources for same sensor provide resilience to intermittent broadcasts
 DEFAULT_SENSOR_MAPPINGS: List[SensorMapping] = [
     # GT2 - Outdoor temperature
     SensorMapping(base=0x0402, idx=38, sensor=SensorType.OUTDOOR),
-    # GT3 - DHW tank temperature (broadcasts from multiple circuits)
-    SensorMapping(base=0x0060, idx=58, sensor=SensorType.DHW),
-    SensorMapping(base=0x0061, idx=58, sensor=SensorType.DHW),
-    SensorMapping(base=0x0062, idx=58, sensor=SensorType.DHW),
-    SensorMapping(base=0x0063, idx=58, sensor=SensorType.DHW),
+    # GT3 - DHW tank temperature (CORRECTED: idx=78 on base 0x0402/0x0403)
+    # Previous mapping (idx=58) was reading wrong temperature (~54°C instead of actual ~27°C)
+    SensorMapping(base=0x0402, idx=78, sensor=SensorType.DHW),
+    SensorMapping(base=0x0403, idx=78, sensor=SensorType.DHW),
     # GT1 - Brine inlet temperature
     SensorMapping(base=0x0060, idx=12, sensor=SensorType.BRINE_IN),
     SensorMapping(base=0x0061, idx=12, sensor=SensorType.BRINE_IN),
