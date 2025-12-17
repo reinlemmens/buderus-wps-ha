@@ -166,3 +166,117 @@ class TestBackoffSequence:
 
         # 5 -> 10 -> 20 -> 40 -> 80 -> 120 = 5 failures
         assert failures == 5
+
+
+class TestIndefiniteCaching:
+    """Test indefinite last-known-good data caching."""
+
+    @pytest.mark.asyncio
+    async def test_indefinite_caching_after_many_failures(self, mock_hass):
+        """Coordinator returns cached data even after 10+ consecutive failures.
+
+        This test verifies FR-011: Coordinator must retain last-known-good data
+        indefinitely, never showing "Unknown" after first successful read.
+        """
+        from custom_components.buderus_wps.coordinator import (
+            BuderusCoordinator,
+            BuderusData,
+        )
+        from unittest.mock import MagicMock
+        import time
+
+        coordinator = BuderusCoordinator(mock_hass, "/dev/ttyUSB0", 60)
+        coordinator.hass = mock_hass
+
+        # Setup: Simulate successful initial read
+        initial_data = BuderusData(
+            temperatures={
+                "outdoor": 5.5,
+                "supply": 35.0,
+                "return_temp": 30.0,
+                "dhw": 48.5,
+                "brine_in": 8.0,
+            },
+            compressor_running=True,
+            energy_blocked=False,
+            dhw_extra_duration=0,
+            heating_season_mode=1,
+            dhw_program_mode=0,
+        )
+        coordinator._last_known_good_data = initial_data
+        coordinator._last_successful_update = time.time()
+        coordinator._connected = True
+
+        # Mock _sync_fetch_data to always raise timeout error
+        def mock_timeout_error():
+            raise TimeoutError("CAN bus timeout")
+
+        coordinator._sync_fetch_data = MagicMock(side_effect=mock_timeout_error)
+
+        # Simulate 10 consecutive fetch failures
+        for i in range(10):
+            try:
+                await coordinator._async_update_data()
+                # After implementation, this should NOT raise
+            except Exception:
+                # Before implementation, this will raise after 3 failures
+                # This is expected in TDD - test should fail first
+                pass
+
+        # Assert: Coordinator should still return cached data (not None)
+        # This assertion will FAIL before implementation (expected in TDD)
+        assert (
+            coordinator._last_known_good_data is not None
+        ), "Coordinator must retain cached data indefinitely"
+        assert (
+            coordinator._last_known_good_data == initial_data
+        ), "Cached data must match initial successful read"
+
+        # Assert: Staleness helper should indicate data is stale
+        assert (
+            coordinator.is_data_stale() is True
+        ), "is_data_stale() must return True after failures"
+
+    @pytest.mark.asyncio
+    async def test_staleness_attributes_in_entity(self, mock_hass, mock_coordinator):
+        """Entities expose staleness attributes from coordinator.
+
+        This test verifies FR-005: Entity base class must add extra_state_attributes
+        property with staleness metadata.
+        """
+        from custom_components.buderus_wps.sensor import BuderusTemperatureSensor
+        from custom_components.buderus_wps.const import SENSOR_OUTDOOR
+        import time
+
+        # Setup: Create sensor entity
+        sensor = BuderusTemperatureSensor(mock_coordinator, SENSOR_OUTDOOR)
+
+        # Mock coordinator staleness methods (will be implemented in Phase 2)
+        mock_coordinator.get_data_age_seconds = MagicMock(return_value=120)
+        mock_coordinator.is_data_stale = MagicMock(return_value=True)
+        mock_coordinator._last_successful_update = time.time() - 120
+
+        # Act: Get entity attributes
+        # This will FAIL before implementation (expected in TDD)
+        try:
+            attrs = sensor.extra_state_attributes
+        except AttributeError:
+            # Expected before implementation
+            attrs = {}
+
+        # Assert: Entity should expose staleness metadata
+        # These assertions will FAIL before implementation
+        assert (
+            "last_update_age_seconds" in attrs
+        ), "Entity must expose last_update_age_seconds attribute"
+        assert "data_is_stale" in attrs, "Entity must expose data_is_stale attribute"
+        assert (
+            "last_successful_update" in attrs
+        ), "Entity must expose last_successful_update timestamp"
+
+        # Assert: Values should match coordinator state
+        assert attrs.get("last_update_age_seconds") == 120
+        assert attrs.get("data_is_stale") is True
+        assert isinstance(
+            attrs.get("last_successful_update"), str
+        ), "Timestamp must be ISO 8601 string"

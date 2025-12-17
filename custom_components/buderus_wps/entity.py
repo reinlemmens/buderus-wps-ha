@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+from datetime import datetime
+from typing import Any
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -42,3 +45,29 @@ class BuderusEntity(CoordinatorEntity[BuderusCoordinator]):
             model=MODEL,
             sw_version="1.1.0",
         )
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return entity state attributes including staleness indicators.
+
+        Per FR-005: All entities expose staleness metadata from coordinator.
+        Attributes include:
+        - last_update_age_seconds: Age in seconds since last successful update
+        - data_is_stale: Boolean indicating if data is from cache (connection issues)
+        - last_successful_update: ISO 8601 timestamp of last successful update
+        """
+        attrs: dict[str, Any] = {}
+
+        # Get data age from coordinator
+        age = self.coordinator.get_data_age_seconds()
+        if age is not None:
+            attrs["last_update_age_seconds"] = age
+            attrs["data_is_stale"] = self.coordinator.is_data_stale()
+
+        # Add timestamp if available
+        if self.coordinator._last_successful_update:
+            attrs["last_successful_update"] = datetime.fromtimestamp(
+                self.coordinator._last_successful_update
+            ).isoformat()
+
+        return attrs
