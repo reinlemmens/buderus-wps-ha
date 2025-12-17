@@ -176,8 +176,8 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             _LOGGER.debug(
                 "Could not import buderus_wps.exceptions, using conservative error classification"
             )
-            # Check consecutive failures
-            if self._consecutive_failures >= self._stale_data_threshold:
+            # Check consecutive failures - trigger reconnection after 3 failures
+            if self._consecutive_failures >= 3:
                 return "persistent"
             return "transient"
 
@@ -188,7 +188,8 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             return "persistent"
 
         # Check if we've had multiple consecutive failures - likely persistent issue
-        if self._consecutive_failures >= self._stale_data_threshold:
+        # Trigger reconnection after 3 failures (stale data still returned)
+        if self._consecutive_failures >= 3:
             return "persistent"
 
         # Timeout errors are usually transient (CAN bus congestion, temporary USB glitch)
@@ -210,8 +211,9 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                 return "persistent"
             return "transient"
 
-        # Default: treat as transient on first occurrence, persistent after threshold
-        if self._consecutive_failures < self._stale_data_threshold:
+        # Default: treat as transient on first occurrence, persistent after 3 failures
+        # (triggers reconnection while still returning stale data)
+        if self._consecutive_failures < 3:
             return "transient"
         return "persistent"
 
