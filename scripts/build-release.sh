@@ -234,14 +234,19 @@ test_import_in_staging() {
 create_archive() {
     local version="$1"
     local archive_name="buderus-wps-ha-${version}.zip"
+    local generic_name="buderus-wps-ha.zip"  # HACS expects this
 
     log_info "Creating release archive: $archive_name"
 
     cd "$STAGING"
     zip -r "../../$archive_name" custom_components/ > /dev/null
+
+    # Also create generic name for HACS compatibility
+    cp "../../$archive_name" "../../$generic_name"
     cd "$REPO_ROOT"
 
     log_info "Archive created: $archive_name ($(du -h "$archive_name" | cut -f1))"
+    log_info "HACS archive: $generic_name"
 }
 
 create_git_tag() {
@@ -298,7 +303,8 @@ Install via HACS custom repository: https://github.com/reinlemmens/buderus-wps-h
     gh release create "$version" $prerelease_flag \
         --title "Buderus WPS $version" \
         --notes "$notes" \
-        "$archive_name"
+        "$archive_name" \
+        "buderus-wps-ha.zip"  # Generic name for HACS
 
     log_info "GitHub release created: $version"
 }
@@ -306,10 +312,12 @@ Install via HACS custom repository: https://github.com/reinlemmens/buderus-wps-h
 cleanup() {
     local version="$1"
     local archive_name="buderus-wps-ha-${version}.zip"
+    local generic_name="buderus-wps-ha.zip"
 
     log_info "Cleaning up..."
     rm -rf "$STAGING"
     rm -f "$archive_name"
+    rm -f "$generic_name"
     log_info "Cleanup complete"
 }
 
