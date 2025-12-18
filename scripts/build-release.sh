@@ -238,13 +238,13 @@ create_archive() {
 
     log_info "Creating release archive: $archive_name"
 
-    # CRITICAL: For zip_release: true, HACS extracts to /config/custom_components/
-    # So the zip must contain ONLY the integration directory, not wrapped in custom_components/
-    cd "$STAGING/custom_components"
-    zip -r "../../../$archive_name" buderus_wps/ > /dev/null
+    # CRITICAL: For zip_release: true, HACS extracts zip contents directly into /config/custom_components/<integration_name>/
+    # So the zip must contain integration FILES at root, NOT wrapped in a directory
+    cd "$STAGING/custom_components/buderus_wps"
+    zip -r "../../../../$archive_name" . > /dev/null
 
     # Also create generic name for HACS compatibility
-    cp "../../../$archive_name" "../../../$generic_name"
+    cp "../../../../$archive_name" "../../../../$generic_name"
     cd "$REPO_ROOT"
 
     log_info "Archive created: $archive_name ($(du -h "$archive_name" | cut -f1))"
