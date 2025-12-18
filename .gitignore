@@ -16,6 +16,7 @@ venv/
 dist/
 build/
 .build/  # Release staging directory
+buderus-wps-ha*.zip  # Release artifacts
 
 # Testing
 .pytest_cache/
