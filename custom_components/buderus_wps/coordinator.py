@@ -430,6 +430,22 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                     )
 
             broadcast_success = True
+
+            # FR-011: Merge missing sensors from cache (sensor-level persistence)
+            # If broadcast succeeded but some sensors are missing, use cached values
+            if self._last_known_good_data is not None:
+                for sensor_name, value in temperatures.items():
+                    if value is None:
+                        cached_value = self._last_known_good_data.temperatures.get(
+                            sensor_name
+                        )
+                        if cached_value is not None:
+                            temperatures[sensor_name] = cached_value
+                            _LOGGER.debug(
+                                f"Sensor '{sensor_name}' missing from broadcast, "
+                                f"using cached value: {cached_value:.1f}°C"
+                            )
+
         except Exception as err:
             _LOGGER.warning(
                 "Broadcast collection failed, using stale temperature data: %s", err
