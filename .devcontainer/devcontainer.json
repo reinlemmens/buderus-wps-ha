@@ -1,23 +1,32 @@
 {
-  "name": "Buderus WPS Add-on Development",
-  "image": "ghcr.io/home-assistant/devcontainer:2-addons",
+  "name": "Buderus WPS Integration Development",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "configureZshAsDefaultShell": true
+    }
+  },
   "appPort": ["7123:8123", "7357:4357"],
   "postCreateCommand": "echo 'source venv/bin/activate 2>/dev/null || true' >> ~/.bashrc && echo 'source venv/bin/activate 2>/dev/null || true' >> ~/.zshrc",
-  "postStartCommand": "bash .devcontainer/devcontainer_bootstrap.sh",
+  "postStartCommand": "bash .devcontainer/devcontainer_bootstrap.sh && bash .devcontainer/post-start.sh",
   "runArgs": ["-e", "GIT_EDITOR=code --wait", "--privileged"],
-  "workspaceFolder": "/mnt/supervisor/addons/local/${localWorkspaceFolderBasename}",
-  "workspaceMount": "source=${localWorkspaceFolder},target=${containerWorkspaceFolder},type=bind,consistency=cached",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "containerEnv": {
     "WORKSPACE_DIRECTORY": "${containerWorkspaceFolder}"
   },
-  "initializeCommand": "mkdir -p ${localEnv:HOME}/.claude-devcontainer ${localEnv:HOME}/.config/gh",
+  "initializeCommand": "mkdir -p ${localEnv:HOME}/.claude-devcontainer ${localEnv:HOME}/.config/gh ${localEnv:HOME}/.codex ${localEnv:HOME}/.config/gemini",
   "customizations": {
     "vscode": {
       "extensions": [
         "timonwong.shellcheck",
         "esbenp.prettier-vscode",
         "anthropic.claude-code",
-        "ms-azuretools.vscode-docker"
+        "ms-azuretools.vscode-docker",
+        "openai.chatgpt",
+        "Google.gemini"
       ],
       "settings": {
         "terminal.integrated.profiles.linux": {
@@ -29,15 +38,17 @@
         "editor.formatOnPaste": false,
         "editor.formatOnSave": true,
         "editor.formatOnType": true,
-        "files.trimTrailingWhitespace": true
+        "files.trimTrailingWhitespace": true,
+        "gemini.code.chat.model": "gemini-1.5-pro-latest",
+        "gemini.code.codeCompletion.model": "gemini-1.5-pro-latest",
+        "gemini.code.codeGeneration.model": "gemini-1.5-pro-latest"
       }
     }
   },
   "mounts": [
-    "type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock",
-    "type=volume,target=/var/lib/docker",
-    "type=volume,target=/mnt/supervisor",
     "source=${localEnv:HOME}/.claude-devcontainer,target=/home/vscode/.claude,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.config/gh,target=/home/vscode/.config/gh,type=bind,consistency=cached"
+    "source=${localEnv:HOME}/.config/gh,target=/home/vscode/.config/gh,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.codex,target=/home/vscode/.codex,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.config/gemini,target=/home/vscode/.config/gemini,type=bind,consistency=cached"
   ]
 }

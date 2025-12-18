@@ -6,18 +6,6 @@ echo "Buderus WPS Development Environment Setup"
 echo "=================================================="
 echo ""
 
-# Install GitHub CLI if not present
-if ! command -v gh &> /dev/null; then
-    echo "📦 Installing GitHub CLI..."
-    wget -q https://github.com/cli/cli/releases/download/v2.40.1/gh_2.40.1_linux_arm64.deb -O /tmp/gh.deb
-    sudo dpkg -i /tmp/gh.deb 2>&1 | grep -v "Setting up\|Processing triggers" || true
-    rm /tmp/gh.deb
-    echo "✓ GitHub CLI installed"
-else
-    echo "✓ GitHub CLI already installed"
-fi
-echo ""
-
 # Create venv if it doesn't exist
 if [ ! -d "venv" ]; then
     echo "📦 Creating virtual environment..."

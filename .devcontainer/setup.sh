@@ -6,6 +6,8 @@ set -e
 
 echo "=== Setting up Buderus WPS HA development environment ==="
 
+WORKSPACE="${WORKSPACE_DIRECTORY:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"
+
 # Install Python dependencies
 echo "Installing Python dependencies..."
 pip install --upgrade pip
@@ -13,7 +15,7 @@ pip install homeassistant voluptuous pyserial pytest pytest-asyncio pytest-cov r
 
 # Install project in development mode
 echo "Installing buderus-wps-ha in development mode..."
-cd /workspaces/buderus-wps-ha
+cd "${WORKSPACE}"
 pip install -e .
 
 # Create HA config directory
