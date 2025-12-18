@@ -6,12 +6,25 @@ This guide explains how to set up your development environment and run tests for
 
 ### Using VSCode DevContainer (Recommended)
 
+This project follows Home Assistant’s recommended development environment approach (VS Code + devcontainers):
+- https://developers.home-assistant.io/docs/development_environment/
+
 1. Open the project in VSCode
 2. Click "Reopen in Container" when prompted (or use Command Palette: `Dev Containers: Reopen in Container`)
 3. Wait for the container to build and the bootstrap script to run
 4. The virtual environment will be automatically activated in all new terminals
 
+#### Run a local Home Assistant instance (in the devcontainer)
+
+- VS Code Task: `Tasks: Run Task` → `Run Home Assistant (Devcontainer)`
+- URL: `http://localhost:7123` (this devcontainer maps container `8123` → host `7123` to avoid conflicting with a running HA instance)
+
+**Hardware note (USB/CAN adapters):** Home Assistant’s docs call out that exposing USB hardware into containers is straightforward on Linux hosts, but often not possible on macOS/Windows. If you can’t pass through `/dev/ttyACM0`, rely on mocks for day-to-day development and do E2E validation on a real HA machine.
+
 ### Manual Setup (Without DevContainer)
+
+Home Assistant has strict Python version requirements. If you use the wrong Python version you’ll end up with an incompatible virtual environment; check the Home Assistant docs for the currently required Python version:
+- https://developers.home-assistant.io/docs/development_environment/
 
 ```bash
 # Create and activate virtual environment
@@ -20,7 +33,7 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -e ".[dev]"
-pip install homeassistant>=2024.3.0
+pip install "homeassistant>=2024.3.0"
 ```
 
 ## Project Architecture

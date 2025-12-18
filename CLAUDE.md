@@ -252,6 +252,8 @@ When adding CAN element support:
 - N/A (JSON configuration files only) + HACS validation requirements, GitHub Releases API (014-hacs-publishing)
 - Python 3.9+ + Home Assistant Core (>=2024.3.0), homeassistant.helpers.update_coordinator, homeassistant.components.switch (015-usb-connection-switch)
 - N/A (state is non-persistent by design) (015-usb-connection-switch)
+- Python 3.9+ (matching existing project, Home Assistant compatibility) + pytest, pytest-asyncio (existing), standard library (json, time, pathlib) (017-mock-can-testing)
+- JSON files for recordings in `tests/fixtures/can_recordings/` (017-mock-can-testing)
 
 ## Recent Changes
 - 014-hacs-publishing: Added N/A (JSON configuration files only) + HACS validation requirements, GitHub Releases API
