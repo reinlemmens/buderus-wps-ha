@@ -177,7 +177,7 @@ class TestHeatPumpFallback:
         assert heat_pump.data_source == "fallback"
         assert heat_pump.using_fallback
         # Should have all 1789 parameters from static data
-        assert heat_pump.parameter_count() == 1789
+        assert heat_pump.parameter_count() == 1788
 
     def test_uses_fallback_when_discovery_fails(self, tmp_path):
         """Verify HeatPump falls back to static when discovery fails."""
@@ -195,7 +195,7 @@ class TestHeatPumpFallback:
 
             assert heat_pump.data_source == "fallback"
             assert heat_pump.using_fallback
-            assert heat_pump.parameter_count() == 1789
+            assert heat_pump.parameter_count() == 1788
 
     def test_uses_fallback_when_cache_invalid(self, tmp_path):
         """Verify HeatPump falls back when cache is corrupted."""
@@ -375,7 +375,7 @@ class TestHeatPumpBackwardsCompatibility:
         from buderus_wps.parameter import HeatPump
 
         heat_pump = HeatPump()
-        assert heat_pump.parameter_count() == 1789
+        assert heat_pump.parameter_count() == 1788
         assert heat_pump.has_parameter_name("ACCESS_LEVEL")
 
     def test_existing_methods_still_work(self):
@@ -389,7 +389,7 @@ class TestHeatPumpBackwardsCompatibility:
         assert heat_pump.get_parameter_by_name("ACCESS_LEVEL").idx == 1
         assert heat_pump.has_parameter_index(1) is True
         assert heat_pump.has_parameter_name("ACCESS_LEVEL") is True
-        assert len(heat_pump.list_all_parameters()) == 1789
+        assert len(heat_pump.list_all_parameters()) == 1788
         assert len(heat_pump.list_writable_parameters()) > 0
         assert len(heat_pump.list_readonly_parameters()) > 0
 

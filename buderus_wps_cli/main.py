@@ -14,7 +14,7 @@ import logging
 import logging.handlers
 import os
 
-from buderus_wps import USBtinAdapter, HeatPumpClient, ParameterRegistry, BroadcastMonitor, EnergyBlockingControl
+from buderus_wps import USBtinAdapter, HeatPumpClient, HeatPump, BroadcastMonitor, EnergyBlockingControl
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -26,6 +26,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--dry-run", action="store_true", help="Validate writes without sending to device")
     parser.add_argument("--verbose", action="store_true", help="Enable debug logging")
     parser.add_argument("--log-file", default=None, help="Log file path (default: ~/.cache/buderus-wps/buderus.log)")
+    parser.add_argument("--cache-path", default=None, help="Parameter cache file path (enables caching)")
 
     sub = parser.add_subparsers(dest="command", required=True)
 
@@ -515,7 +516,14 @@ def main(argv: list[str] | None = None) -> int:
 
     _configure_logging(args)
     adapter = USBtinAdapter(args.port, baudrate=args.baud, timeout=args.timeout, read_only=args.read_only or args.dry_run)
-    registry = ParameterRegistry()
+
+    # Use HeatPump class with optional cache path
+    from pathlib import Path
+    cache_path = Path(args.cache_path) if args.cache_path else None
+    registry = HeatPump(cache_path=cache_path)
+    if args.verbose:
+        print(f"Parameters loaded (source: {registry.data_source})", file=sys.stderr)
+
     client = HeatPumpClient(adapter, registry)
     # Connect once
     try:

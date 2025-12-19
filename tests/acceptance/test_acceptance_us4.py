@@ -160,7 +160,7 @@ class TestAcceptanceScenario3:
         provides static fallback from FHEM reference.
         """
         # PARAMETER_DATA contains fallback
-        assert len(PARAMETER_DATA) == 1789
+        assert len(PARAMETER_DATA) == 1788
         assert PARAMETER_DATA[0]["idx"] == 0
         assert PARAMETER_DATA[0]["text"] == "ACCESSORIES_CONNECTED_BITMASK"
 

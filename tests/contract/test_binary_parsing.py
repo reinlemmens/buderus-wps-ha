@@ -16,19 +16,21 @@ import pytest
 class TestBinaryStructureMatchesFhem:
     """T032: Contract tests verifying binary structure matches FHEM."""
 
-    def test_fhem_uses_network_byte_order(self):
+    @pytest.fixture
+    def fhem_content(self):
+        with open('fhem/26_KM273v018.pm', 'r') as f:
+            return f.read()
+
+    def test_fhem_uses_network_byte_order(self, fhem_content):
         """Verify FHEM uses big-endian (network byte order) format.
 
         # PROTOCOL: 'n' = unsigned short, network (big-endian)
         # PROTOCOL: 'N' = unsigned long, network (big-endian)
         """
-        with open('fhem/26_KM273v018.pm', 'r') as f:
-            content = f.read()
-
         # Find the unpack statement
         # Pattern: unpack("nH14NNc", ...)
         pattern = r'unpack\s*\(\s*["\']nH14NNc["\']'
-        match = re.search(pattern, content)
+        match = re.search(pattern, fhem_content)
 
         assert match is not None, (
             "Could not find unpack(\"nH14NNc\", ...) in FHEM source. "
@@ -37,17 +39,14 @@ class TestBinaryStructureMatchesFhem:
 
         print(f"✓ Found FHEM unpack format at position {match.start()}")
 
-    def test_fhem_converts_unsigned_to_signed(self):
+    def test_fhem_converts_unsigned_to_signed(self, fhem_content):
         """Verify FHEM converts unsigned to signed for min/max.
 
         # PROTOCOL: $min2 = unpack 'l*', pack 'L*', $min2;
         """
-        with open('fhem/26_KM273v018.pm', 'r') as f:
-            content = f.read()
-
         # Find the signed conversion for min
         min_pattern = r"\$min2\s*=\s*unpack\s+'l\*'\s*,\s*pack\s+'L\*'\s*,\s*\$min2"
-        min_match = re.search(min_pattern, content)
+        min_match = re.search(min_pattern, fhem_content)
 
         assert min_match is not None, (
             "Could not find min value signed conversion in FHEM source. "
@@ -56,7 +55,7 @@ class TestBinaryStructureMatchesFhem:
 
         # Find the signed conversion for max
         max_pattern = r"\$max2\s*=\s*unpack\s+'l\*'\s*,\s*pack\s+'L\*'\s*,\s*\$max2"
-        max_match = re.search(max_pattern, content)
+        max_match = re.search(max_pattern, fhem_content)
 
         assert max_match is not None, (
             "Could not find max value signed conversion in FHEM source. "
@@ -65,17 +64,14 @@ class TestBinaryStructureMatchesFhem:
 
         print("✓ Found signed conversion for min and max values")
 
-    def test_fhem_header_size_is_18_bytes(self):
+    def test_fhem_header_size_is_18_bytes(self, fhem_content):
         """Verify FHEM checks for 18-byte header.
 
         # PROTOCOL: if ($imax-$i1 > 18)
         """
-        with open('fhem/26_KM273v018.pm', 'r') as f:
-            content = f.read()
-
         # Find the header size check
         pattern = r'if\s*\(\s*\$imax\s*-\s*\$i1\s*>\s*18\s*\)'
-        match = re.search(pattern, content)
+        match = re.search(pattern, fhem_content)
 
         assert match is not None, (
             "Could not find header size check (> 18) in FHEM source."
@@ -83,17 +79,14 @@ class TestBinaryStructureMatchesFhem:
 
         print("✓ Found 18-byte header size check")
 
-    def test_fhem_rejects_len_less_than_2(self):
+    def test_fhem_rejects_len_less_than_2(self, fhem_content):
         """Verify FHEM rejects len values less than 2.
 
         # PROTOCOL: if (... ($len2 > 1) ...)
         """
-        with open('fhem/26_KM273v018.pm', 'r') as f:
-            content = f.read()
-
         # Find the len validation
         pattern = r'\$len2\s*>\s*1'
-        match = re.search(pattern, content)
+        match = re.search(pattern, fhem_content)
 
         assert match is not None, (
             "Could not find len > 1 validation in FHEM source."
@@ -101,17 +94,14 @@ class TestBinaryStructureMatchesFhem:
 
         print("✓ Found minimum len validation (len > 1)")
 
-    def test_fhem_rejects_len_100_or_more(self):
+    def test_fhem_rejects_len_100_or_more(self, fhem_content):
         """Verify FHEM rejects len values of 100 or more.
 
         # PROTOCOL: if (... ($len2 < 100) ...)
         """
-        with open('fhem/26_KM273v018.pm', 'r') as f:
-            content = f.read()
-
         # Find the max len validation
         pattern = r'\$len2\s*<\s*100'
-        match = re.search(pattern, content)
+        match = re.search(pattern, fhem_content)
 
         assert match is not None, (
             "Could not find len < 100 validation in FHEM source."
@@ -119,17 +109,14 @@ class TestBinaryStructureMatchesFhem:
 
         print("✓ Found maximum len validation (len < 100)")
 
-    def test_fhem_name_length_is_len_minus_1(self):
+    def test_fhem_name_length_is_len_minus_1(self, fhem_content):
         """Verify FHEM extracts name as len-1 bytes.
 
         # PROTOCOL: my $element2 = substr(...,$i1+18,$len2-1);
         """
-        with open('fhem/26_KM273v018.pm', 'r') as f:
-            content = f.read()
-
         # Find the name extraction
         pattern = r'substr\s*\([^,]+,\s*\$i1\s*\+\s*18\s*,\s*\$len2\s*-\s*1\s*\)'
-        match = re.search(pattern, content)
+        match = re.search(pattern, fhem_content)
 
         assert match is not None, (
             "Could not find name extraction (substr(...,$i1+18,$len2-1)) in FHEM source."
@@ -137,17 +124,14 @@ class TestBinaryStructureMatchesFhem:
 
         print("✓ Found name extraction (len-1 bytes at offset 18)")
 
-    def test_fhem_advances_offset_correctly(self):
+    def test_fhem_advances_offset_correctly(self, fhem_content):
         """Verify FHEM advances offset by 18+len.
 
         # PROTOCOL: $i1 += 18+$len2;
         """
-        with open('fhem/26_KM273v018.pm', 'r') as f:
-            content = f.read()
-
         # Find the offset advancement
         pattern = r'\$i1\s*\+=\s*18\s*\+\s*\$len2'
-        match = re.search(pattern, content)
+        match = re.search(pattern, fhem_content)
 
         assert match is not None, (
             "Could not find offset advancement ($i1 += 18+$len2) in FHEM source."

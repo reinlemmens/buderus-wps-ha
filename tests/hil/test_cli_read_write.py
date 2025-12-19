@@ -2,12 +2,26 @@
 Hardware-in-the-loop tests for CLI read/write operations.
 
 These tests run against a real heat pump via USB CAN adapter.
-Run with: pytest tests/hil/test_cli_read_write.py -v -s
+Run with: RUN_HIL_TESTS=1 pytest tests/hil/test_cli_read_write.py -v -s
+
+Hardware requirements:
+- USBtin CAN adapter connected at /dev/ttyACM0
+- Buderus WPS heat pump on CAN bus
 """
 
+import os
 import subprocess
 import sys
 import pytest
+
+# Configuration
+SERIAL_PORT = os.environ.get("USBTIN_PORT", "/dev/ttyACM0")
+
+# Skip all HIL tests if hardware is not available or RUN_HIL_TESTS not set
+pytestmark = pytest.mark.skipif(
+    not os.path.exists(SERIAL_PORT) or not os.environ.get("RUN_HIL_TESTS"),
+    reason=f"HIL tests require hardware at {SERIAL_PORT} and RUN_HIL_TESTS=1",
+)
 
 CLI_CMD = [sys.executable, "buderus_wps_cli/main.py"]
 

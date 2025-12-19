@@ -578,6 +578,37 @@ class USBtinAdapter:
             if self._op_lock.locked():
                 self._op_lock.release()
 
+    def send_frame_nowait(self, message: CANMessage) -> None:
+        """Send CAN frame without waiting for response.
+
+        Used for bulk operations where we need to send multiple messages
+        quickly and then collect responses separately.
+
+        Args:
+            message: CANMessage to send
+
+        Raises:
+            DeviceCommunicationError: Device not connected
+            PermissionError: Adapter is in read-only mode
+        """
+        if not self.is_open or not self._serial:
+            raise DeviceCommunicationError(
+                "Device not connected",
+                context={"port": self.port}
+            )
+        if self.read_only:
+            raise PermissionError("Adapter is in read-only mode; sending frames is disabled.")
+
+        # Convert message to SLCAN format and send
+        slcan_frame = message.to_usbtin_format()
+        self._logger.debug(
+            "TX nowait: id=0x%X dlc=%s rtr=%s",
+            message.arbitration_id,
+            message.dlc,
+            message.is_remote_frame,
+        )
+        self._write_command(slcan_frame.encode('ascii'))
+
     def receive_frame(self, timeout: Optional[float] = None) -> CANMessage:
         """Receive CAN frame passively (T043).
 
@@ -619,6 +650,122 @@ class USBtinAdapter:
             )
 
             return frame
+
+        finally:
+            if self._op_lock.locked():
+                self._op_lock.release()
+
+    def receive_stream(
+        self,
+        expected_bytes: int,
+        timeout: float = 10.0,
+        frame_filter: int = None
+    ) -> bytes:
+        """Receive multiple frames as a continuous byte stream.
+
+        Optimized for bulk data transfer where many frames arrive in sequence.
+        Uses aggressive buffered reading to keep up with fast frame streams.
+
+        Args:
+            expected_bytes: Approximate number of bytes expected
+            timeout: Maximum time to wait for all data
+            frame_filter: Optional CAN ID to filter (only frames matching this ID)
+
+        Returns:
+            Accumulated data bytes from all received frames
+
+        Raises:
+            DeviceCommunicationError: Device not connected
+            TimeoutError: No data received within timeout
+        """
+        if not self.is_open or not self._serial:
+            raise DeviceCommunicationError(
+                "Device not connected",
+                context={"port": self.port}
+            )
+
+        # Guard against concurrent operations
+        if not self._op_lock.acquire(blocking=False):
+            raise RuntimeError("Operation already in progress")
+
+        try:
+            data = bytearray()
+            raw_buffer = bytearray()
+            start_time = time.time()
+            idle_count = 0
+            max_idle = 50  # Allow 50 idle cycles (50ms) before giving up
+            last_data_time = start_time
+
+            while len(data) < expected_bytes:
+                elapsed = time.time() - start_time
+                if elapsed > timeout:
+                    break
+
+                # Read all available data from serial (fast bulk read)
+                available = self._serial.in_waiting
+                if available > 0:
+                    chunk = self._serial.read(available)
+                    if chunk:
+                        raw_buffer.extend(chunk)
+                        idle_count = 0
+                        last_data_time = time.time()
+                else:
+                    # Very brief pause - 1ms for tight polling
+                    time.sleep(0.001)
+                    idle_count += 1
+                    # Only give up if no data for extended period AND we have some data
+                    if idle_count >= max_idle and len(data) > 0:
+                        break
+                    # If we never got data, keep trying until timeout
+                    if idle_count >= max_idle and len(data) == 0:
+                        idle_count = 0  # Reset and keep trying
+                    continue
+
+                # Parse complete frames from buffer (do this even without new data)
+                while b'\r' in raw_buffer:
+                    frame_end = raw_buffer.index(b'\r')
+                    frame_bytes = bytes(raw_buffer[:frame_end])
+                    raw_buffer = raw_buffer[frame_end + 1:]
+
+                    if not frame_bytes:
+                        continue
+
+                    try:
+                        frame_str = frame_bytes.decode('ascii', errors='ignore').strip()
+                        if not frame_str:
+                            continue
+
+                        msg = CANMessage.from_usbtin_format(frame_str)
+
+                        # Apply filter if specified
+                        if frame_filter is not None:
+                            if msg.arbitration_id != frame_filter:
+                                continue
+
+                        # Accumulate data
+                        if msg.data:
+                            data.extend(msg.data)
+                    except Exception:
+                        # Skip malformed frames
+                        continue
+
+            # Log what we got
+            self._logger.debug(
+                "Stream complete: %d bytes in %.2fs",
+                len(data), time.time() - start_time
+            )
+
+            if len(data) == 0:
+                raise TimeoutError(
+                    "No stream data received within timeout",
+                    context={
+                        "port": self.port,
+                        "timeout": timeout,
+                        "filter": f"0x{frame_filter:08X}" if frame_filter else None
+                    }
+                )
+
+            return bytes(data)
 
         finally:
             if self._op_lock.locked():

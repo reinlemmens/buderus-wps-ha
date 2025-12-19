@@ -15,16 +15,11 @@ venv/
 *.egg-info/
 dist/
 build/
-.build/  # Release staging directory
-buderus-wps-ha*.zip  # Release artifacts
 
 # Testing
 .pytest_cache/
 .coverage
 htmlcov/
-
-# Data dumps
-parameter_dump.json
 
 # IDE
 .vscode/
@@ -33,14 +28,5 @@ parameter_dump.json
 *.swo
 *~
 
-# Runtime files
-logfile
-
-# Large binary documentation (PDFs, images)
-docs/
-
-# Reference output files
-fhem/fhemoutput.txt
-
-# Tool output
-tools/scan_results.json
+# SSH keys (private)
+.devcontainer/.ssh/

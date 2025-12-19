@@ -95,8 +95,10 @@ class TestUSBConnectionSwitchActions:
         a DeviceNotFoundError. The switch should catch this and raise a
         HomeAssistantError that will be shown to the user in the HA UI.
         """
-        from homeassistant.exceptions import HomeAssistantError
-        from buderus_wps.exceptions import DeviceNotFoundError
+        # Import DeviceNotFoundError from the bundled library (same as switch.py uses)
+        from custom_components.buderus_wps.buderus_wps.exceptions import (
+            DeviceNotFoundError,
+        )
 
         mock_entry = MagicMock()
         # Mock coordinator.async_manual_connect to raise DeviceNotFoundError
@@ -105,6 +107,12 @@ class TestUSBConnectionSwitchActions:
         )
         switch = BuderusUSBConnectionSwitch(mock_coordinator, mock_entry)
 
-        # Should raise HomeAssistantError when port is in use
-        with pytest.raises(HomeAssistantError, match="USB port in use"):
+        # Should raise an exception with "USB port in use" message
+        # Use Exception base class to avoid class identity issues with mocked modules
+        with pytest.raises(Exception) as exc_info:
             await switch.async_turn_on()
+
+        # Verify the exception message contains expected text
+        assert "USB port in use" in str(exc_info.value)
+        # Verify it's a HomeAssistantError (by class name, not identity)
+        assert "HomeAssistantError" in type(exc_info.value).__name__

@@ -1,57 +1,75 @@
-# Data Model: Buderus WPS Heat Pump Python Class
+# Data Model: Buderus WPS Heat Pump Python Class with Dynamic Parameter Discovery
 
 **Feature**: 002-buderus-wps-python-class
-**Date**: 2025-10-24
+**Date**: 2025-12-18 (Updated)
 **Status**: Complete
 
 ## Overview
 
-This document defines the data model for representing Buderus WPS heat pump parameters in Python. The model preserves the exact structure from the FHEM KM273_elements_default array while providing Pythonic access patterns.
+This document defines the data model for representing Buderus WPS heat pump parameters in Python with dynamic discovery support. The model includes:
+- Parameter entity with CAN ID calculation
+- HeatPump container with discovery/cache/fallback support
+- ParameterDiscovery for CAN bus protocol
+- ParameterCache for persistence
 
 ## Entities
 
-### 1. Parameter
+### 1. Parameter (Extended)
 
-**Description**: Represents a single configurable or readable value on the Buderus WPS heat pump.
+**Description**: Represents a single configurable or readable value on the Buderus WPS heat pump, with CAN ID calculation.
 
-**Source**: Maps 1:1 with entries in `@KM273_elements_default` array from `fhem/26_KM273v018.pm`
+**Source**: Discovered from device via CAN bus OR fallback to `@KM273_elements_default` array
 
 **Attributes**:
 
 | Attribute | Type | Description | Constraints |
 |-----------|------|-------------|-------------|
-| idx | int | Sequential parameter index | >= 0, may have gaps in sequence |
-| extid | str | External ID (CAN address) | 14-character hex string |
-| min | int | Minimum allowed value | Can be negative (e.g., temperature) |
+| idx | int | Parameter index (CAN ID construction) | >= 0, may have gaps |
+| extid | str | External ID | 14-character hex string |
+| min | int | Minimum allowed value | Can be negative |
 | max | int | Maximum allowed value | >= min |
-| format | str | Data format type | Known values: "int", "temp", etc. |
-| read | int | Read-only flag | 0 = writable, 1 = read-only |
-| text | str | Human-readable name | ALL_CAPS_WITH_UNDERSCORES format |
+| format | str | Data format type | Known: "int", "temp" |
+| read | int | Read-only flag | 0 = writable, 1+ = read-only |
+| text | str | Human-readable name | ALL_CAPS_WITH_UNDERSCORES |
 
-**Methods**:
+**Methods** (Extended):
 
 ```python
+def get_read_can_id(self) -> int:
+    """
+    Calculate CAN ID for read request.
+
+    # PROTOCOL: Formula from fhem/26_KM273v018.pm:2229
+    Returns: rtr = 0x04003FE0 | (idx << 14)
+    """
+
+def get_write_can_id(self) -> int:
+    """
+    Calculate CAN ID for write/response.
+
+    # PROTOCOL: Formula from fhem/26_KM273v018.pm:2230
+    Returns: txd = 0x0C003FE0 | (idx << 14)
+    """
+
 def is_writable(self) -> bool:
     """Check if parameter is writable (not read-only)."""
 
 def validate_value(self, value: int) -> bool:
     """Check if value is within allowed min/max range."""
-
-def __repr__(self) -> str:
-    """String representation for debugging."""
 ```
 
-**Invariants**:
-- Immutable (frozen dataclass)
-- max >= min
-- extid format matches protocol spec
-- read is either 0 or 1
+**CAN ID Calculation Examples**:
+
+| idx | Read CAN ID | Write CAN ID | Calculation |
+|-----|-------------|--------------|-------------|
+| 0 | 0x04003FE0 | 0x0C003FE0 | Base IDs (no shift) |
+| 1 | 0x04007FE0 | 0x0C007FE0 | 0x04003FE0 \| (1 << 14) |
+| 100 | 0x041903E0 | 0x0C1903E0 | 0x04003FE0 \| (100 << 14) |
 
 **Example Instances**:
 
 ```python
-# Writable parameter with valid range
-Parameter(
+param = Parameter(
     idx=1,
     extid="61E1E1FC660023",
     min=0,
@@ -61,81 +79,49 @@ Parameter(
     text="ACCESS_LEVEL"
 )
 
-# Read-only parameter
-Parameter(
-    idx=22,
-    extid="C02D7CE3A909E9",
-    min=0,
-    max=16777216,
-    format="int",
-    read=1,
-    text="ADDITIONAL_DHW_ACKNOWLEDGED"
-)
-
-# Parameter with negative minimum (temperature)
-Parameter(
-    idx=11,
-    extid="E555E4E11002E9",
-    min=-30,
-    max=40,
-    format="int",
-    read=0,
-    text="ADDITIONAL_BLOCK_HIGH_T2_TEMP"
-)
-
-# Flag parameter (min=max=0)
-Parameter(
-    idx=0,
-    extid="814A53C66A0802",
-    min=0,
-    max=0,
-    format="int",
-    read=0,
-    text="ACCESSORIES_CONNECTED_BITMASK"
-)
+# CAN IDs calculated dynamically
+assert param.get_read_can_id() == 0x04007FE0
+assert param.get_write_can_id() == 0x0C007FE0
 ```
 
-### 2. HeatPump
+### 2. HeatPump (Extended)
 
-**Description**: Container class providing access to all heat pump parameters with efficient lookup by index or name.
+**Description**: Container class providing access to all heat pump parameters with discovery, cache, and fallback support.
 
 **Attributes**:
 
 | Attribute | Type | Description |
 |-----------|------|-------------|
-| _params_by_idx | dict[int, Parameter] | Internal index for O(1) lookup by idx |
-| _params_by_name | dict[str, Parameter] | Internal index for O(1) lookup by name |
+| _params_by_idx | dict[int, Parameter] | O(1) lookup by idx |
+| _params_by_name | dict[str, Parameter] | O(1) lookup by name |
+| _source | str | Data source: 'cache', 'discovery', 'fallback' |
 
-**Methods**:
+**Methods** (Extended):
 
 ```python
+def __init__(self,
+             adapter: CANAdapter | None = None,
+             cache_path: Path | None = None,
+             force_discovery: bool = False):
+    """
+    Initialize HeatPump with parameter loading strategy.
+
+    Priority: cache → discovery → static fallback
+    """
+
+@property
+def using_fallback(self) -> bool:
+    """True if operating with static fallback data."""
+
+@property
+def data_source(self) -> str:
+    """Return data source: 'cache', 'discovery', or 'fallback'."""
+
 def get_parameter_by_index(self, idx: int) -> Parameter:
-    """
-    Get parameter by index value.
-
-    Args:
-        idx: Parameter index (e.g., 1 for ACCESS_LEVEL)
-
-    Returns:
-        Parameter object with all metadata
-
-    Raises:
-        KeyError: If index does not exist
-    """
+    """Get parameter by index. Raises KeyError if not found."""
 
 def get_parameter_by_name(self, name: str) -> Parameter:
-    """
-    Get parameter by human-readable name.
-
-    Args:
-        name: Parameter name (e.g., "ACCESS_LEVEL")
-
-    Returns:
-        Parameter object with all metadata
-
-    Raises:
-        KeyError: If name does not exist
-    """
+    """Get parameter by name. Raises KeyError if not found."""
 
 def has_parameter_index(self, idx: int) -> bool:
     """Check if parameter index exists."""
@@ -147,113 +133,228 @@ def list_all_parameters(self) -> list[Parameter]:
     """Return all parameters sorted by index."""
 
 def list_writable_parameters(self) -> list[Parameter]:
-    """Return only writable (read=0) parameters sorted by index."""
+    """Return only writable parameters sorted by index."""
 
 def list_readonly_parameters(self) -> list[Parameter]:
-    """Return only read-only (read=1) parameters sorted by index."""
+    """Return only read-only parameters sorted by index."""
 
 def parameter_count(self) -> int:
     """Return total number of parameters."""
 ```
 
-**Invariants**:
-- _params_by_idx and _params_by_name always refer to same Parameter instances
-- Both dicts have same number of entries
-- Singleton pattern or module-level instance (TBD during implementation)
-
 **Usage Pattern**:
 
 ```python
-# Instantiate once (likely module-level singleton)
-heat_pump = HeatPump()
+# With discovery and caching
+heat_pump = HeatPump(adapter=can_adapter, cache_path=Path("~/.cache/buderus/params.json"))
 
-# Access by index
-param = heat_pump.get_parameter_by_index(1)
-print(f"{param.text}: {param.min}-{param.max}")
+# Check data source
+if heat_pump.using_fallback:
+    logger.warning("Using fallback data - some parameters may not match device")
 
-# Access by name
+# Access parameter and calculate CAN ID
 param = heat_pump.get_parameter_by_name("ACCESS_LEVEL")
-if param.is_writable():
-    if param.validate_value(3):
-        print(f"Value 3 is valid for {param.text}")
+can_id = param.get_read_can_id()
+```
 
-# List all parameters
-for param in heat_pump.list_all_parameters():
-    print(f"[{param.idx}] {param.text}")
+### 3. ParameterDiscovery (NEW)
+
+**Description**: Implements the CAN bus discovery protocol to retrieve parameter definitions from the device.
+
+**Attributes**:
+
+| Attribute | Type | Description |
+|-----------|------|-------------|
+| _adapter | CANAdapter | CAN bus communication adapter |
+| ELEMENT_COUNT_SEND | int | 0x01FD7FE0 |
+| ELEMENT_COUNT_RECV | int | 0x09FD7FE0 |
+| ELEMENT_DATA_SEND | int | 0x01FD3FE0 |
+| ELEMENT_DATA_RECV | int | 0x09FDBFE0 |
+| CHUNK_SIZE | int | 4096 |
+
+**Methods**:
+
+```python
+def __init__(self, adapter: CANAdapter):
+    """Initialize with CAN adapter."""
+
+async def discover(self) -> list[dict]:
+    """
+    Execute full discovery protocol.
+
+    Returns:
+        List of parameter dicts with keys: idx, extid, min, max, format, read, text
+
+    Raises:
+        DiscoveryError: On timeout or protocol error
+    """
+
+async def _request_element_count(self) -> int:
+    """Request element count from device."""
+
+async def _request_element_chunk(self, offset: int, length: int) -> bytes:
+    """Request chunk of element data."""
+
+@staticmethod
+def parse_element(data: bytes, offset: int) -> tuple[dict | None, int]:
+    """
+    Parse single element from binary data.
+
+    # PROTOCOL: Binary structure from fhem/26_KM273v018.pm:2135-2143
+
+    Returns:
+        (element_dict, next_offset) or (None, -1) on error
+    """
+```
+
+**Binary Element Structure**:
+
+```
+Offset  Size  Field    Type        Notes
+0       2     idx      uint16 LE   Parameter index
+2       7     extid    hex string  External ID (7 bytes → 14 hex chars)
+9       4     max      int32 LE    Maximum value
+13      4     min      int32 LE    Minimum value
+17      1     len      uint8       Name length
+18      N     name     ASCII       Parameter name (len-1 bytes, null-terminated)
+```
+
+### 4. ParameterCache (NEW)
+
+**Description**: Manages persistent cache of discovered parameters.
+
+**Cache File Structure**:
+
+```json
+{
+  "version": "1.0.0",
+  "created": "2025-12-18T10:30:00Z",
+  "device_id": "BUDERUS_WPS_SN12345",
+  "firmware": "v1.23",
+  "checksum": "sha256:abc123...",
+  "element_count": 1789,
+  "parameters": [
+    {"idx": 0, "extid": "814A53C66A0802", "min": 0, "max": 0, ...},
+    ...
+  ]
+}
+```
+
+**Methods**:
+
+```python
+def __init__(self, cache_path: Path):
+    """Initialize with cache file path."""
+
+def is_valid(self) -> bool:
+    """Check if cache exists and is valid (checksum, version)."""
+
+def load(self) -> list[dict] | None:
+    """
+    Load parameters from cache.
+
+    Returns:
+        List of parameter dicts or None if cache invalid
+    """
+
+def save(self, parameters: list[dict], device_id: str | None = None,
+         firmware: str | None = None) -> bool:
+    """
+    Save parameters to cache.
+
+    Returns:
+        True if save successful
+    """
+
+def invalidate(self) -> None:
+    """Remove cache file."""
+
+@staticmethod
+def _compute_checksum(parameters: list[dict]) -> str:
+    """Compute SHA256 checksum of parameters."""
 ```
 
 ## Relationships
 
 ```
-┌─────────────┐
-│  HeatPump   │
-│             │
-│             │  contains
-│             ├──────────────┐
-│             │              │
-│             │          0..N│
-└─────────────┘              │
-                             │
-                             ▼
-                    ┌─────────────┐
-                    │  Parameter  │
-                    │             │
-                    │ idx: int    │
-                    │ extid: str  │
-                    │ min: int    │
-                    │ max: int    │
-                    │ format: str │
-                    │ read: int   │
-                    │ text: str   │
-                    └─────────────┘
+┌─────────────────────┐
+│      HeatPump       │
+│                     │
+│ _source: str        │
+│ _params_by_idx: {}  │
+│ _params_by_name: {} │
+│                     │
+│ using_fallback      │
+│ data_source         │
+└────────┬────────────┘
+         │
+         │ loads from one of:
+         │
+    ┌────┴────┬────────────┐
+    ▼         ▼            ▼
+┌───────┐ ┌────────┐ ┌──────────────┐
+│ Cache │ │ Disc.  │ │ Static Data  │
+│       │ │        │ │              │
+│ JSON  │ │ CAN    │ │ parameter_   │
+│ file  │ │ bus    │ │ data.py      │
+└───────┘ └────────┘ └──────────────┘
+    │         │            │
+    │         │            │
+    └────┬────┴────────────┘
+         │
+         │ creates
+         │
+         ▼
+    ┌─────────────┐
+    │  Parameter  │
+    │             │
+    │ idx: int    │
+    │ extid: str  │
+    │ min: int    │
+    │ max: int    │
+    │ format: str │
+    │ read: int   │
+    │ text: str   │
+    │             │
+    │ get_read_can_id()  │
+    │ get_write_can_id() │
+    └─────────────┘
 ```
 
+**Relationships**:
 - **HeatPump contains many Parameters**: 1:N relationship
-- **Parameters are independent**: No relationships between Parameter instances
-- **Lookup indices owned by HeatPump**: _params_by_idx and _params_by_name are internal implementation details
+- **HeatPump uses ParameterCache**: 1:1 optional dependency
+- **HeatPump uses ParameterDiscovery**: 1:1 optional dependency
+- **Parameters are independent**: No inter-parameter relationships
+- **Cache stores serialized Parameters**: Persistence layer
 
-## Data Source
+## Data Sources
 
-**Primary Source**: `fhem/26_KM273v018.pm` - `@KM273_elements_default` array starting at line 218
+### Primary: Device Discovery
 
-**Conversion Process**:
-1. Parse Perl array structure (one-time manual process)
-2. Convert to Python list of dicts
-3. Store in `buderus_wps/parameter_data.py` as `PARAMETER_DATA` constant
-4. HeatPump loads data at initialization
+**Protocol**: CAN bus messages using fixed discovery CAN IDs
 
-**Example Data Structure** (parameter_data.py):
-```python
-"""
-Parameter data extracted from fhem/26_KM273v018.pm @KM273_elements_default array.
+| Purpose | Send CAN ID | Receive CAN ID |
+|---------|-------------|----------------|
+| Element count | 0x01FD7FE0 | 0x09FD7FE0 |
+| Element data | 0x01FD3FE0 | 0x09FDBFE0 |
+| Buffer read | 0x01FDBFE0 | - |
 
-# PROTOCOL: This data MUST match the FHEM reference implementation exactly.
-# Source: fhem/26_KM273v018.pm lines 218-XXX
-# Extraction date: 2025-10-24
-"""
+### Secondary: Cache
 
-PARAMETER_DATA = [
-    {
-        "idx": 0,
-        "extid": "814A53C66A0802",
-        "max": 0,
-        "min": 0,
-        "format": "int",
-        "read": 0,
-        "text": "ACCESSORIES_CONNECTED_BITMASK"
-    },
-    {
-        "idx": 1,
-        "extid": "61E1E1FC660023",
-        "max": 5,
-        "min": 0,
-        "format": "int",
-        "read": 0,
-        "text": "ACCESS_LEVEL"
-    },
-    # ... 400+ more entries
-]
-```
+**Location**: User-configurable, default `~/.cache/buderus/params.json`
+
+**Validation**:
+1. File exists and is valid JSON
+2. Version matches library version
+3. SHA256 checksum validates integrity
+4. Device ID matches (if available)
+
+### Tertiary: Static Fallback
+
+**Source**: `buderus_wps/parameter_data.py` - `PARAMETER_DATA` constant
+
+**Content**: 1789 parameters from `fhem/26_KM273v018.pm:218-2009`
 
 ## Validation Rules
 
@@ -261,97 +362,73 @@ PARAMETER_DATA = [
 
 1. **Index uniqueness**: Each idx value appears exactly once
 2. **Name uniqueness**: Each text value appears exactly once
-3. **ExtID uniqueness**: Each extid value appears exactly once (assumed, verify in tests)
-4. **Min/Max relationship**: max >= min for all parameters
-5. **Read flag values**: read is either 0 or 1
-6. **Format values**: format is non-empty string
-7. **Text format**: text uses ALL_CAPS_WITH_UNDERSCORES convention
+3. **ExtID uniqueness**: Each extid value appears exactly once
+4. **Range relationship**: For most parameters max >= min (some FHEM data has bugs)
+5. **Read flag values**: read is 0 (writable) or 1+ (read-only)
+6. **Text format**: text uses ALL_CAPS_WITH_UNDERSCORES convention
 
-### Value Validation (by Parameter)
+### CAN ID Validation
 
-1. **Range check**: min <= value <= max
-2. **Type check**: value is integer (format interpretation for future features)
-3. **Read-only check**: If read=1, parameter should not be written (enforced by caller, not Parameter class)
+1. **Formula correctness**: CAN IDs match FHEM formulas exactly
+2. **Range bounds**: Read CAN IDs in 0x04003FE0-0x04FFFFFF
+3. **Range bounds**: Write CAN IDs in 0x0C003FE0-0x0CFFFFFF
+
+### Cache Validation
+
+1. **JSON structure**: Valid JSON with required fields
+2. **Version compatibility**: version field matches library
+3. **Data integrity**: checksum validates parameters array
+4. **Freshness**: Optional device_id/firmware match
 
 ## Edge Cases
 
 ### Non-Sequential Indices
-
-**Example**: idx sequence has gaps (13 missing between 12 and 14)
-
-**Handling**:
+- idx sequence has gaps (e.g., 13 missing between 12 and 14)
 - Dict-based lookup handles naturally
 - get_parameter_by_index(13) raises KeyError
-- Documented in code comments
-- Contract tests verify Python matches FHEM exactly
 
-### Flag Parameters (min=max=0)
+### Discovery Timeout
+- Element count timeout → fallback
+- Data chunk timeout → partial data discarded → fallback
+- Network interruption → DiscoveryError → fallback
 
-**Example**: ACCESSORIES_CONNECTED_BITMASK has min=0, max=0
+### Cache Corruption
+- Invalid JSON → cache invalidated → discovery
+- Checksum mismatch → cache invalidated → discovery
+- Version mismatch → cache invalidated → discovery
 
-**Handling**:
-- validate_value(0) returns True
-- validate_value(non-zero) returns False
-- Likely indicates bitmask or boolean flag
-- No special handling needed in validation logic
-
-### Negative Minimum Values
-
-**Example**: Temperature parameters can have min=-30
-
-**Handling**:
-- Python int supports negative values naturally
-- Range validation works correctly: -30 <= value <= 40
-
-### Large Maximum Values
-
-**Example**: Some parameters have max=16777216 (2^24)
-
-**Handling**:
-- Python int has arbitrary precision
-- No overflow concerns
-- Validation logic unchanged
+### Binary Parsing Errors
+- Truncated element → skip, continue parsing
+- Invalid name length → skip element
+- Zero-length name → use placeholder
 
 ## Implementation Notes
 
-1. **Immutability**: Parameter instances are frozen (immutable) to prevent accidental modification
-2. **Type Safety**: Use type hints throughout for IDE support and mypy checking
-3. **Performance**: Dict-based lookups provide O(1) access by both index and name
-4. **Memory**: 400+ Parameter instances ~ few KB memory (negligible)
-5. **Thread Safety**: Immutable data structures are inherently thread-safe for reads
-6. **Protocol Fidelity**: Exact data preservation per Constitution Principle II
+1. **Immutability**: Parameter instances are frozen (dataclass)
+2. **Async Discovery**: Non-blocking for Home Assistant compatibility
+3. **Type Safety**: Full type hints for mypy checking
+4. **Performance**: O(1) lookups, <30s discovery, <3s cache load
+5. **Thread Safety**: Immutable Parameters + single-threaded discovery
+6. **Protocol Fidelity**: Exact FHEM formula replication
 
 ## Test Coverage Requirements
 
-Per Constitution Principle IV, all described functionality must be tested:
-
 ### Unit Tests
-- Parameter class creation and validation
-- is_writable() for both read=0 and read=1
-- validate_value() for valid, below min, above max, at boundaries
-- HeatPump lookup methods (found, not found, KeyError)
-- list_all_parameters() returns all in correct order
-
-### Integration Tests
-- Load all 400+ parameters successfully
-- Verify indices match expected range
-- Verify all lookups complete < 1 second
+- Parameter CAN ID calculation (idx=0, 1, 100, max)
+- Binary element parsing (valid, malformed, truncated)
+- Cache JSON serialization/deserialization
+- Checksum computation and validation
 
 ### Contract Tests
-- **CRITICAL**: Parse FHEM Perl file and compare with Python data
-- Verify parameter count matches
-- Spot-check key parameters (idx=0, idx=1, last param)
-- Verify no duplicate indices, names, or extids
+- **CRITICAL**: CAN ID formulas match FHEM reference
+- Binary structure matches FHEM parsing
+- Static fallback data matches FHEM array
 
-## Future Extensions
+### Integration Tests
+- Discovery flow with mock adapter
+- Cache save/load cycle
+- Fallback triggering on errors
 
-This data model is foundational. Future features may add:
-
-1. **Format-specific validation**: Interpret "temp" format for temperature ranges
-2. **Unit conversion**: Add methods for Celsius/Fahrenheit conversion
-3. **Grouping**: Categorize parameters by function (DHW, heating circuit, etc.)
-4. **Change tracking**: Track which parameters have been modified
-5. **Persistence**: Save/load parameter values from file
-
-The current design supports these extensions without modification.
-
+### Acceptance Tests
+- User Story 0: Discovery scenarios
+- User Story 4: Caching scenarios

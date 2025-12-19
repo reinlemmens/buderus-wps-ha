@@ -25,10 +25,8 @@ Example:
     Valid range: 0-5
 """
 
-import asyncio
 import logging
 from dataclasses import dataclass
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
@@ -94,7 +92,8 @@ class Parameter:
             >>> hex(param.get_read_can_id())
             '0x4007fe0'
         """
-        return 0x04003FE0 | (self.idx << 14)
+        from .can_ids import CAN_ID_READ_BASE
+        return CAN_ID_READ_BASE | (self.idx << 14)
 
     def get_write_can_id(self) -> int:
         """Calculate CAN ID for write/response.
@@ -111,7 +110,8 @@ class Parameter:
             >>> hex(param.get_write_can_id())
             '0xc007fe0'
         """
-        return 0x0C003FE0 | (self.idx << 14)
+        from .can_ids import CAN_ID_WRITE_BASE
+        return CAN_ID_WRITE_BASE | (self.idx << 14)
 
     def is_writable(self) -> bool:
         """Check if parameter is writable (not read-only).
@@ -154,350 +154,247 @@ class Parameter:
 
 
 class HeatPump:
-    """Container for all Buderus WPS heat pump parameters with indexed access.
+    """Container for heat pump parameters with efficient lookup.
 
-    Provides efficient O(1) lookup of parameters by either index number or
-    human-readable name. Supports loading parameters from multiple sources
-    with priority: cache → discovery → static fallback.
+    Loads parameters from cache, discovery, or static fallback data.
+    Provides lookup by name (case-insensitive) or index number.
 
     Attributes:
-        data_source: String indicating where parameters were loaded from
-            ('cache', 'discovery', or 'fallback')
-        using_fallback: True if using static fallback data (no device/cache)
+        data_source: Source of parameter data ("fallback", "cache", or "discovery")
+        using_fallback: True if using static fallback data
 
     Example:
-        >>> heat_pump = HeatPump()
-        >>> param = heat_pump.get_parameter_by_name("ACCESS_LEVEL")
-        >>> print(f"{param.text}: {param.min}-{param.max}")
-        ACCESS_LEVEL: 0-5
-        >>> same_param = heat_pump.get_parameter_by_index(1)
-        >>> assert param == same_param
-
-    Example with cache and discovery:
-        >>> heat_pump = HeatPump(
-        ...     adapter=can_adapter,
-        ...     cache_path=Path("~/.cache/buderus/params.json")
-        ... )
-        >>> if heat_pump.using_fallback:
-        ...     print("Using fallback - some parameters may not match device")
+        >>> hp = HeatPump()
+        >>> param = hp.get_parameter_by_name("ACCESS_LEVEL")
+        >>> print(f"idx={param.idx}, range={param.min}-{param.max}")
+        idx=1, range=0-5
     """
 
     def __init__(
         self,
-        adapter: Optional[Any] = None,
-        cache_path: Optional[Path] = None,
-        force_discovery: bool = False
+        adapter: Any = None,
+        cache_path: Optional[str] = None,
+        force_discovery: bool = False,
     ):
-        """Initialize HeatPump with configurable data loading strategy.
-
-        Parameters are loaded with the following priority:
-        1. Cache (if valid and force_discovery=False)
-        2. Discovery via CAN adapter (if adapter provided)
-        3. Static fallback data from parameter_data.py
+        """Initialize HeatPump with parameter data.
 
         Args:
-            adapter: Optional CAN adapter for device discovery. If None,
-                discovery is skipped and cache/fallback is used.
-            cache_path: Optional path to cache file. If None, caching is
-                disabled and parameters come from discovery or fallback.
-            force_discovery: If True, ignore cache and always attempt
-                discovery first (useful after firmware updates).
+            adapter: Optional CAN adapter for discovery (not used in simplified mode)
+            cache_path: Optional path to cached parameter JSON file.
+                       If provided and exists, loads from cache.
+            force_discovery: If True, skip cache and try discovery (requires adapter)
         """
-        self._params_by_idx: Dict[int, Parameter] = {}
         self._params_by_name: Dict[str, Parameter] = {}
-        self._source: str = "fallback"
+        self._params_by_idx: Dict[int, Parameter] = {}
+        self._data_source = "fallback"
+        self._using_fallback = True
+        self._adapter = adapter
+        self._cache_path = cache_path
 
-        # Try loading in priority order: cache → discovery → fallback
-        params_loaded = False
-
-        # 1. Try loading from cache (unless force_discovery)
+        # Try cache first if path provided and not forcing discovery
         if cache_path and not force_discovery:
-            params_loaded = self._try_load_from_cache(cache_path)
+            from pathlib import Path
+            from .cache import ParameterCache
+            cache_file = Path(cache_path)
+            if cache_file.exists():
+                try:
+                    cache = ParameterCache(cache_file)
+                    if cache.is_valid():
+                        data = cache.load()
+                        if data:
+                            self._load_parameters(data)
+                            self._data_source = "cache"
+                            self._using_fallback = False
+                            logger.info("Loaded %d parameters from cache", len(self._params_by_idx))
+                            return
+                except Exception as e:
+                    logger.warning("Failed to load cache: %s, using fallback", e)
 
-        # 2. Try discovery if adapter provided and cache didn't work
-        if not params_loaded and adapter is not None:
-            params_loaded = self._try_discovery(adapter, cache_path)
-
-        # 3. Fall back to static data
-        if not params_loaded:
-            self._load_fallback()
-
-    def _try_load_from_cache(self, cache_path: Path) -> bool:
-        """Attempt to load parameters from cache.
-
-        Args:
-            cache_path: Path to cache file
-
-        Returns:
-            True if successfully loaded from cache, False otherwise
-        """
-        try:
-            from buderus_wps.cache import ParameterCache
-
-            cache = ParameterCache(cache_path)
-            if cache.is_valid():
-                param_data = cache.load()
-                if param_data:
-                    self._load_from_list(param_data)
-                    self._source = "cache"
-                    logger.info(
-                        "Loaded %d parameters from cache: %s",
-                        len(param_data),
-                        cache_path
-                    )
-                    return True
-        except Exception as e:
-            logger.warning("Failed to load from cache: %s", e)
-
-        return False
-
-    def _try_discovery(
-        self,
-        adapter: Any,
-        cache_path: Optional[Path]
-    ) -> bool:
-        """Attempt to discover parameters from device.
-
-        Args:
-            adapter: CAN adapter for device communication
-            cache_path: Optional path to save discovered parameters
-
-        Returns:
-            True if discovery successful, False otherwise
-        """
-        try:
-            from buderus_wps.discovery import ParameterDiscovery
-
-            discovery = ParameterDiscovery(adapter)
-
-            # Run discovery (synchronously for now)
+        # Try discovery if adapter provided
+        if adapter is not None:
             try:
-                loop = asyncio.get_event_loop()
-            except RuntimeError:
-                loop = asyncio.new_event_loop()
-                asyncio.set_event_loop(loop)
+                self._run_discovery()
+                return
+            except Exception as e:
+                logger.warning("Discovery failed: %s, using fallback", e)
 
-            param_data = loop.run_until_complete(discovery.discover())
+        # Load static fallback data
+        self._load_fallback()
+        logger.warning("Using fallback parameter data (%d parameters)", len(self._params_by_idx))
 
-            if param_data:
-                self._load_from_list(param_data)
-                self._source = "discovery"
-                logger.info("Discovered %d parameters from device", len(param_data))
+    def _run_discovery(self) -> None:
+        """Run parameter discovery protocol."""
+        import asyncio
+        from .discovery import ParameterDiscovery
 
-                # Save to cache if path provided
-                if cache_path:
-                    self._save_to_cache(param_data, cache_path)
+        discovery = ParameterDiscovery(self._adapter)
 
-                return True
-        except Exception as e:
-            logger.warning("Discovery failed: %s", e)
-
-        return False
-
-    def _save_to_cache(
-        self,
-        param_data: List[Dict[str, Any]],
-        cache_path: Path
-    ) -> None:
-        """Save discovered parameters to cache.
-
-        Args:
-            param_data: List of parameter dictionaries
-            cache_path: Path to cache file
-        """
+        # Run discovery
         try:
-            from buderus_wps.cache import ParameterCache
+            loop = asyncio.get_event_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
 
-            cache = ParameterCache(cache_path)
-            if cache.save(param_data):
-                logger.info("Saved %d parameters to cache: %s", len(param_data), cache_path)
-            else:
-                logger.warning("Failed to save parameters to cache")
+        elements = loop.run_until_complete(discovery.discover())
+
+        if not elements:
+            raise RuntimeError("Discovery returned no elements")
+
+        self._load_parameters(elements)
+        self._data_source = "discovery"
+        self._using_fallback = False
+        logger.info("Discovered %d parameters from device", len(self._params_by_idx))
+
+        # Save to cache if path provided
+        if self._cache_path:
+            self._save_cache(elements)
+
+    def _save_cache(self, elements: List[Dict[str, Any]]) -> None:
+        """Save discovered elements to cache file."""
+        from pathlib import Path
+        from .cache import ParameterCache
+
+        try:
+            cache_file = Path(self._cache_path)
+            cache_file.parent.mkdir(parents=True, exist_ok=True)
+            cache = ParameterCache(cache_file)
+            cache.save(elements)
+            logger.info("Saved %d parameters to cache: %s", len(elements), cache_file)
         except Exception as e:
-            logger.warning("Failed to save to cache: %s", e)
+            logger.warning("Failed to save cache: %s", e)
 
     def _load_fallback(self) -> None:
         """Load parameters from static fallback data."""
-        from buderus_wps.parameter_data import PARAMETER_DATA
+        from .parameter_data import PARAMETER_DATA
+        self._load_parameters(PARAMETER_DATA)
+        self._data_source = "fallback"
+        self._using_fallback = True
+        logger.debug("Loaded %d parameters from fallback", len(self._params_by_idx))
 
-        self._load_from_list(PARAMETER_DATA)
-        self._source = "fallback"
-        logger.warning(
-            "Using static fallback data (%d parameters) - "
-            "device discovery unavailable",
-            len(PARAMETER_DATA)
-        )
-
-    def _load_from_list(self, param_data: List[Dict[str, Any]]) -> None:
-        """Load parameters from a list of dictionaries.
-
-        Args:
-            param_data: List of parameter dictionaries with keys:
-                idx, extid, min, max, format, read, text
-        """
-        self._params_by_idx.clear()
+    def _load_parameters(self, data: List[Dict[str, Any]]) -> None:
+        """Load parameters from list of dicts."""
         self._params_by_name.clear()
+        self._params_by_idx.clear()
 
-        for data in param_data:
-            param = Parameter(**data)
-            self._params_by_idx[param.idx] = param
-            self._params_by_name[param.text] = param
+        for item in data:
+            try:
+                param = Parameter(
+                    idx=item["idx"],
+                    extid=item["extid"],
+                    min=item["min"],
+                    max=item["max"],
+                    format=item.get("format", "int"),
+                    read=item.get("read", 0),
+                    text=item["text"],
+                )
+                self._params_by_name[param.text.upper()] = param
+                self._params_by_idx[param.idx] = param
+            except (KeyError, TypeError) as e:
+                logger.warning("Skipping invalid parameter: %s (%s)", item, e)
 
     @property
     def data_source(self) -> str:
-        """Return the source of parameter data.
-
-        Returns:
-            'cache' if loaded from cache file,
-            'discovery' if discovered from device,
-            'fallback' if using static data
-        """
-        return self._source
+        """Source of parameter data: 'fallback', 'cache', or 'discovery'."""
+        return self._data_source
 
     @property
     def using_fallback(self) -> bool:
-        """Check if using static fallback data.
+        """True if using static fallback data."""
+        return self._using_fallback
 
-        Returns:
-            True if using fallback (no device/cache), False otherwise
-        """
-        return self._source == "fallback"
-
-    def get_parameter_by_index(self, idx: int) -> Parameter:
-        """Get parameter by index number.
-
-        Args:
-            idx: Parameter index (e.g., 1 for ACCESS_LEVEL)
-
-        Returns:
-            Parameter object with all metadata
-
-        Raises:
-            KeyError: If index does not exist
-
-        Example:
-            >>> heat_pump = HeatPump()
-            >>> param = heat_pump.get_parameter_by_index(1)
-            >>> param.text
-            'ACCESS_LEVEL'
-        """
-        return self._params_by_idx[idx]
+    def parameter_count(self) -> int:
+        """Return total number of loaded parameters."""
+        return len(self._params_by_idx)
 
     def get_parameter_by_name(self, name: str) -> Parameter:
-        """Get parameter by human-readable name.
+        """Look up parameter by name (case-insensitive).
 
         Args:
             name: Parameter name (e.g., "ACCESS_LEVEL")
 
         Returns:
-            Parameter object with all metadata
+            Parameter object
 
         Raises:
-            KeyError: If name does not exist
-
-        Example:
-            >>> heat_pump = HeatPump()
-            >>> param = heat_pump.get_parameter_by_name("ACCESS_LEVEL")
-            >>> param.idx
-            1
+            KeyError: If parameter not found
         """
-        return self._params_by_name[name]
+        param = self._params_by_name.get(name.upper())
+        if param is None:
+            raise KeyError(f"Unknown parameter: {name}")
+        return param
 
-    def has_parameter_index(self, idx: int) -> bool:
-        """Check if parameter index exists.
+    def get_parameter_by_index(self, idx: int) -> Parameter:
+        """Look up parameter by index number.
 
         Args:
-            idx: Parameter index to check
+            idx: Parameter index (e.g., 1 for ACCESS_LEVEL)
 
         Returns:
-            True if parameter exists, False otherwise
+            Parameter object
 
-        Example:
-            >>> heat_pump = HeatPump()
-            >>> heat_pump.has_parameter_index(1)
-            True
-            >>> heat_pump.has_parameter_index(13)  # Gap in sequence
-            False
+        Raises:
+            KeyError: If parameter not found
         """
-        return idx in self._params_by_idx
+        param = self._params_by_idx.get(idx)
+        if param is None:
+            raise KeyError(f"Unknown parameter index: {idx}")
+        return param
+
+    def get_parameter(self, name_or_idx) -> Optional[Parameter]:
+        """Look up parameter by name or index.
+
+        Args:
+            name_or_idx: Parameter name (str) or index (int)
+
+        Returns:
+            Parameter object or None if not found
+        """
+        if isinstance(name_or_idx, str):
+            return self._params_by_name.get(name_or_idx.upper())
+        if isinstance(name_or_idx, int):
+            return self._params_by_idx.get(name_or_idx)
+        return None
+
+    @property
+    def parameters(self) -> List[Parameter]:
+        """Return list of all parameters sorted by index (for CLI compatibility)."""
+        return sorted(self._params_by_idx.values(), key=lambda p: p.idx)
+
+    def all_parameters(self) -> List[Parameter]:
+        """Return list of all parameters sorted by index."""
+        return self.parameters
+
+    def list_all_parameters(self) -> List[Parameter]:
+        """Return list of all parameters sorted by index (alias for all_parameters)."""
+        return self.all_parameters()
+
+    def list_writable_parameters(self) -> List[Parameter]:
+        """Return list of writable parameters (read=0) sorted by index."""
+        return [p for p in self.all_parameters() if p.read == 0]
+
+    def list_readonly_parameters(self) -> List[Parameter]:
+        """Return list of read-only parameters (read=1) sorted by index."""
+        return [p for p in self.all_parameters() if p.read == 1]
 
     def has_parameter_name(self, name: str) -> bool:
-        """Check if parameter name exists.
+        """Check if parameter exists by name (case-insensitive).
 
         Args:
             name: Parameter name to check
 
         Returns:
             True if parameter exists, False otherwise
-
-        Example:
-            >>> heat_pump = HeatPump()
-            >>> heat_pump.has_parameter_name("ACCESS_LEVEL")
-            True
-            >>> heat_pump.has_parameter_name("INVALID_NAME")
-            False
         """
-        return name in self._params_by_name
+        return name.upper() in self._params_by_name
 
-    def list_all_parameters(self) -> List[Parameter]:
-        """Return all parameters sorted by index.
+    def has_parameter_index(self, idx: int) -> bool:
+        """Check if parameter exists by index.
+
+        Args:
+            idx: Parameter index to check
 
         Returns:
-            List of all Parameter objects sorted by idx
-
-        Example:
-            >>> heat_pump = HeatPump()
-            >>> params = heat_pump.list_all_parameters()
-            >>> len(params)
-            1789
-            >>> params[0].idx
-            0
+            True if parameter exists, False otherwise
         """
-        return sorted(self._params_by_idx.values(), key=lambda p: p.idx)
-
-    def list_writable_parameters(self) -> List[Parameter]:
-        """Return only writable (read=0) parameters sorted by index.
-
-        Returns:
-            List of writable Parameter objects sorted by idx
-
-        Example:
-            >>> heat_pump = HeatPump()
-            >>> writable = heat_pump.list_writable_parameters()
-            >>> all(p.is_writable() for p in writable)
-            True
-        """
-        return sorted(
-            [p for p in self._params_by_idx.values() if p.is_writable()],
-            key=lambda p: p.idx
-        )
-
-    def list_readonly_parameters(self) -> List[Parameter]:
-        """Return only read-only (read!=0) parameters sorted by index.
-
-        Returns:
-            List of read-only Parameter objects sorted by idx
-
-        Example:
-            >>> heat_pump = HeatPump()
-            >>> readonly = heat_pump.list_readonly_parameters()
-            >>> all(not p.is_writable() for p in readonly)
-            True
-        """
-        return sorted(
-            [p for p in self._params_by_idx.values() if not p.is_writable()],
-            key=lambda p: p.idx
-        )
-
-    def parameter_count(self) -> int:
-        """Return total number of parameters.
-
-        Returns:
-            Total parameter count
-
-        Example:
-            >>> heat_pump = HeatPump()
-            >>> heat_pump.parameter_count()
-            1789
-        """
-        return len(self._params_by_idx)
+        return idx in self._params_by_idx

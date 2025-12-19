@@ -21,10 +21,11 @@ class TestCompressorBlockContract:
 
     def test_compressor_block_write_parameter_exists(self) -> None:
         """COMPRESSOR_E21_EXTERN_BLOCK_BY_E21_EXT_1 exists in registry."""
-        from buderus_wps import ParameterRegistry
+        from buderus_wps import HeatPump
 
-        registry = ParameterRegistry()
-        param = registry.get_by_name("COMPRESSOR_E21_EXTERN_BLOCK_BY_E21_EXT_1")
+        hp = HeatPump()
+        param = hp.get_parameter_by_name(
+            "COMPRESSOR_E21_EXTERN_BLOCK_BY_E21_EXT_1")
 
         assert param is not None
         assert param.idx == 263
@@ -57,10 +58,10 @@ class TestCompressorBlockContract:
 
     def test_compressor_status_read_parameter_exists(self) -> None:
         """COMPRESSOR_BLOCKED exists in registry for status reading."""
-        from buderus_wps import ParameterRegistry
+        from buderus_wps import HeatPump
 
-        registry = ParameterRegistry()
-        param = registry.get_by_name("COMPRESSOR_BLOCKED")
+        hp = HeatPump()
+        param = hp.get_parameter_by_name("COMPRESSOR_BLOCKED")
 
         assert param is not None
         assert param.idx == 247
@@ -100,10 +101,10 @@ class TestAuxHeaterBlockContract:
 
     def test_aux_heater_block_write_parameter_exists(self) -> None:
         """ADDITIONAL_USER_BLOCKED exists in registry."""
-        from buderus_wps import ParameterRegistry
+        from buderus_wps import HeatPump
 
-        registry = ParameterRegistry()
-        param = registry.get_by_name("ADDITIONAL_USER_BLOCKED")
+        hp = HeatPump()
+        param = hp.get_parameter_by_name("ADDITIONAL_USER_BLOCKED")
 
         assert param is not None
         assert param.idx == 155
@@ -111,10 +112,10 @@ class TestAuxHeaterBlockContract:
 
     def test_aux_heater_status_read_parameter_exists(self) -> None:
         """ADDITIONAL_BLOCKED exists in registry for status reading."""
-        from buderus_wps import ParameterRegistry
+        from buderus_wps import HeatPump
 
-        registry = ParameterRegistry()
-        param = registry.get_by_name("ADDITIONAL_BLOCKED")
+        hp = HeatPump()
+        param = hp.get_parameter_by_name("ADDITIONAL_BLOCKED")
 
         assert param is not None
         assert param.idx == 9

@@ -186,14 +186,20 @@ class TestGetKnownName:
         assert name == "RC10_C3_DEMAND_TEMP"
 
     def test_known_dhw_temp(self, monitor: BroadcastMonitor) -> None:
-        """Test get_known_name returns correct name for DHW temperature."""
+        """Test get_known_name returns correct name for DHW temperature.
+
+        NOTE: (0x0060, 58) was previously misidentified as DHW_TEMP_ACTUAL.
+        Testing shows it's actually DHW_SETPOINT_OR_SUPPLY (~54°C).
+        Actual DHW tank temp is at (0x0402, 78).
+        """
+        # Test the correct DHW temp mapping at base=0x0402, idx=78
         reading = BroadcastReading(
-            can_id=0x0C0E8060,
-            base=0x0060,
-            idx=58,
+            can_id=0x0C138402,  # base 0x0402
+            base=0x0402,
+            idx=78,
             dlc=2,
-            raw_data=b"\x02\x28",
-            raw_value=552,
+            raw_data=b"\x01\x0E",  # 270 = 27.0°C
+            raw_value=270,
             timestamp=0.0,
         )
         name = monitor.get_known_name(reading)
@@ -258,11 +264,13 @@ class TestParamToBroadcast:
     def test_get_broadcast_for_gt3_temp(self) -> None:
         """Test get_broadcast_for_param returns correct mapping for GT3_TEMP.
 
-        GT3_TEMP has base=None to search all circuit bases (0x0060-0x0063).
+        GT3_TEMP (DHW temperature) is at base=0x0402, idx=78.
+        This was corrected from the previous incorrect mapping (base=None, idx=58)
+        which showed ~54°C instead of actual tank temp ~27°C.
         """
         from buderus_wps.broadcast_monitor import get_broadcast_for_param
         result = get_broadcast_for_param("GT3_TEMP")
-        assert result == (None, 58)
+        assert result == (0x0402, 78)
 
     def test_get_broadcast_case_insensitive(self) -> None:
         """Test get_broadcast_for_param is case-insensitive."""

@@ -67,6 +67,9 @@ class ParameterDiscovery:
     ELEMENT_BUFFER_READ = 0x01FDBFE0
 
     # PROTOCOL: Chunk size for element data requests
+    # Note: The USBtin adapter cannot keep up with the burst of CAN frames at 125kbit/s
+    # Discovery typically receives ~96% of bytes but with frame loss causing data corruption
+    # For reliable parameter data, use the static fallback (parameter_data.py)
     CHUNK_SIZE = 4096
 
     # PROTOCOL: Validation constants from fhem/26_KM273v018.pm:2139
@@ -77,7 +80,7 @@ class ParameterDiscovery:
     # Timeout and retry settings
     DEFAULT_TIMEOUT = 5.0
     MAX_RETRIES = 3
-    CHUNK_READ_TIMEOUT = 10.0
+    CHUNK_READ_TIMEOUT = 5.0  # Per-chunk timeout (smaller chunks = faster)
 
     def __init__(self, adapter: Any = None, timeout: float = DEFAULT_TIMEOUT):
         """Initialize discovery with optional CAN adapter.
@@ -228,6 +231,9 @@ class ParameterDiscovery:
         """
         logger.info("Requesting element count from device")
 
+        # Flush any pending broadcast traffic
+        self._adapter.flush_input_buffer()
+
         # Send RTR request
         request = self._create_rtr_message(self.ELEMENT_COUNT_SEND)
         try:
@@ -235,12 +241,18 @@ class ParameterDiscovery:
         except Exception as e:
             raise DiscoveryError(f"Failed to request element count: {e}") from e
 
-        # Validate response CAN ID
-        if response.arbitration_id != self.ELEMENT_COUNT_RECV:
-            raise DiscoveryError(
-                f"Unexpected response CAN ID: 0x{response.arbitration_id:08X}, "
-                f"expected 0x{self.ELEMENT_COUNT_RECV:08X}"
-            )
+        # If we got broadcast traffic, keep reading until we get our response
+        start_time = time.time()
+        while response.arbitration_id != self.ELEMENT_COUNT_RECV:
+            if time.time() - start_time > self._timeout:
+                raise DiscoveryError(
+                    f"Timeout waiting for element count response. "
+                    f"Last received: 0x{response.arbitration_id:08X}"
+                )
+            try:
+                response = self._adapter.receive_frame(timeout=1.0)
+            except Exception:
+                continue
 
         # Parse element count from response
         # PROTOCOL: count is in first byte (value >> 24 in FHEM's 8-byte value)
@@ -263,6 +275,7 @@ class ParameterDiscovery:
         # PROTOCOL: Send data request to 0x01FD3FE0 with length and offset
         # FHEM: sprintf("T01FD3FE08%08x%08x",4096,$writeIndex) at line 2078
         # Then send RTR to 0x01FDBFE0 to read buffer
+        # Device responds with multiple T09FDBFE0 frames (8 bytes each)
 
         Args:
             offset: Byte offset to start reading
@@ -276,53 +289,48 @@ class ParameterDiscovery:
         """
         logger.debug("Requesting element chunk: offset=%d, length=%d", offset, length)
 
+        # Flush any pending broadcast traffic
+        self._adapter.flush_input_buffer()
+
         # Build data request payload: 4 bytes length + 4 bytes offset (big-endian)
         # PROTOCOL: T01FD3FE08[length:8hex][offset:8hex]
         request_data = struct.pack('>II', length, offset)
         data_request = self._create_data_message(self.ELEMENT_DATA_SEND, request_data)
 
-        try:
-            self._adapter.send_frame(data_request, timeout=self._timeout)
-        except Exception as e:
-            raise DiscoveryError(f"Failed to send data request: {e}") from e
-
-        # Now send RTR to read the buffer
-        # PROTOCOL: CAN_Write($hash,"R01FDBFE00") at line 2084
+        # PROTOCOL: FHEM sends both messages quickly without waiting for response
+        # This is critical - waiting between messages causes frame loss
         buffer_request = self._create_rtr_message(self.ELEMENT_BUFFER_READ)
 
-        # Collect data chunks until we have all the data or timeout
-        chunk_data = bytearray()
-        start_time = time.time()
+        try:
+            # Send data request immediately (no wait)
+            self._adapter.send_frame_nowait(data_request)
+            # Immediately send RTR to trigger data stream
+            self._adapter.send_frame_nowait(buffer_request)
+        except Exception as e:
+            raise DiscoveryError(f"Failed to send discovery request: {e}") from e
+
+        # Now collect all the data frames that come back
         expected_bytes = min(length, self.CHUNK_SIZE)
 
-        while len(chunk_data) < expected_bytes:
-            if time.time() - start_time > self.CHUNK_READ_TIMEOUT:
-                if len(chunk_data) == 0:
-                    raise DiscoveryError(
-                        f"Timeout waiting for element data chunk at offset {offset}"
-                    )
-                # Partial data is acceptable at end of transmission
-                break
+        try:
+            chunk_data = self._adapter.receive_stream(
+                expected_bytes=expected_bytes,
+                timeout=self.CHUNK_READ_TIMEOUT,
+                frame_filter=self.ELEMENT_DATA_RECV
+            )
+            logger.debug(
+                "Stream received: %d bytes",
+                len(chunk_data)
+            )
+        except Exception as e:
+            # Partial data is acceptable - might be end of element data
+            logger.debug("Stream ended early: %s", e)
+            chunk_data = b''
 
-            try:
-                response = self._adapter.send_frame(
-                    buffer_request, timeout=self._timeout
-                )
-
-                # Check for data response
-                if response.arbitration_id == self.ELEMENT_DATA_RECV:
-                    if response.data:
-                        chunk_data.extend(response.data)
-                        logger.debug(
-                            "Received %d bytes (total: %d)",
-                            len(response.data),
-                            len(chunk_data)
-                        )
-            except Exception as e:
-                # Timeout might indicate end of data
-                logger.debug("Chunk read exception: %s", e)
-                break
-
+        logger.info(
+            "Chunk complete: offset=%d, received=%d/%d bytes",
+            offset, len(chunk_data), expected_bytes
+        )
         return bytes(chunk_data)
 
     def _parse_all_elements(self, data: bytes) -> List[Dict]:

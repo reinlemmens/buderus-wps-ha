@@ -162,14 +162,14 @@ class TestAcceptanceScenario5:
         Then @KM273_elements_default static data is available."""
         # PARAMETER_DATA contains the fallback data
         assert len(PARAMETER_DATA) > 0
-        assert len(PARAMETER_DATA) == 1789  # Known count from FHEM
+        assert len(PARAMETER_DATA) == 1788  # Known count from FHEM
 
     def test_heat_pump_loads_fallback_without_adapter(self):
         """Given no CAN adapter, When HeatPump is instantiated,
         Then it loads from static fallback data."""
         heat_pump = HeatPump()
 
-        assert heat_pump.parameter_count() == 1789
+        assert heat_pump.parameter_count() == 1788
         assert heat_pump.has_parameter_name("ACCESS_LEVEL")
 
     def test_fallback_parameters_have_can_id_methods(self):

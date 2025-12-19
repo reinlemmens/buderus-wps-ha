@@ -10,14 +10,16 @@ Behavior:
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import struct
 import time
+from pathlib import Path
 from typing import Optional, Dict, Any, List
 
 from .can_message import CANMessage
 from .can_adapter import USBtinAdapter
-from .parameter_registry import ParameterRegistry, Parameter
+from .parameter import Parameter, HeatPump
 from .value_encoder import ValueEncoder
 from .exceptions import DeviceCommunicationError, TimeoutError
 
@@ -34,20 +36,20 @@ class HeatPumpClient:
     def __init__(
         self,
         adapter: USBtinAdapter,
-        registry: Optional[ParameterRegistry] = None,
+        registry: Optional[HeatPump] = None,
         logger: Optional[logging.Logger] = None,
     ) -> None:
         if adapter is None:
             raise ValueError("adapter is required")
         self._adapter = adapter
-        self._registry = registry or ParameterRegistry()
+        self._registry = registry or HeatPump()
         self._logger = logger or logging.getLogger(__name__)
 
     @property
-    def registry(self) -> ParameterRegistry:
+    def registry(self) -> HeatPump:
         return self._registry
 
-    def fetch_live_registry(self, timeout: float = 5.0) -> ParameterRegistry:
+    def fetch_live_registry(self, timeout: float = 5.0) -> HeatPump:
         """
         Best-effort live fetch of parameter list using KM273_ReadElementList flow.
 
@@ -66,10 +68,12 @@ class HeatPumpClient:
         try:
             self._adapter.send_frame(read_cmd, timeout=timeout)
         except TimeoutError:
-            self._logger.warning("No response to initial element list length request; using defaults")
+            self._logger.warning(
+                "No response to initial element list length request; using defaults")
             return self._registry
         except Exception as e:
-            self._logger.warning("Element list length request failed: %s; using defaults", e)
+            self._logger.warning(
+                "Element list length request failed: %s; using defaults", e)
             return self._registry
 
         # Attempt to read pages; KM273 uses 4096-byte chunks, but we don't have full protocol details.
@@ -93,7 +97,8 @@ class HeatPumpClient:
         effective_timeout = timeout if timeout is not None else adapter_timeout
         request_id = CAN_REQUEST_BASE | (param.idx << 14)
         response_id = CAN_RESPONSE_BASE | (param.idx << 14)
-        request = CANMessage(arbitration_id=request_id, data=b"", is_extended_id=True, is_remote_frame=True)
+        request = CANMessage(arbitration_id=request_id,
+                             data=b"", is_extended_id=True, is_remote_frame=True)
         self._adapter.flush_input_buffer()
         start = time.time()
         frame = self._adapter.send_frame(request, timeout=effective_timeout)
@@ -111,7 +116,8 @@ class HeatPumpClient:
 
         raise DeviceCommunicationError(
             f"Unexpected response id 0x{frame.arbitration_id:X} (expected 0x{response_id:X})",
-            context={"expected": response_id, "got": frame.arbitration_id, "param": param.text},
+            context={"expected": response_id,
+                     "got": frame.arbitration_id, "param": param.text},
         )
 
     def read_parameter(self, name_or_idx: Any, timeout: Optional[float] = None) -> Dict[str, Any]:
@@ -136,18 +142,30 @@ class HeatPumpClient:
         # FHEM: read=1 means "readable", not "read-only"
         # A parameter is read-only if min >= max (no valid write range)
         if param.min >= param.max:
-            raise PermissionError(f"Parameter {param.text} is read-only (min={param.min} >= max={param.max})")
+            raise PermissionError(
+                f"Parameter {param.text} is read-only (min={param.min} >= max={param.max})")
         encoded = self._encode_value(param, value)
         # PROTOCOL: Write uses same CAN ID as read request (CAN_REQUEST_BASE | idx << 14)
         # See FHEM 26_KM273v018.pm line 2229, 2678, 2746
         request_id = CAN_REQUEST_BASE | (param.idx << 14)
-        msg = CANMessage(arbitration_id=request_id, data=encoded, is_extended_id=True)
+        msg = CANMessage(arbitration_id=request_id,
+                         data=encoded, is_extended_id=True)
         self._adapter.flush_input_buffer()
         adapter_timeout = getattr(self._adapter, "timeout", 2.0)
-        self._adapter.send_frame(msg, timeout=timeout if timeout is not None else adapter_timeout)
+        self._adapter.send_frame(
+            msg, timeout=timeout if timeout is not None else adapter_timeout)
 
     # Internal helpers
     def _lookup(self, name_or_idx: Any) -> Optional[Parameter]:
+        """Look up parameter by name or index using the registry.
+
+        Supports both HeatPump (get_parameter) and ParameterRegistry (get_by_name/get_by_index).
+        """
+        # Try HeatPump interface first
+        if hasattr(self._registry, 'get_parameter'):
+            return self._registry.get_parameter(name_or_idx)
+
+        # Fall back to ParameterRegistry interface
         if isinstance(name_or_idx, str):
             return self._registry.get_by_name(name_or_idx)
         if isinstance(name_or_idx, int):
@@ -172,7 +190,8 @@ class HeatPumpClient:
         except Exception as e:
             raise ValueError(f"Invalid value for {param.text}: {value}") from e
         if ivalue < param.min or ivalue > param.max:
-            raise ValueError(f"Value {ivalue} out of range for {param.text} [{param.min}, {param.max}]")
+            raise ValueError(
+                f"Value {ivalue} out of range for {param.text} [{param.min}, {param.max}]")
         signed = param.min < 0
 
         # Use dlc_hint if provided (from actual device response)

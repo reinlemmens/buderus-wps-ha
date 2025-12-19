@@ -259,9 +259,11 @@ class TestGetDefaultSensorMap:
         """Test that default map contains expected verified mappings."""
         sensor_map = get_default_sensor_map()
 
-        # Check key verified mappings from 2024-12-02 testing
+        # Check key verified mappings
+        # NOTE: DHW mapping corrected on 2024-12-16 from (0x0060, 58) to (0x0402, 78)
+        # (0x0060, 58) showed ~54°C which is setpoint, not actual tank temp ~27°C
         assert sensor_map.get((0x0402, 38)) == "outdoor"
-        assert sensor_map.get((0x0060, 58)) == "dhw"
+        assert sensor_map.get((0x0402, 78)) == "dhw"  # Corrected DHW temp mapping
         assert sensor_map.get((0x0270, 1)) == "supply"
         assert sensor_map.get((0x0270, 0)) == "return_temp"
         assert sensor_map.get((0x0060, 12)) == "brine_in"
