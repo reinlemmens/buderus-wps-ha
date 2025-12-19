@@ -251,8 +251,8 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         # Import bundled library using relative imports
         from .buderus_wps import (
             BroadcastMonitor,
+            HeatPump,
             HeatPumpClient,
-            ParameterRegistry,
             USBtinAdapter,
         )
         from .buderus_wps.menu_api import MenuAPI
@@ -271,7 +271,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         self._adapter = USBtinAdapter(self.port)
         self._adapter.connect()
 
-        self._registry = ParameterRegistry()
+        self._registry = HeatPump()
         self._client = HeatPumpClient(self._adapter, self._registry)
         self._monitor = BroadcastMonitor(self._adapter)
         self._api = MenuAPI(self._client)
