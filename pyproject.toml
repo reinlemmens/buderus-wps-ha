@@ -1,0 +1,142 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "buderus-wps"
+version = "0.1.0"
+description = "Python library for Buderus WPS heat pump communication via CAN bus"
+readme = "README.md"
+authors = [
+    {name = "Buderus WPS HA Project"}
+]
+license = {text = "MIT"}
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Home Automation",
+    "Topic :: System :: Hardware :: Hardware Drivers",
+]
+keywords = ["buderus", "heat-pump", "can-bus", "usbtin", "home-assistant"]
+
+dependencies = [
+    "pyserial>=3.5",
+    "pyyaml>=6.0",
+]
+
+[project.scripts]
+wps-cli = "buderus_wps_cli.main:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.7.0",
+    "ruff>=0.0.287",
+    "mypy>=1.5.0",
+    "homeassistant>=2024.3.0",  # For integration testing
+]
+
+[project.urls]
+Homepage = "https://github.com/reinlemmens/buderus-wps-ha"
+Documentation = "https://github.com/reinlemmens/buderus-wps-ha/blob/main/README.md"
+Repository = "https://github.com/reinlemmens/buderus-wps-ha"
+Issues = "https://github.com/reinlemmens/buderus-wps-ha/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["buderus_wps*", "buderus_wps_cli*"]
+exclude = ["tests*", "specs*", "fhem*"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers --cov=buderus_wps --cov-report=term-missing --cov-report=html"
+testpaths = ["tests"]
+pythonpath = ["."]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests with mocked dependencies",
+    "contract: Contract tests for protocol compliance",
+    "acceptance: Acceptance tests for user stories",
+]
+
+[tool.coverage.run]
+source = ["buderus_wps", "buderus_wps_cli"]
+omit = [
+    "*/tests/*",
+    "*/test_*.py",
+    "custom_components/*",  # HA integration not part of library coverage
+]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false
+fail_under = 100
+
+[tool.black]
+line-length = 88
+target-version = ['py39']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.ruff]
+target-version = "py39"
+line-length = 88
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+    "UP", # pyupgrade
+]
+ignore = [
+    "E501",  # line too long (handled by black)
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]  # unused imports in __init__.py
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_any_unimported = false
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+check_untyped_defs = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = "serial.*"
+ignore_missing_imports = true

@@ -1,0 +1,19 @@
+# Ignore Home Assistant runtime files
+.storage/
+deps/
+tts/
+*.log
+*.db
+*.db-shm
+*.db-wal
+home-assistant.log*
+home-assistant_v2.db*
+.HA_VERSION
+secrets.yaml
+automations.yaml
+scripts.yaml
+scenes.yaml
+custom_components/
+
+# Keep configuration.yaml
+!configuration.yaml

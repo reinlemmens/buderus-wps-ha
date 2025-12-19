@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Buderus WPS Heat Pump Icon -->
+  <!-- Buderus Blue: #004B87 -->
+
+  <!-- Background circle (optional, can be removed for transparency) -->
+  <circle cx="256" cy="256" r="240" fill="#004B87"/>
+
+  <!-- Heat pump unit body -->
+  <rect x="140" y="160" width="232" height="220" rx="20" ry="20" fill="white"/>
+
+  <!-- Fan grille (top section) -->
+  <rect x="160" y="180" width="192" height="100" rx="10" ry="10" fill="#004B87" opacity="0.15"/>
+
+  <!-- Fan blades (stylized) -->
+  <g transform="translate(256, 230)">
+    <!-- Center hub -->
+    <circle cx="0" cy="0" r="12" fill="#004B87"/>
+    <!-- Blades -->
+    <ellipse cx="0" cy="-30" rx="8" ry="25" fill="#004B87" transform="rotate(0)"/>
+    <ellipse cx="0" cy="-30" rx="8" ry="25" fill="#004B87" transform="rotate(72)"/>
+    <ellipse cx="0" cy="-30" rx="8" ry="25" fill="#004B87" transform="rotate(144)"/>
+    <ellipse cx="0" cy="-30" rx="8" ry="25" fill="#004B87" transform="rotate(216)"/>
+    <ellipse cx="0" cy="-30" rx="8" ry="25" fill="#004B87" transform="rotate(288)"/>
+  </g>
+
+  <!-- Heat exchange arrows (circular flow) -->
+  <g fill="none" stroke="#004B87" stroke-width="8" stroke-linecap="round">
+    <!-- Left arrow (cold in) -->
+    <path d="M 180 320 Q 180 350, 210 350" stroke-width="6"/>
+    <polygon points="205,342 218,350 205,358" fill="#004B87" stroke="none"/>
+
+    <!-- Right arrow (warm out) -->
+    <path d="M 332 350 Q 362 350, 362 320" stroke-width="6"/>
+    <polygon points="354,325 362,312 370,325" fill="#004B87" stroke="none"/>
+  </g>
+
+  <!-- Temperature indicators -->
+  <!-- Cold side (blue snowflake simplified) -->
+  <g transform="translate(195, 350)">
+    <line x1="0" y1="-10" x2="0" y2="10" stroke="#0073CF" stroke-width="4" stroke-linecap="round"/>
+    <line x1="-8" y1="-5" x2="8" y2="5" stroke="#0073CF" stroke-width="4" stroke-linecap="round"/>
+    <line x1="-8" y1="5" x2="8" y2="-5" stroke="#0073CF" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <!-- Warm side (red/orange wave) -->
+  <g transform="translate(317, 350)">
+    <path d="M -10 0 Q -5 -8, 0 0 Q 5 8, 10 0" fill="none" stroke="#E85C0D" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <!-- Bottom vent lines -->
+  <g stroke="#004B87" stroke-width="3" stroke-linecap="round" opacity="0.5">
+    <line x1="180" y1="300" x2="180" y2="315"/>
+    <line x1="200" y1="300" x2="200" y2="315"/>
+    <line x1="220" y1="300" x2="220" y2="315"/>
+    <line x1="292" y1="300" x2="292" y2="315"/>
+    <line x1="312" y1="300" x2="312" y2="315"/>
+    <line x1="332" y1="300" x2="332" y2="315"/>
+  </g>
+</svg>

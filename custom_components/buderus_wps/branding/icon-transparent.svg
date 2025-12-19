@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Buderus WPS Heat Pump Icon - Transparent Background -->
+  <!-- Buderus Blue: #004B87 -->
+
+  <!-- Heat pump unit body -->
+  <rect x="56" y="56" width="400" height="400" rx="40" ry="40" fill="#004B87"/>
+
+  <!-- Inner panel -->
+  <rect x="86" y="86" width="340" height="340" rx="25" ry="25" fill="white"/>
+
+  <!-- Fan grille area -->
+  <rect x="116" y="106" width="280" height="160" rx="15" ry="15" fill="#004B87" opacity="0.1"/>
+
+  <!-- Fan blades (5-blade design) -->
+  <g transform="translate(256, 186)">
+    <!-- Center hub -->
+    <circle cx="0" cy="0" r="20" fill="#004B87"/>
+    <!-- Blades -->
+    <ellipse cx="0" cy="-50" rx="14" ry="42" fill="#004B87" transform="rotate(0)"/>
+    <ellipse cx="0" cy="-50" rx="14" ry="42" fill="#004B87" transform="rotate(72)"/>
+    <ellipse cx="0" cy="-50" rx="14" ry="42" fill="#004B87" transform="rotate(144)"/>
+    <ellipse cx="0" cy="-50" rx="14" ry="42" fill="#004B87" transform="rotate(216)"/>
+    <ellipse cx="0" cy="-50" rx="14" ry="42" fill="#004B87" transform="rotate(288)"/>
+  </g>
+
+  <!-- Circular heat exchange symbol -->
+  <g transform="translate(256, 340)">
+    <!-- Circular arrows representing heat exchange -->
+    <path d="M -50 0 A 50 50 0 0 1 50 0" fill="none" stroke="#004B87" stroke-width="10" stroke-linecap="round"/>
+    <path d="M 50 0 A 50 50 0 0 1 -50 0" fill="none" stroke="#0073CF" stroke-width="10" stroke-linecap="round"/>
+
+    <!-- Arrow heads -->
+    <polygon points="-55,-15 -40,0 -55,15" fill="#004B87"/>
+    <polygon points="55,15 40,0 55,-15" fill="#0073CF"/>
+
+    <!-- Temperature symbols in center -->
+    <!-- Warm (top) -->
+    <path d="M -15 -8 Q -7.5 -18, 0 -8 Q 7.5 2, 15 -8" fill="none" stroke="#E85C0D" stroke-width="5" stroke-linecap="round"/>
+    <!-- Cold (bottom) -->
+    <g transform="translate(0, 12)">
+      <line x1="0" y1="-8" x2="0" y2="8" stroke="#0073CF" stroke-width="4" stroke-linecap="round"/>
+      <line x1="-7" y1="-4" x2="7" y2="4" stroke="#0073CF" stroke-width="4" stroke-linecap="round"/>
+      <line x1="-7" y1="4" x2="7" y2="-4" stroke="#0073CF" stroke-width="4" stroke-linecap="round"/>
+    </g>
+  </g>
+</svg>
