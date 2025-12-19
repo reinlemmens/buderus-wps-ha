@@ -8,7 +8,10 @@ The Parameter class represents a single configurable or readable value with meta
 index, external ID, min/max constraints, format type, read-only flag, and human-readable name.
 
 The HeatPump class provides a container for all parameters with efficient lookup by either
-index number or parameter name.
+index number or parameter name. It supports loading parameters from multiple sources:
+- Cache: Previously discovered parameters saved to disk
+- Discovery: Live discovery from device via CAN bus
+- Fallback: Static data from parameter_data.py
 
 Classes:
     Parameter: Immutable dataclass representing a single heat pump parameter
@@ -22,8 +25,13 @@ Example:
     Valid range: 0-5
 """
 
+import asyncio
+import logging
 from dataclasses import dataclass
-from typing import Dict, List
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -71,6 +79,40 @@ class Parameter:
     read: int
     text: str
 
+    def get_read_can_id(self) -> int:
+        """Calculate CAN ID for read request.
+
+        # PROTOCOL: Formula from fhem/26_KM273v018.pm:2229
+        # rtr = 0x04003FE0 | (idx << 14)
+
+        Returns:
+            CAN ID for sending read requests to this parameter
+
+        Example:
+            >>> param = Parameter(idx=1, extid="...", min=0, max=5,
+            ...                   format="int", read=0, text="ACCESS_LEVEL")
+            >>> hex(param.get_read_can_id())
+            '0x4007fe0'
+        """
+        return 0x04003FE0 | (self.idx << 14)
+
+    def get_write_can_id(self) -> int:
+        """Calculate CAN ID for write/response.
+
+        # PROTOCOL: Formula from fhem/26_KM273v018.pm:2230
+        # txd = 0x0C003FE0 | (idx << 14)
+
+        Returns:
+            CAN ID for sending write requests or receiving responses for this parameter
+
+        Example:
+            >>> param = Parameter(idx=1, extid="...", min=0, max=5,
+            ...                   format="int", read=0, text="ACCESS_LEVEL")
+            >>> hex(param.get_write_can_id())
+            '0xc007fe0'
+        """
+        return 0x0C003FE0 | (self.idx << 14)
+
     def is_writable(self) -> bool:
         """Check if parameter is writable (not read-only).
 
@@ -115,7 +157,13 @@ class HeatPump:
     """Container for all Buderus WPS heat pump parameters with indexed access.
 
     Provides efficient O(1) lookup of parameters by either index number or
-    human-readable name. Loads all parameters from parameter_data on initialization.
+    human-readable name. Supports loading parameters from multiple sources
+    with priority: cache → discovery → static fallback.
+
+    Attributes:
+        data_source: String indicating where parameters were loaded from
+            ('cache', 'discovery', or 'fallback')
+        using_fallback: True if using static fallback data (no device/cache)
 
     Example:
         >>> heat_pump = HeatPump()
@@ -124,20 +172,196 @@ class HeatPump:
         ACCESS_LEVEL: 0-5
         >>> same_param = heat_pump.get_parameter_by_index(1)
         >>> assert param == same_param
+
+    Example with cache and discovery:
+        >>> heat_pump = HeatPump(
+        ...     adapter=can_adapter,
+        ...     cache_path=Path("~/.cache/buderus/params.json")
+        ... )
+        >>> if heat_pump.using_fallback:
+        ...     print("Using fallback - some parameters may not match device")
     """
 
-    def __init__(self):
-        """Initialize HeatPump and load all parameters from parameter_data."""
-        from buderus_wps.parameter_data import PARAMETER_DATA
+    def __init__(
+        self,
+        adapter: Optional[Any] = None,
+        cache_path: Optional[Path] = None,
+        force_discovery: bool = False
+    ):
+        """Initialize HeatPump with configurable data loading strategy.
 
+        Parameters are loaded with the following priority:
+        1. Cache (if valid and force_discovery=False)
+        2. Discovery via CAN adapter (if adapter provided)
+        3. Static fallback data from parameter_data.py
+
+        Args:
+            adapter: Optional CAN adapter for device discovery. If None,
+                discovery is skipped and cache/fallback is used.
+            cache_path: Optional path to cache file. If None, caching is
+                disabled and parameters come from discovery or fallback.
+            force_discovery: If True, ignore cache and always attempt
+                discovery first (useful after firmware updates).
+        """
         self._params_by_idx: Dict[int, Parameter] = {}
         self._params_by_name: Dict[str, Parameter] = {}
+        self._source: str = "fallback"
 
-        # Load all parameters
-        for param_data in PARAMETER_DATA:
-            param = Parameter(**param_data)
+        # Try loading in priority order: cache → discovery → fallback
+        params_loaded = False
+
+        # 1. Try loading from cache (unless force_discovery)
+        if cache_path and not force_discovery:
+            params_loaded = self._try_load_from_cache(cache_path)
+
+        # 2. Try discovery if adapter provided and cache didn't work
+        if not params_loaded and adapter is not None:
+            params_loaded = self._try_discovery(adapter, cache_path)
+
+        # 3. Fall back to static data
+        if not params_loaded:
+            self._load_fallback()
+
+    def _try_load_from_cache(self, cache_path: Path) -> bool:
+        """Attempt to load parameters from cache.
+
+        Args:
+            cache_path: Path to cache file
+
+        Returns:
+            True if successfully loaded from cache, False otherwise
+        """
+        try:
+            from buderus_wps.cache import ParameterCache
+
+            cache = ParameterCache(cache_path)
+            if cache.is_valid():
+                param_data = cache.load()
+                if param_data:
+                    self._load_from_list(param_data)
+                    self._source = "cache"
+                    logger.info(
+                        "Loaded %d parameters from cache: %s",
+                        len(param_data),
+                        cache_path
+                    )
+                    return True
+        except Exception as e:
+            logger.warning("Failed to load from cache: %s", e)
+
+        return False
+
+    def _try_discovery(
+        self,
+        adapter: Any,
+        cache_path: Optional[Path]
+    ) -> bool:
+        """Attempt to discover parameters from device.
+
+        Args:
+            adapter: CAN adapter for device communication
+            cache_path: Optional path to save discovered parameters
+
+        Returns:
+            True if discovery successful, False otherwise
+        """
+        try:
+            from buderus_wps.discovery import ParameterDiscovery
+
+            discovery = ParameterDiscovery(adapter)
+
+            # Run discovery (synchronously for now)
+            try:
+                loop = asyncio.get_event_loop()
+            except RuntimeError:
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+
+            param_data = loop.run_until_complete(discovery.discover())
+
+            if param_data:
+                self._load_from_list(param_data)
+                self._source = "discovery"
+                logger.info("Discovered %d parameters from device", len(param_data))
+
+                # Save to cache if path provided
+                if cache_path:
+                    self._save_to_cache(param_data, cache_path)
+
+                return True
+        except Exception as e:
+            logger.warning("Discovery failed: %s", e)
+
+        return False
+
+    def _save_to_cache(
+        self,
+        param_data: List[Dict[str, Any]],
+        cache_path: Path
+    ) -> None:
+        """Save discovered parameters to cache.
+
+        Args:
+            param_data: List of parameter dictionaries
+            cache_path: Path to cache file
+        """
+        try:
+            from buderus_wps.cache import ParameterCache
+
+            cache = ParameterCache(cache_path)
+            if cache.save(param_data):
+                logger.info("Saved %d parameters to cache: %s", len(param_data), cache_path)
+            else:
+                logger.warning("Failed to save parameters to cache")
+        except Exception as e:
+            logger.warning("Failed to save to cache: %s", e)
+
+    def _load_fallback(self) -> None:
+        """Load parameters from static fallback data."""
+        from buderus_wps.parameter_data import PARAMETER_DATA
+
+        self._load_from_list(PARAMETER_DATA)
+        self._source = "fallback"
+        logger.warning(
+            "Using static fallback data (%d parameters) - "
+            "device discovery unavailable",
+            len(PARAMETER_DATA)
+        )
+
+    def _load_from_list(self, param_data: List[Dict[str, Any]]) -> None:
+        """Load parameters from a list of dictionaries.
+
+        Args:
+            param_data: List of parameter dictionaries with keys:
+                idx, extid, min, max, format, read, text
+        """
+        self._params_by_idx.clear()
+        self._params_by_name.clear()
+
+        for data in param_data:
+            param = Parameter(**data)
             self._params_by_idx[param.idx] = param
             self._params_by_name[param.text] = param
+
+    @property
+    def data_source(self) -> str:
+        """Return the source of parameter data.
+
+        Returns:
+            'cache' if loaded from cache file,
+            'discovery' if discovered from device,
+            'fallback' if using static data
+        """
+        return self._source
+
+    @property
+    def using_fallback(self) -> bool:
+        """Check if using static fallback data.
+
+        Returns:
+            True if using fallback (no device/cache), False otherwise
+        """
+        return self._source == "fallback"
 
     def get_parameter_by_index(self, idx: int) -> Parameter:
         """Get parameter by index number.
