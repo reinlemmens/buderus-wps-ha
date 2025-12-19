@@ -14999,7 +14999,7 @@ PARAMETER_DATA = [
         "max": 48,
         "min": 0,
         "format": "int",
-        "read": 0,
+        "read": 1,
         "text": "XDHW_TIME"
     },
     {

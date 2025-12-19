@@ -34,13 +34,6 @@ from .can_message import (
     CANMessage,
     CAN_PREFIX_COUNTER,
     CAN_PREFIX_DATA,
-    CAN_PREFIX_STATUS,
-    ELEMENT_CONFIG,
-    ELEMENT_COUNTER,
-    ELEMENT_E21,
-    ELEMENT_E22,
-    ELEMENT_E31,
-    ELEMENT_E32,
 )
 from .exceptions import (
     AlarmNotClearableError,
@@ -60,7 +53,7 @@ from .exceptions import (
     ValidationError,
 )
 from .heat_pump import HeatPumpClient
-from .parameter_registry import Parameter, ParameterRegistry
+from .parameter import HeatPump, Parameter
 from .program_switching import (
     ParameterIO,
     ProgramState,
@@ -137,20 +130,11 @@ __all__ = [
     "CANMessage",
     "USBtinAdapter",
     # CAN ID Constants (Hardware Verified 2025-12-05)
-    "CAN_PREFIX_COUNTER",
-    "CAN_PREFIX_DATA",
-    "CAN_PREFIX_STATUS",
-    "ELEMENT_CONFIG",
-    "ELEMENT_COUNTER",
-    "ELEMENT_E21",
-    "ELEMENT_E22",
-    "ELEMENT_E31",
-    "ELEMENT_E32",
     # Heat Pump Interface
+    "HeatPump",
     "HeatPumpClient",
     "Parameter",
     "ParameterIO",
-    "ParameterRegistry",
     "ProgramState",
     "ProgramSwitchConfig",
     "ProgramSwitchingController",
