@@ -4,9 +4,7 @@ Tests the full flow of blocking/unblocking operations using mocked
 hardware communication.
 """
 
-import pytest
-from unittest.mock import MagicMock, patch
-
+from unittest.mock import MagicMock
 
 # Phase 3: User Story 1 integration tests (T018)
 

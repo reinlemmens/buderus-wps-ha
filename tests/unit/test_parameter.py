@@ -5,6 +5,7 @@ and validate_value() method with various edge cases.
 """
 
 import pytest
+
 from buderus_wps.parameter import Parameter
 
 
@@ -21,7 +22,7 @@ class TestParameterCreation:
             max=5,
             format="int",
             read=0,
-            text="ACCESS_LEVEL"
+            text="ACCESS_LEVEL",
         )
 
         assert param.idx == 1
@@ -41,7 +42,7 @@ class TestParameterCreation:
             max=5,
             format="int",
             read=0,
-            text="ACCESS_LEVEL"
+            text="ACCESS_LEVEL",
         )
 
         # Attempting to modify should raise FrozenInstanceError
@@ -58,7 +59,7 @@ class TestParameterCreation:
             max=40,
             format="int",
             read=0,
-            text="ADDITIONAL_BLOCK_HIGH_T2_TEMP"
+            text="ADDITIONAL_BLOCK_HIGH_T2_TEMP",
         )
 
         assert param.min == -30
@@ -75,7 +76,7 @@ class TestParameterCreation:
             max=0,
             format="int",
             read=0,
-            text="ACCESSORIES_CONNECTED_BITMASK"
+            text="ACCESSORIES_CONNECTED_BITMASK",
         )
 
         assert param.min == 0
@@ -91,7 +92,7 @@ class TestParameterCreation:
             max=16777216,
             format="int",
             read=1,
-            text="ADDITIONAL_DHW_ACKNOWLEDGED"
+            text="ADDITIONAL_DHW_ACKNOWLEDGED",
         )
 
         assert param.max == 16777216
@@ -109,7 +110,7 @@ class TestParameterIsWritable:
             max=5,
             format="int",
             read=0,  # Writable
-            text="ACCESS_LEVEL"
+            text="ACCESS_LEVEL",
         )
 
         assert param.is_writable() is True
@@ -123,7 +124,7 @@ class TestParameterIsWritable:
             max=16777216,
             format="int",
             read=1,  # Read-only
-            text="ADDITIONAL_DHW_ACKNOWLEDGED"
+            text="ADDITIONAL_DHW_ACKNOWLEDGED",
         )
 
         assert param.is_writable() is False
@@ -141,7 +142,7 @@ class TestParameterValidateValue:
             max=5,
             format="int",
             read=0,
-            text="ACCESS_LEVEL"
+            text="ACCESS_LEVEL",
         )
 
         # Valid values within range
@@ -158,7 +159,7 @@ class TestParameterValidateValue:
             max=5,
             format="int",
             read=0,
-            text="ACCESS_LEVEL"
+            text="ACCESS_LEVEL",
         )
 
         assert param.validate_value(-1) is False
@@ -173,7 +174,7 @@ class TestParameterValidateValue:
             max=5,
             format="int",
             read=0,
-            text="ACCESS_LEVEL"
+            text="ACCESS_LEVEL",
         )
 
         assert param.validate_value(6) is False
@@ -188,7 +189,7 @@ class TestParameterValidateValue:
             max=240,
             format="int",
             read=0,
-            text="ACCESS_LEVEL_TIMEOUT_DELAY_TIME"
+            text="ACCESS_LEVEL_TIMEOUT_DELAY_TIME",
         )
 
         # Boundaries should be valid
@@ -208,7 +209,7 @@ class TestParameterValidateValue:
             max=40,
             format="int",
             read=0,
-            text="ADDITIONAL_BLOCK_HIGH_T2_TEMP"
+            text="ADDITIONAL_BLOCK_HIGH_T2_TEMP",
         )
 
         # Valid values in negative range
@@ -231,7 +232,7 @@ class TestParameterValidateValue:
             max=0,
             format="int",
             read=0,
-            text="ACCESSORIES_CONNECTED_BITMASK"
+            text="ACCESSORIES_CONNECTED_BITMASK",
         )
 
         # Only 0 should be valid
@@ -250,7 +251,7 @@ class TestParameterValidateValue:
             max=16777216,
             format="int",
             read=1,
-            text="ADDITIONAL_DHW_ACKNOWLEDGED"
+            text="ADDITIONAL_DHW_ACKNOWLEDGED",
         )
 
         # Valid values

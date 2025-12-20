@@ -10,18 +10,16 @@ Behavior:
 
 from __future__ import annotations
 
-import asyncio
 import logging
 import struct
 import time
-from pathlib import Path
-from typing import Optional, Dict, Any, List
+from typing import Any, Dict, List, Optional
 
-from .can_message import CANMessage
 from .can_adapter import USBtinAdapter
-from .parameter import Parameter, HeatPump
-from .value_encoder import ValueEncoder
+from .can_message import CANMessage
 from .exceptions import DeviceCommunicationError, TimeoutError
+from .parameter import HeatPump, Parameter
+from .value_encoder import ValueEncoder
 
 # PROTOCOL: CAN message ID base values for parameter access
 # Request (RTR) IDs use prefix 0x04, Response IDs use prefix 0x0C
@@ -63,17 +61,22 @@ class HeatPumpClient:
             self._adapter.connect()
 
         read_cmd = CANMessage(
-            arbitration_id=0x01FD7FE0, data=b"", is_extended_id=True, is_remote_frame=True
+            arbitration_id=0x01FD7FE0,
+            data=b"",
+            is_extended_id=True,
+            is_remote_frame=True,
         )
         try:
             self._adapter.send_frame(read_cmd, timeout=timeout)
         except TimeoutError:
             self._logger.warning(
-                "No response to initial element list length request; using defaults")
+                "No response to initial element list length request; using defaults"
+            )
             return self._registry
         except Exception as e:
             self._logger.warning(
-                "Element list length request failed: %s; using defaults", e)
+                "Element list length request failed: %s; using defaults", e
+            )
             return self._registry
 
         # Attempt to read pages; KM273 uses 4096-byte chunks, but we don't have full protocol details.
@@ -82,7 +85,9 @@ class HeatPumpClient:
         if not entries:
             return self._registry
 
-        self._registry.override_with_device(entries)
+        # Note: override_with_device would reload registry with new entries
+        # but since entries is always empty in current implementation,
+        # this code path is never reached
         return self._registry
 
     def get(self, name_or_idx: Any) -> Parameter:
@@ -97,8 +102,12 @@ class HeatPumpClient:
         effective_timeout = timeout if timeout is not None else adapter_timeout
         request_id = CAN_REQUEST_BASE | (param.idx << 14)
         response_id = CAN_RESPONSE_BASE | (param.idx << 14)
-        request = CANMessage(arbitration_id=request_id,
-                             data=b"", is_extended_id=True, is_remote_frame=True)
+        request = CANMessage(
+            arbitration_id=request_id,
+            data=b"",
+            is_extended_id=True,
+            is_remote_frame=True,
+        )
         self._adapter.flush_input_buffer()
         start = time.time()
         frame = self._adapter.send_frame(request, timeout=effective_timeout)
@@ -116,11 +125,16 @@ class HeatPumpClient:
 
         raise DeviceCommunicationError(
             f"Unexpected response id 0x{frame.arbitration_id:X} (expected 0x{response_id:X})",
-            context={"expected": response_id,
-                     "got": frame.arbitration_id, "param": param.text},
+            context={
+                "expected": response_id,
+                "got": frame.arbitration_id,
+                "param": param.text,
+            },
         )
 
-    def read_parameter(self, name_or_idx: Any, timeout: Optional[float] = None) -> Dict[str, Any]:
+    def read_parameter(
+        self, name_or_idx: Any, timeout: Optional[float] = None
+    ) -> Dict[str, Any]:
         """Read and decode parameter, returning metadata + raw/decoded values."""
         param = self.get(name_or_idx)
         raw = self.read_value(param.text, timeout=timeout)
@@ -137,23 +151,26 @@ class HeatPumpClient:
             "decoded": decoded,
         }
 
-    def write_value(self, name_or_idx: Any, value: Any, timeout: Optional[float] = None) -> None:
+    def write_value(
+        self, name_or_idx: Any, value: Any, timeout: Optional[float] = None
+    ) -> None:
         param = self.get(name_or_idx)
         # FHEM: read=1 means "readable", not "read-only"
         # A parameter is read-only if min >= max (no valid write range)
         if param.min >= param.max:
             raise PermissionError(
-                f"Parameter {param.text} is read-only (min={param.min} >= max={param.max})")
+                f"Parameter {param.text} is read-only (min={param.min} >= max={param.max})"
+            )
         encoded = self._encode_value(param, value)
         # PROTOCOL: Write uses same CAN ID as read request (CAN_REQUEST_BASE | idx << 14)
         # See FHEM 26_KM273v018.pm line 2229, 2678, 2746
         request_id = CAN_REQUEST_BASE | (param.idx << 14)
-        msg = CANMessage(arbitration_id=request_id,
-                         data=encoded, is_extended_id=True)
+        msg = CANMessage(arbitration_id=request_id, data=encoded, is_extended_id=True)
         self._adapter.flush_input_buffer()
         adapter_timeout = getattr(self._adapter, "timeout", 2.0)
         self._adapter.send_frame(
-            msg, timeout=timeout if timeout is not None else adapter_timeout)
+            msg, timeout=timeout if timeout is not None else adapter_timeout
+        )
 
     # Internal helpers
     def _lookup(self, name_or_idx: Any) -> Optional[Parameter]:
@@ -162,36 +179,79 @@ class HeatPumpClient:
         Supports both HeatPump (get_parameter) and ParameterRegistry (get_by_name/get_by_index).
         """
         # Try HeatPump interface first
-        if hasattr(self._registry, 'get_parameter'):
-            return self._registry.get_parameter(name_or_idx)
-
-        # Fall back to ParameterRegistry interface
-        if isinstance(name_or_idx, str):
-            return self._registry.get_by_name(name_or_idx)
-        if isinstance(name_or_idx, int):
-            return self._registry.get_by_index(name_or_idx)
-        return None
+        # Use unified lookup method
+        return self._registry.get_parameter(name_or_idx)
 
     def _encode_value(self, param: Parameter, value: Any) -> bytes:
-        fmt = param.format
-        if fmt.startswith("dp") or fmt.startswith("rp"):
-            # Signed/unsigned decimals with two decimal places?
-            # Fallback to int for now.
-            return self._encode_int_like(param, value)
-        if fmt == "tem" or fmt.startswith("temp"):
-            # For "tem" format, value is already in tenths (530 = 53.0°C)
-            # min/max are also in tenths, so use int encoding directly
-            return self._encode_int_like(param, value)
-        return self._encode_int_like(param, value)
+        """Encode human-readable value to raw bytes for CAN transmission.
 
-    def _encode_int_like(self, param: Parameter, value: Any, dlc_hint: int = 0) -> bytes:
+        # PROTOCOL: Matches FHEM behavior from fhem/26_KM273v018.pm:2728-2729
+        # User passes human-readable values (e.g., 53.0°C), we convert to raw.
+
+        Args:
+            param: Parameter definition with format, min, max
+            value: Human-readable value from user
+
+        Returns:
+            Bytes for CAN transmission (typically 2 bytes)
+
+        Raises:
+            ValueError: If value is out of range for the parameter
+        """
+        fmt = param.format
+        from .formats import get_format_factor
+
+        # For formats with factors, validate human-readable value against scaled min/max
+        factor = get_format_factor(fmt)
+        if factor != 1:
+            # Convert min/max from raw to human-readable for validation
+            min_human = param.min * factor
+            max_human = param.max * factor
+            try:
+                float_value = float(value)
+                if float_value < min_human or float_value > max_human:
+                    raise ValueError(
+                        f"Value {value} out of range for {param.text} "
+                        f"[{min_human}, {max_human}]"
+                    )
+            except (TypeError, ValueError) as e:
+                if "out of range" in str(e):
+                    raise
+                # Non-numeric values handled by encoder (e.g., select options)
+        else:
+            # For int format, validate raw value directly
+            try:
+                int_value = int(value)
+                if int_value < param.min or int_value > param.max:
+                    raise ValueError(
+                        f"Value {value} out of range for {param.text} "
+                        f"[{param.min}, {param.max}]"
+                    )
+            except (TypeError, ValueError) as e:
+                if "out of range" in str(e):
+                    raise
+                # Non-numeric values (select options, time strings) handled by encoder
+
+        # Use FHEM-compatible encoding for known formats
+        # This converts human-readable values to raw bytes
+        return ValueEncoder.encode_by_format(
+            value=value,
+            format_type=fmt,
+            size_bytes=2,  # FHEM always uses 2 bytes for writes
+            min_val=param.min,
+        )
+
+    def _encode_int_like(
+        self, param: Parameter, value: Any, dlc_hint: int = 0
+    ) -> bytes:
         try:
             ivalue = int(value)
         except Exception as e:
             raise ValueError(f"Invalid value for {param.text}: {value}") from e
         if ivalue < param.min or ivalue > param.max:
             raise ValueError(
-                f"Value {ivalue} out of range for {param.text} [{param.min}, {param.max}]")
+                f"Value {ivalue} out of range for {param.text} [{param.min}, {param.max}]"
+            )
         signed = param.min < 0
 
         # Use dlc_hint if provided (from actual device response)
@@ -210,27 +270,32 @@ class HeatPumpClient:
         return ivalue.to_bytes(size, "big", signed=signed)
 
     def _decode_value(self, param: Parameter, raw: bytes) -> Any:
-        fmt = param.format
-        if fmt == "tem" or fmt.startswith("temp"):
-            # PROTOCOL: Some parameters return 1 byte despite min/max suggesting 2
-            if len(raw) >= 2:
-                try:
-                    return ValueEncoder.decode_temperature(raw[:2], "temp")
-                except (ValueError, struct.error):
-                    pass  # Fall through to 1-byte or hex fallback
-            # Handle 1-byte temperature (factor 0.1)
-            if len(raw) == 1:
-                signed = param.min < 0
-                val = int.from_bytes(raw, "big", signed=signed)
-                return val / 10.0
-            return raw.hex()
-        if fmt.startswith("dp") or fmt.startswith("rp"):
-            # FHEM: dp1, dp2, rp1, rp2 are selector formats with factor=1
-            # The digit is part of the format name, NOT a precision indicator
-            val = int.from_bytes(raw, "big", signed=False)
-            return val
+        """Decode raw bytes from CAN to human-readable value.
+
+        # PROTOCOL: Matches FHEM behavior from fhem/26_KM273v018.pm:2714-2740
+        # Returns human-readable values (e.g., 53.0°C from raw 530).
+
+        Args:
+            param: Parameter definition with format, min, max
+            raw: Raw bytes from CAN response
+
+        Returns:
+            Decoded human-readable value (float, int, str, or None for DEAD)
+        """
         try:
-            signed = param.min < 0
-            return int.from_bytes(raw, "big", signed=signed)
-        except (ValueError, OverflowError):
+            result = ValueEncoder.decode_by_format(
+                data=raw,
+                format_type=param.format,
+                min_val=param.min,
+            )
+            # None indicates DEAD sensor - return as-is for caller to handle
+            return result
+        except (ValueError, struct.error) as e:
+            self._logger.warning(
+                "Failed to decode %s (format=%s, raw=%s): %s",
+                param.text,
+                param.format,
+                raw.hex(),
+                e,
+            )
             return raw.hex()  # Return hex string as fallback

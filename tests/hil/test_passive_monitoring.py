@@ -19,13 +19,11 @@ import pytest
 
 from buderus_wps.can_adapter import USBtinAdapter
 from buderus_wps.can_message import (
-    CANMessage,
     CAN_PREFIX_DATA,
     CAN_PREFIX_STATUS,
     ELEMENT_E21,
     ELEMENT_E22,
 )
-
 
 # Configuration - can be overridden via environment variables
 SERIAL_PORT = os.environ.get("USBTIN_PORT", "/dev/ttyACM0")

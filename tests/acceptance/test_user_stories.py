@@ -9,7 +9,6 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from buderus_wps.menu_api import MenuAPI, VacationPeriod
 from buderus_wps.enums import (
     AlarmCategory,
     CircuitType,
@@ -17,7 +16,8 @@ from buderus_wps.enums import (
     OperatingMode,
     RoomProgramMode,
 )
-from buderus_wps.exceptions import ValidationError, CircuitNotAvailableError
+from buderus_wps.exceptions import CircuitNotAvailableError, ValidationError
+from buderus_wps.menu_api import MenuAPI, VacationPeriod
 from buderus_wps.schedule_codec import ScheduleSlot, WeeklySchedule
 
 
@@ -479,6 +479,7 @@ class TestUS7Alarms:
     def test_ac3_acknowledge_alarm(self, mock_client):
         """AC3: Acknowledge alarms."""
         from datetime import datetime
+
         from buderus_wps.menu_api import Alarm
 
         api = MenuAPI(mock_client)

@@ -17,8 +17,7 @@ from __future__ import annotations
 import io
 import json
 import sys
-import pytest
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import MagicMock, patch
 
 
 def create_mock_param(text: str, idx: int, fmt: str) -> MagicMock:
@@ -59,7 +58,7 @@ class TestAS1BasicBroadcastRead:
         mock_adapter = MagicMock()
 
         # Patch read_from_broadcast to return a temperature
-        with patch.object(cli, 'read_from_broadcast') as mock_read_broadcast:
+        with patch.object(cli, "read_from_broadcast") as mock_read_broadcast:
             mock_read_broadcast.return_value = (10.5, bytes([0x00, 0x69]))
 
             # Capture stdout
@@ -106,7 +105,7 @@ class TestAS1BroadcastReadWithCustomDuration:
 
         mock_adapter = MagicMock()
 
-        with patch.object(cli, 'read_from_broadcast') as mock_read_broadcast:
+        with patch.object(cli, "read_from_broadcast") as mock_read_broadcast:
             mock_read_broadcast.return_value = (10.5, bytes([0x00, 0x69]))
 
             captured_output = io.StringIO()
@@ -147,7 +146,7 @@ class TestAS1BroadcastTimeoutError:
 
         mock_adapter = MagicMock()
 
-        with patch.object(cli, 'read_from_broadcast') as mock_read_broadcast:
+        with patch.object(cli, "read_from_broadcast") as mock_read_broadcast:
             mock_read_broadcast.return_value = None  # No data received
 
             captured_stderr = io.StringIO()
@@ -195,7 +194,7 @@ class TestAS2AutoFallbackOnInvalidRtr:
 
         mock_adapter = MagicMock()
 
-        with patch.object(cli, 'read_from_broadcast') as mock_read_broadcast:
+        with patch.object(cli, "read_from_broadcast") as mock_read_broadcast:
             mock_read_broadcast.return_value = (10.5, bytes([0x00, 0x69]))
 
             captured_output = io.StringIO()
@@ -248,7 +247,7 @@ class TestAS2NoFallbackForValidRtr:
 
         mock_adapter = MagicMock()
 
-        with patch.object(cli, 'read_from_broadcast') as mock_read_broadcast:
+        with patch.object(cli, "read_from_broadcast") as mock_read_broadcast:
             captured_output = io.StringIO()
             sys.stdout = captured_output
 
@@ -293,7 +292,7 @@ class TestAS2FallbackFailureWithWarning:
 
         mock_adapter = MagicMock()
 
-        with patch.object(cli, 'read_from_broadcast') as mock_read_broadcast:
+        with patch.object(cli, "read_from_broadcast") as mock_read_broadcast:
             mock_read_broadcast.return_value = None  # Fallback also fails
 
             captured_output = io.StringIO()
@@ -383,7 +382,7 @@ class TestAS3BroadcastSourceIndication:
 
         mock_adapter = MagicMock()
 
-        with patch.object(cli, 'read_from_broadcast') as mock_read_broadcast:
+        with patch.object(cli, "read_from_broadcast") as mock_read_broadcast:
             mock_read_broadcast.return_value = (10.5, bytes([0x00, 0x69]))
 
             captured_output = io.StringIO()
@@ -464,7 +463,7 @@ class TestAS3JsonSourceField:
 
         mock_adapter = MagicMock()
 
-        with patch.object(cli, 'read_from_broadcast') as mock_read_broadcast:
+        with patch.object(cli, "read_from_broadcast") as mock_read_broadcast:
             mock_read_broadcast.return_value = (10.5, bytes([0x00, 0x69]))
 
             captured_output = io.StringIO()

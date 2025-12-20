@@ -9,8 +9,10 @@ These tests use mocked serial ports to verify end-to-end behavior
 without requiring physical hardware.
 """
 
+from unittest.mock import MagicMock, PropertyMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock, PropertyMock
+
 from buderus_wps.can_adapter import USBtinAdapter
 from buderus_wps.exceptions import DeviceNotFoundError, DevicePermissionError
 
@@ -18,7 +20,7 @@ from buderus_wps.exceptions import DeviceNotFoundError, DevicePermissionError
 class TestAS1OpenConnection:
     """AS1: Developer opens connection to USBtin with valid port path."""
 
-    @patch('serial.Serial')
+    @patch("serial.Serial")
     def test_open_connection_succeeds(self, mock_serial_class):
         """
         GIVEN a valid serial port path
@@ -29,11 +31,11 @@ class TestAS1OpenConnection:
         mock_serial = MagicMock()
         mock_serial.is_open = True
         type(mock_serial).in_waiting = PropertyMock(return_value=10)
-        mock_serial.read.return_value = b'\r'  # ACK responses
+        mock_serial.read.return_value = b"\r"  # ACK responses
         mock_serial_class.return_value = mock_serial
 
         # Act: Open connection
-        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter = USBtinAdapter("/dev/ttyACM0")
         adapter.connect()
 
         # Assert: Connection established
@@ -45,7 +47,7 @@ class TestAS1OpenConnection:
         # Cleanup
         adapter.disconnect()
 
-    @patch('serial.Serial')
+    @patch("serial.Serial")
     def test_open_connection_with_context_manager(self, mock_serial_class):
         """
         GIVEN a valid serial port path
@@ -56,17 +58,17 @@ class TestAS1OpenConnection:
         mock_serial = MagicMock()
         mock_serial.is_open = True
         type(mock_serial).in_waiting = PropertyMock(return_value=10)
-        mock_serial.read.return_value = b'\r'
+        mock_serial.read.return_value = b"\r"
         mock_serial_class.return_value = mock_serial
 
         # Act & Assert: Connection in context
-        with USBtinAdapter('/dev/ttyACM0') as adapter:
+        with USBtinAdapter("/dev/ttyACM0") as adapter:
             assert adapter.is_open is True
 
         # Assert: Connection closed after context exit
         mock_serial.close.assert_called()
 
-    @patch('serial.Serial')
+    @patch("serial.Serial")
     def test_connection_establishes_within_time_limit(self, mock_serial_class):
         """
         GIVEN a valid serial port
@@ -79,11 +81,11 @@ class TestAS1OpenConnection:
         mock_serial = MagicMock()
         mock_serial.is_open = True
         type(mock_serial).in_waiting = PropertyMock(return_value=10)
-        mock_serial.read.return_value = b'\r'
+        mock_serial.read.return_value = b"\r"
         mock_serial_class.return_value = mock_serial
 
         # Act: Measure connection time
-        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter = USBtinAdapter("/dev/ttyACM0")
         start_time = time.time()
         adapter.connect()
         elapsed = time.time() - start_time
@@ -100,7 +102,7 @@ class TestAS1OpenConnection:
 class TestAS2QueryConnectionStatus:
     """AS2: Developer queries connection status."""
 
-    @patch('serial.Serial')
+    @patch("serial.Serial")
     def test_query_status_when_open(self, mock_serial_class):
         """
         GIVEN an open connection
@@ -111,11 +113,11 @@ class TestAS2QueryConnectionStatus:
         mock_serial = MagicMock()
         mock_serial.is_open = True
         type(mock_serial).in_waiting = PropertyMock(return_value=10)
-        mock_serial.read.return_value = b'\r'
+        mock_serial.read.return_value = b"\r"
         mock_serial_class.return_value = mock_serial
 
         # Act
-        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter = USBtinAdapter("/dev/ttyACM0")
         adapter.connect()
 
         # Assert
@@ -131,12 +133,12 @@ class TestAS2QueryConnectionStatus:
         THEN returns False
         """
         # Arrange: Create adapter without connecting
-        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter = USBtinAdapter("/dev/ttyACM0")
 
         # Act & Assert
         assert adapter.is_open is False
 
-    @patch('serial.Serial')
+    @patch("serial.Serial")
     def test_query_status_after_disconnect(self, mock_serial_class):
         """
         GIVEN a previously open connection that was disconnected
@@ -147,10 +149,10 @@ class TestAS2QueryConnectionStatus:
         mock_serial = MagicMock()
         mock_serial.is_open = True
         type(mock_serial).in_waiting = PropertyMock(return_value=10)
-        mock_serial.read.return_value = b'\r'
+        mock_serial.read.return_value = b"\r"
         mock_serial_class.return_value = mock_serial
 
-        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter = USBtinAdapter("/dev/ttyACM0")
         adapter.connect()
 
         # Act: Disconnect
@@ -163,7 +165,7 @@ class TestAS2QueryConnectionStatus:
 class TestAS3ErrorHandlingInvalidPort:
     """AS3: Error handling for invalid port path."""
 
-    @patch('serial.Serial')
+    @patch("serial.Serial")
     def test_invalid_port_raises_error(self, mock_serial_class):
         """
         GIVEN an invalid/non-existent port path
@@ -174,7 +176,7 @@ class TestAS3ErrorHandlingInvalidPort:
         mock_serial_class.side_effect = FileNotFoundError("Port not found")
 
         # Act & Assert: Connection fails with clear error
-        adapter = USBtinAdapter('/dev/ttyNONEXISTENT')
+        adapter = USBtinAdapter("/dev/ttyNONEXISTENT")
         with pytest.raises(DeviceNotFoundError) as exc_info:
             adapter.connect()
 
@@ -186,7 +188,7 @@ class TestAS3ErrorHandlingInvalidPort:
         # Assert: Adapter remains closed
         assert adapter.is_open is False
 
-    @patch('serial.Serial')
+    @patch("serial.Serial")
     def test_permission_denied_raises_error(self, mock_serial_class):
         """
         GIVEN a port path without permissions
@@ -197,7 +199,7 @@ class TestAS3ErrorHandlingInvalidPort:
         mock_serial_class.side_effect = PermissionError("Permission denied")
 
         # Act & Assert
-        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter = USBtinAdapter("/dev/ttyACM0")
         with pytest.raises(DevicePermissionError) as exc_info:
             adapter.connect()
 
@@ -213,9 +215,9 @@ class TestAS3ErrorHandlingInvalidPort:
         """
         # Act & Assert: Validation at construction
         with pytest.raises(ValueError, match="Port path cannot be empty"):
-            USBtinAdapter('')
+            USBtinAdapter("")
 
-    @patch('serial.Serial')
+    @patch("serial.Serial")
     def test_error_provides_diagnostic_context(self, mock_serial_class):
         """
         GIVEN a connection failure
@@ -226,12 +228,14 @@ class TestAS3ErrorHandlingInvalidPort:
         mock_serial_class.side_effect = FileNotFoundError("Port not found")
 
         # Act
-        adapter = USBtinAdapter('/dev/ttyUSB0')
+        adapter = USBtinAdapter("/dev/ttyUSB0")
         with pytest.raises(DeviceNotFoundError) as exc_info:
             adapter.connect()
 
         # Assert: Exception has context attribute
         exception = exc_info.value
-        assert hasattr(exception, 'context'), "Exception should include diagnostic context"
-        assert 'port' in exception.context, "Context should include port path"
-        assert exception.context['port'] == '/dev/ttyUSB0'
+        assert hasattr(
+            exception, "context"
+        ), "Exception should include diagnostic context"
+        assert "port" in exception.context, "Context should include port path"
+        assert exception.context["port"] == "/dev/ttyUSB0"

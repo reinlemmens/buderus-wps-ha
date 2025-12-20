@@ -10,13 +10,13 @@ with the static parameter database for known parameters.
 """
 
 import logging
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, cast
 
 from .element_discovery import DiscoveredElement
 from .parameter_defaults import PARAMETER_DEFAULTS
 
 # Build a lookup dict from the parameter defaults list
-_STATIC_PARAMS = {p["text"].upper(): p for p in PARAMETER_DEFAULTS}
+_STATIC_PARAMS = {str(p["text"]).upper(): p for p in PARAMETER_DEFAULTS}
 
 logger = logging.getLogger(__name__)
 
@@ -122,11 +122,11 @@ class RuntimeParameterRegistry:
         # Construct a DiscoveredElement from static data
         # Static data format: {'idx': int, 'extid': str, 'min': int, 'max': int, ...}
         return DiscoveredElement(
-            idx=param["idx"],
-            extid=param["extid"],
-            text=param["text"],
-            min_value=param.get("min", 0),
-            max_value=param.get("max", 0),
+            idx=cast(int, param["idx"]),
+            extid=str(param["extid"]),
+            text=str(param["text"]),
+            min_value=cast(int, param.get("min", 0)),
+            max_value=cast(int, param.get("max", 0)),
         )
 
     def get_all_discovered(self) -> List[DiscoveredElement]:

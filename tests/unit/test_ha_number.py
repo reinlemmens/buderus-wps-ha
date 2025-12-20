@@ -59,9 +59,7 @@ class TestDHWExtraDurationNumber:
         number = BuderusDHWExtraDurationNumber(mock_coordinator)
         assert number.native_value == 0
 
-    def test_number_returns_none_when_disconnected(
-        self, mock_coordinator_disconnected
-    ):
+    def test_number_returns_none_when_disconnected(self, mock_coordinator_disconnected):
         """Number returns None when coordinator has no data."""
         number = BuderusDHWExtraDurationNumber(mock_coordinator_disconnected)
         assert number.native_value is None

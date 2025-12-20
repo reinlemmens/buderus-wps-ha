@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Test write operation to XDHW_TIME parameter."""
 
-import time
 import logging
-logging.basicConfig(level=logging.INFO, format='%(message)s')
+import time
+
+logging.basicConfig(level=logging.INFO, format="%(message)s")
 
 from buderus_wps import USBtinAdapter
 from buderus_wps.can_message import CANMessage
@@ -20,19 +21,16 @@ print(f"Request/Write ID: 0x{request_id:08X}")
 print(f"Response ID:      0x{response_id:08X}")
 print()
 
-adapter = USBtinAdapter('/dev/ttyACM0', timeout=5.0)
+adapter = USBtinAdapter("/dev/ttyACM0", timeout=5.0)
 adapter.connect()
 
 # Step 1: Read current value
 print("Step 1: Read current value")
 request = CANMessage(
-    arbitration_id=request_id,
-    data=b'',
-    is_extended_id=True,
-    is_remote_frame=True
+    arbitration_id=request_id, data=b"", is_extended_id=True, is_remote_frame=True
 )
 adapter.flush_input_buffer()
-adapter._write_command(request.to_usbtin_format().encode('ascii'))
+adapter._write_command(request.to_usbtin_format().encode("ascii"))
 
 start = time.time()
 while time.time() - start < 2.0:
@@ -48,18 +46,18 @@ print("\nStep 2: Write value 1")
 # FHEM format: T<CAN_ID>2<data_hex_4chars> for 2-byte write
 # Value 1 as 2 bytes big-endian = 0x0001
 write_value = 1
-data = write_value.to_bytes(2, 'big')
+data = write_value.to_bytes(2, "big")
 
 write_msg = CANMessage(
     arbitration_id=request_id,  # Same ID as RTR request
     data=data,
     is_extended_id=True,
-    is_remote_frame=False
+    is_remote_frame=False,
 )
 adapter.flush_input_buffer()
 slcan = write_msg.to_usbtin_format()
 print(f"  Sending: {slcan.strip()}")
-adapter._write_command(slcan.encode('ascii'))
+adapter._write_command(slcan.encode("ascii"))
 
 # Check for response/ack
 print("  Waiting for response...")
@@ -77,13 +75,10 @@ time.sleep(0.5)
 # Step 3: Read back to verify
 print("\nStep 3: Read back value")
 request = CANMessage(
-    arbitration_id=request_id,
-    data=b'',
-    is_extended_id=True,
-    is_remote_frame=True
+    arbitration_id=request_id, data=b"", is_extended_id=True, is_remote_frame=True
 )
 adapter.flush_input_buffer()
-adapter._write_command(request.to_usbtin_format().encode('ascii'))
+adapter._write_command(request.to_usbtin_format().encode("ascii"))
 
 start = time.time()
 while time.time() - start < 2.0:
@@ -93,7 +88,7 @@ while time.time() - start < 2.0:
         if frame.dlc == 1:
             print(f"  Value: {frame.data[0]}")
         elif frame.dlc >= 2:
-            val = int.from_bytes(frame.data[:2], 'big')
+            val = int.from_bytes(frame.data[:2], "big")
             print(f"  Value: {val}")
         break
 

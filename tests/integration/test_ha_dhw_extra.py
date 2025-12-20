@@ -7,8 +7,8 @@ import pytest
 # conftest.py sets up HA mocks at import time
 from custom_components.buderus_wps.const import DOMAIN
 from custom_components.buderus_wps.number import (
-    async_setup_platform,
     BuderusDHWExtraDurationNumber,
+    async_setup_platform,
 )
 from tests.conftest import MockBuderusData
 
@@ -57,9 +57,7 @@ class TestDHWExtraNumberDataFlow:
         assert len(entities_added) == 0
 
     @pytest.mark.asyncio
-    async def test_number_reflects_coordinator_state(
-        self, mock_hass, mock_coordinator
-    ):
+    async def test_number_reflects_coordinator_state(self, mock_hass, mock_coordinator):
         """Number value must match coordinator data."""
         entities_added = []
         mock_coordinator.data.dhw_extra_duration = 12
@@ -76,9 +74,7 @@ class TestDHWExtraNumberDataFlow:
         assert number.native_value == 12
 
     @pytest.mark.asyncio
-    async def test_number_updates_when_state_changes(
-        self, mock_hass, mock_coordinator
-    ):
+    async def test_number_updates_when_state_changes(self, mock_hass, mock_coordinator):
         """Number updates when coordinator data changes."""
         entities_added = []
         mock_coordinator.data.dhw_extra_duration = 0
@@ -116,9 +112,7 @@ class TestDHWExtraCommands:
     """Test DHW extra number entity commands."""
 
     @pytest.mark.asyncio
-    async def test_set_duration_starts_production(
-        self, mock_hass, mock_coordinator
-    ):
+    async def test_set_duration_starts_production(self, mock_hass, mock_coordinator):
         """Setting duration should start DHW extra production."""
         entities_added = []
         mock_hass.data[DOMAIN] = {"coordinator": mock_coordinator}
@@ -136,9 +130,7 @@ class TestDHWExtraCommands:
         mock_coordinator.async_set_dhw_extra_duration.assert_called_with(6)
 
     @pytest.mark.asyncio
-    async def test_set_zero_stops_production(
-        self, mock_hass, mock_coordinator
-    ):
+    async def test_set_zero_stops_production(self, mock_hass, mock_coordinator):
         """Setting 0 should stop DHW extra production."""
         entities_added = []
         mock_hass.data[DOMAIN] = {"coordinator": mock_coordinator}

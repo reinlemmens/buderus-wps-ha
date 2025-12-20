@@ -9,10 +9,11 @@ structure used in the CAN bus discovery protocol.
 """
 
 import struct
-import pytest
 
 
-def create_element_binary(idx: int, extid: str, max_val: int, min_val: int, name: str) -> bytes:
+def create_element_binary(
+    idx: int, extid: str, max_val: int, min_val: int, name: str
+) -> bytes:
     """Create binary element data for testing.
 
     # PROTOCOL: Format matches fhem/26_KM273v018.pm:2135 unpack("nH14NNc", ...)
@@ -31,20 +32,22 @@ def create_element_binary(idx: int, extid: str, max_val: int, min_val: int, name
     # Pack header: idx(2 bytes BE), extid(7 bytes), max(4 bytes BE), min(4 bytes BE)
     extid_bytes = bytes.fromhex(extid)
     if len(extid_bytes) != 7:
-        raise ValueError(f"extid must be 14 hex chars (7 bytes), got {len(extid)} chars")
+        raise ValueError(
+            f"extid must be 14 hex chars (7 bytes), got {len(extid)} chars"
+        )
 
     # Convert signed int32 to unsigned for packing
     max_unsigned = max_val & 0xFFFFFFFF
     min_unsigned = min_val & 0xFFFFFFFF
 
-    header = struct.pack('>H', idx)  # Big-endian unsigned short
+    header = struct.pack(">H", idx)  # Big-endian unsigned short
     header += extid_bytes
-    header += struct.pack('>I', max_unsigned)  # Big-endian unsigned int
-    header += struct.pack('>I', min_unsigned)  # Big-endian unsigned int
+    header += struct.pack(">I", max_unsigned)  # Big-endian unsigned int
+    header += struct.pack(">I", min_unsigned)  # Big-endian unsigned int
 
     # Name with length byte and null terminator
-    name_bytes = name.encode('ascii') + b'\x00'
-    len_byte = struct.pack('b', len(name_bytes))  # Signed char
+    name_bytes = name.encode("ascii") + b"\x00"
+    len_byte = struct.pack("b", len(name_bytes))  # Signed char
 
     return header + len_byte + name_bytes
 
@@ -57,17 +60,13 @@ class TestParseElementValid:
         from buderus_wps.discovery import ParameterDiscovery
 
         data = create_element_binary(
-            idx=1,
-            extid="61E1E1FC660023",
-            max_val=5,
-            min_val=0,
-            name="ACCESS_LEVEL"
+            idx=1, extid="61E1E1FC660023", max_val=5, min_val=0, name="ACCESS_LEVEL"
         )
 
         element, next_offset = ParameterDiscovery.parse_element(data, 0)
 
         assert element is not None
-        assert element['idx'] == 1
+        assert element["idx"] == 1
 
     def test_parse_element_extracts_extid(self):
         """Verify extid is correctly extracted as uppercase hex string."""
@@ -78,47 +77,39 @@ class TestParseElementValid:
             extid="814A53C66A0802",
             max_val=0,
             min_val=0,
-            name="ACCESSORIES_CONNECTED_BITMASK"
+            name="ACCESSORIES_CONNECTED_BITMASK",
         )
 
         element, next_offset = ParameterDiscovery.parse_element(data, 0)
 
         assert element is not None
-        assert element['extid'] == "814A53C66A0802"
+        assert element["extid"] == "814A53C66A0802"
 
     def test_parse_element_extracts_max(self):
         """Verify max is correctly extracted."""
         from buderus_wps.discovery import ParameterDiscovery
 
         data = create_element_binary(
-            idx=1,
-            extid="61E1E1FC660023",
-            max_val=5,
-            min_val=0,
-            name="ACCESS_LEVEL"
+            idx=1, extid="61E1E1FC660023", max_val=5, min_val=0, name="ACCESS_LEVEL"
         )
 
         element, next_offset = ParameterDiscovery.parse_element(data, 0)
 
         assert element is not None
-        assert element['max'] == 5
+        assert element["max"] == 5
 
     def test_parse_element_extracts_min(self):
         """Verify min is correctly extracted."""
         from buderus_wps.discovery import ParameterDiscovery
 
         data = create_element_binary(
-            idx=1,
-            extid="61E1E1FC660023",
-            max_val=5,
-            min_val=0,
-            name="ACCESS_LEVEL"
+            idx=1, extid="61E1E1FC660023", max_val=5, min_val=0, name="ACCESS_LEVEL"
         )
 
         element, next_offset = ParameterDiscovery.parse_element(data, 0)
 
         assert element is not None
-        assert element['min'] == 0
+        assert element["min"] == 0
 
     def test_parse_element_extracts_negative_min(self):
         """Verify negative min values are correctly extracted.
@@ -133,31 +124,27 @@ class TestParseElementValid:
             extid="E555E4E11002E9",
             max_val=40,
             min_val=-30,  # Negative value
-            name="ADDITIONAL_BLOCK_HIGH_T2_TEMP"
+            name="ADDITIONAL_BLOCK_HIGH_T2_TEMP",
         )
 
         element, next_offset = ParameterDiscovery.parse_element(data, 0)
 
         assert element is not None
-        assert element['min'] == -30
-        assert element['max'] == 40
+        assert element["min"] == -30
+        assert element["max"] == 40
 
     def test_parse_element_extracts_name(self):
         """Verify name is correctly extracted (null-terminated)."""
         from buderus_wps.discovery import ParameterDiscovery
 
         data = create_element_binary(
-            idx=1,
-            extid="61E1E1FC660023",
-            max_val=5,
-            min_val=0,
-            name="ACCESS_LEVEL"
+            idx=1, extid="61E1E1FC660023", max_val=5, min_val=0, name="ACCESS_LEVEL"
         )
 
         element, next_offset = ParameterDiscovery.parse_element(data, 0)
 
         assert element is not None
-        assert element['text'] == "ACCESS_LEVEL"
+        assert element["text"] == "ACCESS_LEVEL"
 
     def test_parse_element_returns_correct_next_offset(self):
         """Verify next_offset points to the next element."""
@@ -165,11 +152,7 @@ class TestParseElementValid:
 
         name = "ACCESS_LEVEL"
         data = create_element_binary(
-            idx=1,
-            extid="61E1E1FC660023",
-            max_val=5,
-            min_val=0,
-            name=name
+            idx=1, extid="61E1E1FC660023", max_val=5, min_val=0, name=name
         )
 
         element, next_offset = ParameterDiscovery.parse_element(data, 0)
@@ -185,13 +168,9 @@ class TestParseElementValid:
         from buderus_wps.discovery import ParameterDiscovery
 
         # Create data with padding at the start
-        padding = b'\x00' * 50
+        padding = b"\x00" * 50
         element_data = create_element_binary(
-            idx=42,
-            extid="ABCDEF1234ABCD",
-            max_val=100,
-            min_val=10,
-            name="TEST_PARAM"
+            idx=42, extid="ABCDEF1234ABCD", max_val=100, min_val=10, name="TEST_PARAM"
         )
 
         data = padding + element_data
@@ -199,8 +178,8 @@ class TestParseElementValid:
         element, next_offset = ParameterDiscovery.parse_element(data, 50)
 
         assert element is not None
-        assert element['idx'] == 42
-        assert element['text'] == "TEST_PARAM"
+        assert element["idx"] == 42
+        assert element["text"] == "TEST_PARAM"
         # PROTOCOL: next_offset = offset + 18 + len(name) + 1 (null terminator)
         assert next_offset == 50 + 18 + len("TEST_PARAM") + 1
 
@@ -213,47 +192,39 @@ class TestParseElementValid:
             extid="C02D7CE3A909E9",
             max_val=16777216,  # 2^24
             min_val=0,
-            name="ADDITIONAL_DHW_ACKNOWLEDGED"
+            name="ADDITIONAL_DHW_ACKNOWLEDGED",
         )
 
         element, next_offset = ParameterDiscovery.parse_element(data, 0)
 
         assert element is not None
-        assert element['max'] == 16777216
+        assert element["max"] == 16777216
 
     def test_parse_element_sets_default_format(self):
         """Verify format is set to 'int' by default."""
         from buderus_wps.discovery import ParameterDiscovery
 
         data = create_element_binary(
-            idx=1,
-            extid="61E1E1FC660023",
-            max_val=5,
-            min_val=0,
-            name="ACCESS_LEVEL"
+            idx=1, extid="61E1E1FC660023", max_val=5, min_val=0, name="ACCESS_LEVEL"
         )
 
         element, next_offset = ParameterDiscovery.parse_element(data, 0)
 
         assert element is not None
-        assert element['format'] == "int"
+        assert element["format"] == "int"
 
     def test_parse_element_sets_default_read(self):
         """Verify read flag is set to 0 by default."""
         from buderus_wps.discovery import ParameterDiscovery
 
         data = create_element_binary(
-            idx=1,
-            extid="61E1E1FC660023",
-            max_val=5,
-            min_val=0,
-            name="ACCESS_LEVEL"
+            idx=1, extid="61E1E1FC660023", max_val=5, min_val=0, name="ACCESS_LEVEL"
         )
 
         element, next_offset = ParameterDiscovery.parse_element(data, 0)
 
         assert element is not None
-        assert element['read'] == 0
+        assert element["read"] == 0
 
 
 class TestParseElementErrors:
@@ -264,7 +235,7 @@ class TestParseElementErrors:
         from buderus_wps.discovery import ParameterDiscovery
 
         # Only 10 bytes of header
-        truncated_data = b'\x00\x01\x61\xE1\xE1\xFC\x66\x00\x23\x00'
+        truncated_data = b"\x00\x01\x61\xe1\xe1\xfc\x66\x00\x23\x00"
 
         element, next_offset = ParameterDiscovery.parse_element(truncated_data, 0)
 
@@ -276,12 +247,12 @@ class TestParseElementErrors:
         from buderus_wps.discovery import ParameterDiscovery
 
         # Full header but truncated name
-        header = struct.pack('>H', 1)  # idx
+        header = struct.pack(">H", 1)  # idx
         header += bytes.fromhex("61E1E1FC660023")  # extid
-        header += struct.pack('>I', 5)  # max
-        header += struct.pack('>I', 0)  # min
-        header += struct.pack('b', 20)  # len says 20 bytes but we don't have them
-        header += b'SHORT'  # Only 5 bytes instead of 19
+        header += struct.pack(">I", 5)  # max
+        header += struct.pack(">I", 0)  # min
+        header += struct.pack("b", 20)  # len says 20 bytes but we don't have them
+        header += b"SHORT"  # Only 5 bytes instead of 19
 
         element, next_offset = ParameterDiscovery.parse_element(header, 0)
 
@@ -293,11 +264,11 @@ class TestParseElementErrors:
         from buderus_wps.discovery import ParameterDiscovery
 
         # Header with len=0
-        header = struct.pack('>H', 1)  # idx
+        header = struct.pack(">H", 1)  # idx
         header += bytes.fromhex("61E1E1FC660023")  # extid
-        header += struct.pack('>I', 5)  # max
-        header += struct.pack('>I', 0)  # min
-        header += struct.pack('b', 0)  # len = 0
+        header += struct.pack(">I", 5)  # max
+        header += struct.pack(">I", 0)  # min
+        header += struct.pack("b", 0)  # len = 0
 
         element, next_offset = ParameterDiscovery.parse_element(header, 0)
 
@@ -308,11 +279,11 @@ class TestParseElementErrors:
         """Verify negative length byte is rejected."""
         from buderus_wps.discovery import ParameterDiscovery
 
-        header = struct.pack('>H', 1)  # idx
+        header = struct.pack(">H", 1)  # idx
         header += bytes.fromhex("61E1E1FC660023")  # extid
-        header += struct.pack('>I', 5)  # max
-        header += struct.pack('>I', 0)  # min
-        header += struct.pack('b', -1)  # negative len
+        header += struct.pack(">I", 5)  # max
+        header += struct.pack(">I", 0)  # min
+        header += struct.pack("b", -1)  # negative len
 
         element, next_offset = ParameterDiscovery.parse_element(header, 0)
 
@@ -326,14 +297,14 @@ class TestParseElementErrors:
         """
         from buderus_wps.discovery import ParameterDiscovery
 
-        header = struct.pack('>H', 1)  # idx
+        header = struct.pack(">H", 1)  # idx
         header += bytes.fromhex("61E1E1FC660023")  # extid
-        header += struct.pack('>I', 5)  # max
-        header += struct.pack('>I', 0)  # min
-        header += struct.pack('b', 100)  # len = 100 (too large)
+        header += struct.pack(">I", 5)  # max
+        header += struct.pack(">I", 0)  # min
+        header += struct.pack("b", 100)  # len = 100 (too large)
 
         # Add enough bytes to satisfy the length
-        header += b'X' * 100
+        header += b"X" * 100
 
         element, next_offset = ParameterDiscovery.parse_element(header, 0)
 
@@ -345,11 +316,7 @@ class TestParseElementErrors:
         from buderus_wps.discovery import ParameterDiscovery
 
         data = create_element_binary(
-            idx=1,
-            extid="61E1E1FC660023",
-            max_val=5,
-            min_val=0,
-            name="ACCESS_LEVEL"
+            idx=1, extid="61E1E1FC660023", max_val=5, min_val=0, name="ACCESS_LEVEL"
         )
 
         # Try to parse at an offset past the data
@@ -362,7 +329,7 @@ class TestParseElementErrors:
         """Verify empty data returns None."""
         from buderus_wps.discovery import ParameterDiscovery
 
-        element, next_offset = ParameterDiscovery.parse_element(b'', 0)
+        element, next_offset = ParameterDiscovery.parse_element(b"", 0)
 
         assert element is None
         assert next_offset == -1
@@ -381,14 +348,10 @@ class TestParseMultipleElements:
             extid="814A53C66A0802",
             max_val=0,
             min_val=0,
-            name="ACCESSORIES_CONNECTED_BITMASK"
+            name="ACCESSORIES_CONNECTED_BITMASK",
         )
         element2 = create_element_binary(
-            idx=1,
-            extid="61E1E1FC660023",
-            max_val=5,
-            min_val=0,
-            name="ACCESS_LEVEL"
+            idx=1, extid="61E1E1FC660023", max_val=5, min_val=0, name="ACCESS_LEVEL"
         )
 
         data = element1 + element2
@@ -396,38 +359,40 @@ class TestParseMultipleElements:
         # Parse first element
         e1, offset1 = ParameterDiscovery.parse_element(data, 0)
         assert e1 is not None
-        assert e1['idx'] == 0
-        assert e1['text'] == "ACCESSORIES_CONNECTED_BITMASK"
+        assert e1["idx"] == 0
+        assert e1["text"] == "ACCESSORIES_CONNECTED_BITMASK"
 
         # Parse second element at returned offset
         e2, offset2 = ParameterDiscovery.parse_element(data, offset1)
         assert e2 is not None
-        assert e2['idx'] == 1
-        assert e2['text'] == "ACCESS_LEVEL"
+        assert e2["idx"] == 1
+        assert e2["text"] == "ACCESS_LEVEL"
 
     def test_parse_until_end_of_data(self):
         """Verify parsing continues until data exhausted."""
         from buderus_wps.discovery import ParameterDiscovery
 
         # Create three elements
-        elements_data = b''
+        elements_data = b""
         for i in range(3):
             elements_data += create_element_binary(
                 idx=i,
                 extid=f"00000000000{i:03d}",
                 max_val=100 + i,
                 min_val=i,
-                name=f"PARAM_{i}"
+                name=f"PARAM_{i}",
             )
 
         parsed = []
         offset = 0
         while offset < len(elements_data):
-            element, next_offset = ParameterDiscovery.parse_element(elements_data, offset)
+            element, next_offset = ParameterDiscovery.parse_element(
+                elements_data, offset
+            )
             if element is None:
                 break
             parsed.append(element)
             offset = next_offset
 
         assert len(parsed) == 3
-        assert [e['idx'] for e in parsed] == [0, 1, 2]
+        assert [e["idx"] for e in parsed] == [0, 1, 2]

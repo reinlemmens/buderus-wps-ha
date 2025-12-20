@@ -42,6 +42,8 @@ dev = [
     "black>=23.7.0",
     "ruff>=0.0.287",
     "mypy>=1.5.0",
+    "pre-commit>=3.5.0",
+    "types-PyYAML>=6.0.0",
     "homeassistant>=2024.3.0",  # For integration testing
 ]
 
@@ -139,4 +141,16 @@ strict_equality = true
 
 [[tool.mypy.overrides]]
 module = "serial.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "yaml.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "homeassistant.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "voluptuous.*"
 ignore_missing_imports = true

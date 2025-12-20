@@ -1,6 +1,5 @@
 """Unit tests for exception hierarchy."""
 
-import pytest
 
 from buderus_wps.exceptions import (
     BuderusCANException,

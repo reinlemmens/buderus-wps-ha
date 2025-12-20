@@ -17,8 +17,24 @@ def test_registry_loads_defaults_and_lookup_by_name_and_index():
 
 def test_override_with_device_rebuilds_registry():
     device_entries = [
-        {"idx": 10, "extid": "ABC", "max": 5, "min": 0, "format": "int", "read": 0, "text": "FOO"},
-        {"idx": 11, "extid": "DEF", "max": 10, "min": 1, "format": "int", "read": 1, "text": "BAR"},
+        {
+            "idx": 10,
+            "extid": "ABC",
+            "max": 5,
+            "min": 0,
+            "format": "int",
+            "read": 0,
+            "text": "FOO",
+        },
+        {
+            "idx": 11,
+            "extid": "DEF",
+            "max": 10,
+            "min": 1,
+            "format": "int",
+            "read": 1,
+            "text": "BAR",
+        },
     ]
     registry = ParameterRegistry()
     registry.override_with_device(device_entries)

@@ -219,15 +219,16 @@ DEFAULT_SENSOR_LABELS: Dict[str, str] = {
 # Multiple sources for same sensor provide resilience to intermittent broadcasts
 DEFAULT_SENSOR_MAPPINGS: List[SensorMapping] = [
     # GT2 - Outdoor temperature
-    SensorMapping(base=0x0402, idx=38, sensor=SensorType.OUTDOOR),
+    # Updated to match broadcast_monitor.py findings (idx=12 on circuit bases)
+    SensorMapping(base=0x0060, idx=12, sensor=SensorType.OUTDOOR),
+    SensorMapping(base=0x0061, idx=12, sensor=SensorType.OUTDOOR),
+    SensorMapping(base=0x0062, idx=12, sensor=SensorType.OUTDOOR),
+    SensorMapping(base=0x0063, idx=12, sensor=SensorType.OUTDOOR),
     # GT3 - DHW tank temperature (CORRECTED: idx=78 on base 0x0402/0x0403)
     # Previous mapping (idx=58) was reading wrong temperature (~54°C instead of actual ~27°C)
     SensorMapping(base=0x0402, idx=78, sensor=SensorType.DHW),
     SensorMapping(base=0x0403, idx=78, sensor=SensorType.DHW),
     # GT1 - Brine inlet temperature
-    SensorMapping(base=0x0060, idx=12, sensor=SensorType.BRINE_IN),
-    SensorMapping(base=0x0061, idx=12, sensor=SensorType.BRINE_IN),
-    SensorMapping(base=0x0063, idx=12, sensor=SensorType.BRINE_IN),
     # GT8 - Supply/flow temperature
     SensorMapping(base=0x0270, idx=1, sensor=SensorType.SUPPLY),
     SensorMapping(base=0x0270, idx=7, sensor=SensorType.SUPPLY),
@@ -446,7 +447,7 @@ def load_config(path: Optional[str] = None) -> InstallationConfig:
 
     # Load and parse YAML
     try:
-        with open(config_path, "r") as f:
+        with open(config_path) as f:
             # SECURITY: Use safe_load to prevent code execution
             data = yaml.safe_load(f)
 

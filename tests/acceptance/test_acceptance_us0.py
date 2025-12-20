@@ -15,9 +15,9 @@ Acceptance Scenarios:
 """
 
 import struct
-import pytest
+
 from buderus_wps.discovery import ParameterDiscovery
-from buderus_wps.parameter import Parameter, HeatPump
+from buderus_wps.parameter import HeatPump, Parameter
 from buderus_wps.parameter_data import PARAMETER_DATA
 
 
@@ -56,12 +56,12 @@ class TestAcceptanceScenario3:
 
     def create_test_element(self, idx, extid, max_val, min_val, name):
         """Helper to create binary element data."""
-        data = struct.pack('>H', idx)  # idx, 2 bytes, big-endian
+        data = struct.pack(">H", idx)  # idx, 2 bytes, big-endian
         data += bytes.fromhex(extid)  # extid, 7 bytes
-        data += struct.pack('>I', max_val & 0xFFFFFFFF)  # max, 4 bytes
-        data += struct.pack('>I', min_val & 0xFFFFFFFF)  # min, 4 bytes
-        name_bytes = name.encode('ascii') + b'\x00'
-        data += struct.pack('b', len(name_bytes))  # len, 1 byte
+        data += struct.pack(">I", max_val & 0xFFFFFFFF)  # max, 4 bytes
+        data += struct.pack(">I", min_val & 0xFFFFFFFF)  # min, 4 bytes
+        name_bytes = name.encode("ascii") + b"\x00"
+        data += struct.pack("b", len(name_bytes))  # len, 1 byte
         data += name_bytes  # name
         return data
 
@@ -71,7 +71,7 @@ class TestAcceptanceScenario3:
         element, _ = ParameterDiscovery.parse_element(data, 0)
 
         assert element is not None
-        assert element['idx'] == 42
+        assert element["idx"] == 42
 
     def test_parse_extracts_extid_correctly(self):
         """Given binary element data, When parsed, Then extid is correctly extracted."""
@@ -79,7 +79,7 @@ class TestAcceptanceScenario3:
         element, _ = ParameterDiscovery.parse_element(data, 0)
 
         assert element is not None
-        assert element['extid'] == "61E1E1FC660023"
+        assert element["extid"] == "61E1E1FC660023"
 
     def test_parse_extracts_max_correctly(self):
         """Given binary element data, When parsed, Then max is correctly extracted."""
@@ -87,7 +87,7 @@ class TestAcceptanceScenario3:
         element, _ = ParameterDiscovery.parse_element(data, 0)
 
         assert element is not None
-        assert element['max'] == 16777216
+        assert element["max"] == 16777216
 
     def test_parse_extracts_min_correctly(self):
         """Given binary element data, When parsed, Then min is correctly extracted."""
@@ -95,7 +95,7 @@ class TestAcceptanceScenario3:
         element, _ = ParameterDiscovery.parse_element(data, 0)
 
         assert element is not None
-        assert element['min'] == -30
+        assert element["min"] == -30
 
     def test_parse_extracts_name_correctly(self):
         """Given binary element data, When parsed, Then name is correctly extracted."""
@@ -103,7 +103,7 @@ class TestAcceptanceScenario3:
         element, _ = ParameterDiscovery.parse_element(data, 0)
 
         assert element is not None
-        assert element['text'] == "ACCESS_LEVEL"
+        assert element["text"] == "ACCESS_LEVEL"
 
 
 class TestAcceptanceScenario4:
@@ -112,29 +112,45 @@ class TestAcceptanceScenario4:
     def test_read_can_id_formula_idx_0(self):
         """Given parameter with idx=0, When calculating read CAN ID,
         Then result is 0x04003FE0 (base value)."""
-        param = Parameter(idx=0, extid="0000000000", min=0, max=0,
-                          format="int", read=0, text="TEST")
+        param = Parameter(
+            idx=0, extid="0000000000", min=0, max=0, format="int", read=0, text="TEST"
+        )
         assert param.get_read_can_id() == 0x04003FE0
 
     def test_read_can_id_formula_idx_1(self):
         """Given parameter with idx=1, When calculating read CAN ID,
         Then result is 0x04003FE0 | (1 << 14) = 0x04007FE0."""
-        param = Parameter(idx=1, extid="61E1E1FC660023", min=0, max=5,
-                          format="int", read=0, text="ACCESS_LEVEL")
+        param = Parameter(
+            idx=1,
+            extid="61E1E1FC660023",
+            min=0,
+            max=5,
+            format="int",
+            read=0,
+            text="ACCESS_LEVEL",
+        )
         assert param.get_read_can_id() == 0x04007FE0
 
     def test_write_can_id_formula_idx_0(self):
         """Given parameter with idx=0, When calculating write CAN ID,
         Then result is 0x0C003FE0 (base value)."""
-        param = Parameter(idx=0, extid="0000000000", min=0, max=0,
-                          format="int", read=0, text="TEST")
+        param = Parameter(
+            idx=0, extid="0000000000", min=0, max=0, format="int", read=0, text="TEST"
+        )
         assert param.get_write_can_id() == 0x0C003FE0
 
     def test_write_can_id_formula_idx_1(self):
         """Given parameter with idx=1, When calculating write CAN ID,
         Then result is 0x0C003FE0 | (1 << 14) = 0x0C007FE0."""
-        param = Parameter(idx=1, extid="61E1E1FC660023", min=0, max=5,
-                          format="int", read=0, text="ACCESS_LEVEL")
+        param = Parameter(
+            idx=1,
+            extid="61E1E1FC660023",
+            min=0,
+            max=5,
+            format="int",
+            read=0,
+            text="ACCESS_LEVEL",
+        )
         assert param.get_write_can_id() == 0x0C007FE0
 
     def test_can_id_formula_matches_fhem(self):
@@ -150,8 +166,12 @@ class TestAcceptanceScenario4:
             expected_read = 0x04003FE0 | (idx << 14)
             expected_write = 0x0C003FE0 | (idx << 14)
 
-            assert param.get_read_can_id() == expected_read, f"Read CAN ID mismatch for idx={idx}"
-            assert param.get_write_can_id() == expected_write, f"Write CAN ID mismatch for idx={idx}"
+            assert (
+                param.get_read_can_id() == expected_read
+            ), f"Read CAN ID mismatch for idx={idx}"
+            assert (
+                param.get_write_can_id() == expected_write
+            ), f"Write CAN ID mismatch for idx={idx}"
 
 
 class TestAcceptanceScenario5:

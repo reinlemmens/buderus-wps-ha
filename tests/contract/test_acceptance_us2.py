@@ -16,8 +16,10 @@ Acceptance Scenarios:
    period, Then the system reports a timeout error with details about the failed message
 """
 
+from unittest.mock import MagicMock, PropertyMock, patch
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock, PropertyMock
+
 from buderus_wps.can_adapter import USBtinAdapter
 from buderus_wps.can_message import CANMessage
 from buderus_wps.exceptions import TimeoutError
@@ -26,7 +28,7 @@ from buderus_wps.exceptions import TimeoutError
 class TestAcceptanceScenario1SendAndReceive:
     """AS1: Send CAN read request and receive response within timeout (T046)."""
 
-    @patch('serial.Serial')
+    @patch("serial.Serial")
     def test_as1_send_temperature_request_receive_response(self, mock_serial_class):
         """
         Given: An open connection to the heat pump
@@ -39,14 +41,16 @@ class TestAcceptanceScenario1SendAndReceive:
         type(mock_serial).in_waiting = PropertyMock(return_value=10)
 
         # Simulate initialization + temperature response
-        init_responses = [b'\r'] * 7
+        init_responses = [b"\r"] * 7
         # Temperature request response: ID 0x31D011E9, data bytes representing temp
-        temperature_response = b'T31D011E95800100C812\r'  # Example: 20.0°C encoded (DLC=5)
+        temperature_response = (
+            b"T31D011E95800100C812\r"  # Example: 20.0°C encoded (DLC=5)
+        )
         mock_serial.read.side_effect = init_responses + [temperature_response]
         mock_serial_class.return_value = mock_serial
 
         # Given: Open connection
-        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter = USBtinAdapter("/dev/ttyACM0")
         adapter.connect()
         assert adapter.is_open is True
 
@@ -54,8 +58,8 @@ class TestAcceptanceScenario1SendAndReceive:
         # Using typical Buderus heat pump CAN ID for temperature query
         temp_request = CANMessage(
             arbitration_id=0x31D011E9,
-            data=b'\x80\x01\x00\xC8\x12',  # Example query format
-            is_extended_id=True
+            data=b"\x80\x01\x00\xc8\x12",  # Example query format
+            is_extended_id=True,
         )
         response = adapter.send_frame(temp_request, timeout=2.0)
 
@@ -67,9 +71,9 @@ class TestAcceptanceScenario1SendAndReceive:
         assert response.arbitration_id == 0x31D011E9
         assert response.is_extended_id is True
         assert len(response.data) == 5  # Temperature response payload
-        assert response.data == b'\x80\x01\x00\xC8\x12'
+        assert response.data == b"\x80\x01\x00\xc8\x12"
 
-    @patch('serial.Serial')
+    @patch("serial.Serial")
     def test_as1_send_status_request_receive_response(self, mock_serial_class):
         """
         Given: An open connection
@@ -81,32 +85,32 @@ class TestAcceptanceScenario1SendAndReceive:
         mock_serial.is_open = True
         type(mock_serial).in_waiting = PropertyMock(return_value=10)
 
-        init_responses = [b'\r'] * 7
-        status_response = b't7231AA\r'  # Example status response (ID=0x723, DLC=1, Data=AA)
+        init_responses = [b"\r"] * 7
+        status_response = (
+            b"t7231AA\r"  # Example status response (ID=0x723, DLC=1, Data=AA)
+        )
         mock_serial.read.side_effect = init_responses + [status_response]
         mock_serial_class.return_value = mock_serial
 
         # Given: Open connection
-        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter = USBtinAdapter("/dev/ttyACM0")
         adapter.connect()
 
         # When: Send status request
         status_request = CANMessage(
-            arbitration_id=0x723,
-            data=b'\xAA',
-            is_extended_id=False
+            arbitration_id=0x723, data=b"\xaa", is_extended_id=False
         )
         response = adapter.send_frame(status_request, timeout=2.0)
 
         # Then: Response received with correct data
         assert response.arbitration_id == 0x723
-        assert response.data == b'\xAA'
+        assert response.data == b"\xaa"
 
 
 class TestAcceptanceScenario2SequentialTransmission:
     """AS2: Sequential message transmission without interference (T047)."""
 
-    @patch('serial.Serial')
+    @patch("serial.Serial")
     def test_as2_multiple_messages_transmitted_sequentially(self, mock_serial_class):
         """
         Given: An open connection
@@ -120,46 +124,44 @@ class TestAcceptanceScenario2SequentialTransmission:
         type(mock_serial).in_waiting = PropertyMock(return_value=10)
 
         # Simulate initialization + 3 sequential responses
-        init_responses = [b'\r'] * 7
+        init_responses = [b"\r"] * 7
         responses = [
-            b't1111AA\r',           # Response 1 (ID=0x111, DLC=1, Data=AA)
-            b't2222BBCC\r',         # Response 2 (ID=0x222, DLC=2, Data=BBCC)
-            b'T31D011E94DEADBEEF\r' # Response 3 (ID=0x31D011E9, DLC=4, Data=DEADBEEF)
+            b"t1111AA\r",  # Response 1 (ID=0x111, DLC=1, Data=AA)
+            b"t2222BBCC\r",  # Response 2 (ID=0x222, DLC=2, Data=BBCC)
+            b"T31D011E94DEADBEEF\r",  # Response 3 (ID=0x31D011E9, DLC=4, Data=DEADBEEF)
         ]
         mock_serial.read.side_effect = init_responses + responses
         mock_serial_class.return_value = mock_serial
 
         # Given: Open connection
-        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter = USBtinAdapter("/dev/ttyACM0")
         adapter.connect()
 
         # When: Send message 1
-        msg1 = CANMessage(arbitration_id=0x111, data=b'\xAA')
+        msg1 = CANMessage(arbitration_id=0x111, data=b"\xaa")
         response1 = adapter.send_frame(msg1, timeout=2.0)
 
         # Then: Response 1 received and matched
         assert response1.arbitration_id == 0x111
-        assert response1.data == b'\xAA'
+        assert response1.data == b"\xaa"
 
         # When: Send message 2
-        msg2 = CANMessage(arbitration_id=0x222, data=b'\xBB\xCC')
+        msg2 = CANMessage(arbitration_id=0x222, data=b"\xbb\xcc")
         response2 = adapter.send_frame(msg2, timeout=2.0)
 
         # Then: Response 2 received and matched
         assert response2.arbitration_id == 0x222
-        assert response2.data == b'\xBB\xCC'
+        assert response2.data == b"\xbb\xcc"
 
         # When: Send message 3 (extended ID)
         msg3 = CANMessage(
-            arbitration_id=0x31D011E9,
-            data=b'\xDE\xAD\xBE\xEF',
-            is_extended_id=True
+            arbitration_id=0x31D011E9, data=b"\xde\xad\xbe\xef", is_extended_id=True
         )
         response3 = adapter.send_frame(msg3, timeout=2.0)
 
         # Then: Response 3 received and matched
         assert response3.arbitration_id == 0x31D011E9
-        assert response3.data == b'\xDE\xAD\xBE\xEF'
+        assert response3.data == b"\xde\xad\xbe\xef"
         assert response3.is_extended_id is True
 
         # Verify: All messages transmitted in order
@@ -168,11 +170,11 @@ class TestAcceptanceScenario2SequentialTransmission:
 
         # Check order preserved
         assert len(message_writes) == 3
-        assert b't1111AA\r' in message_writes[0]
-        assert b't2222BBCC\r' in message_writes[1]
-        assert b'T31D011E94DEADBEEF\r' in message_writes[2]
+        assert b"t1111AA\r" in message_writes[0]
+        assert b"t2222BBCC\r" in message_writes[1]
+        assert b"T31D011E94DEADBEEF\r" in message_writes[2]
 
-    @patch('serial.Serial')
+    @patch("serial.Serial")
     def test_as2_responses_matched_to_correct_requests(self, mock_serial_class):
         """
         Given: Open connection with multiple pending requests
@@ -184,24 +186,24 @@ class TestAcceptanceScenario2SequentialTransmission:
         mock_serial.is_open = True
         type(mock_serial).in_waiting = PropertyMock(return_value=10)
 
-        init_responses = [b'\r'] * 7
+        init_responses = [b"\r"] * 7
         responses = [
-            b't1232AAAA\r',  # ID=0x123, DLC=2, Data=AAAA
-            b't3452BBBB\r',  # ID=0x345, DLC=2, Data=BBBB
-            b't5672CCCC\r'   # ID=0x567, DLC=2, Data=CCCC
+            b"t1232AAAA\r",  # ID=0x123, DLC=2, Data=AAAA
+            b"t3452BBBB\r",  # ID=0x345, DLC=2, Data=BBBB
+            b"t5672CCCC\r",  # ID=0x567, DLC=2, Data=CCCC
         ]
         mock_serial.read.side_effect = init_responses + responses
         mock_serial_class.return_value = mock_serial
 
         # Given: Open connection
-        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter = USBtinAdapter("/dev/ttyACM0")
         adapter.connect()
 
         # When: Send requests with distinct IDs
         requests = [
-            CANMessage(arbitration_id=0x123, data=b'\xAA\xAA'),
-            CANMessage(arbitration_id=0x345, data=b'\xBB\xBB'),
-            CANMessage(arbitration_id=0x567, data=b'\xCC\xCC'),
+            CANMessage(arbitration_id=0x123, data=b"\xaa\xaa"),
+            CANMessage(arbitration_id=0x345, data=b"\xbb\xbb"),
+            CANMessage(arbitration_id=0x567, data=b"\xcc\xcc"),
         ]
 
         responses_received = []
@@ -211,19 +213,19 @@ class TestAcceptanceScenario2SequentialTransmission:
 
         # Then: Each response matches its request
         assert responses_received[0].arbitration_id == 0x123
-        assert responses_received[0].data == b'\xAA\xAA'
+        assert responses_received[0].data == b"\xaa\xaa"
 
         assert responses_received[1].arbitration_id == 0x345
-        assert responses_received[1].data == b'\xBB\xBB'
+        assert responses_received[1].data == b"\xbb\xbb"
 
         assert responses_received[2].arbitration_id == 0x567
-        assert responses_received[2].data == b'\xCC\xCC'
+        assert responses_received[2].data == b"\xcc\xcc"
 
 
 class TestAcceptanceScenario3TimeoutHandling:
     """AS3: Timeout error when no response received (T048)."""
 
-    @patch('serial.Serial')
+    @patch("serial.Serial")
     def test_as3_timeout_when_no_response(self, mock_serial_class):
         """
         Given: A CAN message is sent
@@ -233,22 +235,22 @@ class TestAcceptanceScenario3TimeoutHandling:
         # Setup: No response from device
         mock_serial = MagicMock()
         mock_serial.is_open = True
-        type(mock_serial).in_waiting = PropertyMock(return_value=10)  # No data available
+        type(mock_serial).in_waiting = PropertyMock(
+            return_value=10
+        )  # No data available
 
-        init_responses = [b'\r'] * 7
+        init_responses = [b"\r"] * 7
         # No response after init - empty reads
-        mock_serial.read.side_effect = init_responses + [b''] * 100
+        mock_serial.read.side_effect = init_responses + [b""] * 100
         mock_serial_class.return_value = mock_serial
 
         # Given: Open connection
-        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter = USBtinAdapter("/dev/ttyACM0")
         adapter.connect()
 
         # When: Send message with short timeout
         request = CANMessage(
-            arbitration_id=0x123,
-            data=b'\xAA\xBB',
-            is_extended_id=False
+            arbitration_id=0x123, data=b"\xaa\xbb", is_extended_id=False
         )
 
         # Then: Timeout error raised with details
@@ -257,9 +259,9 @@ class TestAcceptanceScenario3TimeoutHandling:
 
         # Verify error message contains details
         error_msg = str(exc_info.value).lower()
-        assert 'timeout' in error_msg or 'no response' in error_msg
+        assert "timeout" in error_msg or "no response" in error_msg
 
-    @patch('serial.Serial')
+    @patch("serial.Serial")
     def test_as3_timeout_includes_message_context(self, mock_serial_class):
         """
         Given: Message sent but no response
@@ -271,26 +273,24 @@ class TestAcceptanceScenario3TimeoutHandling:
         mock_serial.is_open = True
         type(mock_serial).in_waiting = PropertyMock(return_value=10)
 
-        init_responses = [b'\r'] * 7
-        mock_serial.read.side_effect = init_responses + [b''] * 100
+        init_responses = [b"\r"] * 7
+        mock_serial.read.side_effect = init_responses + [b""] * 100
         mock_serial_class.return_value = mock_serial
 
         # Given: Open connection
-        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter = USBtinAdapter("/dev/ttyACM0")
         adapter.connect()
 
         # When: Send extended ID message (Buderus heat pump)
         buderus_request = CANMessage(
-            arbitration_id=0x31D011E9,
-            data=b'\x80\x01\x00\xC8\x12',
-            is_extended_id=True
+            arbitration_id=0x31D011E9, data=b"\x80\x01\x00\xc8\x12", is_extended_id=True
         )
 
         # Then: Timeout with context
         with pytest.raises(TimeoutError):
             adapter.send_frame(buderus_request, timeout=0.1)
 
-    @patch('serial.Serial')
+    @patch("serial.Serial")
     def test_as3_subsequent_operations_work_after_timeout(self, mock_serial_class):
         """
         Given: Previous message timed out
@@ -302,18 +302,18 @@ class TestAcceptanceScenario3TimeoutHandling:
         mock_serial.is_open = True
         type(mock_serial).in_waiting = PropertyMock(return_value=10)
 
-        init_responses = [b'\r'] * 7
+        init_responses = [b"\r"] * 7
         # First request: timeout (no response)
         # Second request: success
-        mock_serial.read.side_effect = init_responses + [b''] * 10 + [b't1231AA\r']
+        mock_serial.read.side_effect = init_responses + [b""] * 10 + [b"t1231AA\r"]
         mock_serial_class.return_value = mock_serial
 
         # Given: Open connection
-        adapter = USBtinAdapter('/dev/ttyACM0')
+        adapter = USBtinAdapter("/dev/ttyACM0")
         adapter.connect()
 
         # When: First message times out
-        msg1 = CANMessage(arbitration_id=0x111, data=b'\xFF')
+        msg1 = CANMessage(arbitration_id=0x111, data=b"\xff")
         with pytest.raises(TimeoutError):
             adapter.send_frame(msg1, timeout=0.05)
 
@@ -321,7 +321,7 @@ class TestAcceptanceScenario3TimeoutHandling:
         assert adapter.is_open is True
 
         # When: Send second message
-        msg2 = CANMessage(arbitration_id=0x123, data=b'\xAA')
+        msg2 = CANMessage(arbitration_id=0x123, data=b"\xaa")
         response = adapter.send_frame(msg2, timeout=1.0)
 
         # Then: Second message succeeds
@@ -338,8 +338,9 @@ class TestAcceptanceScenario4HumanReadableLabels:
         When: The monitor processes the reading
         Then: Human-readable name is available via get_known_name()
         """
-        from buderus_wps.broadcast_monitor import BroadcastMonitor, BroadcastReading
         from unittest.mock import MagicMock
+
+        from buderus_wps.broadcast_monitor import BroadcastMonitor, BroadcastReading
 
         # Setup: Mock adapter
         adapter = MagicMock()
@@ -352,7 +353,7 @@ class TestAcceptanceScenario4HumanReadableLabels:
             base=0x0060,
             idx=0,
             dlc=2,
-            raw_data=b"\x00\xCD",  # 205 = 20.5°C
+            raw_data=b"\x00\xcd",  # 205 = 20.5°C
             raw_value=205,
             timestamp=0.0,
         )
@@ -369,8 +370,9 @@ class TestAcceptanceScenario4HumanReadableLabels:
         When: The monitor processes the reading
         Then: get_known_name() returns None
         """
-        from buderus_wps.broadcast_monitor import BroadcastMonitor, BroadcastReading
         from unittest.mock import MagicMock
+
+        from buderus_wps.broadcast_monitor import BroadcastMonitor, BroadcastReading
 
         # Setup
         adapter = MagicMock()
@@ -400,10 +402,11 @@ class TestAcceptanceScenario4HumanReadableLabels:
         When: Broadcast readings are captured
         Then: Known parameters show human-readable names in output
         """
-        from buderus_wps_cli.main import cmd_monitor
-        from buderus_wps.broadcast_monitor import BroadcastReading, BroadcastCache
-        from unittest.mock import MagicMock, patch
         import argparse
+        from unittest.mock import MagicMock, patch
+
+        from buderus_wps.broadcast_monitor import BroadcastCache, BroadcastReading
+        from buderus_wps_cli.main import cmd_monitor
 
         # Setup: Mock adapter and broadcast monitor
         adapter = MagicMock()
@@ -411,26 +414,30 @@ class TestAcceptanceScenario4HumanReadableLabels:
 
         # Create mock cache with known readings
         mock_cache = BroadcastCache()
-        mock_cache.update(BroadcastReading(
-            can_id=0x0C000060,
-            base=0x0060,
-            idx=0,
-            dlc=2,
-            raw_data=b"\x00\xCD",
-            raw_value=205,
-            timestamp=0.0,
-        ))
-        mock_cache.update(BroadcastReading(
-            can_id=0x00030060,
-            base=0x0060,
-            idx=12,
-            dlc=2,
-            raw_data=b"\x00\x69",
-            raw_value=105,
-            timestamp=0.0,
-        ))
+        mock_cache.update(
+            BroadcastReading(
+                can_id=0x0C000060,
+                base=0x0060,
+                idx=0,
+                dlc=2,
+                raw_data=b"\x00\xcd",
+                raw_value=205,
+                timestamp=0.0,
+            )
+        )
+        mock_cache.update(
+            BroadcastReading(
+                can_id=0x00030060,
+                base=0x0060,
+                idx=12,
+                dlc=2,
+                raw_data=b"\x00\x69",
+                raw_value=105,
+                timestamp=0.0,
+            )
+        )
 
-        with patch('buderus_wps_cli.main.BroadcastMonitor') as MockMonitor:
+        with patch("buderus_wps_cli.main.BroadcastMonitor") as MockMonitor:
             mock_monitor = MagicMock()
             mock_monitor.collect.return_value = mock_cache
             mock_monitor.get_known_name.side_effect = lambda r: {
@@ -458,28 +465,31 @@ class TestAcceptanceScenario4HumanReadableLabels:
         When: Broadcast readings are captured
         Then: JSON output includes "name" field for each reading
         """
-        from buderus_wps_cli.main import cmd_monitor
-        from buderus_wps.broadcast_monitor import BroadcastReading, BroadcastCache
-        from unittest.mock import MagicMock, patch
         import argparse
         import json
+        from unittest.mock import MagicMock, patch
+
+        from buderus_wps.broadcast_monitor import BroadcastCache, BroadcastReading
+        from buderus_wps_cli.main import cmd_monitor
 
         # Setup
         adapter = MagicMock()
         adapter.is_open = True
 
         mock_cache = BroadcastCache()
-        mock_cache.update(BroadcastReading(
-            can_id=0x0C000060,
-            base=0x0060,
-            idx=0,
-            dlc=2,
-            raw_data=b"\x00\xCD",
-            raw_value=205,
-            timestamp=0.0,
-        ))
+        mock_cache.update(
+            BroadcastReading(
+                can_id=0x0C000060,
+                base=0x0060,
+                idx=0,
+                dlc=2,
+                raw_data=b"\x00\xcd",
+                raw_value=205,
+                timestamp=0.0,
+            )
+        )
 
-        with patch('buderus_wps_cli.main.BroadcastMonitor') as MockMonitor:
+        with patch("buderus_wps_cli.main.BroadcastMonitor") as MockMonitor:
             mock_monitor = MagicMock()
             mock_monitor.collect.return_value = mock_cache
             mock_monitor.get_known_name.return_value = "RC10_C1_ROOM_TEMP"
@@ -506,27 +516,30 @@ class TestAcceptanceScenario4HumanReadableLabels:
         When: Output is displayed
         Then: Unknown broadcasts show "-" in name column
         """
-        from buderus_wps_cli.main import cmd_monitor
-        from buderus_wps.broadcast_monitor import BroadcastReading, BroadcastCache
-        from unittest.mock import MagicMock, patch
         import argparse
+        from unittest.mock import MagicMock, patch
+
+        from buderus_wps.broadcast_monitor import BroadcastCache, BroadcastReading
+        from buderus_wps_cli.main import cmd_monitor
 
         # Setup
         adapter = MagicMock()
         adapter.is_open = True
 
         mock_cache = BroadcastCache()
-        mock_cache.update(BroadcastReading(
-            can_id=0x0CFFF000,
-            base=0xF000,
-            idx=999,
-            dlc=2,
-            raw_data=b"\x00\x00",
-            raw_value=0,
-            timestamp=0.0,
-        ))
+        mock_cache.update(
+            BroadcastReading(
+                can_id=0x0CFFF000,
+                base=0xF000,
+                idx=999,
+                dlc=2,
+                raw_data=b"\x00\x00",
+                raw_value=0,
+                timestamp=0.0,
+            )
+        )
 
-        with patch('buderus_wps_cli.main.BroadcastMonitor') as MockMonitor:
+        with patch("buderus_wps_cli.main.BroadcastMonitor") as MockMonitor:
             mock_monitor = MagicMock()
             mock_monitor.collect.return_value = mock_cache
             mock_monitor.get_known_name.return_value = None  # Unknown
@@ -542,7 +555,7 @@ class TestAcceptanceScenario4HumanReadableLabels:
             captured = capsys.readouterr()
             assert result == 0
             # Should contain a dash for unknown parameter
-            lines = captured.out.split('\n')
-            data_lines = [l for l in lines if '0x0CFFF000' in l]
+            lines = captured.out.split("\n")
+            data_lines = [l for l in lines if "0x0CFFF000" in l]
             assert len(data_lines) == 1
-            assert '-' in data_lines[0]
+            assert "-" in data_lines[0]

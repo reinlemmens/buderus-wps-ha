@@ -5,7 +5,6 @@ correctly across different parameter types (normal range, negative min, large ma
 flag parameters).
 """
 
-import pytest
 from buderus_wps.parameter import Parameter
 from buderus_wps.parameter_data import PARAMETER_DATA
 
@@ -16,7 +15,9 @@ class TestParameterValidationIntegration:
     def test_validation_across_normal_range_parameters(self):
         """T014: Test validation with normal range parameters from real data."""
         # ACCESS_LEVEL: min=0, max=5
-        access_level_data = next(p for p in PARAMETER_DATA if p["text"] == "ACCESS_LEVEL")
+        access_level_data = next(
+            p for p in PARAMETER_DATA if p["text"] == "ACCESS_LEVEL"
+        )
         param = Parameter(**access_level_data)
 
         # Valid values
@@ -32,8 +33,7 @@ class TestParameterValidationIntegration:
         """T014: Test validation with parameters having negative minimum."""
         # ADDITIONAL_BLOCK_HIGH_T2_TEMP: min=-30, max=40
         temp_param_data = next(
-            p for p in PARAMETER_DATA
-            if p["text"] == "ADDITIONAL_BLOCK_HIGH_T2_TEMP"
+            p for p in PARAMETER_DATA if p["text"] == "ADDITIONAL_BLOCK_HIGH_T2_TEMP"
         )
         param = Parameter(**temp_param_data)
 
@@ -60,7 +60,9 @@ class TestParameterValidationIntegration:
         # Valid values
         assert param.validate_value(param_data["min"]) is True
         assert param.validate_value(param_data["max"]) is True
-        assert param.validate_value((param_data["min"] + param_data["max"]) // 2) is True
+        assert (
+            param.validate_value((param_data["min"] + param_data["max"]) // 2) is True
+        )
 
         # Invalid values
         if param_data["min"] > 0:
@@ -71,8 +73,7 @@ class TestParameterValidationIntegration:
         """T014: Test validation with flag parameters where min=max=0."""
         # ACCESSORIES_CONNECTED_BITMASK: min=0, max=0
         flag_param_data = next(
-            p for p in PARAMETER_DATA
-            if p["text"] == "ACCESSORIES_CONNECTED_BITMASK"
+            p for p in PARAMETER_DATA if p["text"] == "ACCESSORIES_CONNECTED_BITMASK"
         )
         param = Parameter(**flag_param_data)
 

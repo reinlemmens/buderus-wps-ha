@@ -1,9 +1,9 @@
-import pytest
-from unittest.mock import Mock
 
+import pytest
+
+from buderus_wps.can_message import CANMessage
 from buderus_wps.heat_pump import HeatPumpClient
 from buderus_wps.parameter_registry import ParameterRegistry
-from buderus_wps.can_message import CANMessage
 
 
 class FakeAdapter:
@@ -32,12 +32,26 @@ class FakeAdapter:
 
 
 def test_read_value_builds_ids_and_validates_response_id():
-    reg = ParameterRegistry([{"idx": 1, "extid": "ABCD", "min": 0, "max": 10, "format": "int", "read": 0, "text": "FOO"}])
+    reg = ParameterRegistry(
+        [
+            {
+                "idx": 1,
+                "extid": "ABCD",
+                "min": 0,
+                "max": 10,
+                "format": "int",
+                "read": 0,
+                "text": "FOO",
+            }
+        ]
+    )
     adapter = FakeAdapter()
     client = HeatPumpClient(adapter, reg)
 
     response_id = 0x0C003FE0 | (1 << 14)
-    adapter.recv_queue.append(CANMessage(arbitration_id=response_id, data=b"\x01", is_extended_id=True))
+    adapter.recv_queue.append(
+        CANMessage(arbitration_id=response_id, data=b"\x01", is_extended_id=True)
+    )
 
     data = client.read_value("foo", timeout=0.1)
     assert data == b"\x01"
@@ -47,7 +61,19 @@ def test_read_value_builds_ids_and_validates_response_id():
 
 
 def test_read_value_ignores_unrelated_frames():
-    reg = ParameterRegistry([{"idx": 1, "extid": "ABCD", "min": 0, "max": 10, "format": "int", "read": 1, "text": "FOO"}])
+    reg = ParameterRegistry(
+        [
+            {
+                "idx": 1,
+                "extid": "ABCD",
+                "min": 0,
+                "max": 10,
+                "format": "int",
+                "read": 1,
+                "text": "FOO",
+            }
+        ]
+    )
 
     class Adapter(FakeAdapter):
         def __init__(self):
@@ -62,7 +88,11 @@ def test_read_value_ignores_unrelated_frames():
         def receive_frame(self, timeout: float = 1.0):
             self.receive_calls += 1
             if self.receive_calls == 1:
-                return CANMessage(arbitration_id=0x0C003FE0 | (1 << 14), data=b"\x02", is_extended_id=True)
+                return CANMessage(
+                    arbitration_id=0x0C003FE0 | (1 << 14),
+                    data=b"\x02",
+                    is_extended_id=True,
+                )
             raise TimeoutError("no frame")
 
     adapter = Adapter()
@@ -73,7 +103,19 @@ def test_read_value_ignores_unrelated_frames():
 
 
 def test_write_value_encodes_and_sends():
-    reg = ParameterRegistry([{"idx": 1, "extid": "00000001", "min": 0, "max": 100, "format": "int", "read": 0, "text": "BAR"}])
+    reg = ParameterRegistry(
+        [
+            {
+                "idx": 1,
+                "extid": "00000001",
+                "min": 0,
+                "max": 100,
+                "format": "int",
+                "read": 0,
+                "text": "BAR",
+            }
+        ]
+    )
     adapter = FakeAdapter()
     client = HeatPumpClient(adapter, reg)
 
@@ -88,7 +130,19 @@ def test_write_value_encodes_and_sends():
 
 
 def test_write_value_out_of_range_raises():
-    reg = ParameterRegistry([{"idx": 1, "extid": "00000001", "min": 0, "max": 10, "format": "int", "read": 0, "text": "BAR"}])
+    reg = ParameterRegistry(
+        [
+            {
+                "idx": 1,
+                "extid": "00000001",
+                "min": 0,
+                "max": 10,
+                "format": "int",
+                "read": 0,
+                "text": "BAR",
+            }
+        ]
+    )
     adapter = FakeAdapter()
     client = HeatPumpClient(adapter, reg)
 

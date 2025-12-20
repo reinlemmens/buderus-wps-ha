@@ -2,16 +2,14 @@
 
 from __future__ import annotations
 
-import pytest
-
 # conftest.py sets up HA mocks before we import
 from custom_components.buderus_wps.const import (
-    SENSOR_OUTDOOR,
-    SENSOR_SUPPLY,
-    SENSOR_RETURN,
-    SENSOR_DHW,
     SENSOR_BRINE_IN,
+    SENSOR_DHW,
     SENSOR_NAMES,
+    SENSOR_OUTDOOR,
+    SENSOR_RETURN,
+    SENSOR_SUPPLY,
 )
 
 
@@ -23,8 +21,12 @@ class TestSensorConstants:
         # With has_entity_name=True, these are entity names (not full display names)
         # Home Assistant automatically prepends device name "Heat Pump" in UI
         for sensor_type, name in SENSOR_NAMES.items():
-            assert len(name) > 0, f"Sensor name for type '{sensor_type}' must not be empty"
-            assert isinstance(name, str), f"Sensor name for type '{sensor_type}' must be a string"
+            assert (
+                len(name) > 0
+            ), f"Sensor name for type '{sensor_type}' must not be empty"
+            assert isinstance(
+                name, str
+            ), f"Sensor name for type '{sensor_type}' must be a string"
 
     def test_five_sensors_defined(self):
         """Must have exactly 5 temperature sensors defined."""

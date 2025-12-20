@@ -6,7 +6,6 @@ heat pump and provides lookup with fallback to static defaults.
 Protocol Reference: FHEM 26_KM273v018.pm lines 2052-2164
 """
 
-import pytest
 from buderus_wps.element_discovery import DiscoveredElement
 from buderus_wps.runtime_registry import RuntimeParameterRegistry
 
@@ -21,19 +20,19 @@ class TestRuntimeParameterRegistryLookup:
         # Register a discovered element
         element = DiscoveredElement(
             idx=2480,  # Different from static value
-            extid='E1263DCA71010F',
-            text='XDHW_TIME',
+            extid="E1263DCA71010F",
+            text="XDHW_TIME",
             min_value=0,
-            max_value=48
+            max_value=48,
         )
         registry.register(element)
 
         # Look up by name
-        result = registry.get_by_name('XDHW_TIME')
+        result = registry.get_by_name("XDHW_TIME")
 
         assert result is not None
         assert result.idx == 2480
-        assert result.text == 'XDHW_TIME'
+        assert result.text == "XDHW_TIME"
 
     def test_lookup_is_case_insensitive(self):
         """Parameter name lookup should be case-insensitive."""
@@ -41,23 +40,23 @@ class TestRuntimeParameterRegistryLookup:
 
         element = DiscoveredElement(
             idx=100,
-            extid='AABBCCDDEEFF00',
-            text='TEST_PARAM',
+            extid="AABBCCDDEEFF00",
+            text="TEST_PARAM",
             min_value=0,
-            max_value=100
+            max_value=100,
         )
         registry.register(element)
 
         # Look up with different cases
-        assert registry.get_by_name('TEST_PARAM') is not None
-        assert registry.get_by_name('test_param') is not None
-        assert registry.get_by_name('Test_Param') is not None
+        assert registry.get_by_name("TEST_PARAM") is not None
+        assert registry.get_by_name("test_param") is not None
+        assert registry.get_by_name("Test_Param") is not None
 
     def test_lookup_nonexistent_returns_none(self):
         """Looking up a non-existent parameter returns None."""
         registry = RuntimeParameterRegistry()
 
-        result = registry.get_by_name('NONEXISTENT_PARAM')
+        result = registry.get_by_name("NONEXISTENT_PARAM")
 
         assert result is None
 
@@ -66,32 +65,42 @@ class TestRuntimeParameterRegistryLookup:
         registry = RuntimeParameterRegistry()
 
         elements = [
-            DiscoveredElement(idx=100, extid='AA' * 7, text='PARAM_A', min_value=0, max_value=10),
-            DiscoveredElement(idx=101, extid='BB' * 7, text='PARAM_B', min_value=-10, max_value=10),
-            DiscoveredElement(idx=102, extid='CC' * 7, text='PARAM_C', min_value=0, max_value=100),
+            DiscoveredElement(
+                idx=100, extid="AA" * 7, text="PARAM_A", min_value=0, max_value=10
+            ),
+            DiscoveredElement(
+                idx=101, extid="BB" * 7, text="PARAM_B", min_value=-10, max_value=10
+            ),
+            DiscoveredElement(
+                idx=102, extid="CC" * 7, text="PARAM_C", min_value=0, max_value=100
+            ),
         ]
 
         for elem in elements:
             registry.register(elem)
 
-        assert registry.get_by_name('PARAM_A').idx == 100
-        assert registry.get_by_name('PARAM_B').idx == 101
-        assert registry.get_by_name('PARAM_C').idx == 102
+        assert registry.get_by_name("PARAM_A").idx == 100
+        assert registry.get_by_name("PARAM_B").idx == 101
+        assert registry.get_by_name("PARAM_C").idx == 102
 
     def test_register_overwrites_existing(self):
         """Registering an element with the same name overwrites the previous one."""
         registry = RuntimeParameterRegistry()
 
         # Register initial element
-        elem1 = DiscoveredElement(idx=100, extid='AA' * 7, text='TEST_PARAM', min_value=0, max_value=10)
+        elem1 = DiscoveredElement(
+            idx=100, extid="AA" * 7, text="TEST_PARAM", min_value=0, max_value=10
+        )
         registry.register(elem1)
 
         # Register element with same name but different idx
-        elem2 = DiscoveredElement(idx=200, extid='BB' * 7, text='TEST_PARAM', min_value=0, max_value=20)
+        elem2 = DiscoveredElement(
+            idx=200, extid="BB" * 7, text="TEST_PARAM", min_value=0, max_value=20
+        )
         registry.register(elem2)
 
         # Should have the new value
-        result = registry.get_by_name('TEST_PARAM')
+        result = registry.get_by_name("TEST_PARAM")
         assert result.idx == 200
         assert result.max_value == 20
 
@@ -101,10 +110,18 @@ class TestRuntimeParameterRegistryLookup:
 
         assert registry.count == 0
 
-        registry.register(DiscoveredElement(idx=100, extid='AA' * 7, text='P1', min_value=0, max_value=10))
+        registry.register(
+            DiscoveredElement(
+                idx=100, extid="AA" * 7, text="P1", min_value=0, max_value=10
+            )
+        )
         assert registry.count == 1
 
-        registry.register(DiscoveredElement(idx=101, extid='BB' * 7, text='P2', min_value=0, max_value=10))
+        registry.register(
+            DiscoveredElement(
+                idx=101, extid="BB" * 7, text="P2", min_value=0, max_value=10
+            )
+        )
         assert registry.count == 2
 
 
@@ -117,12 +134,12 @@ class TestRuntimeParameterRegistryFallback:
 
         # Look up a parameter that exists in static data but not discovered
         # XDHW_TIME exists in parameter_data.py with idx=2475
-        result = registry.get_by_name('XDHW_TIME')
+        result = registry.get_by_name("XDHW_TIME")
 
         assert result is not None
         # The fallback should return a DiscoveredElement-compatible object
-        assert hasattr(result, 'idx')
-        assert hasattr(result, 'text')
+        assert hasattr(result, "idx")
+        assert hasattr(result, "text")
 
     def test_discovered_takes_precedence_over_static(self):
         """Discovered elements take precedence over static defaults."""
@@ -131,14 +148,14 @@ class TestRuntimeParameterRegistryFallback:
         # Register a discovered element with different idx than static
         element = DiscoveredElement(
             idx=2480,  # Different from static value of 2475
-            extid='E1263DCA71010F',
-            text='XDHW_TIME',
+            extid="E1263DCA71010F",
+            text="XDHW_TIME",
             min_value=0,
-            max_value=48
+            max_value=48,
         )
         registry.register(element)
 
-        result = registry.get_by_name('XDHW_TIME')
+        result = registry.get_by_name("XDHW_TIME")
 
         # Should use discovered value, not static
         assert result.idx == 2480
@@ -148,7 +165,7 @@ class TestRuntimeParameterRegistryFallback:
         registry = RuntimeParameterRegistry(use_static_fallback=False)
 
         # Don't register anything - should return None even for known params
-        result = registry.get_by_name('XDHW_TIME')
+        result = registry.get_by_name("XDHW_TIME")
 
         assert result is None
 
@@ -157,7 +174,7 @@ class TestRuntimeParameterRegistryFallback:
         registry = RuntimeParameterRegistry()
 
         # Without registering, should fall back to static for known params
-        result = registry.get_by_name('XDHW_TIME')
+        result = registry.get_by_name("XDHW_TIME")
 
         assert result is not None
 
@@ -165,15 +182,15 @@ class TestRuntimeParameterRegistryFallback:
         """Static fallback returns object with same interface as DiscoveredElement."""
         registry = RuntimeParameterRegistry(use_static_fallback=True)
 
-        result = registry.get_by_name('XDHW_TIME')
+        result = registry.get_by_name("XDHW_TIME")
 
         # Check it has all the required attributes
-        assert hasattr(result, 'idx')
-        assert hasattr(result, 'extid')
-        assert hasattr(result, 'text')
-        assert hasattr(result, 'min_value')
-        assert hasattr(result, 'max_value')
-        assert hasattr(result, 'can_id')
+        assert hasattr(result, "idx")
+        assert hasattr(result, "extid")
+        assert hasattr(result, "text")
+        assert hasattr(result, "min_value")
+        assert hasattr(result, "max_value")
+        assert hasattr(result, "can_id")
 
 
 class TestRuntimeParameterRegistryBulkOperations:
@@ -184,25 +201,39 @@ class TestRuntimeParameterRegistryBulkOperations:
         registry = RuntimeParameterRegistry()
 
         elements = [
-            DiscoveredElement(idx=100, extid='AA' * 7, text='PARAM_A', min_value=0, max_value=10),
-            DiscoveredElement(idx=101, extid='BB' * 7, text='PARAM_B', min_value=0, max_value=10),
-            DiscoveredElement(idx=102, extid='CC' * 7, text='PARAM_C', min_value=0, max_value=10),
+            DiscoveredElement(
+                idx=100, extid="AA" * 7, text="PARAM_A", min_value=0, max_value=10
+            ),
+            DiscoveredElement(
+                idx=101, extid="BB" * 7, text="PARAM_B", min_value=0, max_value=10
+            ),
+            DiscoveredElement(
+                idx=102, extid="CC" * 7, text="PARAM_C", min_value=0, max_value=10
+            ),
         ]
 
         registry.register_all(elements)
 
         assert registry.count == 3
-        assert registry.get_by_name('PARAM_A') is not None
-        assert registry.get_by_name('PARAM_B') is not None
-        assert registry.get_by_name('PARAM_C') is not None
+        assert registry.get_by_name("PARAM_A") is not None
+        assert registry.get_by_name("PARAM_B") is not None
+        assert registry.get_by_name("PARAM_C") is not None
 
     def test_clear_removes_all_discovered(self):
         """Clear removes all discovered elements but doesn't affect fallback."""
         registry = RuntimeParameterRegistry(use_static_fallback=True)
 
         # Register some elements
-        registry.register(DiscoveredElement(idx=100, extid='AA' * 7, text='CUSTOM_PARAM', min_value=0, max_value=10))
-        registry.register(DiscoveredElement(idx=2480, extid='BB' * 7, text='XDHW_TIME', min_value=0, max_value=48))
+        registry.register(
+            DiscoveredElement(
+                idx=100, extid="AA" * 7, text="CUSTOM_PARAM", min_value=0, max_value=10
+            )
+        )
+        registry.register(
+            DiscoveredElement(
+                idx=2480, extid="BB" * 7, text="XDHW_TIME", min_value=0, max_value=48
+            )
+        )
 
         assert registry.count == 2
 
@@ -212,10 +243,10 @@ class TestRuntimeParameterRegistryBulkOperations:
         assert registry.count == 0
 
         # Custom param should be gone
-        assert registry.get_by_name('CUSTOM_PARAM') is None
+        assert registry.get_by_name("CUSTOM_PARAM") is None
 
         # But static fallback should still work
-        result = registry.get_by_name('XDHW_TIME')
+        result = registry.get_by_name("XDHW_TIME")
         assert result is not None
         # Should be static value now (idx=2475), not our registered 2480
         assert result.idx == 2475
@@ -225,8 +256,12 @@ class TestRuntimeParameterRegistryBulkOperations:
         registry = RuntimeParameterRegistry()
 
         elements = [
-            DiscoveredElement(idx=100, extid='AA' * 7, text='PARAM_A', min_value=0, max_value=10),
-            DiscoveredElement(idx=101, extid='BB' * 7, text='PARAM_B', min_value=0, max_value=10),
+            DiscoveredElement(
+                idx=100, extid="AA" * 7, text="PARAM_A", min_value=0, max_value=10
+            ),
+            DiscoveredElement(
+                idx=101, extid="BB" * 7, text="PARAM_B", min_value=0, max_value=10
+            ),
         ]
 
         registry.register_all(elements)
@@ -235,4 +270,4 @@ class TestRuntimeParameterRegistryBulkOperations:
 
         assert len(all_elements) == 2
         names = {e.text for e in all_elements}
-        assert names == {'PARAM_A', 'PARAM_B'}
+        assert names == {"PARAM_A", "PARAM_B"}

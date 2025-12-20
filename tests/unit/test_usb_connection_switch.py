@@ -4,7 +4,7 @@ Tests the BuderusUSBConnectionSwitch entity that allows developers to
 temporarily release the USB serial port for CLI debugging.
 """
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 

@@ -15,15 +15,14 @@ Usage:
 import json
 import os
 import subprocess
-import pytest
-import requests
 from typing import Optional, Tuple
 
+import pytest
+import requests
 
 # Skip all tests if not on HA hardware
 pytestmark = pytest.mark.skipif(
-    not os.path.exists("/dev/ttyACM0"),
-    reason="Requires physical heat pump connection"
+    not os.path.exists("/dev/ttyACM0"), reason="Requires physical heat pump connection"
 )
 
 
@@ -50,9 +49,7 @@ def get_ha_sensor_value(entity_id: str) -> Optional[float]:
 
     try:
         response = requests.get(
-            f"{HA_URL}/api/states/{entity_id}",
-            headers=headers,
-            timeout=5
+            f"{HA_URL}/api/states/{entity_id}", headers=headers, timeout=5
         )
         if response.status_code == 200:
             data = response.json()
@@ -65,7 +62,9 @@ def get_ha_sensor_value(entity_id: str) -> Optional[float]:
     return None
 
 
-def get_can_broadcast_temp(param_name: str, duration: float = 8.0) -> Optional[Tuple[float, str]]:
+def get_can_broadcast_temp(
+    param_name: str, duration: float = 8.0
+) -> Optional[Tuple[float, str]]:
     """Read temperature from CAN bus broadcast.
 
     Args:
@@ -77,17 +76,20 @@ def get_can_broadcast_temp(param_name: str, duration: float = 8.0) -> Optional[T
     """
     result = subprocess.run(
         [
-            "python", "buderus_wps_cli/main.py",
-            "--timeout", "10",
+            "python",
+            "buderus_wps_cli/main.py",
+            "--timeout",
+            "10",
             "monitor",
-            "--duration", str(duration),
+            "--duration",
+            str(duration),
             "--temps-only",
-            "--json"
+            "--json",
         ],
         capture_output=True,
         text=True,
         cwd="/workspaces/buderus-wps-ha" if os.path.exists("/workspaces") else ".",
-        env={**os.environ, "PYTHONPATH": "."}
+        env={**os.environ, "PYTHONPATH": "."},
     )
 
     if result.returncode != 0:
@@ -188,9 +190,9 @@ class TestOutdoorTemperatureCrossValidation:
         diff = abs(can_temp - ha_temp)
         print(f"Difference: {diff}°C")
 
-        assert diff <= self.TEMP_TOLERANCE, (
-            f"Outdoor temp mismatch: CAN={can_temp}°C, HA={ha_temp}°C"
-        )
+        assert (
+            diff <= self.TEMP_TOLERANCE
+        ), f"Outdoor temp mismatch: CAN={can_temp}°C, HA={ha_temp}°C"
 
 
 class TestBroadcastDataIntegrity:
@@ -200,17 +202,20 @@ class TestBroadcastDataIntegrity:
         """Verify all temperature readings are within plausible ranges."""
         result = subprocess.run(
             [
-                "python", "buderus_wps_cli/main.py",
-                "--timeout", "10",
+                "python",
+                "buderus_wps_cli/main.py",
+                "--timeout",
+                "10",
                 "monitor",
-                "--duration", "5",
+                "--duration",
+                "5",
                 "--temps-only",
-                "--json"
+                "--json",
             ],
             capture_output=True,
             text=True,
             cwd="/workspaces/buderus-wps-ha" if os.path.exists("/workspaces") else ".",
-            env={**os.environ, "PYTHONPATH": "."}
+            env={**os.environ, "PYTHONPATH": "."},
         )
 
         assert result.returncode == 0, f"Monitor failed: {result.stderr}"
@@ -228,9 +233,9 @@ class TestBroadcastDataIntegrity:
                     name = reading.get("name") or f"idx={reading['idx']}"
 
                     # All temperatures should be within -50°C to +120°C
-                    assert -50 <= temp <= 120, (
-                        f"Implausible temperature for {name}: {temp}°C"
-                    )
+                    assert (
+                        -50 <= temp <= 120
+                    ), f"Implausible temperature for {name}: {temp}°C"
 
                 print(f"✓ All {len(readings)} temperature readings are plausible")
                 return

@@ -18,7 +18,6 @@ import pytest
 from custom_components.buderus_wps.const import DOMAIN
 from custom_components.buderus_wps.switch import (
     async_setup_platform,
-    BuderusEnergyBlockSwitch,
 )
 
 
@@ -26,9 +25,7 @@ class TestUS3Scenario1TurnOnEnablesBlocking:
     """Scenario 1: Turning on switch enables energy blocking."""
 
     @pytest.mark.asyncio
-    async def test_turn_on_enables_blocking(
-        self, mock_hass, mock_coordinator
-    ):
+    async def test_turn_on_enables_blocking(self, mock_hass, mock_coordinator):
         """
         Given energy blocking is disabled
         When I turn on the Energy Block switch
@@ -62,9 +59,7 @@ class TestUS3Scenario2TurnOffDisablesBlocking:
     """Scenario 2: Turning off switch disables energy blocking."""
 
     @pytest.mark.asyncio
-    async def test_turn_off_disables_blocking(
-        self, mock_hass, mock_coordinator
-    ):
+    async def test_turn_off_disables_blocking(self, mock_hass, mock_coordinator):
         """
         Given energy blocking is enabled
         When I turn off the Energy Block switch
@@ -174,9 +169,7 @@ class TestUS3SwitchProperties:
     """Test energy block switch properties."""
 
     @pytest.mark.asyncio
-    async def test_switch_has_correct_name(
-        self, mock_hass, mock_coordinator
-    ):
+    async def test_switch_has_correct_name(self, mock_hass, mock_coordinator):
         """Switch should be named 'Energy Block'."""
         entities_added = []
         mock_hass.data[DOMAIN] = {"coordinator": mock_coordinator}
@@ -192,9 +185,7 @@ class TestUS3SwitchProperties:
         assert switch._attr_name == "Energy Block"
 
     @pytest.mark.asyncio
-    async def test_switch_has_correct_icon(
-        self, mock_hass, mock_coordinator
-    ):
+    async def test_switch_has_correct_icon(self, mock_hass, mock_coordinator):
         """Switch should have power-plug-off icon."""
         entities_added = []
         mock_hass.data[DOMAIN] = {"coordinator": mock_coordinator}

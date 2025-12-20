@@ -16,7 +16,7 @@ from __future__ import annotations
 import logging
 import time
 from dataclasses import dataclass, field
-from typing import Dict, Optional, List, Callable, Any
+from typing import Callable, Dict, List, Optional
 
 from .can_adapter import USBtinAdapter
 from .can_message import CANMessage
@@ -25,9 +25,10 @@ from .can_message import CANMessage
 @dataclass
 class BroadcastReading:
     """A single reading captured from broadcast traffic."""
+
     can_id: int
     base: int  # Lower 14 bits
-    idx: int   # Bits 25-14 (12 bits)
+    idx: int  # Bits 25-14 (12 bits)
     dlc: int
     raw_data: bytes
     raw_value: int
@@ -57,6 +58,7 @@ class BroadcastReading:
 @dataclass
 class BroadcastCache:
     """Cache of recent broadcast readings."""
+
     readings: Dict[int, BroadcastReading] = field(default_factory=dict)
 
     def update(self, reading: BroadcastReading) -> None:
@@ -109,49 +111,41 @@ KNOWN_BROADCASTS: Dict[tuple, tuple] = {
     (0x0061, 12): ("OUTDOOR_TEMP_C1", "tem"),
     (0x0062, 12): ("OUTDOOR_TEMP_C2", "tem"),
     (0x0063, 12): ("OUTDOOR_TEMP_C3", "tem"),
-
     # RC10 Room Controller - Circuit 1 (base 0x0060) - Hardware verified
-    (0x0060, 0): ("RC10_C1_ROOM_TEMP", "tem"),      # Room temperature
-    (0x0060, 18): ("RC10_C1_DEMAND_TEMP", "tem"),   # Demand/setpoint temperature
+    (0x0060, 0): ("RC10_C1_ROOM_TEMP", "tem"),  # Room temperature
+    (0x0060, 18): ("RC10_C1_DEMAND_TEMP", "tem"),  # Demand/setpoint temperature
     (0x0060, 83): ("RC10_C1_ROOM_TEMP_COPY", "tem"),  # Room temperature (copy)
-
     # RC10 Room Controller - Circuit 3 (base 0x0402) - Hardware verified
-    (0x0402, 55): ("RC10_C3_ROOM_TEMP", "tem"),     # Room temperature
-    (0x0402, 78): ("DHW_TEMP_ACTUAL", "tem"),       # ACTUAL DHW tank temp (~27°C)
+    (0x0402, 55): ("RC10_C3_ROOM_TEMP", "tem"),  # Room temperature
+    (0x0402, 78): ("DHW_TEMP_ACTUAL", "tem"),  # ACTUAL DHW tank temp (~27°C)
     (0x0402, 98): ("RC10_C3_ROOM_TEMP_COPY", "tem"),  # Room temperature (copy)
     (0x0402, 107): ("RC10_C3_DEMAND_TEMP", "tem"),  # Demand/setpoint temperature
     (0x0403, 78): ("DHW_TEMP_ACTUAL_COPY", "tem"),  # ACTUAL DHW tank temp (copy)
-
     # Demand setpoint (idx=18 on circuit bases) - Hardware verified
     (0x0062, 18): ("DEMAND_TEMP_C2", "tem"),  # Circuit 2 demand
-
     # Base 0x0060 - Circuit 0 / Main
     (0x0060, 33): ("SENSOR_TEMP_C0_33", "tem"),
     (0x0060, 58): ("DHW_SETPOINT_OR_SUPPLY", "tem"),  # ~54°C - NOT actual tank temp!
     (0x0060, 59): ("SENSOR_TEMP_C0_59", "tem"),
     (0x0060, 60): ("SENSOR_TEMP_C0_60", "tem"),
-
     # Base 0x0061 - Circuit 1
     (0x0061, 33): ("SENSOR_TEMP_C1_33", "tem"),
     (0x0061, 58): ("SENSOR_TEMP_C1_58", "tem"),
     (0x0061, 59): ("SENSOR_TEMP_C1_59", "tem"),
     (0x0061, 60): ("SENSOR_TEMP_C1_60", "tem"),
-
     # Base 0x0062 - Circuit 2
     (0x0062, 33): ("SENSOR_TEMP_C2_33", "tem"),
     (0x0062, 58): ("SENSOR_TEMP_C2_58", "tem"),
     (0x0062, 59): ("SENSOR_TEMP_C2_59", "tem"),
     (0x0062, 60): ("SENSOR_TEMP_C2_60", "tem"),
-
     # Base 0x0063 - Circuit 3
     (0x0063, 33): ("SENSOR_TEMP_C3_33", "tem"),
     (0x0063, 58): ("SENSOR_TEMP_C3_58", "tem"),
     (0x0063, 59): ("SENSOR_TEMP_C3_59", "tem"),
     (0x0063, 60): ("SENSOR_TEMP_C3_60", "tem"),
-
     # Base 0x0270 - Buffer tank temperatures - Hardware verified
-    (0x0270, 5): ("GT9_TEMP", "tem"),   # Buffer tank bottom/return
-    (0x0270, 6): ("GT8_TEMP", "tem"),   # Buffer tank top/supply
+    (0x0270, 5): ("GT9_TEMP", "tem"),  # Buffer tank bottom/return
+    (0x0270, 6): ("GT8_TEMP", "tem"),  # Buffer tank top/supply
 }
 
 
@@ -273,7 +267,7 @@ class BroadcastMonitor:
 
         # Parse raw value (big-endian)
         raw_value = 0
-        for byte in frame.data[:min(frame.dlc, 4)]:
+        for byte in frame.data[: min(frame.dlc, 4)]:
             raw_value = (raw_value << 8) | byte
 
         reading = BroadcastReading(
@@ -337,6 +331,7 @@ class BroadcastMonitor:
         Returns:
             List of temperature readings
         """
+
         def is_temp(r: BroadcastReading) -> bool:
             return r.is_temperature
 
@@ -347,7 +342,7 @@ class BroadcastMonitor:
         """Get known parameter name for a reading."""
         key = (reading.base, reading.idx)
         if key in KNOWN_BROADCASTS:
-            return KNOWN_BROADCASTS[key][0]
+            return str(KNOWN_BROADCASTS[key][0])
         return None
 
     def find_dhw_temperature(self, duration: float = 5.0) -> Optional[float]:

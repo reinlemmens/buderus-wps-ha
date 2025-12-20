@@ -21,7 +21,7 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from .heat_pump import HeatPumpClient
@@ -102,7 +102,7 @@ class EnergyBlockingControl:
     # Default timeout for blocking operations
     DEFAULT_TIMEOUT = 5.0
 
-    def __init__(self, client: "HeatPumpClient") -> None:
+    def __init__(self, client: HeatPumpClient) -> None:
         """Initialize with an existing HeatPumpClient connection.
 
         Args:

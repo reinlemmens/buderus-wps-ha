@@ -9,9 +9,10 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from custom_components.buderus_wps.const import BACKOFF_INITIAL, DEFAULT_SCAN_INTERVAL
+
 # Import after conftest sets up mocks
 from custom_components.buderus_wps.coordinator import BuderusCoordinator
-from custom_components.buderus_wps.const import BACKOFF_INITIAL, DEFAULT_SCAN_INTERVAL
 
 
 class TestCoordinatorManualDisconnect:

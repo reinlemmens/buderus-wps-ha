@@ -11,7 +11,6 @@ a real Home Assistant environment.
 Run with: pytest tests/integration/test_ha_import_smoke.py -v
 """
 
-import pytest
 
 
 class TestBundledLibraryExports:
@@ -66,12 +65,12 @@ class TestBundledLibraryExports:
             )
         """
         from custom_components.buderus_wps.buderus_wps.exceptions import (
-            TimeoutError,
             DeviceCommunicationError,
             DeviceDisconnectedError,
             DeviceInitializationError,
             DeviceNotFoundError,
             DevicePermissionError,
+            TimeoutError,
         )
 
         # Verify they're exception classes
@@ -88,7 +87,9 @@ class TestBundledLibraryExports:
         From coordinator.py line 396:
             from .buderus_wps.config import get_default_sensor_map
         """
-        from custom_components.buderus_wps.buderus_wps.config import get_default_sensor_map
+        from custom_components.buderus_wps.buderus_wps.config import (
+            get_default_sensor_map,
+        )
 
         assert callable(get_default_sensor_map)
 
@@ -131,10 +132,11 @@ class TestBundledLibraryInitExports:
         """Verify all items in __all__ are importable."""
         from custom_components.buderus_wps import buderus_wps
 
-        if hasattr(buderus_wps, '__all__'):
+        if hasattr(buderus_wps, "__all__"):
             for name in buderus_wps.__all__:
-                assert hasattr(buderus_wps, name), \
-                    f"__all__ lists '{name}' but it's not importable"
+                assert hasattr(
+                    buderus_wps, name
+                ), f"__all__ lists '{name}' but it's not importable"
 
     def test_heatpump_class_has_required_methods(self):
         """Verify HeatPump class has methods used by HeatPumpClient."""
@@ -143,11 +145,11 @@ class TestBundledLibraryInitExports:
         hp = HeatPump()
 
         # Methods used by HeatPumpClient._lookup()
-        assert hasattr(hp, 'get_parameter'), "HeatPump missing get_parameter method"
+        assert hasattr(hp, "get_parameter"), "HeatPump missing get_parameter method"
 
         # Properties used elsewhere
-        assert hasattr(hp, 'parameters'), "HeatPump missing parameters property"
-        assert hasattr(hp, 'data_source'), "HeatPump missing data_source property"
+        assert hasattr(hp, "parameters"), "HeatPump missing parameters property"
+        assert hasattr(hp, "data_source"), "HeatPump missing data_source property"
 
     def test_parameter_class_has_required_attributes(self):
         """Verify Parameter class has attributes used by integration."""
@@ -161,16 +163,16 @@ class TestBundledLibraryInitExports:
             max=5,
             format="int",
             read=0,
-            text="TEST_PARAM"
+            text="TEST_PARAM",
         )
 
         # Attributes used by integration
-        assert hasattr(param, 'idx')
-        assert hasattr(param, 'text')
-        assert hasattr(param, 'min')
-        assert hasattr(param, 'max')
-        assert hasattr(param, 'format')
-        assert hasattr(param, 'read')
+        assert hasattr(param, "idx")
+        assert hasattr(param, "text")
+        assert hasattr(param, "min")
+        assert hasattr(param, "max")
+        assert hasattr(param, "format")
+        assert hasattr(param, "read")
 
 
 class TestNoMockLeakage:
@@ -183,8 +185,9 @@ class TestNoMockLeakage:
         hp = HeatPump()
 
         # Should have loaded ~1789 parameters from fallback
-        assert hp.parameter_count() > 1000, \
-            f"Expected 1000+ parameters, got {hp.parameter_count()} - might be using mock"
+        assert (
+            hp.parameter_count() > 1000
+        ), f"Expected 1000+ parameters, got {hp.parameter_count()} - might be using mock"
 
         # Should be able to look up a known parameter
         param = hp.get_parameter("ACCESS_LEVEL")
@@ -196,6 +199,6 @@ class TestNoMockLeakage:
         from custom_components.buderus_wps.buderus_wps import USBtinAdapter
 
         # Should have connect/disconnect methods
-        assert hasattr(USBtinAdapter, 'connect')
-        assert hasattr(USBtinAdapter, 'disconnect')
-        assert hasattr(USBtinAdapter, 'send_frame')
+        assert hasattr(USBtinAdapter, "connect")
+        assert hasattr(USBtinAdapter, "disconnect")
+        assert hasattr(USBtinAdapter, "send_frame")

@@ -29,10 +29,12 @@ async def async_setup_entry(
     data = hass.data[DOMAIN][entry.entry_id]
     coordinator: BuderusCoordinator = data["coordinator"]
 
-    async_add_entities([
-        BuderusHeatingSeasonModeSelect(coordinator, entry),
-        BuderusDHWProgramModeSelect(coordinator, entry),
-    ])
+    async_add_entities(
+        [
+            BuderusHeatingSeasonModeSelect(coordinator, entry),
+            BuderusDHWProgramModeSelect(coordinator, entry),
+        ]
+    )
 
 
 async def async_setup_platform(
@@ -47,10 +49,12 @@ async def async_setup_platform(
 
     coordinator: BuderusCoordinator = hass.data[DOMAIN]["coordinator"]
 
-    async_add_entities([
-        BuderusHeatingSeasonModeSelect(coordinator),
-        BuderusDHWProgramModeSelect(coordinator),
-    ])
+    async_add_entities(
+        [
+            BuderusHeatingSeasonModeSelect(coordinator),
+            BuderusDHWProgramModeSelect(coordinator),
+        ]
+    )
 
 
 class BuderusHeatingSeasonModeSelect(BuderusEntity, SelectEntity):

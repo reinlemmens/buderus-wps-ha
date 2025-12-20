@@ -26,7 +26,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ACCESSORIES_CONNECTED_BITMASK"
+        "text": "ACCESSORIES_CONNECTED_BITMASK",
     },
     {
         "idx": 1,
@@ -35,7 +35,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ACCESS_LEVEL"
+        "text": "ACCESS_LEVEL",
     },
     {
         "idx": 2,
@@ -44,7 +44,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "ACCESS_LEVEL_TIMEOUT_DELAY_TIME"
+        "text": "ACCESS_LEVEL_TIMEOUT_DELAY_TIME",
     },
     {
         "idx": 3,
@@ -53,7 +53,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_ALARM"
+        "text": "ADDITIONAL_ALARM",
     },
     {
         "idx": 4,
@@ -62,7 +62,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_ALARM_2"
+        "text": "ADDITIONAL_ALARM_2",
     },
     {
         "idx": 5,
@@ -71,7 +71,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_ALARM_3"
+        "text": "ADDITIONAL_ALARM_3",
     },
     {
         "idx": 6,
@@ -80,7 +80,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_ALARM_4"
+        "text": "ADDITIONAL_ALARM_4",
     },
     {
         "idx": 7,
@@ -89,7 +89,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_ALLOW"
+        "text": "ADDITIONAL_ALLOW",
     },
     {
         "idx": 8,
@@ -98,7 +98,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_ALLOW_XDHW"
+        "text": "ADDITIONAL_ALLOW_XDHW",
     },
     {
         "idx": 9,
@@ -107,7 +107,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_BLOCKED"
+        "text": "ADDITIONAL_BLOCKED",
     },
     {
         "idx": 10,
@@ -116,7 +116,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_BLOCK_HIGH_T2"
+        "text": "ADDITIONAL_BLOCK_HIGH_T2",
     },
     {
         "idx": 11,
@@ -125,7 +125,7 @@ PARAMETER_DATA = [
         "min": -30,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_BLOCK_HIGH_T2_TEMP"
+        "text": "ADDITIONAL_BLOCK_HIGH_T2_TEMP",
     },
     {
         "idx": 12,
@@ -134,7 +134,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_BLOCK_HIGH_T2_TIME"
+        "text": "ADDITIONAL_BLOCK_HIGH_T2_TIME",
     },
     {
         "idx": 14,
@@ -143,7 +143,7 @@ PARAMETER_DATA = [
         "min": -26,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_BLOCK_TIME_CONTROL_TEMPERATURE_LIMIT"
+        "text": "ADDITIONAL_BLOCK_TIME_CONTROL_TEMPERATURE_LIMIT",
     },
     {
         "idx": 15,
@@ -152,7 +152,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_CONNECTED_COMPRESSOR_1"
+        "text": "ADDITIONAL_CONNECTED_COMPRESSOR_1",
     },
     {
         "idx": 16,
@@ -161,7 +161,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_CONNECTED_COMPRESSOR_2"
+        "text": "ADDITIONAL_CONNECTED_COMPRESSOR_2",
     },
     {
         "idx": 17,
@@ -170,7 +170,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_CONNECTED_COMPRESSOR_3"
+        "text": "ADDITIONAL_CONNECTED_COMPRESSOR_3",
     },
     {
         "idx": 18,
@@ -179,7 +179,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_CONNECTED_COMPRESSOR_4"
+        "text": "ADDITIONAL_CONNECTED_COMPRESSOR_4",
     },
     {
         "idx": 19,
@@ -188,7 +188,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_CURRENT_EFFECT_LIMITATION"
+        "text": "ADDITIONAL_CURRENT_EFFECT_LIMITATION",
     },
     {
         "idx": 21,
@@ -197,7 +197,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_DELAY_TIME"
+        "text": "ADDITIONAL_DELAY_TIME",
     },
     {
         "idx": 22,
@@ -206,7 +206,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "ADDITIONAL_DHW_ACKNOWLEDGED"
+        "text": "ADDITIONAL_DHW_ACKNOWLEDGED",
     },
     {
         "idx": 23,
@@ -215,7 +215,7 @@ PARAMETER_DATA = [
         "min": 10,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_DHW_HYSTERESIS"
+        "text": "ADDITIONAL_DHW_HYSTERESIS",
     },
     {
         "idx": 24,
@@ -224,7 +224,7 @@ PARAMETER_DATA = [
         "min": -10,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_DHW_TEMP_CHANGE"
+        "text": "ADDITIONAL_DHW_TEMP_CHANGE",
     },
     {
         "idx": 25,
@@ -233,7 +233,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_EFFECT_LIMITATION_COMPRESSOR"
+        "text": "ADDITIONAL_EFFECT_LIMITATION_COMPRESSOR",
     },
     {
         "idx": 27,
@@ -242,7 +242,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_EFFECT_LIMITATION_DHW"
+        "text": "ADDITIONAL_EFFECT_LIMITATION_DHW",
     },
     {
         "idx": 29,
@@ -251,7 +251,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_EFFECT_LIMITATION_NO_COMPRESSOR"
+        "text": "ADDITIONAL_EFFECT_LIMITATION_NO_COMPRESSOR",
     },
     {
         "idx": 31,
@@ -260,7 +260,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 1,
-        "text": "ADDITIONAL_ELECTRIC_COUNT"
+        "text": "ADDITIONAL_ELECTRIC_COUNT",
     },
     {
         "idx": 32,
@@ -269,7 +269,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_ELECTRIC_SIGNAL_1"
+        "text": "ADDITIONAL_ELECTRIC_SIGNAL_1",
     },
     {
         "idx": 34,
@@ -278,7 +278,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_ELECTRIC_SIGNAL_2"
+        "text": "ADDITIONAL_ELECTRIC_SIGNAL_2",
     },
     {
         "idx": 36,
@@ -287,7 +287,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_ELECTRIC_SIGNAL_3"
+        "text": "ADDITIONAL_ELECTRIC_SIGNAL_3",
     },
     {
         "idx": 38,
@@ -296,7 +296,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_ELECTRIC_SIGNAL_4"
+        "text": "ADDITIONAL_ELECTRIC_SIGNAL_4",
     },
     {
         "idx": 40,
@@ -305,7 +305,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_ELECTRIC_SIGNAL_OUT_1"
+        "text": "ADDITIONAL_ELECTRIC_SIGNAL_OUT_1",
     },
     {
         "idx": 42,
@@ -314,7 +314,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_ELECTRIC_SIGNAL_OUT_2"
+        "text": "ADDITIONAL_ELECTRIC_SIGNAL_OUT_2",
     },
     {
         "idx": 44,
@@ -323,7 +323,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_ELECTRIC_SIGNAL_OUT_3"
+        "text": "ADDITIONAL_ELECTRIC_SIGNAL_OUT_3",
     },
     {
         "idx": 46,
@@ -332,7 +332,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_ELECTRIC_SIGNAL_OUT_4"
+        "text": "ADDITIONAL_ELECTRIC_SIGNAL_OUT_4",
     },
     {
         "idx": 48,
@@ -341,7 +341,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_EL_NEUTRALZONE_LIMITATION"
+        "text": "ADDITIONAL_EL_NEUTRALZONE_LIMITATION",
     },
     {
         "idx": 49,
@@ -350,7 +350,7 @@ PARAMETER_DATA = [
         "min": 10,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_EL_NEUTRALZONE_LIMITATION_TIME"
+        "text": "ADDITIONAL_EL_NEUTRALZONE_LIMITATION_TIME",
     },
     {
         "idx": 51,
@@ -359,7 +359,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_EL_NEUTRALZONE_RAMP_DOWN_TIME"
+        "text": "ADDITIONAL_EL_NEUTRALZONE_RAMP_DOWN_TIME",
     },
     {
         "idx": 53,
@@ -368,7 +368,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_EL_NEUTRALZONE_RAMP_UP_TIME"
+        "text": "ADDITIONAL_EL_NEUTRALZONE_RAMP_UP_TIME",
     },
     {
         "idx": 55,
@@ -377,7 +377,7 @@ PARAMETER_DATA = [
         "min": 2,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_EL_NEUTRALZONE_SIZE"
+        "text": "ADDITIONAL_EL_NEUTRALZONE_SIZE",
     },
     {
         "idx": 56,
@@ -386,7 +386,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_EXTERN_BLOCKED"
+        "text": "ADDITIONAL_EXTERN_BLOCKED",
     },
     {
         "idx": 57,
@@ -395,7 +395,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_EXTERN_BLOCK_BY_E21_EXT_1"
+        "text": "ADDITIONAL_EXTERN_BLOCK_BY_E21_EXT_1",
     },
     {
         "idx": 58,
@@ -404,7 +404,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_EXTERN_BLOCK_BY_E21_EXT_2"
+        "text": "ADDITIONAL_EXTERN_BLOCK_BY_E21_EXT_2",
     },
     {
         "idx": 59,
@@ -413,7 +413,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_EXTERN_BLOCK_BY_E22_EXT_1"
+        "text": "ADDITIONAL_EXTERN_BLOCK_BY_E22_EXT_1",
     },
     {
         "idx": 60,
@@ -422,7 +422,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_EXTERN_BLOCK_BY_E22_EXT_2"
+        "text": "ADDITIONAL_EXTERN_BLOCK_BY_E22_EXT_2",
     },
     {
         "idx": 61,
@@ -431,7 +431,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "ADDITIONAL_GTf_AVERAGE"
+        "text": "ADDITIONAL_GTf_AVERAGE",
     },
     {
         "idx": 63,
@@ -440,7 +440,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "ADDITIONAL_GTf_AVERAGE_OLD"
+        "text": "ADDITIONAL_GTf_AVERAGE_OLD",
     },
     {
         "idx": 65,
@@ -449,7 +449,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMITATION_DEFROST_DELAY_TIME"
+        "text": "ADDITIONAL_LIMITATION_DEFROST_DELAY_TIME",
     },
     {
         "idx": 67,
@@ -458,7 +458,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMITATION_T1_MAX"
+        "text": "ADDITIONAL_LIMITATION_T1_MAX",
     },
     {
         "idx": 68,
@@ -467,7 +467,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMITATION_T1_START"
+        "text": "ADDITIONAL_LIMITATION_T1_START",
     },
     {
         "idx": 69,
@@ -476,7 +476,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMITATION_T8_MAX"
+        "text": "ADDITIONAL_LIMITATION_T8_MAX",
     },
     {
         "idx": 70,
@@ -485,7 +485,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMITATION_T8_START"
+        "text": "ADDITIONAL_LIMITATION_T8_START",
     },
     {
         "idx": 71,
@@ -494,7 +494,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMIT_100_EXTERN"
+        "text": "ADDITIONAL_LIMIT_100_EXTERN",
     },
     {
         "idx": 72,
@@ -503,7 +503,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMIT_100_EXTERN_BY_E21_EXT_1"
+        "text": "ADDITIONAL_LIMIT_100_EXTERN_BY_E21_EXT_1",
     },
     {
         "idx": 73,
@@ -512,7 +512,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMIT_100_EXTERN_BY_E21_EXT_2"
+        "text": "ADDITIONAL_LIMIT_100_EXTERN_BY_E21_EXT_2",
     },
     {
         "idx": 74,
@@ -521,7 +521,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMIT_100_EXTERN_BY_E22_EXT_1"
+        "text": "ADDITIONAL_LIMIT_100_EXTERN_BY_E22_EXT_1",
     },
     {
         "idx": 75,
@@ -530,7 +530,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMIT_100_EXTERN_BY_E22_EXT_2"
+        "text": "ADDITIONAL_LIMIT_100_EXTERN_BY_E22_EXT_2",
     },
     {
         "idx": 76,
@@ -539,7 +539,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMIT_50_EXTERN"
+        "text": "ADDITIONAL_LIMIT_50_EXTERN",
     },
     {
         "idx": 77,
@@ -548,7 +548,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMIT_50_EXTERN_BY_E21_EXT_1"
+        "text": "ADDITIONAL_LIMIT_50_EXTERN_BY_E21_EXT_1",
     },
     {
         "idx": 78,
@@ -557,7 +557,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMIT_50_EXTERN_BY_E21_EXT_2"
+        "text": "ADDITIONAL_LIMIT_50_EXTERN_BY_E21_EXT_2",
     },
     {
         "idx": 79,
@@ -566,7 +566,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMIT_50_EXTERN_BY_E22_EXT_1"
+        "text": "ADDITIONAL_LIMIT_50_EXTERN_BY_E22_EXT_1",
     },
     {
         "idx": 80,
@@ -575,7 +575,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMIT_50_EXTERN_BY_E22_EXT_2"
+        "text": "ADDITIONAL_LIMIT_50_EXTERN_BY_E22_EXT_2",
     },
     {
         "idx": 81,
@@ -584,7 +584,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMIT_KW_BY_E21_EXT_1"
+        "text": "ADDITIONAL_LIMIT_KW_BY_E21_EXT_1",
     },
     {
         "idx": 82,
@@ -593,7 +593,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMIT_KW_BY_E21_EXT_2"
+        "text": "ADDITIONAL_LIMIT_KW_BY_E21_EXT_2",
     },
     {
         "idx": 83,
@@ -602,7 +602,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMIT_KW_BY_E22_EXT_1"
+        "text": "ADDITIONAL_LIMIT_KW_BY_E22_EXT_1",
     },
     {
         "idx": 84,
@@ -611,7 +611,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMIT_KW_BY_E22_EXT_2"
+        "text": "ADDITIONAL_LIMIT_KW_BY_E22_EXT_2",
     },
     {
         "idx": 85,
@@ -620,7 +620,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMIT_KW_EXTERN"
+        "text": "ADDITIONAL_LIMIT_KW_EXTERN",
     },
     {
         "idx": 86,
@@ -629,7 +629,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMIT_PERCENT_EXTERN"
+        "text": "ADDITIONAL_LIMIT_PERCENT_EXTERN",
     },
     {
         "idx": 87,
@@ -638,7 +638,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMIT_PERCENT_EXTERN_BY_E21_EXT_1"
+        "text": "ADDITIONAL_LIMIT_PERCENT_EXTERN_BY_E21_EXT_1",
     },
     {
         "idx": 88,
@@ -647,7 +647,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMIT_PERCENT_EXTERN_BY_E21_EXT_2"
+        "text": "ADDITIONAL_LIMIT_PERCENT_EXTERN_BY_E21_EXT_2",
     },
     {
         "idx": 89,
@@ -656,7 +656,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMIT_PERCENT_EXTERN_BY_E22_EXT_1"
+        "text": "ADDITIONAL_LIMIT_PERCENT_EXTERN_BY_E22_EXT_1",
     },
     {
         "idx": 90,
@@ -665,7 +665,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMIT_PERCENT_EXTERN_BY_E22_EXT_2"
+        "text": "ADDITIONAL_LIMIT_PERCENT_EXTERN_BY_E22_EXT_2",
     },
     {
         "idx": 91,
@@ -674,7 +674,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_NEUTRALZONE_DECREASE"
+        "text": "ADDITIONAL_NEUTRALZONE_DECREASE",
     },
     {
         "idx": 92,
@@ -683,7 +683,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_NEUTRALZONE_INCREASE"
+        "text": "ADDITIONAL_NEUTRALZONE_INCREASE",
     },
     {
         "idx": 93,
@@ -692,7 +692,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_NEUTRALZONE_SIGNAL"
+        "text": "ADDITIONAL_NEUTRALZONE_SIGNAL",
     },
     {
         "idx": 95,
@@ -701,7 +701,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_ONE_STEP_START"
+        "text": "ADDITIONAL_ONE_STEP_START",
     },
     {
         "idx": 97,
@@ -710,7 +710,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_ONE_STEP_STOP"
+        "text": "ADDITIONAL_ONE_STEP_STOP",
     },
     {
         "idx": 99,
@@ -719,7 +719,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_ONLY"
+        "text": "ADDITIONAL_ONLY",
     },
     {
         "idx": 100,
@@ -728,7 +728,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_ONLY_RAMP_TIME"
+        "text": "ADDITIONAL_ONLY_RAMP_TIME",
     },
     {
         "idx": 101,
@@ -737,7 +737,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_ONLY_SIGNAL_RAMP_UP"
+        "text": "ADDITIONAL_ONLY_SIGNAL_RAMP_UP",
     },
     {
         "idx": 102,
@@ -746,7 +746,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_PID_D"
+        "text": "ADDITIONAL_PID_D",
     },
     {
         "idx": 104,
@@ -755,7 +755,7 @@ PARAMETER_DATA = [
         "min": 50,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_PID_I"
+        "text": "ADDITIONAL_PID_I",
     },
     {
         "idx": 106,
@@ -764,7 +764,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_PID_MAX"
+        "text": "ADDITIONAL_PID_MAX",
     },
     {
         "idx": 108,
@@ -773,7 +773,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_PID_MIN"
+        "text": "ADDITIONAL_PID_MIN",
     },
     {
         "idx": 110,
@@ -782,7 +782,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_PID_P"
+        "text": "ADDITIONAL_PID_P",
     },
     {
         "idx": 112,
@@ -791,7 +791,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_POOL_ALLOW"
+        "text": "ADDITIONAL_POOL_ALLOW",
     },
     {
         "idx": 113,
@@ -800,7 +800,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_POOL_DELAY_TIME"
+        "text": "ADDITIONAL_POOL_DELAY_TIME",
     },
     {
         "idx": 115,
@@ -809,7 +809,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_POOL_MODE"
+        "text": "ADDITIONAL_POOL_MODE",
     },
     {
         "idx": 116,
@@ -818,7 +818,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_POOL_RAMP_DOWN_TIME"
+        "text": "ADDITIONAL_POOL_RAMP_DOWN_TIME",
     },
     {
         "idx": 117,
@@ -827,7 +827,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_POOL_RAMP_UP_TIME"
+        "text": "ADDITIONAL_POOL_RAMP_UP_TIME",
     },
     {
         "idx": 118,
@@ -836,7 +836,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_PROGRAM_1_FRI"
+        "text": "ADDITIONAL_PROGRAM_1_FRI",
     },
     {
         "idx": 120,
@@ -845,7 +845,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_PROGRAM_1_MON"
+        "text": "ADDITIONAL_PROGRAM_1_MON",
     },
     {
         "idx": 122,
@@ -854,7 +854,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_PROGRAM_1_SAT"
+        "text": "ADDITIONAL_PROGRAM_1_SAT",
     },
     {
         "idx": 124,
@@ -863,7 +863,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_PROGRAM_1_SUN"
+        "text": "ADDITIONAL_PROGRAM_1_SUN",
     },
     {
         "idx": 126,
@@ -872,7 +872,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_PROGRAM_1_THU"
+        "text": "ADDITIONAL_PROGRAM_1_THU",
     },
     {
         "idx": 128,
@@ -881,7 +881,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_PROGRAM_1_TUE"
+        "text": "ADDITIONAL_PROGRAM_1_TUE",
     },
     {
         "idx": 130,
@@ -890,7 +890,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_PROGRAM_1_WED"
+        "text": "ADDITIONAL_PROGRAM_1_WED",
     },
     {
         "idx": 132,
@@ -899,7 +899,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_RAMP_DECREASE"
+        "text": "ADDITIONAL_RAMP_DECREASE",
     },
     {
         "idx": 133,
@@ -908,7 +908,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_RAMP_INCREASE"
+        "text": "ADDITIONAL_RAMP_INCREASE",
     },
     {
         "idx": 134,
@@ -917,7 +917,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_RAMP_INCREASE_DHW"
+        "text": "ADDITIONAL_RAMP_INCREASE_DHW",
     },
     {
         "idx": 135,
@@ -926,7 +926,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "ADDITIONAL_REQUEST"
+        "text": "ADDITIONAL_REQUEST",
     },
     {
         "idx": 136,
@@ -935,7 +935,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_SIGNAL"
+        "text": "ADDITIONAL_SIGNAL",
     },
     {
         "idx": 138,
@@ -944,7 +944,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_SIGNAL_FASTKONDENSERING"
+        "text": "ADDITIONAL_SIGNAL_FASTKONDENSERING",
     },
     {
         "idx": 140,
@@ -953,7 +953,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_SIGNAL_LIMITATION"
+        "text": "ADDITIONAL_SIGNAL_LIMITATION",
     },
     {
         "idx": 142,
@@ -962,7 +962,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_SIGNAL_NORMAL"
+        "text": "ADDITIONAL_SIGNAL_NORMAL",
     },
     {
         "idx": 144,
@@ -971,7 +971,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_SIGNAL_ONLY"
+        "text": "ADDITIONAL_SIGNAL_ONLY",
     },
     {
         "idx": 146,
@@ -980,7 +980,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_SIGNAL_PID"
+        "text": "ADDITIONAL_SIGNAL_PID",
     },
     {
         "idx": 148,
@@ -989,7 +989,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_SIGNAL_POOL"
+        "text": "ADDITIONAL_SIGNAL_POOL",
     },
     {
         "idx": 150,
@@ -998,7 +998,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_TIMEPROGRAM"
+        "text": "ADDITIONAL_TIMEPROGRAM",
     },
     {
         "idx": 151,
@@ -1007,7 +1007,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_TIMER_EVU_ECONOMY_MODE"
+        "text": "ADDITIONAL_TIMER_EVU_ECONOMY_MODE",
     },
     {
         "idx": 152,
@@ -1016,7 +1016,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_TIME_CONTROL_BLOCK"
+        "text": "ADDITIONAL_TIME_CONTROL_BLOCK",
     },
     {
         "idx": 153,
@@ -1025,7 +1025,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_TOTAL_EFFECT_PATRON"
+        "text": "ADDITIONAL_TOTAL_EFFECT_PATRON",
     },
     {
         "idx": 155,
@@ -1034,7 +1034,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_USER_BLOCKED"
+        "text": "ADDITIONAL_USER_BLOCKED",
     },
     {
         "idx": 156,
@@ -1043,7 +1043,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_USER_ONLY"
+        "text": "ADDITIONAL_USER_ONLY",
     },
     {
         "idx": 157,
@@ -1052,7 +1052,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_USE_NEUTRALZONE_REGULATOR"
+        "text": "ADDITIONAL_USE_NEUTRALZONE_REGULATOR",
     },
     {
         "idx": 158,
@@ -1061,7 +1061,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_VALVE_ALLOW"
+        "text": "ADDITIONAL_VALVE_ALLOW",
     },
     {
         "idx": 159,
@@ -1070,7 +1070,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_VALVE_CLOSE_TIME"
+        "text": "ADDITIONAL_VALVE_CLOSE_TIME",
     },
     {
         "idx": 160,
@@ -1079,7 +1079,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_VALVE_DELAY_TIME"
+        "text": "ADDITIONAL_VALVE_DELAY_TIME",
     },
     {
         "idx": 161,
@@ -1088,7 +1088,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_VALVE_MEASUREMENT"
+        "text": "ADDITIONAL_VALVE_MEASUREMENT",
     },
     {
         "idx": 163,
@@ -1097,7 +1097,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_VALVE_OPEN_TIME"
+        "text": "ADDITIONAL_VALVE_OPEN_TIME",
     },
     {
         "idx": 164,
@@ -1106,7 +1106,7 @@ PARAMETER_DATA = [
         "min": 60,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_VALVE_RUNNING_TIME"
+        "text": "ADDITIONAL_VALVE_RUNNING_TIME",
     },
     {
         "idx": 166,
@@ -1115,7 +1115,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_VALVE_SIGNAL"
+        "text": "ADDITIONAL_VALVE_SIGNAL",
     },
     {
         "idx": 168,
@@ -1124,7 +1124,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "AHB0016_BOOT_COUNT"
+        "text": "AHB0016_BOOT_COUNT",
     },
     {
         "idx": 169,
@@ -1133,7 +1133,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "AHB0016_CONNECTED"
+        "text": "AHB0016_CONNECTED",
     },
     {
         "idx": 170,
@@ -1142,7 +1142,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "AHB0016_CONNECTED_2"
+        "text": "AHB0016_CONNECTED_2",
     },
     {
         "idx": 171,
@@ -1151,7 +1151,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "AHB0016_CONNECTED_3"
+        "text": "AHB0016_CONNECTED_3",
     },
     {
         "idx": 172,
@@ -1160,7 +1160,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "AHB0016_CONNECTED_4"
+        "text": "AHB0016_CONNECTED_4",
     },
     {
         "idx": 173,
@@ -1169,7 +1169,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "AHB0016_CONNECTED_BITMASK"
+        "text": "AHB0016_CONNECTED_BITMASK",
     },
     {
         "idx": 174,
@@ -1178,7 +1178,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "AHB0016_VERSION"
+        "text": "AHB0016_VERSION",
     },
     {
         "idx": 176,
@@ -1187,7 +1187,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "AHB0016_VERSION_2"
+        "text": "AHB0016_VERSION_2",
     },
     {
         "idx": 178,
@@ -1196,7 +1196,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "AHB0016_VERSION_3"
+        "text": "AHB0016_VERSION_3",
     },
     {
         "idx": 180,
@@ -1205,7 +1205,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "AHB0016_VERSION_4"
+        "text": "AHB0016_VERSION_4",
     },
     {
         "idx": 182,
@@ -1214,7 +1214,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "AHB9012_CONNECTED"
+        "text": "AHB9012_CONNECTED",
     },
     {
         "idx": 183,
@@ -1223,7 +1223,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "AHB9012_VERSION"
+        "text": "AHB9012_VERSION",
     },
     {
         "idx": 185,
@@ -1232,7 +1232,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ALARM_MODE_DELAY_TIME"
+        "text": "ALARM_MODE_DELAY_TIME",
     },
     {
         "idx": 187,
@@ -1241,7 +1241,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "ALARM_MODE_REQUEST"
+        "text": "ALARM_MODE_REQUEST",
     },
     {
         "idx": 188,
@@ -1250,7 +1250,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "BACKWARDS_COMPABILITY_DUMMY"
+        "text": "BACKWARDS_COMPABILITY_DUMMY",
     },
     {
         "idx": 189,
@@ -1259,7 +1259,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "BIVALENCE_POINT"
+        "text": "BIVALENCE_POINT",
     },
     {
         "idx": 190,
@@ -1268,7 +1268,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "BUZZER_BLOCKED"
+        "text": "BUZZER_BLOCKED",
     },
     {
         "idx": 191,
@@ -1277,7 +1277,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "BUZZER_BLOCK_START_TIME"
+        "text": "BUZZER_BLOCK_START_TIME",
     },
     {
         "idx": 193,
@@ -1286,7 +1286,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "BUZZER_BLOCK_STOP_TIME"
+        "text": "BUZZER_BLOCK_STOP_TIME",
     },
     {
         "idx": 195,
@@ -1295,7 +1295,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "BUZZER_DELAY_TIME"
+        "text": "BUZZER_DELAY_TIME",
     },
     {
         "idx": 196,
@@ -1304,7 +1304,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "BUZZER_INTERVAL"
+        "text": "BUZZER_INTERVAL",
     },
     {
         "idx": 198,
@@ -1313,7 +1313,7 @@ PARAMETER_DATA = [
         "min": 3,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E21_G2_DELTA_DHW"
+        "text": "CIRCULATION_E21_G2_DELTA_DHW",
     },
     {
         "idx": 199,
@@ -1322,7 +1322,7 @@ PARAMETER_DATA = [
         "min": 3,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E21_G2_DELTA_HEATING"
+        "text": "CIRCULATION_E21_G2_DELTA_HEATING",
     },
     {
         "idx": 200,
@@ -1331,7 +1331,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E21_G2_DHW_MEAN_VALUE"
+        "text": "CIRCULATION_E21_G2_DHW_MEAN_VALUE",
     },
     {
         "idx": 201,
@@ -1340,7 +1340,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E21_G2_DHW_MEAN_VALUE_CASCADE"
+        "text": "CIRCULATION_E21_G2_DHW_MEAN_VALUE_CASCADE",
     },
     {
         "idx": 202,
@@ -1349,7 +1349,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E21_G2_GET_MEAN_VALUE"
+        "text": "CIRCULATION_E21_G2_GET_MEAN_VALUE",
     },
     {
         "idx": 203,
@@ -1358,7 +1358,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E21_G2_HEATING_MEAN_VALUE"
+        "text": "CIRCULATION_E21_G2_HEATING_MEAN_VALUE",
     },
     {
         "idx": 204,
@@ -1367,7 +1367,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E21_G2_HEATING_MEAN_VALUE_CASCADE"
+        "text": "CIRCULATION_E21_G2_HEATING_MEAN_VALUE_CASCADE",
     },
     {
         "idx": 205,
@@ -1376,7 +1376,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E21_G2_IDLE_SPEED"
+        "text": "CIRCULATION_E21_G2_IDLE_SPEED",
     },
     {
         "idx": 206,
@@ -1385,7 +1385,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E21_G2_PID_CALCULATED_MEASUREMENT"
+        "text": "CIRCULATION_E21_G2_PID_CALCULATED_MEASUREMENT",
     },
     {
         "idx": 208,
@@ -1394,7 +1394,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E21_G2_PID_SETPOINT"
+        "text": "CIRCULATION_E21_G2_PID_SETPOINT",
     },
     {
         "idx": 210,
@@ -1403,7 +1403,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E21_G2_SIGNAL"
+        "text": "CIRCULATION_E21_G2_SIGNAL",
     },
     {
         "idx": 211,
@@ -1412,7 +1412,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E21_G2_USER_SET_PERCENT"
+        "text": "CIRCULATION_E21_G2_USER_SET_PERCENT",
     },
     {
         "idx": 212,
@@ -1421,7 +1421,7 @@ PARAMETER_DATA = [
         "min": 3,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E22_G2_DELTA_DHW"
+        "text": "CIRCULATION_E22_G2_DELTA_DHW",
     },
     {
         "idx": 213,
@@ -1430,7 +1430,7 @@ PARAMETER_DATA = [
         "min": 3,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E22_G2_DELTA_HEATING"
+        "text": "CIRCULATION_E22_G2_DELTA_HEATING",
     },
     {
         "idx": 214,
@@ -1439,7 +1439,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E22_G2_DHW_MEAN_VALUE"
+        "text": "CIRCULATION_E22_G2_DHW_MEAN_VALUE",
     },
     {
         "idx": 215,
@@ -1448,7 +1448,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E22_G2_DHW_MEAN_VALUE_CASCADE"
+        "text": "CIRCULATION_E22_G2_DHW_MEAN_VALUE_CASCADE",
     },
     {
         "idx": 216,
@@ -1457,7 +1457,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E22_G2_GET_MEAN_VALUE"
+        "text": "CIRCULATION_E22_G2_GET_MEAN_VALUE",
     },
     {
         "idx": 217,
@@ -1466,7 +1466,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E22_G2_HEATING_MEAN_VALUE"
+        "text": "CIRCULATION_E22_G2_HEATING_MEAN_VALUE",
     },
     {
         "idx": 218,
@@ -1475,7 +1475,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E22_G2_HEATING_MEAN_VALUE_CASCADE"
+        "text": "CIRCULATION_E22_G2_HEATING_MEAN_VALUE_CASCADE",
     },
     {
         "idx": 219,
@@ -1484,7 +1484,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E22_G2_IDLE_SPEED"
+        "text": "CIRCULATION_E22_G2_IDLE_SPEED",
     },
     {
         "idx": 220,
@@ -1493,7 +1493,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E22_G2_PID_CALCULATED_MEASUREMENT"
+        "text": "CIRCULATION_E22_G2_PID_CALCULATED_MEASUREMENT",
     },
     {
         "idx": 222,
@@ -1502,7 +1502,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E22_G2_PID_SETPOINT"
+        "text": "CIRCULATION_E22_G2_PID_SETPOINT",
     },
     {
         "idx": 224,
@@ -1511,7 +1511,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E22_G2_SIGNAL"
+        "text": "CIRCULATION_E22_G2_SIGNAL",
     },
     {
         "idx": 225,
@@ -1520,7 +1520,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E22_G2_USER_SET_PERCENT"
+        "text": "CIRCULATION_E22_G2_USER_SET_PERCENT",
     },
     {
         "idx": 226,
@@ -1529,7 +1529,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_E74_G1_DIGITAL"
+        "text": "CIRCULATION_E74_G1_DIGITAL",
     },
     {
         "idx": 227,
@@ -1538,7 +1538,7 @@ PARAMETER_DATA = [
         "min": 3,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_G2_DELTA_DHW_AT_LOW_T12"
+        "text": "CIRCULATION_G2_DELTA_DHW_AT_LOW_T12",
     },
     {
         "idx": 228,
@@ -1547,7 +1547,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_G2_PID_D"
+        "text": "CIRCULATION_G2_PID_D",
     },
     {
         "idx": 230,
@@ -1556,7 +1556,7 @@ PARAMETER_DATA = [
         "min": 50,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_G2_PID_I"
+        "text": "CIRCULATION_G2_PID_I",
     },
     {
         "idx": 232,
@@ -1565,7 +1565,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_G2_PID_MAX"
+        "text": "CIRCULATION_G2_PID_MAX",
     },
     {
         "idx": 234,
@@ -1574,7 +1574,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_G2_PID_MIN"
+        "text": "CIRCULATION_G2_PID_MIN",
     },
     {
         "idx": 236,
@@ -1583,7 +1583,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_G2_PID_P"
+        "text": "CIRCULATION_G2_PID_P",
     },
     {
         "idx": 238,
@@ -1592,7 +1592,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_G2_VOLTAGE_AT_0"
+        "text": "CIRCULATION_G2_VOLTAGE_AT_0",
     },
     {
         "idx": 239,
@@ -1601,7 +1601,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CIRCULATION_G2_VOLTAGE_AT_100"
+        "text": "CIRCULATION_G2_VOLTAGE_AT_100",
     },
     {
         "idx": 240,
@@ -1610,7 +1610,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMMUNICATION_BASECARD_E21_RESTART_DETECTED"
+        "text": "COMMUNICATION_BASECARD_E21_RESTART_DETECTED",
     },
     {
         "idx": 241,
@@ -1619,7 +1619,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMMUNICATION_BASECARD_E22_RESTART_DETECTED"
+        "text": "COMMUNICATION_BASECARD_E22_RESTART_DETECTED",
     },
     {
         "idx": 242,
@@ -1628,7 +1628,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMMUNICATION_FAILED_SENDINGS"
+        "text": "COMMUNICATION_FAILED_SENDINGS",
     },
     {
         "idx": 243,
@@ -1637,7 +1637,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMMUNICATION_SEND_SEC_ROOMSENSOR_STATUS"
+        "text": "COMMUNICATION_SEND_SEC_ROOMSENSOR_STATUS",
     },
     {
         "idx": 244,
@@ -1646,7 +1646,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSORS_CONNECTED_COUNT"
+        "text": "COMPRESSORS_CONNECTED_COUNT",
     },
     {
         "idx": 245,
@@ -1655,7 +1655,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "COMPRESSOR_ALARM"
+        "text": "COMPRESSOR_ALARM",
     },
     {
         "idx": 246,
@@ -1664,7 +1664,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "COMPRESSOR_ALARM_2"
+        "text": "COMPRESSOR_ALARM_2",
     },
     {
         "idx": 247,
@@ -1673,7 +1673,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_BLOCKED"
+        "text": "COMPRESSOR_BLOCKED",
     },
     {
         "idx": 248,
@@ -1682,7 +1682,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_BLOCKED_2"
+        "text": "COMPRESSOR_BLOCKED_2",
     },
     {
         "idx": 249,
@@ -1691,7 +1691,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_CALC_HOTGAS"
+        "text": "COMPRESSOR_CALC_HOTGAS",
     },
     {
         "idx": 251,
@@ -1700,7 +1700,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_CALC_HOTGAS_2"
+        "text": "COMPRESSOR_CALC_HOTGAS_2",
     },
     {
         "idx": 253,
@@ -1709,7 +1709,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_CALC_HOTGAS_FILTERED"
+        "text": "COMPRESSOR_CALC_HOTGAS_FILTERED",
     },
     {
         "idx": 255,
@@ -1718,7 +1718,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_CALC_HOTGAS_FILTERED_2"
+        "text": "COMPRESSOR_CALC_HOTGAS_FILTERED_2",
     },
     {
         "idx": 257,
@@ -1727,7 +1727,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_COP_FREQUENCY_MAX"
+        "text": "COMPRESSOR_COP_FREQUENCY_MAX",
     },
     {
         "idx": 258,
@@ -1736,7 +1736,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_COP_FREQUENCY_MIN"
+        "text": "COMPRESSOR_COP_FREQUENCY_MIN",
     },
     {
         "idx": 259,
@@ -1745,7 +1745,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_COP_T1_SETPOINT_MAX"
+        "text": "COMPRESSOR_COP_T1_SETPOINT_MAX",
     },
     {
         "idx": 260,
@@ -1754,7 +1754,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_COP_T1_SETPOINT_MIN"
+        "text": "COMPRESSOR_COP_T1_SETPOINT_MIN",
     },
     {
         "idx": 261,
@@ -1763,7 +1763,7 @@ PARAMETER_DATA = [
         "min": 400,
         "format": "int",
         "read": 1,
-        "text": "COMPRESSOR_DHW_REQUEST"
+        "text": "COMPRESSOR_DHW_REQUEST",
     },
     {
         "idx": 262,
@@ -1772,7 +1772,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_E21_EXTERN_BLOCKED"
+        "text": "COMPRESSOR_E21_EXTERN_BLOCKED",
     },
     {
         "idx": 263,
@@ -1781,7 +1781,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_E21_EXTERN_BLOCK_BY_E21_EXT_1"
+        "text": "COMPRESSOR_E21_EXTERN_BLOCK_BY_E21_EXT_1",
     },
     {
         "idx": 264,
@@ -1790,7 +1790,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_E21_EXTERN_BLOCK_BY_E21_EXT_2"
+        "text": "COMPRESSOR_E21_EXTERN_BLOCK_BY_E21_EXT_2",
     },
     {
         "idx": 265,
@@ -1799,7 +1799,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_E21_EXTERN_BLOCK_BY_E22_EXT_1"
+        "text": "COMPRESSOR_E21_EXTERN_BLOCK_BY_E22_EXT_1",
     },
     {
         "idx": 266,
@@ -1808,7 +1808,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_E21_EXTERN_BLOCK_BY_E22_EXT_2"
+        "text": "COMPRESSOR_E21_EXTERN_BLOCK_BY_E22_EXT_2",
     },
     {
         "idx": 267,
@@ -1817,7 +1817,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_E22_EXTERN_BLOCKED"
+        "text": "COMPRESSOR_E22_EXTERN_BLOCKED",
     },
     {
         "idx": 268,
@@ -1826,7 +1826,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_E22_EXTERN_BLOCK_BY_E21_EXT_1"
+        "text": "COMPRESSOR_E22_EXTERN_BLOCK_BY_E21_EXT_1",
     },
     {
         "idx": 269,
@@ -1835,7 +1835,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_E22_EXTERN_BLOCK_BY_E21_EXT_2"
+        "text": "COMPRESSOR_E22_EXTERN_BLOCK_BY_E21_EXT_2",
     },
     {
         "idx": 270,
@@ -1844,7 +1844,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_E22_EXTERN_BLOCK_BY_E22_EXT_1"
+        "text": "COMPRESSOR_E22_EXTERN_BLOCK_BY_E22_EXT_1",
     },
     {
         "idx": 271,
@@ -1853,7 +1853,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_E22_EXTERN_BLOCK_BY_E22_EXT_2"
+        "text": "COMPRESSOR_E22_EXTERN_BLOCK_BY_E22_EXT_2",
     },
     {
         "idx": 272,
@@ -1862,7 +1862,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_E22_RESTART_HANDLING_TRIGGED"
+        "text": "COMPRESSOR_E22_RESTART_HANDLING_TRIGGED",
     },
     {
         "idx": 273,
@@ -1871,7 +1871,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "COMPRESSOR_HEATING_REQUEST"
+        "text": "COMPRESSOR_HEATING_REQUEST",
     },
     {
         "idx": 274,
@@ -1880,7 +1880,7 @@ PARAMETER_DATA = [
         "min": 24,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_MAX_FREQUENCY"
+        "text": "COMPRESSOR_MAX_FREQUENCY",
     },
     {
         "idx": 275,
@@ -1889,7 +1889,7 @@ PARAMETER_DATA = [
         "min": 24,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_MAX_FREQUENCY_DEV"
+        "text": "COMPRESSOR_MAX_FREQUENCY_DEV",
     },
     {
         "idx": 276,
@@ -1898,7 +1898,7 @@ PARAMETER_DATA = [
         "min": 20,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_MIN_FREQUENCY"
+        "text": "COMPRESSOR_MIN_FREQUENCY",
     },
     {
         "idx": 277,
@@ -1907,7 +1907,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_QUICKSTART"
+        "text": "COMPRESSOR_QUICKSTART",
     },
     {
         "idx": 278,
@@ -1916,7 +1916,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_REAL_FREQUENCY"
+        "text": "COMPRESSOR_REAL_FREQUENCY",
     },
     {
         "idx": 279,
@@ -1925,7 +1925,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_RESTART_TIME"
+        "text": "COMPRESSOR_RESTART_TIME",
     },
     {
         "idx": 280,
@@ -1934,7 +1934,7 @@ PARAMETER_DATA = [
         "min": 7,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_SIZE"
+        "text": "COMPRESSOR_SIZE",
     },
     {
         "idx": 281,
@@ -1943,7 +1943,7 @@ PARAMETER_DATA = [
         "min": 7,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_SIZE_2"
+        "text": "COMPRESSOR_SIZE_2",
     },
     {
         "idx": 282,
@@ -1952,7 +1952,7 @@ PARAMETER_DATA = [
         "min": 7,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_SIZE_2_DISPLAY_VALUE"
+        "text": "COMPRESSOR_SIZE_2_DISPLAY_VALUE",
     },
     {
         "idx": 283,
@@ -1961,7 +1961,7 @@ PARAMETER_DATA = [
         "min": 7,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_SIZE_DISPLAY_VALUE"
+        "text": "COMPRESSOR_SIZE_DISPLAY_VALUE",
     },
     {
         "idx": 284,
@@ -1970,7 +1970,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_SIZE_INDEX"
+        "text": "COMPRESSOR_SIZE_INDEX",
     },
     {
         "idx": 285,
@@ -1979,7 +1979,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_SIZE_INDEX_2"
+        "text": "COMPRESSOR_SIZE_INDEX_2",
     },
     {
         "idx": 286,
@@ -1988,7 +1988,7 @@ PARAMETER_DATA = [
         "min": 60,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_SIZE_LW"
+        "text": "COMPRESSOR_SIZE_LW",
     },
     {
         "idx": 287,
@@ -1997,7 +1997,7 @@ PARAMETER_DATA = [
         "min": 60,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_SIZE_LW_2"
+        "text": "COMPRESSOR_SIZE_LW_2",
     },
     {
         "idx": 288,
@@ -2006,7 +2006,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_START"
+        "text": "COMPRESSOR_START",
     },
     {
         "idx": 289,
@@ -2015,7 +2015,7 @@ PARAMETER_DATA = [
         "min": 20,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_STARTUP_FREQUENCY"
+        "text": "COMPRESSOR_STARTUP_FREQUENCY",
     },
     {
         "idx": 290,
@@ -2024,7 +2024,7 @@ PARAMETER_DATA = [
         "min": 2,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_STARTUP_TIME"
+        "text": "COMPRESSOR_STARTUP_TIME",
     },
     {
         "idx": 291,
@@ -2033,7 +2033,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_START_2"
+        "text": "COMPRESSOR_START_2",
     },
     {
         "idx": 292,
@@ -2042,7 +2042,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_START_DELAY_TIME"
+        "text": "COMPRESSOR_START_DELAY_TIME",
     },
     {
         "idx": 294,
@@ -2051,7 +2051,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_STATE"
+        "text": "COMPRESSOR_STATE",
     },
     {
         "idx": 295,
@@ -2060,7 +2060,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_STATE_2"
+        "text": "COMPRESSOR_STATE_2",
     },
     {
         "idx": 296,
@@ -2069,7 +2069,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_TYPE"
+        "text": "COMPRESSOR_TYPE",
     },
     {
         "idx": 297,
@@ -2078,7 +2078,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_TYPE_2"
+        "text": "COMPRESSOR_TYPE_2",
     },
     {
         "idx": 298,
@@ -2087,7 +2087,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_USE_START_DELAY_TIME"
+        "text": "COMPRESSOR_USE_START_DELAY_TIME",
     },
     {
         "idx": 299,
@@ -2096,7 +2096,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "CONFIGURATION"
+        "text": "CONFIGURATION",
     },
     {
         "idx": 300,
@@ -2105,7 +2105,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CONFIGURATION_BUDERUS"
+        "text": "CONFIGURATION_BUDERUS",
     },
     {
         "idx": 301,
@@ -2114,7 +2114,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COOLING_FAN_STOP_DELAY_TIME"
+        "text": "COOLING_FAN_STOP_DELAY_TIME",
     },
     {
         "idx": 302,
@@ -2123,7 +2123,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COUNTRY"
+        "text": "COUNTRY",
     },
     {
         "idx": 304,
@@ -2132,7 +2132,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CPU_BOOT_COUNTER"
+        "text": "CPU_BOOT_COUNTER",
     },
     {
         "idx": 306,
@@ -2141,7 +2141,7 @@ PARAMETER_DATA = [
         "min": 5,
         "format": "int",
         "read": 0,
-        "text": "CRANKCASE_HEATER_BLOCK_TEMP"
+        "text": "CRANKCASE_HEATER_BLOCK_TEMP",
     },
     {
         "idx": 307,
@@ -2150,7 +2150,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "CURRENT_M_VALVE"
+        "text": "CURRENT_M_VALVE",
     },
     {
         "idx": 308,
@@ -2159,7 +2159,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DATE_DAY"
+        "text": "DATE_DAY",
     },
     {
         "idx": 309,
@@ -2168,7 +2168,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DATE_DAY_OF_WEEK"
+        "text": "DATE_DAY_OF_WEEK",
     },
     {
         "idx": 310,
@@ -2177,7 +2177,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DATE_HOUR"
+        "text": "DATE_HOUR",
     },
     {
         "idx": 311,
@@ -2186,7 +2186,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DATE_MIN"
+        "text": "DATE_MIN",
     },
     {
         "idx": 312,
@@ -2195,7 +2195,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DATE_MONTH"
+        "text": "DATE_MONTH",
     },
     {
         "idx": 313,
@@ -2204,7 +2204,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DATE_SEC"
+        "text": "DATE_SEC",
     },
     {
         "idx": 314,
@@ -2213,7 +2213,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DATE_YEAR"
+        "text": "DATE_YEAR",
     },
     {
         "idx": 315,
@@ -2222,7 +2222,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_0_DELTA_TEMPERATURE"
+        "text": "DEFROST_0_DELTA_TEMPERATURE",
     },
     {
         "idx": 316,
@@ -2231,7 +2231,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_0_DELTA_TEMPERATURE_2"
+        "text": "DEFROST_0_DELTA_TEMPERATURE_2",
     },
     {
         "idx": 317,
@@ -2240,7 +2240,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_BATTERY"
+        "text": "DEFROST_BATTERY",
     },
     {
         "idx": 318,
@@ -2249,7 +2249,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_BATTERY_2"
+        "text": "DEFROST_BATTERY_2",
     },
     {
         "idx": 319,
@@ -2258,7 +2258,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_BLOCK_DELAY_TIME"
+        "text": "DEFROST_BLOCK_DELAY_TIME",
     },
     {
         "idx": 320,
@@ -2267,7 +2267,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_BLOCK_DELAY_TIME_2"
+        "text": "DEFROST_BLOCK_DELAY_TIME_2",
     },
     {
         "idx": 321,
@@ -2276,7 +2276,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_CYCLE"
+        "text": "DEFROST_CYCLE",
     },
     {
         "idx": 322,
@@ -2285,7 +2285,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_CYCLE_2"
+        "text": "DEFROST_CYCLE_2",
     },
     {
         "idx": 323,
@@ -2294,7 +2294,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_CYCLE_2_CLOSING_DOWN"
+        "text": "DEFROST_CYCLE_2_CLOSING_DOWN",
     },
     {
         "idx": 324,
@@ -2303,7 +2303,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_CYCLE_CLOSING_DOWN"
+        "text": "DEFROST_CYCLE_CLOSING_DOWN",
     },
     {
         "idx": 325,
@@ -2312,7 +2312,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_DELAY_4_WAY_VALVE_2_SWITCH"
+        "text": "DEFROST_DELAY_4_WAY_VALVE_2_SWITCH",
     },
     {
         "idx": 327,
@@ -2321,7 +2321,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_DELAY_4_WAY_VALVE_SWITCH"
+        "text": "DEFROST_DELAY_4_WAY_VALVE_SWITCH",
     },
     {
         "idx": 329,
@@ -2330,7 +2330,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_DELAY_COMPRESSOR_2_START"
+        "text": "DEFROST_DELAY_COMPRESSOR_2_START",
     },
     {
         "idx": 331,
@@ -2339,7 +2339,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_DELAY_COMPRESSOR_START"
+        "text": "DEFROST_DELAY_COMPRESSOR_START",
     },
     {
         "idx": 333,
@@ -2348,7 +2348,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_DELTA_T12_T11"
+        "text": "DEFROST_DELTA_T12_T11",
     },
     {
         "idx": 335,
@@ -2357,7 +2357,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_DELTA_T12_T11_2"
+        "text": "DEFROST_DELTA_T12_T11_2",
     },
     {
         "idx": 337,
@@ -2366,7 +2366,7 @@ PARAMETER_DATA = [
         "min": 10,
         "format": "tem",
         "read": 0,
-        "text": "DEFROST_DELTA_TEMPERATURE"
+        "text": "DEFROST_DELTA_TEMPERATURE",
     },
     {
         "idx": 339,
@@ -2375,7 +2375,7 @@ PARAMETER_DATA = [
         "min": 10,
         "format": "tem",
         "read": 0,
-        "text": "DEFROST_DELTA_TEMPERATURE_2"
+        "text": "DEFROST_DELTA_TEMPERATURE_2",
     },
     {
         "idx": 341,
@@ -2384,7 +2384,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_DELTA_TIME"
+        "text": "DEFROST_DELTA_TIME",
     },
     {
         "idx": 343,
@@ -2393,7 +2393,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_DELTA_TIME_2"
+        "text": "DEFROST_DELTA_TIME_2",
     },
     {
         "idx": 345,
@@ -2402,7 +2402,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_FAN"
+        "text": "DEFROST_FAN",
     },
     {
         "idx": 346,
@@ -2411,7 +2411,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_FAN_2"
+        "text": "DEFROST_FAN_2",
     },
     {
         "idx": 347,
@@ -2420,7 +2420,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_FAN_COUNTER"
+        "text": "DEFROST_FAN_COUNTER",
     },
     {
         "idx": 348,
@@ -2429,7 +2429,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_FAN_COUNTER_2"
+        "text": "DEFROST_FAN_COUNTER_2",
     },
     {
         "idx": 349,
@@ -2438,7 +2438,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_FAN_INTERVAL_COUNTER"
+        "text": "DEFROST_FAN_INTERVAL_COUNTER",
     },
     {
         "idx": 350,
@@ -2447,7 +2447,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_FAN_INTERVAL_COUNTER_2"
+        "text": "DEFROST_FAN_INTERVAL_COUNTER_2",
     },
     {
         "idx": 351,
@@ -2456,7 +2456,7 @@ PARAMETER_DATA = [
         "min": -40,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_FAN_TEMPERATURE_LIMIT"
+        "text": "DEFROST_FAN_TEMPERATURE_LIMIT",
     },
     {
         "idx": 352,
@@ -2465,7 +2465,7 @@ PARAMETER_DATA = [
         "min": -40,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_FAN_TEMPERATURE_LIMIT_2"
+        "text": "DEFROST_FAN_TEMPERATURE_LIMIT_2",
     },
     {
         "idx": 353,
@@ -2474,7 +2474,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_FAN_TIME"
+        "text": "DEFROST_FAN_TIME",
     },
     {
         "idx": 354,
@@ -2483,7 +2483,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_FAN_TIME_2"
+        "text": "DEFROST_FAN_TIME_2",
     },
     {
         "idx": 355,
@@ -2492,7 +2492,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_GT11_STOP"
+        "text": "DEFROST_GT11_STOP",
     },
     {
         "idx": 357,
@@ -2501,7 +2501,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_GT11_STOP_2"
+        "text": "DEFROST_GT11_STOP_2",
     },
     {
         "idx": 359,
@@ -2510,7 +2510,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_MANUAL_START"
+        "text": "DEFROST_MANUAL_START",
     },
     {
         "idx": 360,
@@ -2519,7 +2519,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_MANUAL_START_2"
+        "text": "DEFROST_MANUAL_START_2",
     },
     {
         "idx": 361,
@@ -2528,7 +2528,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_MAX_RUNNING_TIME_BETWEEN_DEFROSTS"
+        "text": "DEFROST_MAX_RUNNING_TIME_BETWEEN_DEFROSTS",
     },
     {
         "idx": 362,
@@ -2537,7 +2537,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_MAX_RUNNING_TIME_BETWEEN_DEFROSTS_2"
+        "text": "DEFROST_MAX_RUNNING_TIME_BETWEEN_DEFROSTS_2",
     },
     {
         "idx": 363,
@@ -2546,7 +2546,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_MAX_TIME"
+        "text": "DEFROST_MAX_TIME",
     },
     {
         "idx": 364,
@@ -2555,7 +2555,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_MAX_TIME_2"
+        "text": "DEFROST_MAX_TIME_2",
     },
     {
         "idx": 365,
@@ -2564,7 +2564,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_MINUS10_DELTA_TEMPERATURE"
+        "text": "DEFROST_MINUS10_DELTA_TEMPERATURE",
     },
     {
         "idx": 366,
@@ -2573,7 +2573,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_MINUS10_DELTA_TEMPERATURE_2"
+        "text": "DEFROST_MINUS10_DELTA_TEMPERATURE_2",
     },
     {
         "idx": 367,
@@ -2582,7 +2582,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_MINUS20_DELTA_TEMPERATURE"
+        "text": "DEFROST_MINUS20_DELTA_TEMPERATURE",
     },
     {
         "idx": 368,
@@ -2591,7 +2591,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_MINUS20_DELTA_TEMPERATURE_2"
+        "text": "DEFROST_MINUS20_DELTA_TEMPERATURE_2",
     },
     {
         "idx": 369,
@@ -2600,7 +2600,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_OUT_START_TEMPERATURE"
+        "text": "DEFROST_OUT_START_TEMPERATURE",
     },
     {
         "idx": 370,
@@ -2609,7 +2609,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_OUT_START_TEMPERATURE_2"
+        "text": "DEFROST_OUT_START_TEMPERATURE_2",
     },
     {
         "idx": 371,
@@ -2618,7 +2618,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_PLUS10_DELTA_TEMPERATURE"
+        "text": "DEFROST_PLUS10_DELTA_TEMPERATURE",
     },
     {
         "idx": 372,
@@ -2627,7 +2627,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_PLUS10_DELTA_TEMPERATURE_2"
+        "text": "DEFROST_PLUS10_DELTA_TEMPERATURE_2",
     },
     {
         "idx": 373,
@@ -2636,7 +2636,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_QUIT_DELAY_TIME"
+        "text": "DEFROST_QUIT_DELAY_TIME",
     },
     {
         "idx": 375,
@@ -2645,7 +2645,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_QUIT_DELAY_TIME_2"
+        "text": "DEFROST_QUIT_DELAY_TIME_2",
     },
     {
         "idx": 377,
@@ -2654,7 +2654,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_REQUEST"
+        "text": "DEFROST_REQUEST",
     },
     {
         "idx": 378,
@@ -2663,7 +2663,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_REQUEST_2"
+        "text": "DEFROST_REQUEST_2",
     },
     {
         "idx": 379,
@@ -2672,7 +2672,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_BLOCKED"
+        "text": "DHW_BLOCKED",
     },
     {
         "idx": 380,
@@ -2681,7 +2681,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_BLOCK_SWITCH_TO_HEATING"
+        "text": "DHW_BLOCK_SWITCH_TO_HEATING",
     },
     {
         "idx": 381,
@@ -2690,7 +2690,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_CALCULATED_E21_T3_START_TEMP_SEC_PER_TENTH_ADJ"
+        "text": "DHW_CALCULATED_E21_T3_START_TEMP_SEC_PER_TENTH_ADJ",
     },
     {
         "idx": 383,
@@ -2699,7 +2699,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_CALCULATED_E22_T3_START_TEMP_SEC_PER_TENTH_ADJ"
+        "text": "DHW_CALCULATED_E22_T3_START_TEMP_SEC_PER_TENTH_ADJ",
     },
     {
         "idx": 385,
@@ -2708,7 +2708,7 @@ PARAMETER_DATA = [
         "min": 400,
         "format": "tem",
         "read": 1,
-        "text": "DHW_CALCULATED_SETPOINT_TEMP"
+        "text": "DHW_CALCULATED_SETPOINT_TEMP",
     },
     {
         "idx": 387,
@@ -2717,7 +2717,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 1,
-        "text": "DHW_CALCULATED_SETPOINT_TEMP_OFFSET"
+        "text": "DHW_CALCULATED_SETPOINT_TEMP_OFFSET",
     },
     {
         "idx": 389,
@@ -2726,7 +2726,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_CALCULATED_T3_DHW_LOADING_INTERVAL"
+        "text": "DHW_CALCULATED_T3_DHW_LOADING_INTERVAL",
     },
     {
         "idx": 390,
@@ -2735,7 +2735,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_CALCULATED_T3_START_TEMP_MIN_VALUE"
+        "text": "DHW_CALCULATED_T3_START_TEMP_MIN_VALUE",
     },
     {
         "idx": 392,
@@ -2744,7 +2744,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_COMPRESSOR_GT8DIFF_FREQUENCY_MAX"
+        "text": "DHW_COMPRESSOR_GT8DIFF_FREQUENCY_MAX",
     },
     {
         "idx": 393,
@@ -2753,7 +2753,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_COMPRESSOR_GT8DIFF_FREQUENCY_MIN"
+        "text": "DHW_COMPRESSOR_GT8DIFF_FREQUENCY_MIN",
     },
     {
         "idx": 394,
@@ -2762,7 +2762,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_COMPRESSOR_GT8DIFF_GT8_MAX"
+        "text": "DHW_COMPRESSOR_GT8DIFF_GT8_MAX",
     },
     {
         "idx": 395,
@@ -2771,7 +2771,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_COMPRESSOR_GT8DIFF_GT8_MIN"
+        "text": "DHW_COMPRESSOR_GT8DIFF_GT8_MIN",
     },
     {
         "idx": 396,
@@ -2780,7 +2780,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_COMPRESSOR_HEATING_FREQUENCY_MAX"
+        "text": "DHW_COMPRESSOR_HEATING_FREQUENCY_MAX",
     },
     {
         "idx": 397,
@@ -2789,7 +2789,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_COMPRESSOR_HEATING_FREQUENCY_MIN"
+        "text": "DHW_COMPRESSOR_HEATING_FREQUENCY_MIN",
     },
     {
         "idx": 398,
@@ -2798,7 +2798,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_COMPRESSOR_HEATING_GT2_MAX"
+        "text": "DHW_COMPRESSOR_HEATING_GT2_MAX",
     },
     {
         "idx": 399,
@@ -2807,7 +2807,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_COMPRESSOR_HEATING_GT2_MIN"
+        "text": "DHW_COMPRESSOR_HEATING_GT2_MIN",
     },
     {
         "idx": 400,
@@ -2816,7 +2816,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_E21_COMPRESSOR_TEMPORARY_STOP"
+        "text": "DHW_E21_COMPRESSOR_TEMPORARY_STOP",
     },
     {
         "idx": 401,
@@ -2825,7 +2825,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "DHW_E21_COMPRESSOR_TEMPORARY_STOP_DELAY"
+        "text": "DHW_E21_COMPRESSOR_TEMPORARY_STOP_DELAY",
     },
     {
         "idx": 402,
@@ -2834,7 +2834,7 @@ PARAMETER_DATA = [
         "min": 5,
         "format": "int",
         "read": 0,
-        "text": "DHW_E21_COMPRESSOR_TEMPORARY_STOP_DIFF"
+        "text": "DHW_E21_COMPRESSOR_TEMPORARY_STOP_DIFF",
     },
     {
         "idx": 403,
@@ -2843,7 +2843,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_E21_COMPRESSOR_TEMPORARY_STOP_SAVED_GT3"
+        "text": "DHW_E21_COMPRESSOR_TEMPORARY_STOP_SAVED_GT3",
     },
     {
         "idx": 405,
@@ -2852,7 +2852,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_E22_COMPRESSOR_TEMPORARY_STOP"
+        "text": "DHW_E22_COMPRESSOR_TEMPORARY_STOP",
     },
     {
         "idx": 406,
@@ -2861,7 +2861,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "DHW_E22_COMPRESSOR_TEMPORARY_STOP_DELAY"
+        "text": "DHW_E22_COMPRESSOR_TEMPORARY_STOP_DELAY",
     },
     {
         "idx": 407,
@@ -2870,7 +2870,7 @@ PARAMETER_DATA = [
         "min": 5,
         "format": "int",
         "read": 0,
-        "text": "DHW_E22_COMPRESSOR_TEMPORARY_STOP_DIFF"
+        "text": "DHW_E22_COMPRESSOR_TEMPORARY_STOP_DIFF",
     },
     {
         "idx": 408,
@@ -2879,7 +2879,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_E22_COMPRESSOR_TEMPORARY_STOP_SAVED_GT3"
+        "text": "DHW_E22_COMPRESSOR_TEMPORARY_STOP_SAVED_GT3",
     },
     {
         "idx": 410,
@@ -2888,7 +2888,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_EXTERN_BLOCKED"
+        "text": "DHW_EXTERN_BLOCKED",
     },
     {
         "idx": 411,
@@ -2897,7 +2897,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_EXTERN_BLOCK_BY_E21_EXT_1"
+        "text": "DHW_EXTERN_BLOCK_BY_E21_EXT_1",
     },
     {
         "idx": 412,
@@ -2906,7 +2906,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_EXTERN_BLOCK_BY_E21_EXT_2"
+        "text": "DHW_EXTERN_BLOCK_BY_E21_EXT_2",
     },
     {
         "idx": 413,
@@ -2915,7 +2915,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_EXTERN_BLOCK_BY_E22_EXT_1"
+        "text": "DHW_EXTERN_BLOCK_BY_E22_EXT_1",
     },
     {
         "idx": 414,
@@ -2924,7 +2924,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_EXTERN_BLOCK_BY_E22_EXT_2"
+        "text": "DHW_EXTERN_BLOCK_BY_E22_EXT_2",
     },
     {
         "idx": 415,
@@ -2933,7 +2933,7 @@ PARAMETER_DATA = [
         "min": 200,
         "format": "tem",
         "read": 1,
-        "text": "DHW_GT3_START_MAX_TEMP"
+        "text": "DHW_GT3_START_MAX_TEMP",
     },
     {
         "idx": 417,
@@ -2942,7 +2942,7 @@ PARAMETER_DATA = [
         "min": 200,
         "format": "tem",
         "read": 0,
-        "text": "DHW_GT3_START_MAX_TEMP_2"
+        "text": "DHW_GT3_START_MAX_TEMP_2",
     },
     {
         "idx": 419,
@@ -2951,7 +2951,7 @@ PARAMETER_DATA = [
         "min": 200,
         "format": "tem",
         "read": 1,
-        "text": "DHW_GT3_START_TEMP"
+        "text": "DHW_GT3_START_TEMP",
     },
     {
         "idx": 421,
@@ -2960,7 +2960,7 @@ PARAMETER_DATA = [
         "min": 200,
         "format": "tem",
         "read": 0,
-        "text": "DHW_GT3_START_TEMP_2"
+        "text": "DHW_GT3_START_TEMP_2",
     },
     {
         "idx": 423,
@@ -2969,7 +2969,7 @@ PARAMETER_DATA = [
         "min": 200,
         "format": "tem",
         "read": 1,
-        "text": "DHW_GT3_START_TEMP_COMFORT"
+        "text": "DHW_GT3_START_TEMP_COMFORT",
     },
     {
         "idx": 425,
@@ -2978,7 +2978,7 @@ PARAMETER_DATA = [
         "min": 200,
         "format": "tem",
         "read": 1,
-        "text": "DHW_GT3_START_TEMP_COMFORT_2"
+        "text": "DHW_GT3_START_TEMP_COMFORT_2",
     },
     {
         "idx": 427,
@@ -2987,7 +2987,7 @@ PARAMETER_DATA = [
         "min": 200,
         "format": "tem",
         "read": 1,
-        "text": "DHW_GT3_START_TEMP_ECONOMY"
+        "text": "DHW_GT3_START_TEMP_ECONOMY",
     },
     {
         "idx": 429,
@@ -2996,7 +2996,7 @@ PARAMETER_DATA = [
         "min": 200,
         "format": "tem",
         "read": 1,
-        "text": "DHW_GT3_START_TEMP_ECONOMY_2"
+        "text": "DHW_GT3_START_TEMP_ECONOMY_2",
     },
     {
         "idx": 431,
@@ -3005,7 +3005,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "DHW_GT3_STOP_MIN_TEMP"
+        "text": "DHW_GT3_STOP_MIN_TEMP",
     },
     {
         "idx": 433,
@@ -3014,7 +3014,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "DHW_GT3_STOP_MIN_TEMP_2"
+        "text": "DHW_GT3_STOP_MIN_TEMP_2",
     },
     {
         "idx": 435,
@@ -3023,7 +3023,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "DHW_GT3_STOP_TEMP"
+        "text": "DHW_GT3_STOP_TEMP",
     },
     {
         "idx": 437,
@@ -3032,7 +3032,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "DHW_GT3_STOP_TEMP_2"
+        "text": "DHW_GT3_STOP_TEMP_2",
     },
     {
         "idx": 439,
@@ -3041,7 +3041,7 @@ PARAMETER_DATA = [
         "min": 200,
         "format": "tem",
         "read": 1,
-        "text": "DHW_GT8_STOP_MAX_TEMP"
+        "text": "DHW_GT8_STOP_MAX_TEMP",
     },
     {
         "idx": 441,
@@ -3050,7 +3050,7 @@ PARAMETER_DATA = [
         "min": 200,
         "format": "tem",
         "read": 0,
-        "text": "DHW_GT8_STOP_MAX_TEMP_2"
+        "text": "DHW_GT8_STOP_MAX_TEMP_2",
     },
     {
         "idx": 443,
@@ -3059,7 +3059,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "DHW_GT8_STOP_TEMP"
+        "text": "DHW_GT8_STOP_TEMP",
     },
     {
         "idx": 445,
@@ -3068,7 +3068,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "DHW_GT8_STOP_TEMP_2"
+        "text": "DHW_GT8_STOP_TEMP_2",
     },
     {
         "idx": 447,
@@ -3077,7 +3077,7 @@ PARAMETER_DATA = [
         "min": 210,
         "format": "tem",
         "read": 1,
-        "text": "DHW_GT8_STOP_TEMP_COMFORT"
+        "text": "DHW_GT8_STOP_TEMP_COMFORT",
     },
     {
         "idx": 449,
@@ -3086,7 +3086,7 @@ PARAMETER_DATA = [
         "min": 210,
         "format": "tem",
         "read": 1,
-        "text": "DHW_GT8_STOP_TEMP_COMFORT_2"
+        "text": "DHW_GT8_STOP_TEMP_COMFORT_2",
     },
     {
         "idx": 451,
@@ -3095,7 +3095,7 @@ PARAMETER_DATA = [
         "min": 210,
         "format": "tem",
         "read": 1,
-        "text": "DHW_GT8_STOP_TEMP_ECONOMY"
+        "text": "DHW_GT8_STOP_TEMP_ECONOMY",
     },
     {
         "idx": 453,
@@ -3104,7 +3104,7 @@ PARAMETER_DATA = [
         "min": 210,
         "format": "tem",
         "read": 1,
-        "text": "DHW_GT8_STOP_TEMP_ECONOMY_2"
+        "text": "DHW_GT8_STOP_TEMP_ECONOMY_2",
     },
     {
         "idx": 455,
@@ -3113,7 +3113,7 @@ PARAMETER_DATA = [
         "min": 200,
         "format": "tem",
         "read": 1,
-        "text": "DHW_GT9_STOP_TEMP"
+        "text": "DHW_GT9_STOP_TEMP",
     },
     {
         "idx": 457,
@@ -3122,7 +3122,7 @@ PARAMETER_DATA = [
         "min": 200,
         "format": "tem",
         "read": 0,
-        "text": "DHW_GT9_STOP_TEMP_2"
+        "text": "DHW_GT9_STOP_TEMP_2",
     },
     {
         "idx": 459,
@@ -3131,7 +3131,7 @@ PARAMETER_DATA = [
         "min": 5,
         "format": "int",
         "read": 0,
-        "text": "DHW_MAX_TIME"
+        "text": "DHW_MAX_TIME",
     },
     {
         "idx": 460,
@@ -3140,7 +3140,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_1_5FRI"
+        "text": "DHW_PROGRAM_1_5FRI",
     },
     {
         "idx": 462,
@@ -3149,7 +3149,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_1_1MON"
+        "text": "DHW_PROGRAM_1_1MON",
     },
     {
         "idx": 464,
@@ -3158,7 +3158,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_1_6SAT"
+        "text": "DHW_PROGRAM_1_6SAT",
     },
     {
         "idx": 466,
@@ -3167,7 +3167,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_1_7SUN"
+        "text": "DHW_PROGRAM_1_7SUN",
     },
     {
         "idx": 468,
@@ -3176,7 +3176,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_1_4THU"
+        "text": "DHW_PROGRAM_1_4THU",
     },
     {
         "idx": 470,
@@ -3185,7 +3185,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_1_2TUE"
+        "text": "DHW_PROGRAM_1_2TUE",
     },
     {
         "idx": 472,
@@ -3194,7 +3194,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_1_3WED"
+        "text": "DHW_PROGRAM_1_3WED",
     },
     {
         "idx": 474,
@@ -3203,7 +3203,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_2_5FRI"
+        "text": "DHW_PROGRAM_2_5FRI",
     },
     {
         "idx": 476,
@@ -3212,7 +3212,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_2_1MON"
+        "text": "DHW_PROGRAM_2_1MON",
     },
     {
         "idx": 478,
@@ -3221,7 +3221,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_2_6SAT"
+        "text": "DHW_PROGRAM_2_6SAT",
     },
     {
         "idx": 480,
@@ -3230,7 +3230,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_2_7SUN"
+        "text": "DHW_PROGRAM_2_7SUN",
     },
     {
         "idx": 482,
@@ -3239,7 +3239,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_2_4THU"
+        "text": "DHW_PROGRAM_2_4THU",
     },
     {
         "idx": 484,
@@ -3248,7 +3248,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_2_2TUE"
+        "text": "DHW_PROGRAM_2_2TUE",
     },
     {
         "idx": 486,
@@ -3257,7 +3257,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_2_3WED"
+        "text": "DHW_PROGRAM_2_3WED",
     },
     # PROTOCOL: Hardware-verified divergence from FHEM reference
     # FHEM: fhem/26_KM273v018.pm:580 defines DHW_PROGRAM_MODE at idx=488
@@ -3273,7 +3273,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "dp2",
         "read": 1,
-        "text": "DHW_PROGRAM_MODE"
+        "text": "DHW_PROGRAM_MODE",
     },
     {
         "idx": 490,
@@ -3282,7 +3282,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "DHW_REQUEST"
+        "text": "DHW_REQUEST",
     },
     {
         "idx": 491,
@@ -3291,7 +3291,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "DHW_REQUEST_2"
+        "text": "DHW_REQUEST_2",
     },
     {
         "idx": 492,
@@ -3300,7 +3300,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_STATE_ECONOMY"
+        "text": "DHW_STATE_ECONOMY",
     },
     {
         "idx": 493,
@@ -3309,7 +3309,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_TIMECONTROLLED"
+        "text": "DHW_TIMECONTROLLED",
     },
     {
         "idx": 494,
@@ -3318,7 +3318,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "dp1",
         "read": 1,
-        "text": "DHW_TIMEPROGRAM"
+        "text": "DHW_TIMEPROGRAM",
     },
     {
         "idx": 495,
@@ -3327,7 +3327,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_USER_ENABLED"
+        "text": "DHW_USER_ENABLED",
     },
     {
         "idx": 496,
@@ -3336,7 +3336,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_USER_ENABLED_2"
+        "text": "DHW_USER_ENABLED_2",
     },
     {
         "idx": 497,
@@ -3345,7 +3345,7 @@ PARAMETER_DATA = [
         "min": 200,
         "format": "tem",
         "read": 1,
-        "text": "DHW_USER_SET_START_TEMP"
+        "text": "DHW_USER_SET_START_TEMP",
     },
     {
         "idx": 499,
@@ -3354,7 +3354,7 @@ PARAMETER_DATA = [
         "min": 200,
         "format": "tem",
         "read": 0,
-        "text": "DHW_USER_SET_START_TEMP_2"
+        "text": "DHW_USER_SET_START_TEMP_2",
     },
     {
         "idx": 501,
@@ -3363,7 +3363,7 @@ PARAMETER_DATA = [
         "min": 20,
         "format": "int",
         "read": 0,
-        "text": "DISPLAY_BACKLIGHT_INTENSITY"
+        "text": "DISPLAY_BACKLIGHT_INTENSITY",
     },
     {
         "idx": 502,
@@ -3372,7 +3372,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DISPLAY_CONTRAST"
+        "text": "DISPLAY_CONTRAST",
     },
     {
         "idx": 503,
@@ -3381,7 +3381,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DISPLAY_TESTED"
+        "text": "DISPLAY_TESTED",
     },
     {
         "idx": 504,
@@ -3390,7 +3390,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DRIFTTILLSTAND"
+        "text": "DRIFTTILLSTAND",
     },
     {
         "idx": 505,
@@ -3399,7 +3399,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "DRYOUT_SETPOINT_TEMP"
+        "text": "DRYOUT_SETPOINT_TEMP",
     },
     {
         "idx": 507,
@@ -3408,7 +3408,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DST_ENABLED"
+        "text": "DST_ENABLED",
     },
     {
         "idx": 508,
@@ -3417,7 +3417,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DST_OFFSET"
+        "text": "DST_OFFSET",
     },
     {
         "idx": 509,
@@ -3426,7 +3426,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "E31_T2_CONNECTED"
+        "text": "E31_T2_CONNECTED",
     },
     {
         "idx": 510,
@@ -3435,7 +3435,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "E31_T32_KORRIGERING_GLOBAL"
+        "text": "E31_T32_KORRIGERING_GLOBAL",
     },
     {
         "idx": 511,
@@ -3444,7 +3444,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "E71_T71_ACKNOWLEDGED"
+        "text": "E71_T71_ACKNOWLEDGED",
     },
     {
         "idx": 512,
@@ -3453,7 +3453,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "E71_T71_CONNECTED"
+        "text": "E71_T71_CONNECTED",
     },
     {
         "idx": 513,
@@ -3462,7 +3462,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "E71_T71_KORRIGERING"
+        "text": "E71_T71_KORRIGERING",
     },
     {
         "idx": 514,
@@ -3471,7 +3471,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "E71_T71_STATUS"
+        "text": "E71_T71_STATUS",
     },
     {
         "idx": 515,
@@ -3480,7 +3480,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "E71_T71_TEMP"
+        "text": "E71_T71_TEMP",
     },
     {
         "idx": 517,
@@ -3489,7 +3489,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "int",
         "read": 0,
-        "text": "E71_T72_KORRIGERING"
+        "text": "E71_T72_KORRIGERING",
     },
     {
         "idx": 518,
@@ -3498,7 +3498,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "E71_T72_STATUS"
+        "text": "E71_T72_STATUS",
     },
     {
         "idx": 519,
@@ -3507,7 +3507,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "E71_T72_TEMP"
+        "text": "E71_T72_TEMP",
     },
     {
         "idx": 521,
@@ -3516,7 +3516,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "E72_T71_ACKNOWLEDGED"
+        "text": "E72_T71_ACKNOWLEDGED",
     },
     {
         "idx": 522,
@@ -3525,7 +3525,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "E72_T71_CONNECTED"
+        "text": "E72_T71_CONNECTED",
     },
     {
         "idx": 523,
@@ -3534,7 +3534,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "E72_T71_KORRIGERING"
+        "text": "E72_T71_KORRIGERING",
     },
     {
         "idx": 524,
@@ -3543,7 +3543,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "E72_T71_STATUS"
+        "text": "E72_T71_STATUS",
     },
     {
         "idx": 525,
@@ -3552,7 +3552,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "E72_T71_TEMP"
+        "text": "E72_T71_TEMP",
     },
     {
         "idx": 527,
@@ -3561,7 +3561,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "E72_T72_KORRIGERING"
+        "text": "E72_T72_KORRIGERING",
     },
     {
         "idx": 528,
@@ -3570,7 +3570,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "E72_T72_STATUS"
+        "text": "E72_T72_STATUS",
     },
     {
         "idx": 529,
@@ -3579,7 +3579,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "E72_T72_TEMP"
+        "text": "E72_T72_TEMP",
     },
     {
         "idx": 531,
@@ -3588,7 +3588,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "E81_T81_CONNECTED"
+        "text": "E81_T81_CONNECTED",
     },
     {
         "idx": 532,
@@ -3597,7 +3597,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EEPROM_HEATING_SEASON_START_DELAY_TIME"
+        "text": "EEPROM_HEATING_SEASON_START_DELAY_TIME",
     },
     {
         "idx": 534,
@@ -3606,7 +3606,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EEPROM_NEUTRALZON_M_VALVE_LIMIT_TIME"
+        "text": "EEPROM_NEUTRALZON_M_VALVE_LIMIT_TIME",
     },
     {
         "idx": 536,
@@ -3615,7 +3615,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ELECTRICAL_CONNECTION_400V"
+        "text": "ELECTRICAL_CONNECTION_400V",
     },
     {
         "idx": 537,
@@ -3624,7 +3624,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ELECTRICAL_MODE"
+        "text": "ELECTRICAL_MODE",
     },
     {
         "idx": 538,
@@ -3633,7 +3633,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ELECTRICAL_MODE_SELECTED"
+        "text": "ELECTRICAL_MODE_SELECTED",
     },
     {
         "idx": 539,
@@ -3642,7 +3642,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ELSKAP_MAX"
+        "text": "ELSKAP_MAX",
     },
     {
         "idx": 540,
@@ -3651,7 +3651,7 @@ PARAMETER_DATA = [
         "min": 300,
         "format": "tem",
         "read": 1,
-        "text": "ELSKAP_MAX_TEMP"
+        "text": "ELSKAP_MAX_TEMP",
     },
     {
         "idx": 542,
@@ -3660,7 +3660,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "ELSKAP_TEMP"
+        "text": "ELSKAP_TEMP",
     },
     {
         "idx": 544,
@@ -3669,7 +3669,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "EL_DHW_REQUEST"
+        "text": "EL_DHW_REQUEST",
     },
     {
         "idx": 545,
@@ -3678,7 +3678,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENABLE_HIGH_PROTECTION_HS_BY_E21_EXT_1"
+        "text": "ENABLE_HIGH_PROTECTION_HS_BY_E21_EXT_1",
     },
     {
         "idx": 546,
@@ -3687,7 +3687,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENABLE_HIGH_PROTECTION_HS_BY_E21_EXT_2"
+        "text": "ENABLE_HIGH_PROTECTION_HS_BY_E21_EXT_2",
     },
     {
         "idx": 547,
@@ -3696,7 +3696,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENABLE_HIGH_PROTECTION_HS_BY_E22_EXT_1"
+        "text": "ENABLE_HIGH_PROTECTION_HS_BY_E22_EXT_1",
     },
     {
         "idx": 548,
@@ -3705,7 +3705,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENABLE_HIGH_PROTECTION_HS_BY_E22_EXT_2"
+        "text": "ENABLE_HIGH_PROTECTION_HS_BY_E22_EXT_2",
     },
     {
         "idx": 549,
@@ -3714,7 +3714,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENVELOPE_BLOCK_ACKNOWLEDGE_TIME"
+        "text": "ENVELOPE_BLOCK_ACKNOWLEDGE_TIME",
     },
     {
         "idx": 550,
@@ -3723,7 +3723,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENVELOPE_BLOCK_AFTER_DHW"
+        "text": "ENVELOPE_BLOCK_AFTER_DHW",
     },
     {
         "idx": 551,
@@ -3732,7 +3732,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "ENVELOPE_CURVE_MAX_TEMP"
+        "text": "ENVELOPE_CURVE_MAX_TEMP",
     },
     {
         "idx": 553,
@@ -3741,7 +3741,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENVELOPE_CURVE_MAX_TEMP_AT_20"
+        "text": "ENVELOPE_CURVE_MAX_TEMP_AT_20",
     },
     {
         "idx": 555,
@@ -3750,7 +3750,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENVELOPE_CURVE_MAX_TEMP_AT_MINUS_10"
+        "text": "ENVELOPE_CURVE_MAX_TEMP_AT_MINUS_10",
     },
     {
         "idx": 557,
@@ -3759,7 +3759,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENVELOPE_CURVE_MAX_TEMP_AT_MINUS_15"
+        "text": "ENVELOPE_CURVE_MAX_TEMP_AT_MINUS_15",
     },
     {
         "idx": 559,
@@ -3768,7 +3768,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENVELOPE_CURVE_MAX_TEMP_AT_MINUS_20"
+        "text": "ENVELOPE_CURVE_MAX_TEMP_AT_MINUS_20",
     },
     {
         "idx": 561,
@@ -3777,7 +3777,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENVELOPE_CURVE_MAX_TEMP_AT_MINUS_5"
+        "text": "ENVELOPE_CURVE_MAX_TEMP_AT_MINUS_5",
     },
     {
         "idx": 563,
@@ -3786,7 +3786,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENVELOPE_CURVE_STOP"
+        "text": "ENVELOPE_CURVE_STOP",
     },
     {
         "idx": 564,
@@ -3795,7 +3795,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENVELOPE_CURVE_STOP_FUNCTION_ACTIVE"
+        "text": "ENVELOPE_CURVE_STOP_FUNCTION_ACTIVE",
     },
     {
         "idx": 565,
@@ -3804,7 +3804,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "ENVELOPE_MAX_OUTDOOR_TEMP"
+        "text": "ENVELOPE_MAX_OUTDOOR_TEMP",
     },
     {
         "idx": 566,
@@ -3813,7 +3813,7 @@ PARAMETER_DATA = [
         "min": -20,
         "format": "tem",
         "read": 1,
-        "text": "ENVELOPE_MAX_TEMPERATURE"
+        "text": "ENVELOPE_MAX_TEMPERATURE",
     },
     {
         "idx": 567,
@@ -3822,7 +3822,7 @@ PARAMETER_DATA = [
         "min": -40,
         "format": "tem",
         "read": 1,
-        "text": "ENVELOPE_MIN_OUTDOOR_TEMPERATURE"
+        "text": "ENVELOPE_MIN_OUTDOOR_TEMPERATURE",
     },
     {
         "idx": 568,
@@ -3831,7 +3831,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENVELOPE_STOP"
+        "text": "ENVELOPE_STOP",
     },
     {
         "idx": 569,
@@ -3840,7 +3840,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENVELOPE_STOP_2"
+        "text": "ENVELOPE_STOP_2",
     },
     {
         "idx": 570,
@@ -3849,7 +3849,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "ENVELOPE_STOP_HIGH_OUTDOOR_TEMP"
+        "text": "ENVELOPE_STOP_HIGH_OUTDOOR_TEMP",
     },
     {
         "idx": 571,
@@ -3858,7 +3858,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENVELOPE_STOP_HOT_GAS_FUNCTION_ACTIVE"
+        "text": "ENVELOPE_STOP_HOT_GAS_FUNCTION_ACTIVE",
     },
     {
         "idx": 572,
@@ -3867,7 +3867,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENVELOPE_STOP_OUTDOOR"
+        "text": "ENVELOPE_STOP_OUTDOOR",
     },
     {
         "idx": 573,
@@ -3876,7 +3876,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENVELOPE_STOP_OUTDOOR_FUNCTION_ACTIVE"
+        "text": "ENVELOPE_STOP_OUTDOOR_FUNCTION_ACTIVE",
     },
     {
         "idx": 574,
@@ -3885,7 +3885,7 @@ PARAMETER_DATA = [
         "min": 50,
         "format": "int",
         "read": 0,
-        "text": "ENVELOPE_STOP_TEMPERATURE"
+        "text": "ENVELOPE_STOP_TEMPERATURE",
     },
     {
         "idx": 575,
@@ -3894,7 +3894,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENVELOPE_STOP_VV"
+        "text": "ENVELOPE_STOP_VV",
     },
     {
         "idx": 576,
@@ -3903,7 +3903,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENVELOPE_STOP_VV_2"
+        "text": "ENVELOPE_STOP_VV_2",
     },
     {
         "idx": 577,
@@ -3912,7 +3912,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EVU_1_ACTIVATED_BY_E21_EXT_1"
+        "text": "EVU_1_ACTIVATED_BY_E21_EXT_1",
     },
     {
         "idx": 578,
@@ -3921,7 +3921,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EVU_1_ACTIVATED_BY_E21_EXT_2"
+        "text": "EVU_1_ACTIVATED_BY_E21_EXT_2",
     },
     {
         "idx": 579,
@@ -3930,7 +3930,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EVU_1_ACTIVATED_BY_E22_EXT_1"
+        "text": "EVU_1_ACTIVATED_BY_E22_EXT_1",
     },
     {
         "idx": 580,
@@ -3939,7 +3939,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EVU_1_ACTIVATED_BY_E22_EXT_2"
+        "text": "EVU_1_ACTIVATED_BY_E22_EXT_2",
     },
     {
         "idx": 581,
@@ -3948,7 +3948,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EVU_1_ACTIVE"
+        "text": "EVU_1_ACTIVE",
     },
     {
         "idx": 582,
@@ -3957,7 +3957,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EVU_2_ACTIVATED_BY_E21_EXT_1"
+        "text": "EVU_2_ACTIVATED_BY_E21_EXT_1",
     },
     {
         "idx": 583,
@@ -3966,7 +3966,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EVU_2_ACTIVATED_BY_E21_EXT_2"
+        "text": "EVU_2_ACTIVATED_BY_E21_EXT_2",
     },
     {
         "idx": 584,
@@ -3975,7 +3975,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EVU_2_ACTIVATED_BY_E22_EXT_1"
+        "text": "EVU_2_ACTIVATED_BY_E22_EXT_1",
     },
     {
         "idx": 585,
@@ -3984,7 +3984,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EVU_2_ACTIVATED_BY_E22_EXT_2"
+        "text": "EVU_2_ACTIVATED_BY_E22_EXT_2",
     },
     {
         "idx": 586,
@@ -3993,7 +3993,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EVU_2_ACTIVE"
+        "text": "EVU_2_ACTIVE",
     },
     {
         "idx": 587,
@@ -4002,7 +4002,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EVU_3_ACTIVATED_BY_E21_EXT_1"
+        "text": "EVU_3_ACTIVATED_BY_E21_EXT_1",
     },
     {
         "idx": 588,
@@ -4011,7 +4011,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EVU_3_ACTIVATED_BY_E21_EXT_2"
+        "text": "EVU_3_ACTIVATED_BY_E21_EXT_2",
     },
     {
         "idx": 589,
@@ -4020,7 +4020,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EVU_3_ACTIVATED_BY_E22_EXT_1"
+        "text": "EVU_3_ACTIVATED_BY_E22_EXT_1",
     },
     {
         "idx": 590,
@@ -4029,7 +4029,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EVU_3_ACTIVATED_BY_E22_EXT_2"
+        "text": "EVU_3_ACTIVATED_BY_E22_EXT_2",
     },
     {
         "idx": 591,
@@ -4038,7 +4038,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EVU_3_ACTIVE"
+        "text": "EVU_3_ACTIVE",
     },
     {
         "idx": 592,
@@ -4047,7 +4047,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "EXERCISE_DAY"
+        "text": "EXERCISE_DAY",
     },
     {
         "idx": 593,
@@ -4056,7 +4056,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EXERCISE_IOB6126_BITMASK"
+        "text": "EXERCISE_IOB6126_BITMASK",
     },
     {
         "idx": 595,
@@ -4065,7 +4065,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EXERCISE_REQUEST"
+        "text": "EXERCISE_REQUEST",
     },
     {
         "idx": 596,
@@ -4074,7 +4074,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EXERCISE_STATE"
+        "text": "EXERCISE_STATE",
     },
     {
         "idx": 597,
@@ -4083,7 +4083,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EXERCISE_TIME"
+        "text": "EXERCISE_TIME",
     },
     {
         "idx": 598,
@@ -4092,7 +4092,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EXTERN_HEAT_SOURCE_E71_EXT_INPUT_INV"
+        "text": "EXTERN_HEAT_SOURCE_E71_EXT_INPUT_INV",
     },
     {
         "idx": 599,
@@ -4101,7 +4101,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EXTERN_HEAT_SOURCE_E72_EXT_INPUT_INV"
+        "text": "EXTERN_HEAT_SOURCE_E72_EXT_INPUT_INV",
     },
     {
         "idx": 600,
@@ -4110,7 +4110,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "FAKE_VARIABLE_BOOL_ONE"
+        "text": "FAKE_VARIABLE_BOOL_ONE",
     },
     {
         "idx": 601,
@@ -4119,7 +4119,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "FAKE_VARIABLE_BOOL_ZERO"
+        "text": "FAKE_VARIABLE_BOOL_ZERO",
     },
     {
         "idx": 602,
@@ -4128,7 +4128,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "FAKE_VARIABLE_CHAR_ONE"
+        "text": "FAKE_VARIABLE_CHAR_ONE",
     },
     {
         "idx": 603,
@@ -4137,7 +4137,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "FAKE_VARIABLE_CHAR_ZERO"
+        "text": "FAKE_VARIABLE_CHAR_ZERO",
     },
     {
         "idx": 604,
@@ -4146,7 +4146,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "FK_PID_D"
+        "text": "FK_PID_D",
     },
     {
         "idx": 606,
@@ -4155,7 +4155,7 @@ PARAMETER_DATA = [
         "min": 50,
         "format": "int",
         "read": 0,
-        "text": "FK_PID_I"
+        "text": "FK_PID_I",
     },
     {
         "idx": 608,
@@ -4164,7 +4164,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "FK_PID_P"
+        "text": "FK_PID_P",
     },
     {
         "idx": 610,
@@ -4173,7 +4173,7 @@ PARAMETER_DATA = [
         "min": 20,
         "format": "int",
         "read": 0,
-        "text": "FREEZEGARD_COMPRESSOR_FREQUENCY"
+        "text": "FREEZEGARD_COMPRESSOR_FREQUENCY",
     },
     {
         "idx": 611,
@@ -4182,7 +4182,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "FREEZEGUARD"
+        "text": "FREEZEGUARD",
     },
     {
         "idx": 612,
@@ -4191,7 +4191,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "FREEZEGUARD_DELAY_TIME"
+        "text": "FREEZEGUARD_DELAY_TIME",
     },
     {
         "idx": 613,
@@ -4200,7 +4200,7 @@ PARAMETER_DATA = [
         "min": 20,
         "format": "tem",
         "read": 0,
-        "text": "FREEZEGUARD_START_TEMPERATURE"
+        "text": "FREEZEGUARD_START_TEMPERATURE",
     },
     {
         "idx": 615,
@@ -4209,7 +4209,7 @@ PARAMETER_DATA = [
         "min": 70,
         "format": "tem",
         "read": 0,
-        "text": "FREEZEGUARD_STOP_TEMPERATURE"
+        "text": "FREEZEGUARD_STOP_TEMPERATURE",
     },
     {
         "idx": 617,
@@ -4218,7 +4218,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GRADMIN"
+        "text": "GRADMIN",
     },
     {
         "idx": 619,
@@ -4227,7 +4227,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "GRADMIN_MAX"
+        "text": "GRADMIN_MAX",
     },
     {
         "idx": 621,
@@ -4236,7 +4236,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "GT10_2_KORRIGERING"
+        "text": "GT10_2_KORRIGERING",
     },
     {
         "idx": 622,
@@ -4245,7 +4245,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "GT10_2_LR_TEMP"
+        "text": "GT10_2_LR_TEMP",
     },
     {
         "idx": 624,
@@ -4254,7 +4254,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT10_2_STATUS"
+        "text": "GT10_2_STATUS",
     },
     {
         "idx": 625,
@@ -4263,7 +4263,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "GT10_2_TEMP"
+        "text": "GT10_2_TEMP",
     },
     {
         "idx": 627,
@@ -4272,7 +4272,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "GT10_GT11_MAX_DELTA_DELAY_AFTER_SWITCH_TIME"
+        "text": "GT10_GT11_MAX_DELTA_DELAY_AFTER_SWITCH_TIME",
     },
     {
         "idx": 628,
@@ -4281,7 +4281,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "GT10_GT11_MAX_DELTA_DELAY_TIME"
+        "text": "GT10_GT11_MAX_DELTA_DELAY_TIME",
     },
     {
         "idx": 629,
@@ -4290,7 +4290,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "tem",
         "read": 1,
-        "text": "GT10_GT11_MAX_DELTA_TEMP"
+        "text": "GT10_GT11_MAX_DELTA_TEMP",
     },
     {
         "idx": 630,
@@ -4299,7 +4299,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "GT10_KORRIGERING"
+        "text": "GT10_KORRIGERING",
     },
     {
         "idx": 631,
@@ -4308,7 +4308,7 @@ PARAMETER_DATA = [
         "min": 10,
         "format": "tem",
         "read": 1,
-        "text": "GT10_LAG_KOND_TEMP"
+        "text": "GT10_LAG_KOND_TEMP",
     },
     {
         "idx": 633,
@@ -4317,7 +4317,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "GT10_LR_ANTAL_VARNINGAR"
+        "text": "GT10_LR_ANTAL_VARNINGAR",
     },
     {
         "idx": 634,
@@ -4326,7 +4326,7 @@ PARAMETER_DATA = [
         "min": 10,
         "format": "tem",
         "read": 1,
-        "text": "GT10_LR_HYSTERES"
+        "text": "GT10_LR_HYSTERES",
     },
     {
         "idx": 635,
@@ -4335,7 +4335,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 1,
-        "text": "GT10_LR_TEMP"
+        "text": "GT10_LR_TEMP",
     },
     {
         "idx": 637,
@@ -4344,7 +4344,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT10_STATUS"
+        "text": "GT10_STATUS",
     },
     {
         "idx": 638,
@@ -4353,7 +4353,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "GT10_TEMP"
+        "text": "GT10_TEMP",
     },
     {
         "idx": 640,
@@ -4362,7 +4362,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "GT11_2_KORRIGERING"
+        "text": "GT11_2_KORRIGERING",
     },
     {
         "idx": 641,
@@ -4371,7 +4371,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "GT11_2_LF_TEMP"
+        "text": "GT11_2_LF_TEMP",
     },
     {
         "idx": 643,
@@ -4380,7 +4380,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT11_2_STATUS"
+        "text": "GT11_2_STATUS",
     },
     {
         "idx": 644,
@@ -4389,7 +4389,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "GT11_2_TEMP"
+        "text": "GT11_2_TEMP",
     },
     {
         "idx": 646,
@@ -4398,7 +4398,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "GT11_KORRIGERING"
+        "text": "GT11_KORRIGERING",
     },
     {
         "idx": 647,
@@ -4407,7 +4407,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "GT11_LF_ANTAL_VARNINGAR"
+        "text": "GT11_LF_ANTAL_VARNINGAR",
     },
     {
         "idx": 648,
@@ -4416,7 +4416,7 @@ PARAMETER_DATA = [
         "min": 10,
         "format": "tem",
         "read": 1,
-        "text": "GT11_LF_HYSTERES"
+        "text": "GT11_LF_HYSTERES",
     },
     {
         "idx": 649,
@@ -4425,7 +4425,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 1,
-        "text": "GT11_LF_TEMP"
+        "text": "GT11_LF_TEMP",
     },
     {
         "idx": 651,
@@ -4434,7 +4434,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT11_STATUS"
+        "text": "GT11_STATUS",
     },
     {
         "idx": 652,
@@ -4443,7 +4443,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "GT11_TEMP"
+        "text": "GT11_TEMP",
     },
     {
         "idx": 654,
@@ -4452,7 +4452,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "GT12_2_KORRIGERING"
+        "text": "GT12_2_KORRIGERING",
     },
     {
         "idx": 655,
@@ -4461,7 +4461,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT12_2_STATUS"
+        "text": "GT12_2_STATUS",
     },
     {
         "idx": 656,
@@ -4470,7 +4470,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "GT12_2_TEMP"
+        "text": "GT12_2_TEMP",
     },
     {
         "idx": 658,
@@ -4479,7 +4479,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "GT12_KORRIGERING"
+        "text": "GT12_KORRIGERING",
     },
     {
         "idx": 659,
@@ -4488,7 +4488,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT12_STATUS"
+        "text": "GT12_STATUS",
     },
     {
         "idx": 660,
@@ -4497,7 +4497,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "GT12_TEMP"
+        "text": "GT12_TEMP",
     },
     {
         "idx": 662,
@@ -4506,7 +4506,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "GT1_KORRIGERING"
+        "text": "GT1_KORRIGERING",
     },
     {
         "idx": 663,
@@ -4515,7 +4515,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT1_STATUS"
+        "text": "GT1_STATUS",
     },
     {
         "idx": 664,
@@ -4524,7 +4524,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "GT1_TEMP"
+        "text": "GT1_TEMP",
     },
     {
         "idx": 666,
@@ -4533,7 +4533,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "GT2_ATTENUATED_TEMP"
+        "text": "GT2_ATTENUATED_TEMP",
     },
     {
         "idx": 668,
@@ -4542,7 +4542,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT2_ATTENUATION"
+        "text": "GT2_ATTENUATION",
     },
     {
         "idx": 670,
@@ -4551,7 +4551,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "GT2_KORRIGERING"
+        "text": "GT2_KORRIGERING",
     },
     {
         "idx": 671,
@@ -4560,7 +4560,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT2_STATUS"
+        "text": "GT2_STATUS",
     },
     {
         "idx": 672,
@@ -4569,7 +4569,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "GT2_TEMP"
+        "text": "GT2_TEMP",
     },
     {
         "idx": 674,
@@ -4578,7 +4578,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT2_TEMP_ROUND_OFFED"
+        "text": "GT2_TEMP_ROUND_OFFED",
     },
     {
         "idx": 676,
@@ -4587,7 +4587,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT3_ANSLUTEN"
+        "text": "GT3_ANSLUTEN",
     },
     {
         "idx": 677,
@@ -4596,7 +4596,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "GT3_KORRIGERING"
+        "text": "GT3_KORRIGERING",
     },
     {
         "idx": 678,
@@ -4605,7 +4605,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT3_KVITTERAD"
+        "text": "GT3_KVITTERAD",
     },
     {
         "idx": 679,
@@ -4614,7 +4614,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT3_KVITTERA_MANUELLT"
+        "text": "GT3_KVITTERA_MANUELLT",
     },
     {
         "idx": 680,
@@ -4623,7 +4623,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT3_STATUS"
+        "text": "GT3_STATUS",
     },
     {
         "idx": 681,
@@ -4632,7 +4632,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "GT3_TEMP"
+        "text": "GT3_TEMP",
     },
     {
         "idx": 683,
@@ -4641,7 +4641,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "GT41_KORRIGERING_GLOBAL"
+        "text": "GT41_KORRIGERING_GLOBAL",
     },
     {
         "idx": 684,
@@ -4650,7 +4650,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT41_TEMP_GLOBAL"
+        "text": "GT41_TEMP_GLOBAL",
     },
     {
         "idx": 686,
@@ -4659,7 +4659,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT45_ACKNOWLEDGED_GLOBAL"
+        "text": "GT45_ACKNOWLEDGED_GLOBAL",
     },
     {
         "idx": 687,
@@ -4668,7 +4668,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT45_ATTENUATED_TEMP_GLOBAL"
+        "text": "GT45_ATTENUATED_TEMP_GLOBAL",
     },
     {
         "idx": 689,
@@ -4677,7 +4677,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT45_ATTENUATION_GLOBAL"
+        "text": "GT45_ATTENUATION_GLOBAL",
     },
     {
         "idx": 691,
@@ -4686,7 +4686,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "int",
         "read": 0,
-        "text": "GT45_KORRIGERING_GLOBAL"
+        "text": "GT45_KORRIGERING_GLOBAL",
     },
     {
         "idx": 692,
@@ -4695,7 +4695,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT45_TEMP_GLOBAL"
+        "text": "GT45_TEMP_GLOBAL",
     },
     {
         "idx": 694,
@@ -4704,7 +4704,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "GT5_ANSLUTEN"
+        "text": "GT5_ANSLUTEN",
     },
     {
         "idx": 695,
@@ -4713,7 +4713,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "GT5_ATTENUATED_TEMP"
+        "text": "GT5_ATTENUATED_TEMP",
     },
     {
         "idx": 697,
@@ -4722,7 +4722,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT5_ATTENUATION"
+        "text": "GT5_ATTENUATION",
     },
     {
         "idx": 699,
@@ -4731,7 +4731,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "GT5_KORRIGERING"
+        "text": "GT5_KORRIGERING",
     },
     {
         "idx": 700,
@@ -4740,7 +4740,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT5_KVITTERAD"
+        "text": "GT5_KVITTERAD",
     },
     {
         "idx": 701,
@@ -4749,7 +4749,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT5_STATUS"
+        "text": "GT5_STATUS",
     },
     {
         "idx": 702,
@@ -4758,7 +4758,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "GT5_TEMP"
+        "text": "GT5_TEMP",
     },
     {
         "idx": 704,
@@ -4767,7 +4767,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT5_TEMP_ROUND_OFFED"
+        "text": "GT5_TEMP_ROUND_OFFED",
     },
     {
         "idx": 706,
@@ -4776,7 +4776,7 @@ PARAMETER_DATA = [
         "min": 50,
         "format": "tem",
         "read": 0,
-        "text": "GT6_2_HG_TEMP"
+        "text": "GT6_2_HG_TEMP",
     },
     {
         "idx": 707,
@@ -4785,7 +4785,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "GT6_2_KORRIGERING"
+        "text": "GT6_2_KORRIGERING",
     },
     {
         "idx": 708,
@@ -4794,7 +4794,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT6_2_STATUS"
+        "text": "GT6_2_STATUS",
     },
     {
         "idx": 709,
@@ -4803,7 +4803,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "GT6_2_TEMP"
+        "text": "GT6_2_TEMP",
     },
     {
         "idx": 711,
@@ -4812,7 +4812,7 @@ PARAMETER_DATA = [
         "min": 50,
         "format": "int",
         "read": 0,
-        "text": "GT6_HG_TEMP"
+        "text": "GT6_HG_TEMP",
     },
     {
         "idx": 712,
@@ -4821,7 +4821,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "GT6_KORRIGERING"
+        "text": "GT6_KORRIGERING",
     },
     {
         "idx": 713,
@@ -4830,7 +4830,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT6_STATUS"
+        "text": "GT6_STATUS",
     },
     {
         "idx": 714,
@@ -4839,7 +4839,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "GT6_TEMP"
+        "text": "GT6_TEMP",
     },
     {
         "idx": 716,
@@ -4848,7 +4848,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "GT7_2_KORRIGERING"
+        "text": "GT7_2_KORRIGERING",
     },
     {
         "idx": 717,
@@ -4857,7 +4857,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT7_2_STATUS"
+        "text": "GT7_2_STATUS",
     },
     {
         "idx": 718,
@@ -4866,7 +4866,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "GT7_2_TEMP"
+        "text": "GT7_2_TEMP",
     },
     {
         "idx": 720,
@@ -4875,7 +4875,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "GT7_KORRIGERING"
+        "text": "GT7_KORRIGERING",
     },
     {
         "idx": 721,
@@ -4884,7 +4884,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT7_STATUS"
+        "text": "GT7_STATUS",
     },
     {
         "idx": 722,
@@ -4893,7 +4893,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "GT7_TEMP"
+        "text": "GT7_TEMP",
     },
     {
         "idx": 724,
@@ -4902,7 +4902,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "GT81_KORRIGERING"
+        "text": "GT81_KORRIGERING",
     },
     {
         "idx": 725,
@@ -4911,7 +4911,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT81_KVITTERAD"
+        "text": "GT81_KVITTERAD",
     },
     {
         "idx": 726,
@@ -4920,7 +4920,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT81_STATUS"
+        "text": "GT81_STATUS",
     },
     {
         "idx": 727,
@@ -4929,7 +4929,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "GT81_TEMP"
+        "text": "GT81_TEMP",
     },
     {
         "idx": 729,
@@ -4938,7 +4938,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "GT82_KORRIGERING"
+        "text": "GT82_KORRIGERING",
     },
     {
         "idx": 730,
@@ -4947,7 +4947,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT82_STATUS"
+        "text": "GT82_STATUS",
     },
     {
         "idx": 731,
@@ -4956,7 +4956,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "GT82_TEMP"
+        "text": "GT82_TEMP",
     },
     {
         "idx": 733,
@@ -4965,7 +4965,7 @@ PARAMETER_DATA = [
         "min": 500,
         "format": "tem",
         "read": 0,
-        "text": "GT8_2_HF_TEMP"
+        "text": "GT8_2_HF_TEMP",
     },
     {
         "idx": 735,
@@ -4974,7 +4974,7 @@ PARAMETER_DATA = [
         "min": 10,
         "format": "int",
         "read": 0,
-        "text": "GT8_2_HIGH_GT9_RESTART_HYSTERESIS"
+        "text": "GT8_2_HIGH_GT9_RESTART_HYSTERESIS",
     },
     {
         "idx": 736,
@@ -4983,7 +4983,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "GT8_2_KORRIGERING"
+        "text": "GT8_2_KORRIGERING",
     },
     {
         "idx": 737,
@@ -4992,7 +4992,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT8_2_STATUS"
+        "text": "GT8_2_STATUS",
     },
     {
         "idx": 738,
@@ -5001,7 +5001,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "GT8_2_TEMP"
+        "text": "GT8_2_TEMP",
     },
     {
         "idx": 740,
@@ -5010,7 +5010,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "GT8_GT9_MAX_DELTA_DELAY_AFTER_SWITCH_TIME"
+        "text": "GT8_GT9_MAX_DELTA_DELAY_AFTER_SWITCH_TIME",
     },
     {
         "idx": 741,
@@ -5019,7 +5019,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "GT8_GT9_MAX_DELTA_DELAY_TIME"
+        "text": "GT8_GT9_MAX_DELTA_DELAY_TIME",
     },
     {
         "idx": 742,
@@ -5028,7 +5028,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "GT8_GT9_MAX_DELTA_TEMP"
+        "text": "GT8_GT9_MAX_DELTA_TEMP",
     },
     {
         "idx": 743,
@@ -5037,7 +5037,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT8_HF_ELK"
+        "text": "GT8_HF_ELK",
     },
     {
         "idx": 744,
@@ -5046,7 +5046,7 @@ PARAMETER_DATA = [
         "min": 45,
         "format": "tem",
         "read": 1,
-        "text": "GT8_HF_ELK_TEMP"
+        "text": "GT8_HF_ELK_TEMP",
     },
     {
         "idx": 745,
@@ -5055,7 +5055,7 @@ PARAMETER_DATA = [
         "min": 500,
         "format": "tem",
         "read": 1,
-        "text": "GT8_HF_TEMP"
+        "text": "GT8_HF_TEMP",
     },
     {
         "idx": 747,
@@ -5064,7 +5064,7 @@ PARAMETER_DATA = [
         "min": 10,
         "format": "int",
         "read": 0,
-        "text": "GT8_HIGH_GT9_RESTART_HYSTERESIS"
+        "text": "GT8_HIGH_GT9_RESTART_HYSTERESIS",
     },
     {
         "idx": 748,
@@ -5073,7 +5073,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "GT8_HIGH_MAX_WARNING_COUNT"
+        "text": "GT8_HIGH_MAX_WARNING_COUNT",
     },
     {
         "idx": 749,
@@ -5082,7 +5082,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "GT8_KORRIGERING"
+        "text": "GT8_KORRIGERING",
     },
     {
         "idx": 750,
@@ -5091,7 +5091,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT8_STATUS"
+        "text": "GT8_STATUS",
     },
     {
         "idx": 751,
@@ -5100,7 +5100,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "GT8_TEMP"
+        "text": "GT8_TEMP",
     },
     {
         "idx": 753,
@@ -5109,7 +5109,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "GT9_2_KORRIGERING"
+        "text": "GT9_2_KORRIGERING",
     },
     {
         "idx": 754,
@@ -5118,7 +5118,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT9_2_STATUS"
+        "text": "GT9_2_STATUS",
     },
     {
         "idx": 755,
@@ -5127,7 +5127,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "GT9_2_TEMP"
+        "text": "GT9_2_TEMP",
     },
     {
         "idx": 757,
@@ -5136,7 +5136,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "tem",
         "read": 0,
-        "text": "GT9_KORRIGERING"
+        "text": "GT9_KORRIGERING",
     },
     {
         "idx": 758,
@@ -5145,7 +5145,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "GT9_STATUS"
+        "text": "GT9_STATUS",
     },
     {
         "idx": 759,
@@ -5154,7 +5154,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "GT9_TEMP"
+        "text": "GT9_TEMP",
     },
     {
         "idx": 761,
@@ -5163,7 +5163,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_1A_DIFF"
+        "text": "HEATING_1A_DIFF",
     },
     {
         "idx": 763,
@@ -5172,7 +5172,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_1A_DIFF_2"
+        "text": "HEATING_1A_DIFF_2",
     },
     {
         "idx": 765,
@@ -5181,7 +5181,7 @@ PARAMETER_DATA = [
         "min": 100,
         "format": "int",
         "read": 0,
-        "text": "HEATING_1A_DIFF_CONST"
+        "text": "HEATING_1A_DIFF_CONST",
     },
     {
         "idx": 767,
@@ -5190,7 +5190,7 @@ PARAMETER_DATA = [
         "min": 100,
         "format": "int",
         "read": 0,
-        "text": "HEATING_1A_DIFF_CONST_2"
+        "text": "HEATING_1A_DIFF_CONST_2",
     },
     {
         "idx": 769,
@@ -5199,7 +5199,7 @@ PARAMETER_DATA = [
         "min": 20,
         "format": "int",
         "read": 0,
-        "text": "HEATING_1A_DIFF_MAX"
+        "text": "HEATING_1A_DIFF_MAX",
     },
     {
         "idx": 771,
@@ -5208,7 +5208,7 @@ PARAMETER_DATA = [
         "min": 20,
         "format": "int",
         "read": 0,
-        "text": "HEATING_1A_DIFF_MAX_2"
+        "text": "HEATING_1A_DIFF_MAX_2",
     },
     {
         "idx": 773,
@@ -5217,7 +5217,7 @@ PARAMETER_DATA = [
         "min": 20,
         "format": "int",
         "read": 0,
-        "text": "HEATING_1A_DIFF_MIN"
+        "text": "HEATING_1A_DIFF_MIN",
     },
     {
         "idx": 775,
@@ -5226,7 +5226,7 @@ PARAMETER_DATA = [
         "min": 20,
         "format": "int",
         "read": 0,
-        "text": "HEATING_1A_DIFF_MIN_2"
+        "text": "HEATING_1A_DIFF_MIN_2",
     },
     {
         "idx": 777,
@@ -5235,7 +5235,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_ADDITIONAL_SETPOINT"
+        "text": "HEATING_ADDITIONAL_SETPOINT",
     },
     {
         "idx": 779,
@@ -5244,7 +5244,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_ADDITIONAL_SETPOINT_OFFSET"
+        "text": "HEATING_ADDITIONAL_SETPOINT_OFFSET",
     },
     {
         "idx": 780,
@@ -5253,7 +5253,7 @@ PARAMETER_DATA = [
         "min": 5,
         "format": "int",
         "read": 0,
-        "text": "HEATING_CABLE_TEMP"
+        "text": "HEATING_CABLE_TEMP",
     },
     {
         "idx": 781,
@@ -5262,7 +5262,7 @@ PARAMETER_DATA = [
         "min": 10,
         "format": "int",
         "read": 0,
-        "text": "HEATING_CABLE_TIME"
+        "text": "HEATING_CABLE_TIME",
     },
     {
         "idx": 782,
@@ -5271,7 +5271,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_CIRCUIT_PID_ISPOINT_GLOBAL"
+        "text": "HEATING_CIRCUIT_PID_ISPOINT_GLOBAL",
     },
     {
         "idx": 784,
@@ -5280,7 +5280,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_CIRCUIT_PID_SETPOINT_GLOBAL"
+        "text": "HEATING_CIRCUIT_PID_SETPOINT_GLOBAL",
     },
     {
         "idx": 786,
@@ -5289,7 +5289,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_CURVE_CHECK_SETTING"
+        "text": "HEATING_CURVE_CHECK_SETTING",
     },
     {
         "idx": 787,
@@ -5298,7 +5298,7 @@ PARAMETER_DATA = [
         "min": 10,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_LEFT_Y_GLOBAL"
+        "text": "HEATING_CURVE_LEFT_Y_GLOBAL",
     },
     {
         "idx": 789,
@@ -5307,7 +5307,7 @@ PARAMETER_DATA = [
         "min": 10,
         "format": "tem",
         "read": 1,
-        "text": "HEATING_CURVE_LEFT_Y_LOCAL"
+        "text": "HEATING_CURVE_LEFT_Y_LOCAL",
     },
     {
         "idx": 791,
@@ -5316,7 +5316,7 @@ PARAMETER_DATA = [
         "min": 100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_MAX_GLOBAL"
+        "text": "HEATING_CURVE_MAX_GLOBAL",
     },
     {
         "idx": 793,
@@ -5325,7 +5325,7 @@ PARAMETER_DATA = [
         "min": 100,
         "format": "tem",
         "read": 1,
-        "text": "HEATING_CURVE_MAX_LOCAL"
+        "text": "HEATING_CURVE_MAX_LOCAL",
     },
     {
         "idx": 795,
@@ -5334,7 +5334,7 @@ PARAMETER_DATA = [
         "min": 100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_MIN_GLOBAL"
+        "text": "HEATING_CURVE_MIN_GLOBAL",
     },
     {
         "idx": 797,
@@ -5343,7 +5343,7 @@ PARAMETER_DATA = [
         "min": 100,
         "format": "tem",
         "read": 1,
-        "text": "HEATING_CURVE_MIN_LOCAL"
+        "text": "HEATING_CURVE_MIN_LOCAL",
     },
     {
         "idx": 799,
@@ -5352,7 +5352,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "HEATING_CURVE_MYCKET_PROCENT"
+        "text": "HEATING_CURVE_MYCKET_PROCENT",
     },
     {
         "idx": 800,
@@ -5361,7 +5361,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "HEATING_CURVE_NORMAL_PROCENT"
+        "text": "HEATING_CURVE_NORMAL_PROCENT",
     },
     {
         "idx": 801,
@@ -5370,7 +5370,7 @@ PARAMETER_DATA = [
         "min": 9,
         "format": "int",
         "read": 0,
-        "text": "HEATING_CURVE_NO_OF_POINTS"
+        "text": "HEATING_CURVE_NO_OF_POINTS",
     },
     {
         "idx": 802,
@@ -5379,7 +5379,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_PARALLEL_OFFSET"
+        "text": "HEATING_CURVE_PARALLEL_OFFSET",
     },
     {
         "idx": 804,
@@ -5388,7 +5388,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_PARALLEL_OFFSET_GLOBAL"
+        "text": "HEATING_CURVE_PARALLEL_OFFSET_GLOBAL",
     },
     {
         "idx": 806,
@@ -5397,7 +5397,7 @@ PARAMETER_DATA = [
         "min": -350,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_RIGHT_X_LOCAL"
+        "text": "HEATING_CURVE_RIGHT_X_LOCAL",
     },
     {
         "idx": 808,
@@ -5406,7 +5406,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_RIGHT_Y_GLOBAL"
+        "text": "HEATING_CURVE_RIGHT_Y_GLOBAL",
     },
     {
         "idx": 810,
@@ -5415,7 +5415,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "HEATING_CURVE_RIGHT_Y_LOCAL"
+        "text": "HEATING_CURVE_RIGHT_Y_LOCAL",
     },
     {
         "idx": 812,
@@ -5424,7 +5424,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_VALUE"
+        "text": "HEATING_CURVE_VALUE",
     },
     {
         "idx": 814,
@@ -5433,7 +5433,7 @@ PARAMETER_DATA = [
         "min": -10,
         "format": "int",
         "read": 0,
-        "text": "HEATING_CURVE_VH_LIMIT"
+        "text": "HEATING_CURVE_VH_LIMIT",
     },
     {
         "idx": 815,
@@ -5442,7 +5442,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y10_GLOBAL"
+        "text": "HEATING_CURVE_Y10_GLOBAL",
     },
     {
         "idx": 817,
@@ -5451,7 +5451,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y10_LOCAL"
+        "text": "HEATING_CURVE_Y10_LOCAL",
     },
     {
         "idx": 819,
@@ -5460,7 +5460,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y11_GLOBAL"
+        "text": "HEATING_CURVE_Y11_GLOBAL",
     },
     {
         "idx": 821,
@@ -5469,7 +5469,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y11_LOCAL"
+        "text": "HEATING_CURVE_Y11_LOCAL",
     },
     {
         "idx": 823,
@@ -5478,7 +5478,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y12_GLOBAL"
+        "text": "HEATING_CURVE_Y12_GLOBAL",
     },
     {
         "idx": 825,
@@ -5487,7 +5487,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y12_LOCAL"
+        "text": "HEATING_CURVE_Y12_LOCAL",
     },
     {
         "idx": 827,
@@ -5496,7 +5496,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y1_GLOBAL"
+        "text": "HEATING_CURVE_Y1_GLOBAL",
     },
     {
         "idx": 829,
@@ -5505,7 +5505,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y1_LOCAL"
+        "text": "HEATING_CURVE_Y1_LOCAL",
     },
     {
         "idx": 831,
@@ -5514,7 +5514,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y2_GLOBAL"
+        "text": "HEATING_CURVE_Y2_GLOBAL",
     },
     {
         "idx": 833,
@@ -5523,7 +5523,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y2_LOCAL"
+        "text": "HEATING_CURVE_Y2_LOCAL",
     },
     {
         "idx": 835,
@@ -5532,7 +5532,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y3_GLOBAL"
+        "text": "HEATING_CURVE_Y3_GLOBAL",
     },
     {
         "idx": 837,
@@ -5541,7 +5541,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y3_LOCAL"
+        "text": "HEATING_CURVE_Y3_LOCAL",
     },
     {
         "idx": 839,
@@ -5550,7 +5550,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y4_GLOBAL"
+        "text": "HEATING_CURVE_Y4_GLOBAL",
     },
     {
         "idx": 841,
@@ -5559,7 +5559,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y4_LOCAL"
+        "text": "HEATING_CURVE_Y4_LOCAL",
     },
     {
         "idx": 843,
@@ -5568,7 +5568,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y5_GLOBAL"
+        "text": "HEATING_CURVE_Y5_GLOBAL",
     },
     {
         "idx": 845,
@@ -5577,7 +5577,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y5_LOCAL"
+        "text": "HEATING_CURVE_Y5_LOCAL",
     },
     {
         "idx": 847,
@@ -5586,7 +5586,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y6_GLOBAL"
+        "text": "HEATING_CURVE_Y6_GLOBAL",
     },
     {
         "idx": 849,
@@ -5595,7 +5595,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y6_LOCAL"
+        "text": "HEATING_CURVE_Y6_LOCAL",
     },
     {
         "idx": 851,
@@ -5604,7 +5604,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y7_GLOBAL"
+        "text": "HEATING_CURVE_Y7_GLOBAL",
     },
     {
         "idx": 853,
@@ -5613,7 +5613,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y7_LOCAL"
+        "text": "HEATING_CURVE_Y7_LOCAL",
     },
     {
         "idx": 855,
@@ -5622,7 +5622,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y8_GLOBAL"
+        "text": "HEATING_CURVE_Y8_GLOBAL",
     },
     {
         "idx": 857,
@@ -5631,7 +5631,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y8_LOCAL"
+        "text": "HEATING_CURVE_Y8_LOCAL",
     },
     {
         "idx": 859,
@@ -5640,7 +5640,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y9_GLOBAL"
+        "text": "HEATING_CURVE_Y9_GLOBAL",
     },
     {
         "idx": 861,
@@ -5649,7 +5649,7 @@ PARAMETER_DATA = [
         "min": -100,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_CURVE_Y9_LOCAL"
+        "text": "HEATING_CURVE_Y9_LOCAL",
     },
     {
         "idx": 863,
@@ -5658,7 +5658,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_EXTERN_BLOCKED"
+        "text": "HEATING_EXTERN_BLOCKED",
     },
     {
         "idx": 864,
@@ -5667,7 +5667,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_EXTERN_BLOCK_BY_E21_EXT_1"
+        "text": "HEATING_EXTERN_BLOCK_BY_E21_EXT_1",
     },
     {
         "idx": 865,
@@ -5676,7 +5676,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_EXTERN_BLOCK_BY_E21_EXT_2"
+        "text": "HEATING_EXTERN_BLOCK_BY_E21_EXT_2",
     },
     {
         "idx": 866,
@@ -5685,7 +5685,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_EXTERN_BLOCK_BY_E22_EXT_1"
+        "text": "HEATING_EXTERN_BLOCK_BY_E22_EXT_1",
     },
     {
         "idx": 867,
@@ -5694,7 +5694,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_EXTERN_BLOCK_BY_E22_EXT_2"
+        "text": "HEATING_EXTERN_BLOCK_BY_E22_EXT_2",
     },
     {
         "idx": 868,
@@ -5703,7 +5703,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HEATING_FIXED_TEMPERATURE"
+        "text": "HEATING_FIXED_TEMPERATURE",
     },
     {
         "idx": 870,
@@ -5712,7 +5712,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_MAX_TIME"
+        "text": "HEATING_MAX_TIME",
     },
     {
         "idx": 871,
@@ -5721,7 +5721,7 @@ PARAMETER_DATA = [
         "min": 50,
         "format": "int",
         "read": 0,
-        "text": "HEATING_REGULATOR_I"
+        "text": "HEATING_REGULATOR_I",
     },
     {
         "idx": 873,
@@ -5730,7 +5730,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "HEATING_REGULATOR_P"
+        "text": "HEATING_REGULATOR_P",
     },
     {
         "idx": 875,
@@ -5739,7 +5739,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "HEATING_REQUEST"
+        "text": "HEATING_REQUEST",
     },
     {
         "idx": 876,
@@ -5748,7 +5748,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "HEATING_REQUEST_2"
+        "text": "HEATING_REQUEST_2",
     },
     {
         "idx": 877,
@@ -5757,7 +5757,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "HEATING_REQUEST_BLOCK_AFTER_START_TIME"
+        "text": "HEATING_REQUEST_BLOCK_AFTER_START_TIME",
     },
     {
         "idx": 878,
@@ -5766,7 +5766,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_REQUEST_BLOCK_TIME"
+        "text": "HEATING_REQUEST_BLOCK_TIME",
     },
     {
         "idx": 881,  # HARDWARE-VERIFIED: Heat pump reports idx=881 (not 880)
@@ -5775,7 +5775,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "HEATING_SEASON_ACTIVE"
+        "text": "HEATING_SEASON_ACTIVE",
     },
     {
         "idx": 882,  # HARDWARE-VERIFIED: Heat pump reports idx=882 (not 881)
@@ -5784,7 +5784,7 @@ PARAMETER_DATA = [
         "min": 5,
         "format": "int",
         "read": 0,
-        "text": "HEATING_SEASON_DELAYED_TEMP"
+        "text": "HEATING_SEASON_DELAYED_TEMP",
     },
     {
         "idx": 883,  # HARDWARE-VERIFIED: Heat pump reports idx=883 (not 882)
@@ -5793,7 +5793,7 @@ PARAMETER_DATA = [
         "min": 5,
         "format": "int",
         "read": 0,
-        "text": "HEATING_SEASON_IMMEDIATE_TEMP"
+        "text": "HEATING_SEASON_IMMEDIATE_TEMP",
     },
     {
         "idx": 884,  # HARDWARE-VERIFIED: Heat pump reports idx=884 (not 883)
@@ -5802,7 +5802,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "dp2",
         "read": 1,
-        "text": "HEATING_SEASON_MODE"
+        "text": "HEATING_SEASON_MODE",
     },
     {
         "idx": 885,  # HARDWARE-VERIFIED: Heat pump reports idx=885 (not 884)
@@ -5811,7 +5811,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "HEATING_SEASON_START_DELAY_TIME"
+        "text": "HEATING_SEASON_START_DELAY_TIME",
     },
     {
         "idx": 886,  # HARDWARE-VERIFIED: Heat pump reports idx=886 (not 885)
@@ -5820,7 +5820,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "HEATING_SEASON_STOP_DELAY_TIME"
+        "text": "HEATING_SEASON_STOP_DELAY_TIME",
     },
     {
         "idx": 887,  # HARDWARE-VERIFIED: Heat pump reports idx=887 (not 886)
@@ -5829,7 +5829,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_SETPOINT"
+        "text": "HEATING_SETPOINT",
     },
     {
         "idx": 888,
@@ -5838,7 +5838,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_START"
+        "text": "HEATING_START",
     },
     {
         "idx": 890,
@@ -5847,7 +5847,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_START_2"
+        "text": "HEATING_START_2",
     },
     {
         "idx": 892,
@@ -5856,7 +5856,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_STATUS_BLOCK"
+        "text": "HEATING_STATUS_BLOCK",
     },
     {
         "idx": 893,
@@ -5865,7 +5865,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_STOP"
+        "text": "HEATING_STOP",
     },
     {
         "idx": 895,
@@ -5874,7 +5874,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_STOP_2"
+        "text": "HEATING_STOP_2",
     },
     {
         "idx": 897,
@@ -5883,7 +5883,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_SYSTEM_TYPE_GLOBAL"
+        "text": "HEATING_SYSTEM_TYPE_GLOBAL",
     },
     {
         "idx": 898,
@@ -5892,7 +5892,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_SYSTEM_TYPE_LOCAL"
+        "text": "HEATING_SYSTEM_TYPE_LOCAL",
     },
     {
         "idx": 899,
@@ -5901,7 +5901,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_USE_EXTERNAL_SETPOINT"
+        "text": "HEATING_USE_EXTERNAL_SETPOINT",
     },
     {
         "idx": 900,
@@ -5910,7 +5910,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "HOLIDAY_ACTIVE"
+        "text": "HOLIDAY_ACTIVE",
     },
     {
         "idx": 901,
@@ -5919,7 +5919,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HOLIDAY_ACTIVE_GLOBAL"
+        "text": "HOLIDAY_ACTIVE_GLOBAL",
     },
     {
         "idx": 902,
@@ -5928,7 +5928,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "HOLIDAY_DHW"
+        "text": "HOLIDAY_DHW",
     },
     {
         "idx": 903,
@@ -5937,7 +5937,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "HOLIDAY_REQUEST"
+        "text": "HOLIDAY_REQUEST",
     },
     {
         "idx": 904,
@@ -5946,7 +5946,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 1,
-        "text": "HOLIDAY_START_DAY"
+        "text": "HOLIDAY_START_DAY",
     },
     {
         "idx": 905,
@@ -5955,7 +5955,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "HOLIDAY_START_DAY_GLOBAL"
+        "text": "HOLIDAY_START_DAY_GLOBAL",
     },
     {
         "idx": 906,
@@ -5964,7 +5964,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 1,
-        "text": "HOLIDAY_START_MONTH"
+        "text": "HOLIDAY_START_MONTH",
     },
     {
         "idx": 907,
@@ -5973,7 +5973,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "HOLIDAY_START_MONTH_GLOBAL"
+        "text": "HOLIDAY_START_MONTH_GLOBAL",
     },
     {
         "idx": 908,
@@ -5982,7 +5982,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "HOLIDAY_START_YEAR"
+        "text": "HOLIDAY_START_YEAR",
     },
     {
         "idx": 909,
@@ -5991,7 +5991,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HOLIDAY_START_YEAR_GLOBAL"
+        "text": "HOLIDAY_START_YEAR_GLOBAL",
     },
     {
         "idx": 910,
@@ -6000,7 +6000,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 1,
-        "text": "HOLIDAY_STOP_DAY"
+        "text": "HOLIDAY_STOP_DAY",
     },
     {
         "idx": 911,
@@ -6009,7 +6009,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "HOLIDAY_STOP_DAY_GLOBAL"
+        "text": "HOLIDAY_STOP_DAY_GLOBAL",
     },
     {
         "idx": 912,
@@ -6018,7 +6018,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 1,
-        "text": "HOLIDAY_STOP_MONTH"
+        "text": "HOLIDAY_STOP_MONTH",
     },
     {
         "idx": 913,
@@ -6027,7 +6027,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "HOLIDAY_STOP_MONTH_GLOBAL"
+        "text": "HOLIDAY_STOP_MONTH_GLOBAL",
     },
     {
         "idx": 914,
@@ -6036,7 +6036,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "HOLIDAY_STOP_YEAR"
+        "text": "HOLIDAY_STOP_YEAR",
     },
     {
         "idx": 915,
@@ -6045,7 +6045,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HOLIDAY_STOP_YEAR_GLOBAL"
+        "text": "HOLIDAY_STOP_YEAR_GLOBAL",
     },
     {
         "idx": 916,
@@ -6054,7 +6054,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HOTGAS_HIGHEST_DIFF"
+        "text": "HOTGAS_HIGHEST_DIFF",
     },
     {
         "idx": 917,
@@ -6063,7 +6063,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HOTGAS_LOWEST_DIFF"
+        "text": "HOTGAS_LOWEST_DIFF",
     },
     {
         "idx": 919,
@@ -6072,7 +6072,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "HP_STOPS_UNTIL_ALARM"
+        "text": "HP_STOPS_UNTIL_ALARM",
     },
     {
         "idx": 920,
@@ -6081,7 +6081,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "HP_STOPS_UNTIL_ALARM_2"
+        "text": "HP_STOPS_UNTIL_ALARM_2",
     },
     {
         "idx": 921,
@@ -6090,7 +6090,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HP_STOP_MAX_TIME"
+        "text": "HP_STOP_MAX_TIME",
     },
     {
         "idx": 922,
@@ -6099,7 +6099,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HP_STOP_MAX_TIME_2"
+        "text": "HP_STOP_MAX_TIME_2",
     },
     {
         "idx": 923,
@@ -6108,7 +6108,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "HP_STOP_TIME_WINDOW"
+        "text": "HP_STOP_TIME_WINDOW",
     },
     {
         "idx": 924,
@@ -6117,7 +6117,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "HP_STOP_TIME_WINDOW_2"
+        "text": "HP_STOP_TIME_WINDOW_2",
     },
     {
         "idx": 925,
@@ -6126,7 +6126,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HUMIDITY_BOARD_0_10V_GLOBAL"
+        "text": "HUMIDITY_BOARD_0_10V_GLOBAL",
     },
     {
         "idx": 927,
@@ -6135,7 +6135,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_4_WAY_VALVE"
+        "text": "HW_4_WAY_VALVE",
     },
     {
         "idx": 928,
@@ -6144,7 +6144,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_4_WAY_VALVE_2"
+        "text": "HW_4_WAY_VALVE_2",
     },
     {
         "idx": 929,
@@ -6153,7 +6153,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "HW_ADDITIONAL_ALARM"
+        "text": "HW_ADDITIONAL_ALARM",
     },
     {
         "idx": 930,
@@ -6162,7 +6162,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_ADDITIONAL_DHW"
+        "text": "HW_ADDITIONAL_DHW",
     },
     {
         "idx": 931,
@@ -6171,7 +6171,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_ADDITIONAL_RELAY_1"
+        "text": "HW_ADDITIONAL_RELAY_1",
     },
     {
         "idx": 932,
@@ -6180,7 +6180,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_ADDITIONAL_RELAY_2"
+        "text": "HW_ADDITIONAL_RELAY_2",
     },
     {
         "idx": 933,
@@ -6189,7 +6189,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_ADDITIONAL_RELAY_3"
+        "text": "HW_ADDITIONAL_RELAY_3",
     },
     {
         "idx": 934,
@@ -6198,7 +6198,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_ADDITIONAL_START"
+        "text": "HW_ADDITIONAL_START",
     },
     {
         "idx": 935,
@@ -6207,7 +6207,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_ADDITIONAL_TRIAC_1"
+        "text": "HW_ADDITIONAL_TRIAC_1",
     },
     {
         "idx": 936,
@@ -6216,7 +6216,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_ADDITIONAL_TRIAC_2"
+        "text": "HW_ADDITIONAL_TRIAC_2",
     },
     {
         "idx": 937,
@@ -6225,7 +6225,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_ADDITIONAL_TRIAC_3"
+        "text": "HW_ADDITIONAL_TRIAC_3",
     },
     {
         "idx": 938,
@@ -6234,7 +6234,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_ADDITIONAL_VALVE_CLOSE"
+        "text": "HW_ADDITIONAL_VALVE_CLOSE",
     },
     {
         "idx": 939,
@@ -6243,7 +6243,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_ADDITIONAL_VALVE_OPEN"
+        "text": "HW_ADDITIONAL_VALVE_OPEN",
     },
     {
         "idx": 940,
@@ -6252,7 +6252,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_BUZZER"
+        "text": "HW_BUZZER",
     },
     {
         "idx": 941,
@@ -6261,7 +6261,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_COMPRESSOR"
+        "text": "HW_COMPRESSOR",
     },
     {
         "idx": 942,
@@ -6270,7 +6270,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_COMPRESSOR_2"
+        "text": "HW_COMPRESSOR_2",
     },
     {
         "idx": 943,
@@ -6279,7 +6279,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_COMPRESSOR_CAN_COMMUNICATION"
+        "text": "HW_COMPRESSOR_CAN_COMMUNICATION",
     },
     {
         "idx": 944,
@@ -6288,7 +6288,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_COMPRESSOR_COMMUNICATION_ERR"
+        "text": "HW_COMPRESSOR_COMMUNICATION_ERR",
     },
     {
         "idx": 945,
@@ -6297,7 +6297,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_COMPRESSOR_CURRENT"
+        "text": "HW_COMPRESSOR_CURRENT",
     },
     {
         "idx": 947,
@@ -6306,7 +6306,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_COMPRESSOR_FREERUN"
+        "text": "HW_COMPRESSOR_FREERUN",
     },
     {
         "idx": 948,
@@ -6315,7 +6315,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_COMPRESSOR_NAK"
+        "text": "HW_COMPRESSOR_NAK",
     },
     {
         "idx": 950,
@@ -6324,7 +6324,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_COMPRESSOR_TARGET_FREQ"
+        "text": "HW_COMPRESSOR_TARGET_FREQ",
     },
     {
         "idx": 951,
@@ -6333,7 +6333,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_COMPRESSOR_TEMP"
+        "text": "HW_COMPRESSOR_TEMP",
     },
     {
         "idx": 953,
@@ -6342,7 +6342,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_COMPRESSOR_VOLTAGE"
+        "text": "HW_COMPRESSOR_VOLTAGE",
     },
     {
         "idx": 955,
@@ -6351,7 +6351,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_COMPRESSOR_WORKING_FREQ"
+        "text": "HW_COMPRESSOR_WORKING_FREQ",
     },
     {
         "idx": 956,
@@ -6360,7 +6360,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_CONTACTOR_1"
+        "text": "HW_CONTACTOR_1",
     },
     {
         "idx": 957,
@@ -6369,7 +6369,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_CONTACTOR_2"
+        "text": "HW_CONTACTOR_2",
     },
     {
         "idx": 958,
@@ -6378,7 +6378,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_COOLING_FAN"
+        "text": "HW_COOLING_FAN",
     },
     {
         "idx": 959,
@@ -6387,7 +6387,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_CRANKCASE_HEATER"
+        "text": "HW_CRANKCASE_HEATER",
     },
     {
         "idx": 960,
@@ -6396,7 +6396,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_CRANKCASE_HEATER_2"
+        "text": "HW_CRANKCASE_HEATER_2",
     },
     {
         "idx": 961,
@@ -6405,7 +6405,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_E11_T11_TEMP"
+        "text": "HW_E11_T11_TEMP",
     },
     {
         "idx": 963,
@@ -6414,7 +6414,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_E21_EXT_1"
+        "text": "HW_E21_EXT_1",
     },
     {
         "idx": 964,
@@ -6423,7 +6423,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_E21_EXT_1_INV"
+        "text": "HW_E21_EXT_1_INV",
     },
     {
         "idx": 965,
@@ -6432,7 +6432,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_E21_EXT_2"
+        "text": "HW_E21_EXT_2",
     },
     {
         "idx": 966,
@@ -6441,7 +6441,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_E21_EXT_2_INV"
+        "text": "HW_E21_EXT_2_INV",
     },
     {
         "idx": 967,
@@ -6450,7 +6450,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_E22_EXT_1"
+        "text": "HW_E22_EXT_1",
     },
     {
         "idx": 968,
@@ -6459,7 +6459,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_E22_EXT_1_INV"
+        "text": "HW_E22_EXT_1_INV",
     },
     {
         "idx": 969,
@@ -6468,7 +6468,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_E22_EXT_2"
+        "text": "HW_E22_EXT_2",
     },
     {
         "idx": 970,
@@ -6477,7 +6477,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_E22_EXT_2_INV"
+        "text": "HW_E22_EXT_2_INV",
     },
     {
         "idx": 971,
@@ -6486,7 +6486,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_E31_T31_TEMP"
+        "text": "HW_E31_T31_TEMP",
     },
     {
         "idx": 973,
@@ -6495,7 +6495,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_E31_T32_TEMP"
+        "text": "HW_E31_T32_TEMP",
     },
     {
         "idx": 975,
@@ -6504,7 +6504,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_E71_EXT"
+        "text": "HW_E71_EXT",
     },
     {
         "idx": 976,
@@ -6513,7 +6513,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_E71_T71_TEMP"
+        "text": "HW_E71_T71_TEMP",
     },
     {
         "idx": 978,
@@ -6522,7 +6522,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_E71_T72_TEMP"
+        "text": "HW_E71_T72_TEMP",
     },
     {
         "idx": 980,
@@ -6531,7 +6531,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_E72_EXT"
+        "text": "HW_E72_EXT",
     },
     {
         "idx": 981,
@@ -6540,7 +6540,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_E72_T71_TEMP"
+        "text": "HW_E72_T71_TEMP",
     },
     {
         "idx": 983,
@@ -6549,7 +6549,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_E72_T72_TEMP"
+        "text": "HW_E72_T72_TEMP",
     },
     {
         "idx": 985,
@@ -6558,7 +6558,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_ELK"
+        "text": "HW_ELK",
     },
     {
         "idx": 986,
@@ -6567,7 +6567,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_ELK_2"
+        "text": "HW_ELK_2",
     },
     {
         "idx": 987,
@@ -6576,7 +6576,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_ELK_3"
+        "text": "HW_ELK_3",
     },
     {
         "idx": 988,
@@ -6585,7 +6585,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_ELK_4"
+        "text": "HW_ELK_4",
     },
     {
         "idx": 989,
@@ -6594,7 +6594,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "HW_EL_VVB_ALARM"
+        "text": "HW_EL_VVB_ALARM",
     },
     {
         "idx": 990,
@@ -6603,7 +6603,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_EXTERNAL_SETPOINT"
+        "text": "HW_EXTERNAL_SETPOINT",
     },
     {
         "idx": 992,
@@ -6612,7 +6612,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_EXTERNAL_SETPOINT_2"
+        "text": "HW_EXTERNAL_SETPOINT_2",
     },
     {
         "idx": 994,
@@ -6621,7 +6621,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_FAN_ANALOG"
+        "text": "HW_FAN_ANALOG",
     },
     {
         "idx": 995,
@@ -6630,7 +6630,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_FAN_ANALOG_2"
+        "text": "HW_FAN_ANALOG_2",
     },
     {
         "idx": 996,
@@ -6639,7 +6639,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_FAN_DIGITAL"
+        "text": "HW_FAN_DIGITAL",
     },
     {
         "idx": 997,
@@ -6648,7 +6648,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_FAN_DIGITAL_2"
+        "text": "HW_FAN_DIGITAL_2",
     },
     {
         "idx": 998,
@@ -6657,7 +6657,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_GT1"
+        "text": "HW_GT1",
     },
     {
         "idx": 1000,
@@ -6666,7 +6666,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_GT10"
+        "text": "HW_GT10",
     },
     {
         "idx": 1002,
@@ -6675,7 +6675,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_GT10_2"
+        "text": "HW_GT10_2",
     },
     {
         "idx": 1004,
@@ -6684,7 +6684,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT10_TEMP"
+        "text": "HW_GT10_TEMP",
     },
     {
         "idx": 1006,
@@ -6693,7 +6693,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT10_TEMP_2"
+        "text": "HW_GT10_TEMP_2",
     },
     {
         "idx": 1008,
@@ -6702,7 +6702,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_GT11"
+        "text": "HW_GT11",
     },
     {
         "idx": 1010,
@@ -6711,7 +6711,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_GT11_2"
+        "text": "HW_GT11_2",
     },
     {
         "idx": 1012,
@@ -6720,7 +6720,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT11_TEMP"
+        "text": "HW_GT11_TEMP",
     },
     {
         "idx": 1014,
@@ -6729,7 +6729,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT11_TEMP_2"
+        "text": "HW_GT11_TEMP_2",
     },
     {
         "idx": 1016,
@@ -6738,7 +6738,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_GT12"
+        "text": "HW_GT12",
     },
     {
         "idx": 1018,
@@ -6747,7 +6747,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_GT12_2"
+        "text": "HW_GT12_2",
     },
     {
         "idx": 1020,
@@ -6756,7 +6756,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT12_TEMP"
+        "text": "HW_GT12_TEMP",
     },
     {
         "idx": 1022,
@@ -6765,7 +6765,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT12_TEMP_2"
+        "text": "HW_GT12_TEMP_2",
     },
     {
         "idx": 1024,
@@ -6774,7 +6774,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT1_TEMP"
+        "text": "HW_GT1_TEMP",
     },
     {
         "idx": 1026,
@@ -6783,7 +6783,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_GT2"
+        "text": "HW_GT2",
     },
     {
         "idx": 1028,
@@ -6792,7 +6792,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT2_TEMP"
+        "text": "HW_GT2_TEMP",
     },
     {
         "idx": 1030,
@@ -6801,7 +6801,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_GT3"
+        "text": "HW_GT3",
     },
     {
         "idx": 1032,
@@ -6810,7 +6810,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT3_TEMP"
+        "text": "HW_GT3_TEMP",
     },
     {
         "idx": 1034,
@@ -6819,7 +6819,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT41_GLOBAL"
+        "text": "HW_GT41_GLOBAL",
     },
     {
         "idx": 1036,
@@ -6828,7 +6828,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT41_TEMP_1"
+        "text": "HW_GT41_TEMP_1",
     },
     {
         "idx": 1038,
@@ -6837,7 +6837,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT41_TEMP_2"
+        "text": "HW_GT41_TEMP_2",
     },
     {
         "idx": 1040,
@@ -6846,7 +6846,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT41_TEMP_3"
+        "text": "HW_GT41_TEMP_3",
     },
     {
         "idx": 1042,
@@ -6855,7 +6855,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT41_TEMP_4"
+        "text": "HW_GT41_TEMP_4",
     },
     {
         "idx": 1044,
@@ -6864,7 +6864,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT41_TEMP_5"
+        "text": "HW_GT41_TEMP_5",
     },
     {
         "idx": 1046,
@@ -6873,7 +6873,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT41_TEMP_6"
+        "text": "HW_GT41_TEMP_6",
     },
     {
         "idx": 1048,
@@ -6882,7 +6882,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT41_TEMP_7"
+        "text": "HW_GT41_TEMP_7",
     },
     {
         "idx": 1050,
@@ -6891,7 +6891,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT41_TEMP_GLOBAL"
+        "text": "HW_GT41_TEMP_GLOBAL",
     },
     {
         "idx": 1052,
@@ -6900,7 +6900,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_GT45_GLOBAL"
+        "text": "HW_GT45_GLOBAL",
     },
     {
         "idx": 1054,
@@ -6909,7 +6909,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT45_TEMP_GLOBAL"
+        "text": "HW_GT45_TEMP_GLOBAL",
     },
     {
         "idx": 1056,
@@ -6918,7 +6918,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_GT5"
+        "text": "HW_GT5",
     },
     {
         "idx": 1058,
@@ -6927,7 +6927,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT5_TEMP"
+        "text": "HW_GT5_TEMP",
     },
     {
         "idx": 1060,
@@ -6936,7 +6936,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_GT6"
+        "text": "HW_GT6",
     },
     {
         "idx": 1062,
@@ -6945,7 +6945,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_GT6_2"
+        "text": "HW_GT6_2",
     },
     {
         "idx": 1064,
@@ -6954,7 +6954,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT6_TEMP"
+        "text": "HW_GT6_TEMP",
     },
     {
         "idx": 1066,
@@ -6963,7 +6963,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT6_TEMP_2"
+        "text": "HW_GT6_TEMP_2",
     },
     {
         "idx": 1068,
@@ -6972,7 +6972,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_GT7"
+        "text": "HW_GT7",
     },
     {
         "idx": 1070,
@@ -6981,7 +6981,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_GT7_2"
+        "text": "HW_GT7_2",
     },
     {
         "idx": 1072,
@@ -6990,7 +6990,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT7_TEMP"
+        "text": "HW_GT7_TEMP",
     },
     {
         "idx": 1074,
@@ -6999,7 +6999,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT7_TEMP_2"
+        "text": "HW_GT7_TEMP_2",
     },
     {
         "idx": 1076,
@@ -7008,7 +7008,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_GT8"
+        "text": "HW_GT8",
     },
     {
         "idx": 1078,
@@ -7017,7 +7017,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_GT81"
+        "text": "HW_GT81",
     },
     {
         "idx": 1080,
@@ -7026,7 +7026,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT81_TEMP"
+        "text": "HW_GT81_TEMP",
     },
     {
         "idx": 1082,
@@ -7035,7 +7035,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_GT82"
+        "text": "HW_GT82",
     },
     {
         "idx": 1084,
@@ -7044,7 +7044,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT82_TEMP"
+        "text": "HW_GT82_TEMP",
     },
     {
         "idx": 1086,
@@ -7053,7 +7053,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_GT8_2"
+        "text": "HW_GT8_2",
     },
     {
         "idx": 1088,
@@ -7062,7 +7062,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT8_TEMP"
+        "text": "HW_GT8_TEMP",
     },
     {
         "idx": 1090,
@@ -7071,7 +7071,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT8_TEMP_2"
+        "text": "HW_GT8_TEMP_2",
     },
     {
         "idx": 1092,
@@ -7080,7 +7080,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_GT9"
+        "text": "HW_GT9",
     },
     {
         "idx": 1094,
@@ -7089,7 +7089,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_GT9_2"
+        "text": "HW_GT9_2",
     },
     {
         "idx": 1096,
@@ -7098,7 +7098,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT9_TEMP"
+        "text": "HW_GT9_TEMP",
     },
     {
         "idx": 1098,
@@ -7107,7 +7107,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_GT9_TEMP_2"
+        "text": "HW_GT9_TEMP_2",
     },
     {
         "idx": 1100,
@@ -7116,7 +7116,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_HEATING_CABLE"
+        "text": "HW_HEATING_CABLE",
     },
     {
         "idx": 1101,
@@ -7125,7 +7125,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_HEATING_CABLE_2"
+        "text": "HW_HEATING_CABLE_2",
     },
     {
         "idx": 1102,
@@ -7134,7 +7134,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_HP"
+        "text": "HW_HP",
     },
     {
         "idx": 1103,
@@ -7143,7 +7143,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_HP_2"
+        "text": "HW_HP_2",
     },
     {
         "idx": 1104,
@@ -7152,7 +7152,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_HUMIDITY"
+        "text": "HW_HUMIDITY",
     },
     {
         "idx": 1106,
@@ -7161,7 +7161,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_HUMIDITY_2"
+        "text": "HW_HUMIDITY_2",
     },
     {
         "idx": 1108,
@@ -7170,7 +7170,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_HUMIDITY_3"
+        "text": "HW_HUMIDITY_3",
     },
     {
         "idx": 1110,
@@ -7179,7 +7179,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_IOB91119_AI_1"
+        "text": "HW_IOB91119_AI_1",
     },
     {
         "idx": 1112,
@@ -7188,7 +7188,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_IOB91119_AI_5"
+        "text": "HW_IOB91119_AI_5",
     },
     {
         "idx": 1114,
@@ -7197,7 +7197,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_IOB91119_DO10"
+        "text": "HW_IOB91119_DO10",
     },
     {
         "idx": 1115,
@@ -7206,7 +7206,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_IOB91119_DO12"
+        "text": "HW_IOB91119_DO12",
     },
     {
         "idx": 1116,
@@ -7215,7 +7215,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_IOB91119_DO8"
+        "text": "HW_IOB91119_DO8",
     },
     {
         "idx": 1117,
@@ -7224,7 +7224,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_IOB_B_DO5"
+        "text": "HW_IOB_B_DO5",
     },
     {
         "idx": 1118,
@@ -7233,7 +7233,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_LP"
+        "text": "HW_LP",
     },
     {
         "idx": 1119,
@@ -7242,7 +7242,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_LP_2"
+        "text": "HW_LP_2",
     },
     {
         "idx": 1120,
@@ -7251,7 +7251,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_MB1"
+        "text": "HW_MB1",
     },
     {
         "idx": 1121,
@@ -7260,7 +7260,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_MB1_2"
+        "text": "HW_MB1_2",
     },
     {
         "idx": 1122,
@@ -7269,7 +7269,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_MB2"
+        "text": "HW_MB2",
     },
     {
         "idx": 1123,
@@ -7278,7 +7278,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_MB2_2"
+        "text": "HW_MB2_2",
     },
     {
         "idx": 1124,
@@ -7287,7 +7287,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_MV_E12_EXT_1"
+        "text": "HW_MV_E12_EXT_1",
     },
     {
         "idx": 1125,
@@ -7296,7 +7296,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "HW_MV_E12_PUMP_G1_DIGITAL"
+        "text": "HW_MV_E12_PUMP_G1_DIGITAL",
     },
     {
         "idx": 1126,
@@ -7305,7 +7305,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_MV_E12_T1"
+        "text": "HW_MV_E12_T1",
     },
     {
         "idx": 1128,
@@ -7314,7 +7314,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_MV_E12_VALVE_CLOSE"
+        "text": "HW_MV_E12_VALVE_CLOSE",
     },
     {
         "idx": 1129,
@@ -7323,7 +7323,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_MV_E12_VALVE_OPEN"
+        "text": "HW_MV_E12_VALVE_OPEN",
     },
     {
         "idx": 1130,
@@ -7332,7 +7332,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_PGU_L1"
+        "text": "HW_PGU_L1",
     },
     {
         "idx": 1132,
@@ -7341,7 +7341,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_PGU_L2"
+        "text": "HW_PGU_L2",
     },
     {
         "idx": 1134,
@@ -7350,7 +7350,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_PGU_L3"
+        "text": "HW_PGU_L3",
     },
     {
         "idx": 1136,
@@ -7359,7 +7359,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_PHASE_DETECTOR"
+        "text": "HW_PHASE_DETECTOR",
     },
     {
         "idx": 1137,
@@ -7368,7 +7368,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_PHASE_DETECTOR_2"
+        "text": "HW_PHASE_DETECTOR_2",
     },
     {
         "idx": 1138,
@@ -7377,7 +7377,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_POOL_EXT_1"
+        "text": "HW_POOL_EXT_1",
     },
     {
         "idx": 1139,
@@ -7386,7 +7386,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_POOL_VALVE"
+        "text": "HW_POOL_VALVE",
     },
     {
         "idx": 1140,
@@ -7395,7 +7395,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_POOL_VALVE_CLOSE"
+        "text": "HW_POOL_VALVE_CLOSE",
     },
     {
         "idx": 1141,
@@ -7404,7 +7404,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_POOL_VALVE_OPEN"
+        "text": "HW_POOL_VALVE_OPEN",
     },
     {
         "idx": 1142,
@@ -7413,7 +7413,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_PROTECTIVE_ANODE"
+        "text": "HW_PROTECTIVE_ANODE",
     },
     {
         "idx": 1143,
@@ -7422,7 +7422,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "HW_PUMP_DHW_DIGITAL"
+        "text": "HW_PUMP_DHW_DIGITAL",
     },
     {
         "idx": 1144,
@@ -7431,7 +7431,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "HW_PUMP_E71_G71_DIGITAL"
+        "text": "HW_PUMP_E71_G71_DIGITAL",
     },
     {
         "idx": 1145,
@@ -7440,7 +7440,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "HW_PUMP_E72_G71_DIGITAL"
+        "text": "HW_PUMP_E72_G71_DIGITAL",
     },
     {
         "idx": 1146,
@@ -7449,7 +7449,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "HW_PUMP_G1_DIGITAL"
+        "text": "HW_PUMP_G1_DIGITAL",
     },
     {
         "idx": 1147,
@@ -7458,7 +7458,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "HW_PUMP_G2_ANALOG"
+        "text": "HW_PUMP_G2_ANALOG",
     },
     {
         "idx": 1148,
@@ -7467,7 +7467,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_PUMP_G2_ANALOG_2"
+        "text": "HW_PUMP_G2_ANALOG_2",
     },
     {
         "idx": 1149,
@@ -7476,7 +7476,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "HW_PUMP_G2_DIGITAL"
+        "text": "HW_PUMP_G2_DIGITAL",
     },
     {
         "idx": 1150,
@@ -7485,7 +7485,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_PUMP_G2_DIGITAL_2"
+        "text": "HW_PUMP_G2_DIGITAL_2",
     },
     {
         "idx": 1151,
@@ -7494,7 +7494,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "HW_PUMP_G3_ANALOG"
+        "text": "HW_PUMP_G3_ANALOG",
     },
     {
         "idx": 1152,
@@ -7503,7 +7503,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "HW_PUMP_G3_DIGITAL"
+        "text": "HW_PUMP_G3_DIGITAL",
     },
     {
         "idx": 1153,
@@ -7512,7 +7512,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_PUMP_G3_DIGITAL_2"
+        "text": "HW_PUMP_G3_DIGITAL_2",
     },
     {
         "idx": 1154,
@@ -7521,7 +7521,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "HW_ROOM_BUZZER_INTERVALL"
+        "text": "HW_ROOM_BUZZER_INTERVALL",
     },
     {
         "idx": 1155,
@@ -7530,7 +7530,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_ROOM_BUZZER_MODE"
+        "text": "HW_ROOM_BUZZER_MODE",
     },
     {
         "idx": 1156,
@@ -7539,7 +7539,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_ROOM_BUZZER_OFF_TIME"
+        "text": "HW_ROOM_BUZZER_OFF_TIME",
     },
     {
         "idx": 1158,
@@ -7548,7 +7548,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_ROOM_BUZZER_ON_TIME"
+        "text": "HW_ROOM_BUZZER_ON_TIME",
     },
     {
         "idx": 1160,
@@ -7557,7 +7557,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_ROOM_GT5"
+        "text": "HW_ROOM_GT5",
     },
     {
         "idx": 1162,
@@ -7566,7 +7566,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_ROOM_GT5_GLOBAL"
+        "text": "HW_ROOM_GT5_GLOBAL",
     },
     {
         "idx": 1164,
@@ -7575,7 +7575,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_ROOM_LED_MODE"
+        "text": "HW_ROOM_LED_MODE",
     },
     {
         "idx": 1165,
@@ -7584,7 +7584,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_ROOM_POT"
+        "text": "HW_ROOM_POT",
     },
     {
         "idx": 1167,
@@ -7593,7 +7593,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_ROOM_POT_GLOBAL"
+        "text": "HW_ROOM_POT_GLOBAL",
     },
     {
         "idx": 1169,
@@ -7602,7 +7602,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_ROOM_TEMP"
+        "text": "HW_ROOM_TEMP",
     },
     {
         "idx": 1171,
@@ -7611,7 +7611,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "HW_ROOM_TEMP_GLOBAL"
+        "text": "HW_ROOM_TEMP_GLOBAL",
     },
     {
         "idx": 1173,
@@ -7620,7 +7620,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "HW_SUMMARY_ALARM"
+        "text": "HW_SUMMARY_ALARM",
     },
     {
         "idx": 1174,
@@ -7629,7 +7629,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_SYSTEM_ON"
+        "text": "HW_SYSTEM_ON",
     },
     {
         "idx": 1175,
@@ -7638,7 +7638,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_VXV"
+        "text": "HW_VXV",
     },
     {
         "idx": 1176,
@@ -7647,7 +7647,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HW_VXV_2"
+        "text": "HW_VXV_2",
     },
     {
         "idx": 1177,
@@ -7656,7 +7656,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ICONS_IOB6126_EXTERN_BITMASK"
+        "text": "ICONS_IOB6126_EXTERN_BITMASK",
     },
     {
         "idx": 1178,
@@ -7665,7 +7665,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "INIT_MV_STATUS_DONE"
+        "text": "INIT_MV_STATUS_DONE",
     },
     {
         "idx": 1179,
@@ -7674,7 +7674,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_BOOT_COUNT"
+        "text": "IOB6126_BOOT_COUNT",
     },
     {
         "idx": 1180,
@@ -7683,7 +7683,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_EXTERN_HEAT_CONNECTED"
+        "text": "IOB6126_EXTERN_HEAT_CONNECTED",
     },
     {
         "idx": 1181,
@@ -7692,7 +7692,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_EXTERN_HEAT_CONNECTED_2"
+        "text": "IOB6126_EXTERN_HEAT_CONNECTED_2",
     },
     {
         "idx": 1182,
@@ -7701,7 +7701,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_EXTERN_HEAT_CONNECTED_3"
+        "text": "IOB6126_EXTERN_HEAT_CONNECTED_3",
     },
     {
         "idx": 1183,
@@ -7710,7 +7710,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_EXTERN_HEAT_CONNECTED_4"
+        "text": "IOB6126_EXTERN_HEAT_CONNECTED_4",
     },
     {
         "idx": 1184,
@@ -7719,7 +7719,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_EXTERN_HEAT_CONNECTED_5"
+        "text": "IOB6126_EXTERN_HEAT_CONNECTED_5",
     },
     {
         "idx": 1185,
@@ -7728,7 +7728,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_EXTERN_HEAT_CONNECTED_6"
+        "text": "IOB6126_EXTERN_HEAT_CONNECTED_6",
     },
     {
         "idx": 1186,
@@ -7737,7 +7737,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_EXTERN_HEAT_CONNECTED_7"
+        "text": "IOB6126_EXTERN_HEAT_CONNECTED_7",
     },
     {
         "idx": 1187,
@@ -7746,7 +7746,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_EXTERN_HEAT_VERSION"
+        "text": "IOB6126_EXTERN_HEAT_VERSION",
     },
     {
         "idx": 1189,
@@ -7755,7 +7755,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_EXTERN_HEAT_VERSION_2"
+        "text": "IOB6126_EXTERN_HEAT_VERSION_2",
     },
     {
         "idx": 1191,
@@ -7764,7 +7764,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_EXTERN_HEAT_VERSION_3"
+        "text": "IOB6126_EXTERN_HEAT_VERSION_3",
     },
     {
         "idx": 1193,
@@ -7773,7 +7773,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_EXTERN_HEAT_VERSION_4"
+        "text": "IOB6126_EXTERN_HEAT_VERSION_4",
     },
     {
         "idx": 1195,
@@ -7782,7 +7782,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_EXTERN_HEAT_VERSION_5"
+        "text": "IOB6126_EXTERN_HEAT_VERSION_5",
     },
     {
         "idx": 1197,
@@ -7791,7 +7791,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_EXTERN_HEAT_VERSION_6"
+        "text": "IOB6126_EXTERN_HEAT_VERSION_6",
     },
     {
         "idx": 1199,
@@ -7800,7 +7800,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_EXTERN_HEAT_VERSION_7"
+        "text": "IOB6126_EXTERN_HEAT_VERSION_7",
     },
     {
         "idx": 1201,
@@ -7809,7 +7809,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_EXTERN_HEAT_VERSION_GLOBAL"
+        "text": "IOB6126_EXTERN_HEAT_VERSION_GLOBAL",
     },
     {
         "idx": 1203,
@@ -7818,7 +7818,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_MAIN_COOLING_CONNECTED"
+        "text": "IOB6126_MAIN_COOLING_CONNECTED",
     },
     {
         "idx": 1204,
@@ -7827,7 +7827,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_MAIN_COOLING_VERSION"
+        "text": "IOB6126_MAIN_COOLING_VERSION",
     },
     {
         "idx": 1206,
@@ -7836,7 +7836,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_POOL_CONNECTED"
+        "text": "IOB6126_POOL_CONNECTED",
     },
     {
         "idx": 1207,
@@ -7845,7 +7845,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_POOL_VERSION"
+        "text": "IOB6126_POOL_VERSION",
     },
     {
         "idx": 1209,
@@ -7854,7 +7854,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_SOLAR_CONNECTED"
+        "text": "IOB6126_SOLAR_CONNECTED",
     },
     {
         "idx": 1210,
@@ -7863,7 +7863,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_SOLAR_VERSION"
+        "text": "IOB6126_SOLAR_VERSION",
     },
     {
         "idx": 1212,
@@ -7872,7 +7872,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_SUB_COOLING_CONNECTED"
+        "text": "IOB6126_SUB_COOLING_CONNECTED",
     },
     {
         "idx": 1213,
@@ -7881,7 +7881,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_SUB_COOLING_VERSION"
+        "text": "IOB6126_SUB_COOLING_VERSION",
     },
     {
         "idx": 1215,
@@ -7890,7 +7890,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_WOOD_HEATING_CONNECTED"
+        "text": "IOB6126_WOOD_HEATING_CONNECTED",
     },
     {
         "idx": 1216,
@@ -7899,7 +7899,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_WOOD_HEATING_CONNECTED_2"
+        "text": "IOB6126_WOOD_HEATING_CONNECTED_2",
     },
     {
         "idx": 1217,
@@ -7908,7 +7908,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_WOOD_HEATING_VERSION"
+        "text": "IOB6126_WOOD_HEATING_VERSION",
     },
     {
         "idx": 1219,
@@ -7917,7 +7917,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB6126_WOOD_HEATING_VERSION_2"
+        "text": "IOB6126_WOOD_HEATING_VERSION_2",
     },
     {
         "idx": 1221,
@@ -7926,7 +7926,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_AW_COMP_CONNECTED"
+        "text": "IOB91119_AW_COMP_CONNECTED",
     },
     {
         "idx": 1222,
@@ -7935,7 +7935,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_AW_COMP_CONNECTED_2"
+        "text": "IOB91119_AW_COMP_CONNECTED_2",
     },
     {
         "idx": 1223,
@@ -7944,7 +7944,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_AW_COMP_VERSION"
+        "text": "IOB91119_AW_COMP_VERSION",
     },
     {
         "idx": 1225,
@@ -7953,7 +7953,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_AW_COMP_VERSION_2"
+        "text": "IOB91119_AW_COMP_VERSION_2",
     },
     {
         "idx": 1227,
@@ -7962,7 +7962,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_AW_HEAT_CONNECTED"
+        "text": "IOB91119_AW_HEAT_CONNECTED",
     },
     {
         "idx": 1228,
@@ -7971,7 +7971,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_AW_HEAT_CONNECTED_2"
+        "text": "IOB91119_AW_HEAT_CONNECTED_2",
     },
     {
         "idx": 1229,
@@ -7980,7 +7980,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_AW_HEAT_VERSION"
+        "text": "IOB91119_AW_HEAT_VERSION",
     },
     {
         "idx": 1231,
@@ -7989,7 +7989,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_AW_LIGHT_HEAT_CONNECTED"
+        "text": "IOB91119_AW_LIGHT_HEAT_CONNECTED",
     },
     {
         "idx": 1232,
@@ -7998,7 +7998,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_AW_LIGHT_HEAT_CONNECTED_2"
+        "text": "IOB91119_AW_LIGHT_HEAT_CONNECTED_2",
     },
     {
         "idx": 1233,
@@ -8007,7 +8007,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_AW_LIGHT_HEAT_VERSION"
+        "text": "IOB91119_AW_LIGHT_HEAT_VERSION",
     },
     {
         "idx": 1235,
@@ -8016,7 +8016,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_AW_LIGHT_HEAT_VERSION_2"
+        "text": "IOB91119_AW_LIGHT_HEAT_VERSION_2",
     },
     {
         "idx": 1237,
@@ -8025,7 +8025,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_BOOT_COUNT"
+        "text": "IOB91119_BOOT_COUNT",
     },
     {
         "idx": 1238,
@@ -8034,7 +8034,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_CONNECTED_BITMASK"
+        "text": "IOB91119_CONNECTED_BITMASK",
     },
     {
         "idx": 1239,
@@ -8043,7 +8043,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_DO8_G6_OR_SUMMARY_ALARM"
+        "text": "IOB91119_DO8_G6_OR_SUMMARY_ALARM",
     },
     {
         "idx": 1240,
@@ -8052,7 +8052,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_LW_CONNECTED"
+        "text": "IOB91119_LW_CONNECTED",
     },
     {
         "idx": 1241,
@@ -8061,7 +8061,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_LW_CONNECTED_2"
+        "text": "IOB91119_LW_CONNECTED_2",
     },
     {
         "idx": 1242,
@@ -8070,7 +8070,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_LW_DACH_LIGHT_CONNECTED"
+        "text": "IOB91119_LW_DACH_LIGHT_CONNECTED",
     },
     {
         "idx": 1243,
@@ -8079,7 +8079,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_LW_DACH_LIGHT_CONNECTED_2"
+        "text": "IOB91119_LW_DACH_LIGHT_CONNECTED_2",
     },
     {
         "idx": 1244,
@@ -8088,7 +8088,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_LW_DACH_LIGHT_HA_CONNECTED"
+        "text": "IOB91119_LW_DACH_LIGHT_HA_CONNECTED",
     },
     {
         "idx": 1245,
@@ -8097,7 +8097,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_LW_DACH_LIGHT_HA_CONNECTED_2"
+        "text": "IOB91119_LW_DACH_LIGHT_HA_CONNECTED_2",
     },
     {
         "idx": 1246,
@@ -8106,7 +8106,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_LW_DACH_LIGHT_HA_VERSION"
+        "text": "IOB91119_LW_DACH_LIGHT_HA_VERSION",
     },
     {
         "idx": 1248,
@@ -8115,7 +8115,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_LW_DACH_LIGHT_HA_VERSION_2"
+        "text": "IOB91119_LW_DACH_LIGHT_HA_VERSION_2",
     },
     {
         "idx": 1250,
@@ -8124,7 +8124,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_LW_DACH_LIGHT_VERSION"
+        "text": "IOB91119_LW_DACH_LIGHT_VERSION",
     },
     {
         "idx": 1252,
@@ -8133,7 +8133,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_LW_DACH_LIGHT_VERSION_2"
+        "text": "IOB91119_LW_DACH_LIGHT_VERSION_2",
     },
     {
         "idx": 1254,
@@ -8142,7 +8142,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_LW_LIGHT_CONNECTED"
+        "text": "IOB91119_LW_LIGHT_CONNECTED",
     },
     {
         "idx": 1255,
@@ -8151,7 +8151,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_LW_LIGHT_CONNECTED_2"
+        "text": "IOB91119_LW_LIGHT_CONNECTED_2",
     },
     {
         "idx": 1256,
@@ -8160,7 +8160,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_LW_LIGHT_VERSION"
+        "text": "IOB91119_LW_LIGHT_VERSION",
     },
     {
         "idx": 1258,
@@ -8169,7 +8169,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_LW_LIGHT_VERSION_2"
+        "text": "IOB91119_LW_LIGHT_VERSION_2",
     },
     {
         "idx": 1260,
@@ -8178,7 +8178,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_LW_VERSION"
+        "text": "IOB91119_LW_VERSION",
     },
     {
         "idx": 1262,
@@ -8187,7 +8187,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_LW_VERSION_2"
+        "text": "IOB91119_LW_VERSION_2",
     },
     {
         "idx": 1264,
@@ -8196,7 +8196,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB91119_REBOOT"
+        "text": "IOB91119_REBOOT",
     },
     {
         "idx": 1265,
@@ -8205,7 +8205,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOBX10_CONNECTED"
+        "text": "IOBX10_CONNECTED",
     },
     {
         "idx": 1266,
@@ -8214,7 +8214,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOBX10_VERSION"
+        "text": "IOBX10_VERSION",
     },
     {
         "idx": 1268,
@@ -8223,7 +8223,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_AW_LIGHT_COMP_CONNECTED"
+        "text": "IOB_B_AW_LIGHT_COMP_CONNECTED",
     },
     {
         "idx": 1269,
@@ -8232,7 +8232,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_AW_LIGHT_COMP_VERSION"
+        "text": "IOB_B_AW_LIGHT_COMP_VERSION",
     },
     {
         "idx": 1271,
@@ -8241,7 +8241,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_EXTERN_HEAT_GENERATION"
+        "text": "IOB_B_EXTERN_HEAT_GENERATION",
     },
     {
         "idx": 1272,
@@ -8250,7 +8250,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_EXTERN_HEAT_GENERATION_2"
+        "text": "IOB_B_EXTERN_HEAT_GENERATION_2",
     },
     {
         "idx": 1273,
@@ -8259,7 +8259,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_EXTERN_HEAT_GENERATION_3"
+        "text": "IOB_B_EXTERN_HEAT_GENERATION_3",
     },
     {
         "idx": 1274,
@@ -8268,7 +8268,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_EXTERN_HEAT_GENERATION_4"
+        "text": "IOB_B_EXTERN_HEAT_GENERATION_4",
     },
     {
         "idx": 1275,
@@ -8277,7 +8277,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_EXTERN_HEAT_GENERATION_5"
+        "text": "IOB_B_EXTERN_HEAT_GENERATION_5",
     },
     {
         "idx": 1276,
@@ -8286,7 +8286,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_EXTERN_HEAT_GENERATION_6"
+        "text": "IOB_B_EXTERN_HEAT_GENERATION_6",
     },
     {
         "idx": 1277,
@@ -8295,7 +8295,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_EXTERN_HEAT_GENERATION_7"
+        "text": "IOB_B_EXTERN_HEAT_GENERATION_7",
     },
     {
         "idx": 1278,
@@ -8304,7 +8304,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_EXTERN_HEAT_REVISION"
+        "text": "IOB_B_EXTERN_HEAT_REVISION",
     },
     {
         "idx": 1279,
@@ -8313,7 +8313,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_EXTERN_HEAT_REVISION_2"
+        "text": "IOB_B_EXTERN_HEAT_REVISION_2",
     },
     {
         "idx": 1280,
@@ -8322,7 +8322,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_EXTERN_HEAT_REVISION_3"
+        "text": "IOB_B_EXTERN_HEAT_REVISION_3",
     },
     {
         "idx": 1281,
@@ -8331,7 +8331,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_EXTERN_HEAT_REVISION_4"
+        "text": "IOB_B_EXTERN_HEAT_REVISION_4",
     },
     {
         "idx": 1282,
@@ -8340,7 +8340,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_EXTERN_HEAT_REVISION_5"
+        "text": "IOB_B_EXTERN_HEAT_REVISION_5",
     },
     {
         "idx": 1283,
@@ -8349,7 +8349,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_EXTERN_HEAT_REVISION_6"
+        "text": "IOB_B_EXTERN_HEAT_REVISION_6",
     },
     {
         "idx": 1284,
@@ -8358,7 +8358,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_EXTERN_HEAT_REVISION_7"
+        "text": "IOB_B_EXTERN_HEAT_REVISION_7",
     },
     {
         "idx": 1285,
@@ -8367,7 +8367,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_EXTERN_HEAT_VERSION"
+        "text": "IOB_B_EXTERN_HEAT_VERSION",
     },
     {
         "idx": 1286,
@@ -8376,7 +8376,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_EXTERN_HEAT_VERSION_2"
+        "text": "IOB_B_EXTERN_HEAT_VERSION_2",
     },
     {
         "idx": 1287,
@@ -8385,7 +8385,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_EXTERN_HEAT_VERSION_3"
+        "text": "IOB_B_EXTERN_HEAT_VERSION_3",
     },
     {
         "idx": 1288,
@@ -8394,7 +8394,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_EXTERN_HEAT_VERSION_4"
+        "text": "IOB_B_EXTERN_HEAT_VERSION_4",
     },
     {
         "idx": 1289,
@@ -8403,7 +8403,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_EXTERN_HEAT_VERSION_5"
+        "text": "IOB_B_EXTERN_HEAT_VERSION_5",
     },
     {
         "idx": 1290,
@@ -8412,7 +8412,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_EXTERN_HEAT_VERSION_6"
+        "text": "IOB_B_EXTERN_HEAT_VERSION_6",
     },
     {
         "idx": 1291,
@@ -8421,7 +8421,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_EXTERN_HEAT_VERSION_7"
+        "text": "IOB_B_EXTERN_HEAT_VERSION_7",
     },
     {
         "idx": 1292,
@@ -8430,7 +8430,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_HUMIDITY_2_CONNECTED"
+        "text": "IOB_B_HUMIDITY_2_CONNECTED",
     },
     {
         "idx": 1293,
@@ -8439,7 +8439,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_HUMIDITY_3_CONNECTED"
+        "text": "IOB_B_HUMIDITY_3_CONNECTED",
     },
     {
         "idx": 1294,
@@ -8448,7 +8448,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_HUMIDITY_CONNECTED"
+        "text": "IOB_B_HUMIDITY_CONNECTED",
     },
     {
         "idx": 1295,
@@ -8457,7 +8457,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_HUMIDITY_CONNECTED_BITMASK"
+        "text": "IOB_B_HUMIDITY_CONNECTED_BITMASK",
     },
     {
         "idx": 1296,
@@ -8466,7 +8466,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_HUMIDITY_GENERATION"
+        "text": "IOB_B_HUMIDITY_GENERATION",
     },
     {
         "idx": 1297,
@@ -8475,7 +8475,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_HUMIDITY_GENERATION_2"
+        "text": "IOB_B_HUMIDITY_GENERATION_2",
     },
     {
         "idx": 1298,
@@ -8484,7 +8484,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_HUMIDITY_GENERATION_3"
+        "text": "IOB_B_HUMIDITY_GENERATION_3",
     },
     {
         "idx": 1299,
@@ -8493,7 +8493,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_HUMIDITY_REVISION"
+        "text": "IOB_B_HUMIDITY_REVISION",
     },
     {
         "idx": 1300,
@@ -8502,7 +8502,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_HUMIDITY_REVISION_2"
+        "text": "IOB_B_HUMIDITY_REVISION_2",
     },
     {
         "idx": 1301,
@@ -8511,7 +8511,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_HUMIDITY_REVISION_3"
+        "text": "IOB_B_HUMIDITY_REVISION_3",
     },
     {
         "idx": 1302,
@@ -8520,7 +8520,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_HUMIDITY_VERSION"
+        "text": "IOB_B_HUMIDITY_VERSION",
     },
     {
         "idx": 1303,
@@ -8529,7 +8529,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_HUMIDITY_VERSION_2"
+        "text": "IOB_B_HUMIDITY_VERSION_2",
     },
     {
         "idx": 1304,
@@ -8538,7 +8538,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_HUMIDITY_VERSION_3"
+        "text": "IOB_B_HUMIDITY_VERSION_3",
     },
     {
         "idx": 1305,
@@ -8547,7 +8547,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_OIL_CONNECTED"
+        "text": "IOB_B_OIL_CONNECTED",
     },
     {
         "idx": 1306,
@@ -8556,7 +8556,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_OIL_GENERATION"
+        "text": "IOB_B_OIL_GENERATION",
     },
     {
         "idx": 1307,
@@ -8565,7 +8565,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_OIL_REVISION"
+        "text": "IOB_B_OIL_REVISION",
     },
     {
         "idx": 1308,
@@ -8574,7 +8574,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_OIL_VERSION"
+        "text": "IOB_B_OIL_VERSION",
     },
     {
         "idx": 1310,
@@ -8583,7 +8583,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_POOL_GENERATION"
+        "text": "IOB_B_POOL_GENERATION",
     },
     {
         "idx": 1311,
@@ -8592,7 +8592,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_POOL_REVISION"
+        "text": "IOB_B_POOL_REVISION",
     },
     {
         "idx": 1312,
@@ -8601,7 +8601,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "IOB_B_POOL_VERSION"
+        "text": "IOB_B_POOL_VERSION",
     },
     {
         "idx": 1313,
@@ -8610,7 +8610,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "LANGUAGE"
+        "text": "LANGUAGE",
     },
     {
         "idx": 1317,
@@ -8619,7 +8619,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "LANGUAGE_ISO639_1"
+        "text": "LANGUAGE_ISO639_1",
     },
     {
         "idx": 1319,
@@ -8628,7 +8628,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "LP_2_ALARM_DELAY"
+        "text": "LP_2_ALARM_DELAY",
     },
     {
         "idx": 1321,
@@ -8637,7 +8637,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "LP_ALARM_DELAY"
+        "text": "LP_ALARM_DELAY",
     },
     {
         "idx": 1323,
@@ -8646,7 +8646,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "LP_STOPS_UNTIL_ALARM"
+        "text": "LP_STOPS_UNTIL_ALARM",
     },
     {
         "idx": 1324,
@@ -8655,7 +8655,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "LP_STOPS_UNTIL_ALARM_2"
+        "text": "LP_STOPS_UNTIL_ALARM_2",
     },
     {
         "idx": 1325,
@@ -8664,7 +8664,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "LP_STOP_MAX_TIME"
+        "text": "LP_STOP_MAX_TIME",
     },
     {
         "idx": 1326,
@@ -8673,7 +8673,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "LP_STOP_MAX_TIME_2"
+        "text": "LP_STOP_MAX_TIME_2",
     },
     {
         "idx": 1327,
@@ -8682,7 +8682,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "LP_STOP_TIME_WINDOW"
+        "text": "LP_STOP_TIME_WINDOW",
     },
     {
         "idx": 1328,
@@ -8691,7 +8691,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "LP_STOP_TIME_WINDOW_2"
+        "text": "LP_STOP_TIME_WINDOW_2",
     },
     {
         "idx": 1329,
@@ -8700,7 +8700,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MAN_OP"
+        "text": "MAN_OP",
     },
     {
         "idx": 1330,
@@ -8709,7 +8709,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MAN_OP_MIXING_VALVE_CLOSE_GLOBAL"
+        "text": "MAN_OP_MIXING_VALVE_CLOSE_GLOBAL",
     },
     {
         "idx": 1331,
@@ -8718,7 +8718,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MAN_OP_MIXING_VALVE_D_VALVE_GLOBAL"
+        "text": "MAN_OP_MIXING_VALVE_D_VALVE_GLOBAL",
     },
     {
         "idx": 1332,
@@ -8727,7 +8727,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MAN_OP_MIXING_VALVE_G2_GLOBAL"
+        "text": "MAN_OP_MIXING_VALVE_G2_GLOBAL",
     },
     {
         "idx": 1333,
@@ -8736,7 +8736,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MAN_OP_MIXING_VALVE_G4_GLOBAL"
+        "text": "MAN_OP_MIXING_VALVE_G4_GLOBAL",
     },
     {
         "idx": 1334,
@@ -8745,7 +8745,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MAN_OP_MIXING_VALVE_OPEN_GLOBAL"
+        "text": "MAN_OP_MIXING_VALVE_OPEN_GLOBAL",
     },
     {
         "idx": 1335,
@@ -8754,7 +8754,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MAN_OP_MIXING_VALVE_SIGNAL_GLOBAL"
+        "text": "MAN_OP_MIXING_VALVE_SIGNAL_GLOBAL",
     },
     {
         "idx": 1336,
@@ -8763,7 +8763,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MAN_OP_TILLSKOTT"
+        "text": "MAN_OP_TILLSKOTT",
     },
     {
         "idx": 1337,
@@ -8772,7 +8772,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MAN_OP_TIME"
+        "text": "MAN_OP_TIME",
     },
     {
         "idx": 1338,
@@ -8781,7 +8781,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "MIXED_CIRCUITS_CONNECTED_BITMASK"
+        "text": "MIXED_CIRCUITS_CONNECTED_BITMASK",
     },
     {
         "idx": 1339,
@@ -8790,7 +8790,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXED_CIRCUITS_SETPOINT_INIT_DONE_BITMASK"
+        "text": "MIXED_CIRCUITS_SETPOINT_INIT_DONE_BITMASK",
     },
     {
         "idx": 1340,
@@ -8799,7 +8799,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXED_CIRCUITS_VALVEMODE_INIT_DONE_BITMASK"
+        "text": "MIXED_CIRCUITS_VALVEMODE_INIT_DONE_BITMASK",
     },
     {
         "idx": 1341,
@@ -8808,7 +8808,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_CLOSE_TIME_GLOBAL"
+        "text": "MIXING_VALVE_CLOSE_TIME_GLOBAL",
     },
     {
         "idx": 1342,
@@ -8817,7 +8817,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_DEFROST_DELAY_TIME_GLOBAL"
+        "text": "MIXING_VALVE_DEFROST_DELAY_TIME_GLOBAL",
     },
     {
         "idx": 1344,
@@ -8826,7 +8826,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_EXT_INPUT_1"
+        "text": "MIXING_VALVE_EXT_INPUT_1",
     },
     {
         "idx": 1345,
@@ -8835,7 +8835,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_EXT_INPUT_2"
+        "text": "MIXING_VALVE_EXT_INPUT_2",
     },
     {
         "idx": 1346,
@@ -8844,7 +8844,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_EXT_INPUT_3"
+        "text": "MIXING_VALVE_EXT_INPUT_3",
     },
     {
         "idx": 1347,
@@ -8853,7 +8853,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_EXT_INPUT_4"
+        "text": "MIXING_VALVE_EXT_INPUT_4",
     },
     {
         "idx": 1348,
@@ -8862,7 +8862,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_EXT_INPUT_5"
+        "text": "MIXING_VALVE_EXT_INPUT_5",
     },
     {
         "idx": 1349,
@@ -8871,7 +8871,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_EXT_INPUT_6"
+        "text": "MIXING_VALVE_EXT_INPUT_6",
     },
     {
         "idx": 1350,
@@ -8880,7 +8880,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_EXT_INPUT_7"
+        "text": "MIXING_VALVE_EXT_INPUT_7",
     },
     {
         "idx": 1351,
@@ -8889,7 +8889,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_EXT_INPUT_GLOBAL"
+        "text": "MIXING_VALVE_EXT_INPUT_GLOBAL",
     },
     {
         "idx": 1352,
@@ -8898,7 +8898,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_EXT_INPUT_PRI_COOLING"
+        "text": "MIXING_VALVE_EXT_INPUT_PRI_COOLING",
     },
     {
         "idx": 1353,
@@ -8907,7 +8907,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_EXT_INPUT_SEC_COOLING"
+        "text": "MIXING_VALVE_EXT_INPUT_SEC_COOLING",
     },
     {
         "idx": 1354,
@@ -8916,7 +8916,7 @@ PARAMETER_DATA = [
         "min": 10,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_MAX_LIMIT_HEATING_SYSTEM"
+        "text": "MIXING_VALVE_MAX_LIMIT_HEATING_SYSTEM",
     },
     {
         "idx": 1355,
@@ -8925,7 +8925,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_MODE_1"
+        "text": "MIXING_VALVE_MODE_1",
     },
     {
         "idx": 1356,
@@ -8934,7 +8934,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_MODE_2"
+        "text": "MIXING_VALVE_MODE_2",
     },
     {
         "idx": 1357,
@@ -8943,7 +8943,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_MODE_3"
+        "text": "MIXING_VALVE_MODE_3",
     },
     {
         "idx": 1358,
@@ -8952,7 +8952,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_MODE_4"
+        "text": "MIXING_VALVE_MODE_4",
     },
     {
         "idx": 1359,
@@ -8961,7 +8961,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_MODE_5"
+        "text": "MIXING_VALVE_MODE_5",
     },
     {
         "idx": 1360,
@@ -8970,7 +8970,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_MODE_6"
+        "text": "MIXING_VALVE_MODE_6",
     },
     {
         "idx": 1361,
@@ -8979,7 +8979,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_MODE_7"
+        "text": "MIXING_VALVE_MODE_7",
     },
     {
         "idx": 1362,
@@ -8988,7 +8988,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_MODE_GLOBAL"
+        "text": "MIXING_VALVE_MODE_GLOBAL",
     },
     {
         "idx": 1363,
@@ -8997,7 +8997,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_NEUTRALZONE_GLOBAL"
+        "text": "MIXING_VALVE_NEUTRALZONE_GLOBAL",
     },
     {
         "idx": 1364,
@@ -9006,7 +9006,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_NEUTRALZONE_LIMITATION_GLOBAL"
+        "text": "MIXING_VALVE_NEUTRALZONE_LIMITATION_GLOBAL",
     },
     {
         "idx": 1365,
@@ -9015,7 +9015,7 @@ PARAMETER_DATA = [
         "min": 10,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_NEUTRALZONE_LIMITATION_TIME_GLOBAL"
+        "text": "MIXING_VALVE_NEUTRALZONE_LIMITATION_TIME_GLOBAL",
     },
     {
         "idx": 1367,
@@ -9024,7 +9024,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_NZ_CLOSE_1"
+        "text": "MIXING_VALVE_NZ_CLOSE_1",
     },
     {
         "idx": 1369,
@@ -9033,7 +9033,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_NZ_CLOSE_2"
+        "text": "MIXING_VALVE_NZ_CLOSE_2",
     },
     {
         "idx": 1371,
@@ -9042,7 +9042,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_NZ_CLOSE_3"
+        "text": "MIXING_VALVE_NZ_CLOSE_3",
     },
     {
         "idx": 1373,
@@ -9051,7 +9051,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_NZ_CLOSE_4"
+        "text": "MIXING_VALVE_NZ_CLOSE_4",
     },
     {
         "idx": 1375,
@@ -9060,7 +9060,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_NZ_CLOSE_5"
+        "text": "MIXING_VALVE_NZ_CLOSE_5",
     },
     {
         "idx": 1377,
@@ -9069,7 +9069,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_NZ_CLOSE_6"
+        "text": "MIXING_VALVE_NZ_CLOSE_6",
     },
     {
         "idx": 1379,
@@ -9078,7 +9078,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_NZ_CLOSE_7"
+        "text": "MIXING_VALVE_NZ_CLOSE_7",
     },
     {
         "idx": 1381,
@@ -9087,7 +9087,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_NZ_OPEN_1"
+        "text": "MIXING_VALVE_NZ_OPEN_1",
     },
     {
         "idx": 1383,
@@ -9096,7 +9096,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_NZ_OPEN_2"
+        "text": "MIXING_VALVE_NZ_OPEN_2",
     },
     {
         "idx": 1385,
@@ -9105,7 +9105,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_NZ_OPEN_3"
+        "text": "MIXING_VALVE_NZ_OPEN_3",
     },
     {
         "idx": 1387,
@@ -9114,7 +9114,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_NZ_OPEN_4"
+        "text": "MIXING_VALVE_NZ_OPEN_4",
     },
     {
         "idx": 1389,
@@ -9123,7 +9123,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_NZ_OPEN_5"
+        "text": "MIXING_VALVE_NZ_OPEN_5",
     },
     {
         "idx": 1391,
@@ -9132,7 +9132,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_NZ_OPEN_6"
+        "text": "MIXING_VALVE_NZ_OPEN_6",
     },
     {
         "idx": 1393,
@@ -9141,7 +9141,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_NZ_OPEN_7"
+        "text": "MIXING_VALVE_NZ_OPEN_7",
     },
     {
         "idx": 1395,
@@ -9150,7 +9150,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_OPEN_TIME_GLOBAL"
+        "text": "MIXING_VALVE_OPEN_TIME_GLOBAL",
     },
     {
         "idx": 1396,
@@ -9159,7 +9159,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_PID_D"
+        "text": "MIXING_VALVE_PID_D",
     },
     {
         "idx": 1398,
@@ -9168,7 +9168,7 @@ PARAMETER_DATA = [
         "min": 50,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_PID_I"
+        "text": "MIXING_VALVE_PID_I",
     },
     {
         "idx": 1400,
@@ -9177,7 +9177,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_PID_MAX"
+        "text": "MIXING_VALVE_PID_MAX",
     },
     {
         "idx": 1402,
@@ -9186,7 +9186,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_PID_MIN"
+        "text": "MIXING_VALVE_PID_MIN",
     },
     {
         "idx": 1404,
@@ -9195,7 +9195,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_PID_P"
+        "text": "MIXING_VALVE_PID_P",
     },
     {
         "idx": 1406,
@@ -9204,7 +9204,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_PUMP_G41_1"
+        "text": "MIXING_VALVE_PUMP_G41_1",
     },
     {
         "idx": 1407,
@@ -9213,7 +9213,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_PUMP_G41_2"
+        "text": "MIXING_VALVE_PUMP_G41_2",
     },
     {
         "idx": 1408,
@@ -9222,7 +9222,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_PUMP_G41_3"
+        "text": "MIXING_VALVE_PUMP_G41_3",
     },
     {
         "idx": 1409,
@@ -9231,7 +9231,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_PUMP_G41_4"
+        "text": "MIXING_VALVE_PUMP_G41_4",
     },
     {
         "idx": 1410,
@@ -9240,7 +9240,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_PUMP_G41_5"
+        "text": "MIXING_VALVE_PUMP_G41_5",
     },
     {
         "idx": 1411,
@@ -9249,7 +9249,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_PUMP_G41_6"
+        "text": "MIXING_VALVE_PUMP_G41_6",
     },
     {
         "idx": 1412,
@@ -9258,7 +9258,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_PUMP_G41_7"
+        "text": "MIXING_VALVE_PUMP_G41_7",
     },
     {
         "idx": 1413,
@@ -9267,7 +9267,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_PUMP_G41_GLOBAL"
+        "text": "MIXING_VALVE_PUMP_G41_GLOBAL",
     },
     {
         "idx": 1414,
@@ -9276,7 +9276,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_PUMP_G71"
+        "text": "MIXING_VALVE_PUMP_G71",
     },
     {
         "idx": 1415,
@@ -9285,7 +9285,7 @@ PARAMETER_DATA = [
         "min": 10,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_RUNNING_TIME_GLOBAL"
+        "text": "MIXING_VALVE_RUNNING_TIME_GLOBAL",
     },
     {
         "idx": 1417,
@@ -9294,7 +9294,7 @@ PARAMETER_DATA = [
         "min": 10,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_START_LIMIT_HEATING_SYSTEM"
+        "text": "MIXING_VALVE_START_LIMIT_HEATING_SYSTEM",
     },
     {
         "idx": 1418,
@@ -9303,7 +9303,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_TIMECONTROLLED_GLOBAL"
+        "text": "MIXING_VALVE_TIMECONTROLLED_GLOBAL",
     },
     {
         "idx": 1419,
@@ -9312,7 +9312,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_USE_NEUTRALZONE_REGULATOR"
+        "text": "MIXING_VALVE_USE_NEUTRALZONE_REGULATOR",
     },
     {
         "idx": 1420,
@@ -9321,7 +9321,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_VALVECLOSE_1"
+        "text": "MIXING_VALVE_VALVECLOSE_1",
     },
     {
         "idx": 1421,
@@ -9330,7 +9330,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_VALVECLOSE_2"
+        "text": "MIXING_VALVE_VALVECLOSE_2",
     },
     {
         "idx": 1422,
@@ -9339,7 +9339,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_VALVECLOSE_3"
+        "text": "MIXING_VALVE_VALVECLOSE_3",
     },
     {
         "idx": 1423,
@@ -9348,7 +9348,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_VALVECLOSE_4"
+        "text": "MIXING_VALVE_VALVECLOSE_4",
     },
     {
         "idx": 1424,
@@ -9357,7 +9357,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_VALVECLOSE_5"
+        "text": "MIXING_VALVE_VALVECLOSE_5",
     },
     {
         "idx": 1425,
@@ -9366,7 +9366,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_VALVECLOSE_6"
+        "text": "MIXING_VALVE_VALVECLOSE_6",
     },
     {
         "idx": 1426,
@@ -9375,7 +9375,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_VALVECLOSE_7"
+        "text": "MIXING_VALVE_VALVECLOSE_7",
     },
     {
         "idx": 1427,
@@ -9384,7 +9384,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_VALVECLOSE_GLOBAL"
+        "text": "MIXING_VALVE_VALVECLOSE_GLOBAL",
     },
     {
         "idx": 1428,
@@ -9393,7 +9393,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_VALVEOPEN_1"
+        "text": "MIXING_VALVE_VALVEOPEN_1",
     },
     {
         "idx": 1429,
@@ -9402,7 +9402,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_VALVEOPEN_2"
+        "text": "MIXING_VALVE_VALVEOPEN_2",
     },
     {
         "idx": 1430,
@@ -9411,7 +9411,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_VALVEOPEN_3"
+        "text": "MIXING_VALVE_VALVEOPEN_3",
     },
     {
         "idx": 1431,
@@ -9420,7 +9420,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_VALVEOPEN_4"
+        "text": "MIXING_VALVE_VALVEOPEN_4",
     },
     {
         "idx": 1432,
@@ -9429,7 +9429,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_VALVEOPEN_5"
+        "text": "MIXING_VALVE_VALVEOPEN_5",
     },
     {
         "idx": 1433,
@@ -9438,7 +9438,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_VALVEOPEN_6"
+        "text": "MIXING_VALVE_VALVEOPEN_6",
     },
     {
         "idx": 1434,
@@ -9447,7 +9447,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_VALVEOPEN_7"
+        "text": "MIXING_VALVE_VALVEOPEN_7",
     },
     {
         "idx": 1435,
@@ -9456,7 +9456,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MIXING_VALVE_VALVEOPEN_GLOBAL"
+        "text": "MIXING_VALVE_VALVEOPEN_GLOBAL",
     },
     {
         "idx": 1436,
@@ -9465,7 +9465,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_CONDENSATIONGUARD_ACTIVE_BITMASK"
+        "text": "MV_CONDENSATIONGUARD_ACTIVE_BITMASK",
     },
     {
         "idx": 1438,
@@ -9474,7 +9474,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_CONDENSATIONGUARD_ACTIVE_GLOBAL"
+        "text": "MV_CONDENSATIONGUARD_ACTIVE_GLOBAL",
     },
     {
         "idx": 1439,
@@ -9483,7 +9483,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_CONDENSATIONGUARD_ALERT_ACTIVE_BITMASK"
+        "text": "MV_CONDENSATIONGUARD_ALERT_ACTIVE_BITMASK",
     },
     {
         "idx": 1440,
@@ -9492,7 +9492,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_1"
+        "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_1",
     },
     {
         "idx": 1441,
@@ -9501,7 +9501,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_2"
+        "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_2",
     },
     {
         "idx": 1442,
@@ -9510,7 +9510,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_3"
+        "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_3",
     },
     {
         "idx": 1443,
@@ -9519,7 +9519,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_4"
+        "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_4",
     },
     {
         "idx": 1444,
@@ -9528,7 +9528,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_5"
+        "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_5",
     },
     {
         "idx": 1445,
@@ -9537,7 +9537,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_6"
+        "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_6",
     },
     {
         "idx": 1446,
@@ -9546,7 +9546,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_7"
+        "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_7",
     },
     {
         "idx": 1447,
@@ -9555,7 +9555,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_GLOBAL"
+        "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_GLOBAL",
     },
     {
         "idx": 1448,
@@ -9564,7 +9564,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_PRI_COOLING"
+        "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_PRI_COOLING",
     },
     {
         "idx": 1449,
@@ -9573,7 +9573,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_SEC_COOLING"
+        "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_SEC_COOLING",
     },
     {
         "idx": 1450,
@@ -9582,7 +9582,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_ACTIVE"
+        "text": "MV_COOLING_ACTIVE",
     },
     {
         "idx": 1451,
@@ -9591,7 +9591,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_DELAY_HEATING_GLOBAL"
+        "text": "MV_COOLING_DELAY_HEATING_GLOBAL",
     },
     {
         "idx": 1452,
@@ -9600,7 +9600,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_DEWPOINT_SENSOR_1"
+        "text": "MV_COOLING_DEWPOINT_SENSOR_1",
     },
     {
         "idx": 1454,
@@ -9609,7 +9609,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_DEWPOINT_SENSOR_2"
+        "text": "MV_COOLING_DEWPOINT_SENSOR_2",
     },
     {
         "idx": 1456,
@@ -9618,7 +9618,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_DEWPOINT_SENSOR_3"
+        "text": "MV_COOLING_DEWPOINT_SENSOR_3",
     },
     {
         "idx": 1458,
@@ -9627,7 +9627,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_DEWPOINT_SENSOR_4"
+        "text": "MV_COOLING_DEWPOINT_SENSOR_4",
     },
     {
         "idx": 1460,
@@ -9636,7 +9636,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_DEWPOINT_SENSOR_5"
+        "text": "MV_COOLING_DEWPOINT_SENSOR_5",
     },
     {
         "idx": 1462,
@@ -9645,7 +9645,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_DEWPOINT_SENSOR_6"
+        "text": "MV_COOLING_DEWPOINT_SENSOR_6",
     },
     {
         "idx": 1464,
@@ -9654,7 +9654,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_DEWPOINT_SENSOR_7"
+        "text": "MV_COOLING_DEWPOINT_SENSOR_7",
     },
     {
         "idx": 1466,
@@ -9663,7 +9663,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_DEWPOINT_SENSOR_GLOBAL"
+        "text": "MV_COOLING_DEWPOINT_SENSOR_GLOBAL",
     },
     {
         "idx": 1468,
@@ -9672,7 +9672,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_DEWPOINT_SENSOR_PRI_COOLING"
+        "text": "MV_COOLING_DEWPOINT_SENSOR_PRI_COOLING",
     },
     {
         "idx": 1470,
@@ -9681,7 +9681,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_DEWPOINT_SENSOR_SEC_COOLING"
+        "text": "MV_COOLING_DEWPOINT_SENSOR_SEC_COOLING",
     },
     {
         "idx": 1472,
@@ -9690,7 +9690,7 @@ PARAMETER_DATA = [
         "min": 100,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_DEW_POINT_SENSOR_SETPOINT_MIN_GLOBAL"
+        "text": "MV_COOLING_DEW_POINT_SENSOR_SETPOINT_MIN_GLOBAL",
     },
     {
         "idx": 1474,
@@ -9699,7 +9699,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_E31_G2"
+        "text": "MV_COOLING_E31_G2",
     },
     {
         "idx": 1475,
@@ -9708,7 +9708,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_FLOWSENSOR_TYPE_GLOBAL"
+        "text": "MV_COOLING_FLOWSENSOR_TYPE_GLOBAL",
     },
     {
         "idx": 1476,
@@ -9717,7 +9717,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_FREEZEGUARD_ACTIVE_GLOBAL"
+        "text": "MV_COOLING_FREEZEGUARD_ACTIVE_GLOBAL",
     },
     {
         "idx": 1477,
@@ -9726,7 +9726,7 @@ PARAMETER_DATA = [
         "min": -10,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_FREEZEGUARD_START"
+        "text": "MV_COOLING_FREEZEGUARD_START",
     },
     {
         "idx": 1478,
@@ -9735,7 +9735,7 @@ PARAMETER_DATA = [
         "min": 5,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_GT45_INFLUENCE_GLOBAL"
+        "text": "MV_COOLING_GT45_INFLUENCE_GLOBAL",
     },
     {
         "idx": 1479,
@@ -9744,7 +9744,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_INCREASE_ROOM_SETPOINT_GLOBAL"
+        "text": "MV_COOLING_INCREASE_ROOM_SETPOINT_GLOBAL",
     },
     {
         "idx": 1480,
@@ -9753,7 +9753,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_MAIN_FLOWSENSOR_TYPE"
+        "text": "MV_COOLING_MAIN_FLOWSENSOR_TYPE",
     },
     {
         "idx": 1481,
@@ -9762,7 +9762,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_OUTDOOR_TEMPERATURE_LIMIT_GLOBAL"
+        "text": "MV_COOLING_OUTDOOR_TEMPERATURE_LIMIT_GLOBAL",
     },
     {
         "idx": 1482,
@@ -9771,7 +9771,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_ROOMSENSOR_TYPE_GLOBAL"
+        "text": "MV_COOLING_ROOMSENSOR_TYPE_GLOBAL",
     },
     {
         "idx": 1483,
@@ -9780,7 +9780,7 @@ PARAMETER_DATA = [
         "min": 100,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_SETPOINT_MIN_GLOBAL"
+        "text": "MV_COOLING_SETPOINT_MIN_GLOBAL",
     },
     {
         "idx": 1485,
@@ -9789,7 +9789,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_SUB_FLOWSENSOR_TYPE"
+        "text": "MV_COOLING_SUB_FLOWSENSOR_TYPE",
     },
     {
         "idx": 1486,
@@ -9798,7 +9798,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_T5_10V_1"
+        "text": "MV_COOLING_T5_10V_1",
     },
     {
         "idx": 1488,
@@ -9807,7 +9807,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_T5_10V_2"
+        "text": "MV_COOLING_T5_10V_2",
     },
     {
         "idx": 1490,
@@ -9816,7 +9816,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_T5_10V_3"
+        "text": "MV_COOLING_T5_10V_3",
     },
     {
         "idx": 1492,
@@ -9825,7 +9825,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_T5_10V_4"
+        "text": "MV_COOLING_T5_10V_4",
     },
     {
         "idx": 1494,
@@ -9834,7 +9834,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_T5_10V_5"
+        "text": "MV_COOLING_T5_10V_5",
     },
     {
         "idx": 1496,
@@ -9843,7 +9843,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_T5_10V_6"
+        "text": "MV_COOLING_T5_10V_6",
     },
     {
         "idx": 1498,
@@ -9852,7 +9852,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_T5_10V_7"
+        "text": "MV_COOLING_T5_10V_7",
     },
     {
         "idx": 1500,
@@ -9861,7 +9861,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_T5_10V_GLOBAL"
+        "text": "MV_COOLING_T5_10V_GLOBAL",
     },
     {
         "idx": 1502,
@@ -9870,7 +9870,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_T5_10V_PRI_COOLING"
+        "text": "MV_COOLING_T5_10V_PRI_COOLING",
     },
     {
         "idx": 1504,
@@ -9879,7 +9879,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_T5_10V_SEC_COOLING"
+        "text": "MV_COOLING_T5_10V_SEC_COOLING",
     },
     {
         "idx": 1506,
@@ -9888,7 +9888,7 @@ PARAMETER_DATA = [
         "min": 20,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_UNDER_SWING_ZONE_GLOBAL"
+        "text": "MV_COOLING_UNDER_SWING_ZONE_GLOBAL",
     },
     {
         "idx": 1507,
@@ -9897,7 +9897,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_COOLING_WHEN_HEATING_SEASONG_GLOBAL"
+        "text": "MV_COOLING_WHEN_HEATING_SEASONG_GLOBAL",
     },
     {
         "idx": 1508,
@@ -9906,7 +9906,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_DEW_POINT_SENSOR_ACTIVATED_GLOBAL"
+        "text": "MV_DEW_POINT_SENSOR_ACTIVATED_GLOBAL",
     },
     {
         "idx": 1509,
@@ -9915,7 +9915,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_DEW_POINT_SENSOR_ALARM_BITMASK"
+        "text": "MV_DEW_POINT_SENSOR_ALARM_BITMASK",
     },
     {
         "idx": 1511,
@@ -9924,7 +9924,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_DEW_POINT_SENSOR_ALARM_GLOBAL"
+        "text": "MV_DEW_POINT_SENSOR_ALARM_GLOBAL",
     },
     {
         "idx": 1512,
@@ -9933,7 +9933,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_DISABLE_COOLING_GLOBAL"
+        "text": "MV_DISABLE_COOLING_GLOBAL",
     },
     {
         "idx": 1513,
@@ -9942,7 +9942,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_DOWNLOADING_VARIABLES"
+        "text": "MV_DOWNLOADING_VARIABLES",
     },
     {
         "idx": 1514,
@@ -9951,7 +9951,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_DOWNLOADING_VARIABLES_FOR_MIXING_VALVE"
+        "text": "MV_DOWNLOADING_VARIABLES_FOR_MIXING_VALVE",
     },
     {
         "idx": 1515,
@@ -9960,7 +9960,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E11_T11_SETPOINT"
+        "text": "MV_E11_T11_SETPOINT",
     },
     {
         "idx": 1517,
@@ -9969,7 +9969,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_CAN_ROOM_SENOR_CONNECTED"
+        "text": "MV_E12_CAN_ROOM_SENOR_CONNECTED",
     },
     {
         "idx": 1518,
@@ -9978,7 +9978,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_CAN_ROOM_SENSOR_GT45"
+        "text": "MV_E12_CAN_ROOM_SENSOR_GT45",
     },
     {
         "idx": 1520,
@@ -9987,7 +9987,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_DISPLAY_ROOM_SENSOR_ACKNOW"
+        "text": "MV_E12_DISPLAY_ROOM_SENSOR_ACKNOW",
     },
     {
         "idx": 1521,
@@ -9996,7 +9996,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "MV_E12_E1x_T1_ALARM"
+        "text": "MV_E12_E1x_T1_ALARM",
     },
     {
         "idx": 1523,
@@ -10005,7 +10005,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_ATTENUATION_FACTOR"
+        "text": "MV_E12_EEPROM_ATTENUATION_FACTOR",
     },
     {
         "idx": 1525,
@@ -10014,7 +10014,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_CHECK_DISPLAY_SYSTEM_ON"
+        "text": "MV_E12_EEPROM_CHECK_DISPLAY_SYSTEM_ON",
     },
     {
         "idx": 1527,
@@ -10023,7 +10023,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_COUPLINGDIFFERENS_ROOM"
+        "text": "MV_E12_EEPROM_COUPLINGDIFFERENS_ROOM",
     },
     {
         "idx": 1529,
@@ -10032,7 +10032,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_D_VALUE"
+        "text": "MV_E12_EEPROM_D_VALUE",
     },
     {
         "idx": 1531,
@@ -10041,7 +10041,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_ENABLE_HEATING_BLOCK_BY_EXT"
+        "text": "MV_E12_EEPROM_ENABLE_HEATING_BLOCK_BY_EXT",
     },
     {
         "idx": 1532,
@@ -10050,7 +10050,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_ENABLE_HIGH_PROTECTION_HS_BY_EXT"
+        "text": "MV_E12_EEPROM_ENABLE_HIGH_PROTECTION_HS_BY_EXT",
     },
     {
         "idx": 1533,
@@ -10059,7 +10059,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_ERASE_EEPROM_NEXT_STARTUP"
+        "text": "MV_E12_EEPROM_ERASE_EEPROM_NEXT_STARTUP",
     },
     {
         "idx": 1535,
@@ -10068,7 +10068,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_EXTERNAL_TEMP_VALUE"
+        "text": "MV_E12_EEPROM_EXTERNAL_TEMP_VALUE",
     },
     {
         "idx": 1537,
@@ -10077,7 +10077,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_FREEZEGARD_START_DELAY_TIME"
+        "text": "MV_E12_EEPROM_FREEZEGARD_START_DELAY_TIME",
     },
     {
         "idx": 1538,
@@ -10086,7 +10086,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_FREEZEGARD_START_TEMPERATURE"
+        "text": "MV_E12_EEPROM_FREEZEGARD_START_TEMPERATURE",
     },
     {
         "idx": 1540,
@@ -10095,7 +10095,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_FREEZEGARD_STOP_TEMPERATURE"
+        "text": "MV_E12_EEPROM_FREEZEGARD_STOP_TEMPERATURE",
     },
     {
         "idx": 1542,
@@ -10104,7 +10104,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_HEATING_COOLING_MODE"
+        "text": "MV_E12_EEPROM_HEATING_COOLING_MODE",
     },
     {
         "idx": 1543,
@@ -10113,7 +10113,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 2,
-        "text": "MV_E12_EEPROM_HEATING_CURVE_LEFT_Y"
+        "text": "MV_E12_EEPROM_HEATING_CURVE_LEFT_Y",
     },
     {
         "idx": 1545,
@@ -10122,7 +10122,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_HEATING_CURVE_PARALLEL_OFFSET"
+        "text": "MV_E12_EEPROM_HEATING_CURVE_PARALLEL_OFFSET",
     },
     {
         "idx": 1547,
@@ -10131,7 +10131,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 2,
-        "text": "MV_E12_EEPROM_HEATING_CURVE_RIGHT_Y"
+        "text": "MV_E12_EEPROM_HEATING_CURVE_RIGHT_Y",
     },
     {
         "idx": 1549,
@@ -10140,7 +10140,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_HEATING_CURVE_Y1"
+        "text": "MV_E12_EEPROM_HEATING_CURVE_Y1",
     },
     {
         "idx": 1551,
@@ -10149,7 +10149,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_HEATING_CURVE_Y10"
+        "text": "MV_E12_EEPROM_HEATING_CURVE_Y10",
     },
     {
         "idx": 1553,
@@ -10158,7 +10158,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_HEATING_CURVE_Y11"
+        "text": "MV_E12_EEPROM_HEATING_CURVE_Y11",
     },
     {
         "idx": 1555,
@@ -10167,7 +10167,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_HEATING_CURVE_Y12"
+        "text": "MV_E12_EEPROM_HEATING_CURVE_Y12",
     },
     {
         "idx": 1557,
@@ -10176,7 +10176,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_HEATING_CURVE_Y2"
+        "text": "MV_E12_EEPROM_HEATING_CURVE_Y2",
     },
     {
         "idx": 1559,
@@ -10185,7 +10185,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_HEATING_CURVE_Y3"
+        "text": "MV_E12_EEPROM_HEATING_CURVE_Y3",
     },
     {
         "idx": 1561,
@@ -10194,7 +10194,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_HEATING_CURVE_Y4"
+        "text": "MV_E12_EEPROM_HEATING_CURVE_Y4",
     },
     {
         "idx": 1563,
@@ -10203,7 +10203,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_HEATING_CURVE_Y5"
+        "text": "MV_E12_EEPROM_HEATING_CURVE_Y5",
     },
     {
         "idx": 1565,
@@ -10212,7 +10212,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_HEATING_CURVE_Y6"
+        "text": "MV_E12_EEPROM_HEATING_CURVE_Y6",
     },
     {
         "idx": 1567,
@@ -10221,7 +10221,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_HEATING_CURVE_Y7"
+        "text": "MV_E12_EEPROM_HEATING_CURVE_Y7",
     },
     {
         "idx": 1569,
@@ -10230,7 +10230,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_HEATING_CURVE_Y8"
+        "text": "MV_E12_EEPROM_HEATING_CURVE_Y8",
     },
     {
         "idx": 1571,
@@ -10239,7 +10239,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_HEATING_CURVE_Y9"
+        "text": "MV_E12_EEPROM_HEATING_CURVE_Y9",
     },
     {
         "idx": 1573,
@@ -10248,7 +10248,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_HEATING_SEASON_DELAYED_TEMP"
+        "text": "MV_E12_EEPROM_HEATING_SEASON_DELAYED_TEMP",
     },
     {
         "idx": 1575,
@@ -10257,7 +10257,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_HEATING_SEASON_IMMEDIATE_TEMP"
+        "text": "MV_E12_EEPROM_HEATING_SEASON_IMMEDIATE_TEMP",
     },
     {
         "idx": 1577,
@@ -10266,7 +10266,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_HEATING_SEASON_MODE"
+        "text": "MV_E12_EEPROM_HEATING_SEASON_MODE",
     },
     {
         "idx": 1579,
@@ -10275,7 +10275,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_HEATING_SEASON_START_DELAY_TIME"
+        "text": "MV_E12_EEPROM_HEATING_SEASON_START_DELAY_TIME",
     },
     {
         "idx": 1581,
@@ -10284,7 +10284,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_HEATING_SEASON_STOP_DELAY_TIME"
+        "text": "MV_E12_EEPROM_HEATING_SEASON_STOP_DELAY_TIME",
     },
     {
         "idx": 1583,
@@ -10293,7 +10293,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_HEATING_SYSTEM_TYPE"
+        "text": "MV_E12_EEPROM_HEATING_SYSTEM_TYPE",
     },
     {
         "idx": 1584,
@@ -10302,7 +10302,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 2,
-        "text": "MV_E12_EEPROM_HOLIDAY_ACTIVE"
+        "text": "MV_E12_EEPROM_HOLIDAY_ACTIVE",
     },
     {
         "idx": 1585,
@@ -10311,7 +10311,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_HOLIDAY_LEVEL_TEMPERATURE"
+        "text": "MV_E12_EEPROM_HOLIDAY_LEVEL_TEMPERATURE",
     },
     {
         "idx": 1587,
@@ -10320,7 +10320,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 2,
-        "text": "MV_E12_EEPROM_HOLIDAY_START_DAY"
+        "text": "MV_E12_EEPROM_HOLIDAY_START_DAY",
     },
     {
         "idx": 1588,
@@ -10329,7 +10329,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 2,
-        "text": "MV_E12_EEPROM_HOLIDAY_START_MONTH"
+        "text": "MV_E12_EEPROM_HOLIDAY_START_MONTH",
     },
     {
         "idx": 1589,
@@ -10338,7 +10338,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 2,
-        "text": "MV_E12_EEPROM_HOLIDAY_START_YEAR"
+        "text": "MV_E12_EEPROM_HOLIDAY_START_YEAR",
     },
     {
         "idx": 1590,
@@ -10347,7 +10347,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 2,
-        "text": "MV_E12_EEPROM_HOLIDAY_STOP_DAY"
+        "text": "MV_E12_EEPROM_HOLIDAY_STOP_DAY",
     },
     {
         "idx": 1591,
@@ -10356,7 +10356,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 2,
-        "text": "MV_E12_EEPROM_HOLIDAY_STOP_MONTH"
+        "text": "MV_E12_EEPROM_HOLIDAY_STOP_MONTH",
     },
     {
         "idx": 1592,
@@ -10365,7 +10365,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 2,
-        "text": "MV_E12_EEPROM_HOLIDAY_STOP_YEAR"
+        "text": "MV_E12_EEPROM_HOLIDAY_STOP_YEAR",
     },
     {
         "idx": 1593,
@@ -10374,7 +10374,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_INCREASE_ROOM_SETPOINT"
+        "text": "MV_E12_EEPROM_INCREASE_ROOM_SETPOINT",
     },
     {
         "idx": 1595,
@@ -10383,7 +10383,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_INVERT_AI1"
+        "text": "MV_E12_EEPROM_INVERT_AI1",
     },
     {
         "idx": 1596,
@@ -10392,7 +10392,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_INVERT_AI2"
+        "text": "MV_E12_EEPROM_INVERT_AI2",
     },
     {
         "idx": 1597,
@@ -10401,7 +10401,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_INVERT_AI5"
+        "text": "MV_E12_EEPROM_INVERT_AI5",
     },
     {
         "idx": 1598,
@@ -10410,7 +10410,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_INVERT_EXT_INPUT"
+        "text": "MV_E12_EEPROM_INVERT_EXT_INPUT",
     },
     {
         "idx": 1599,
@@ -10419,7 +10419,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_I_VALUE"
+        "text": "MV_E12_EEPROM_I_VALUE",
     },
     {
         "idx": 1601,
@@ -10428,7 +10428,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_MAX_AI1"
+        "text": "MV_E12_EEPROM_MAX_AI1",
     },
     {
         "idx": 1603,
@@ -10437,7 +10437,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 2,
-        "text": "MV_E12_EEPROM_MAX_TEMPERAURE_GT41"
+        "text": "MV_E12_EEPROM_MAX_TEMPERAURE_GT41",
     },
     {
         "idx": 1605,
@@ -10446,7 +10446,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_MIN_AI1"
+        "text": "MV_E12_EEPROM_MIN_AI1",
     },
     {
         "idx": 1607,
@@ -10455,7 +10455,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 2,
-        "text": "MV_E12_EEPROM_MIN_TEMPERAURE_GT41"
+        "text": "MV_E12_EEPROM_MIN_TEMPERAURE_GT41",
     },
     {
         "idx": 1609,
@@ -10464,7 +10464,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_M_VALVE_DEFROST_DELAY"
+        "text": "MV_E12_EEPROM_M_VALVE_DEFROST_DELAY",
     },
     {
         "idx": 1611,
@@ -10473,7 +10473,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_M_VALVE_LIMIT_TIME"
+        "text": "MV_E12_EEPROM_M_VALVE_LIMIT_TIME",
     },
     {
         "idx": 1613,
@@ -10482,7 +10482,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_M_VALVE_RUNNING_TIME"
+        "text": "MV_E12_EEPROM_M_VALVE_RUNNING_TIME",
     },
     {
         "idx": 1615,
@@ -10491,7 +10491,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_NEUTRALZONE_CONTROLLED"
+        "text": "MV_E12_EEPROM_NEUTRALZONE_CONTROLLED",
     },
     {
         "idx": 1617,
@@ -10500,7 +10500,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_NEUTRALZON_M_VALVE_LIMIT"
+        "text": "MV_E12_EEPROM_NEUTRALZON_M_VALVE_LIMIT",
     },
     {
         "idx": 1619,
@@ -10509,7 +10509,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_NEUTRALZON_M_VALVE_LIMIT_TIME"
+        "text": "MV_E12_EEPROM_NEUTRALZON_M_VALVE_LIMIT_TIME",
     },
     {
         "idx": 1621,
@@ -10518,7 +10518,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_NEUTRALZON_RAMP_DOWN_TIME"
+        "text": "MV_E12_EEPROM_NEUTRALZON_RAMP_DOWN_TIME",
     },
     {
         "idx": 1623,
@@ -10527,7 +10527,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_NEUTRALZON_RAMP_UP_TIME"
+        "text": "MV_E12_EEPROM_NEUTRALZON_RAMP_UP_TIME",
     },
     {
         "idx": 1625,
@@ -10536,7 +10536,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_NEUTRALZON_SIZE"
+        "text": "MV_E12_EEPROM_NEUTRALZON_SIZE",
     },
     {
         "idx": 1627,
@@ -10545,7 +10545,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_NEUTRALZON_TEMP_DECREASE_M_VALVE"
+        "text": "MV_E12_EEPROM_NEUTRALZON_TEMP_DECREASE_M_VALVE",
     },
     {
         "idx": 1629,
@@ -10554,7 +10554,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_NEUTRALZON_TEMP_NO_INCREASE_M_VALVE"
+        "text": "MV_E12_EEPROM_NEUTRALZON_TEMP_NO_INCREASE_M_VALVE",
     },
     {
         "idx": 1631,
@@ -10563,7 +10563,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_PARTY_MODE_ENABLE"
+        "text": "MV_E12_EEPROM_PARTY_MODE_ENABLE",
     },
     {
         "idx": 1632,
@@ -10572,7 +10572,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_PID_AIRSYSTEM_ACTIVE"
+        "text": "MV_E12_EEPROM_PID_AIRSYSTEM_ACTIVE",
     },
     {
         "idx": 1634,
@@ -10581,7 +10581,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_PID_MAX_VALUE"
+        "text": "MV_E12_EEPROM_PID_MAX_VALUE",
     },
     {
         "idx": 1636,
@@ -10590,7 +10590,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_PID_MIN_VALUE"
+        "text": "MV_E12_EEPROM_PID_MIN_VALUE",
     },
     {
         "idx": 1638,
@@ -10599,7 +10599,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_P_VALUE"
+        "text": "MV_E12_EEPROM_P_VALUE",
     },
     {
         "idx": 1640,
@@ -10608,7 +10608,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_ROOMSENSOR_INFLUENCE_FACTOR"
+        "text": "MV_E12_EEPROM_ROOMSENSOR_INFLUENCE_FACTOR",
     },
     {
         "idx": 1641,
@@ -10617,7 +10617,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "rp2",
         "read": 2,
-        "text": "MV_E12_EEPROM_ROOM_PROGRAM_MODE"
+        "text": "MV_E12_EEPROM_ROOM_PROGRAM_MODE",
     },
     {
         "idx": 1642,
@@ -10626,7 +10626,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_ROOM_SENSOR_ACTIVE"
+        "text": "MV_E12_EEPROM_ROOM_SENSOR_ACTIVE",
     },
     {
         "idx": 1644,
@@ -10635,7 +10635,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_T1_KORRIGERING"
+        "text": "MV_E12_EEPROM_T1_KORRIGERING",
     },
     {
         "idx": 1645,
@@ -10644,7 +10644,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_T5_KORRIGERING"
+        "text": "MV_E12_EEPROM_T5_KORRIGERING",
     },
     {
         "idx": 1646,
@@ -10653,7 +10653,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 2,
-        "text": "MV_E12_EEPROM_T5_SETPOINT"
+        "text": "MV_E12_EEPROM_T5_SETPOINT",
     },
     {
         "idx": 1648,
@@ -10662,7 +10662,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 2,
-        "text": "MV_E12_EEPROM_TEMP_TIMECONTROLLED"
+        "text": "MV_E12_EEPROM_TEMP_TIMECONTROLLED",
     },
     {
         "idx": 1650,
@@ -10671,7 +10671,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "rp1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM"
+        "text": "MV_E12_EEPROM_TIME_PROGRAM",
     },
     {
         "idx": 1651,
@@ -10680,7 +10680,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_5FRI"
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_5FRI",
     },
     {
         "idx": 1653,
@@ -10689,7 +10689,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_5FRI_2"
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_5FRI_2",
     },
     {
         "idx": 1655,
@@ -10698,7 +10698,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_1MON"
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_1MON",
     },
     {
         "idx": 1657,
@@ -10707,7 +10707,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_1MON_2"
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_1MON_2",
     },
     {
         "idx": 1659,
@@ -10716,7 +10716,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_6SAT"
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_6SAT",
     },
     {
         "idx": 1661,
@@ -10725,7 +10725,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_6SAT_2"
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_6SAT_2",
     },
     {
         "idx": 1663,
@@ -10734,7 +10734,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_7SUN"
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_7SUN",
     },
     {
         "idx": 1665,
@@ -10743,7 +10743,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_7SUN_2"
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_7SUN_2",
     },
     {
         "idx": 1667,
@@ -10752,7 +10752,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_4THU"
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_4THU",
     },
     {
         "idx": 1669,
@@ -10761,7 +10761,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_4THU_2"
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_4THU_2",
     },
     {
         "idx": 1671,
@@ -10770,7 +10770,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_2TUE"
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_2TUE",
     },
     {
         "idx": 1673,
@@ -10779,7 +10779,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_2TUE_2"
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_2TUE_2",
     },
     {
         "idx": 1675,
@@ -10788,7 +10788,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_3WED"
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_3WED",
     },
     {
         "idx": 1677,
@@ -10797,7 +10797,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_3WED_2"
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_3WED_2",
     },
     {
         "idx": 1679,
@@ -10806,7 +10806,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_UI_BRAND"
+        "text": "MV_E12_EEPROM_UI_BRAND",
     },
     {
         "idx": 1681,
@@ -10815,7 +10815,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EEPROM_VALVE_AO_0_10V_ACTIVE"
+        "text": "MV_E12_EEPROM_VALVE_AO_0_10V_ACTIVE",
     },
     {
         "idx": 1683,
@@ -10824,7 +10824,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_EXT_FUNCTION_TRIGGED"
+        "text": "MV_E12_EXT_FUNCTION_TRIGGED",
     },
     {
         "idx": 1684,
@@ -10833,7 +10833,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_FREEZEGUARD_ACTIVE"
+        "text": "MV_E12_FREEZEGUARD_ACTIVE",
     },
     {
         "idx": 1686,
@@ -10842,7 +10842,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_GT41_TEMP_SETPOINT"
+        "text": "MV_E12_GT41_TEMP_SETPOINT",
     },
     {
         "idx": 1688,
@@ -10851,7 +10851,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_GT5_DAMPING_FACTOR"
+        "text": "MV_E12_GT5_DAMPING_FACTOR",
     },
     {
         "idx": 1690,
@@ -10860,7 +10860,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_HEATING_CURVE_NUMBER_OF_POINTS"
+        "text": "MV_E12_HEATING_CURVE_NUMBER_OF_POINTS",
     },
     {
         "idx": 1692,
@@ -10869,7 +10869,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_HEATING_SEASON_ACTIVE"
+        "text": "MV_E12_HEATING_SEASON_ACTIVE",
     },
     {
         "idx": 1693,
@@ -10878,7 +10878,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_HIGHTEMP_HEATINGSYSTEM_ACTIVE"
+        "text": "MV_E12_HIGHTEMP_HEATINGSYSTEM_ACTIVE",
     },
     {
         "idx": 1694,
@@ -10887,7 +10887,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_INTERNAL_HOLIDAY_ACTIVE"
+        "text": "MV_E12_INTERNAL_HOLIDAY_ACTIVE",
     },
     {
         "idx": 1695,
@@ -10896,7 +10896,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_INTERNAL_TIMECONTROLLED_ACTIVE"
+        "text": "MV_E12_INTERNAL_TIMECONTROLLED_ACTIVE",
     },
     {
         "idx": 1696,
@@ -10905,7 +10905,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_MAN_OP_G1"
+        "text": "MV_E12_MAN_OP_G1",
     },
     {
         "idx": 1697,
@@ -10914,7 +10914,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_MAN_OP_VALVE_CLOSE"
+        "text": "MV_E12_MAN_OP_VALVE_CLOSE",
     },
     {
         "idx": 1698,
@@ -10923,7 +10923,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_MAN_OP_VALVE_OPEN"
+        "text": "MV_E12_MAN_OP_VALVE_OPEN",
     },
     {
         "idx": 1699,
@@ -10932,7 +10932,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_PID_ISPOINT"
+        "text": "MV_E12_PID_ISPOINT",
     },
     {
         "idx": 1701,
@@ -10941,7 +10941,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_PID_SETPOINT"
+        "text": "MV_E12_PID_SETPOINT",
     },
     {
         "idx": 1703,
@@ -10950,7 +10950,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_ROOMSENSOR_INFLUENCE"
+        "text": "MV_E12_ROOMSENSOR_INFLUENCE",
     },
     {
         "idx": 1705,
@@ -10959,7 +10959,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_ROOM_SENSOR_ACKNOW"
+        "text": "MV_E12_ROOM_SENSOR_ACKNOW",
     },
     {
         "idx": 1707,
@@ -10968,7 +10968,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_ROOM_SETPOINT_TEMP_ACTIVE"
+        "text": "MV_E12_ROOM_SETPOINT_TEMP_ACTIVE",
     },
     {
         "idx": 1709,
@@ -10977,7 +10977,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "MV_E12_T1_ALARM"
+        "text": "MV_E12_T1_ALARM",
     },
     {
         "idx": 1710,
@@ -10986,7 +10986,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "MV_E12_T1_TEMP"
+        "text": "MV_E12_T1_TEMP",
     },
     {
         "idx": 1712,
@@ -10995,7 +10995,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "MV_E12_T5_ATTENUATIONED_TEMP"
+        "text": "MV_E12_T5_ATTENUATIONED_TEMP",
     },
     {
         "idx": 1714,
@@ -11004,7 +11004,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "MV_E12_T5_TEMP"
+        "text": "MV_E12_T5_TEMP",
     },
     {
         "idx": 1716,
@@ -11013,7 +11013,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_T5_TEMP_ACTIVE"
+        "text": "MV_E12_T5_TEMP_ACTIVE",
     },
     {
         "idx": 1718,
@@ -11022,7 +11022,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_T5_TEMP_ACTIVE_TO_DISPLAY"
+        "text": "MV_E12_T5_TEMP_ACTIVE_TO_DISPLAY",
     },
     {
         "idx": 1720,
@@ -11031,7 +11031,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_TIME_PROGRAM_FRI"
+        "text": "MV_E12_TIME_PROGRAM_FRI",
     },
     {
         "idx": 1722,
@@ -11040,7 +11040,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_TIME_PROGRAM_MON"
+        "text": "MV_E12_TIME_PROGRAM_MON",
     },
     {
         "idx": 1724,
@@ -11049,7 +11049,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_TIME_PROGRAM_SAT"
+        "text": "MV_E12_TIME_PROGRAM_SAT",
     },
     {
         "idx": 1726,
@@ -11058,7 +11058,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_TIME_PROGRAM_SUN"
+        "text": "MV_E12_TIME_PROGRAM_SUN",
     },
     {
         "idx": 1728,
@@ -11067,7 +11067,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_TIME_PROGRAM_THU"
+        "text": "MV_E12_TIME_PROGRAM_THU",
     },
     {
         "idx": 1730,
@@ -11076,7 +11076,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_TIME_PROGRAM_TUE"
+        "text": "MV_E12_TIME_PROGRAM_TUE",
     },
     {
         "idx": 1732,
@@ -11085,7 +11085,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_TIME_PROGRAM_WED"
+        "text": "MV_E12_TIME_PROGRAM_WED",
     },
     {
         "idx": 1734,
@@ -11094,7 +11094,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_VALVE_PID_ISPOINT"
+        "text": "MV_E12_VALVE_PID_ISPOINT",
     },
     {
         "idx": 1736,
@@ -11103,7 +11103,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E12_VALVE_PID_SETPOINT"
+        "text": "MV_E12_VALVE_PID_SETPOINT",
     },
     {
         "idx": 1738,
@@ -11112,7 +11112,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E31_Q2_PRI_COOLING"
+        "text": "MV_E31_Q2_PRI_COOLING",
     },
     {
         "idx": 1739,
@@ -11121,7 +11121,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E31_Q2_SEC_COOLING"
+        "text": "MV_E31_Q2_SEC_COOLING",
     },
     {
         "idx": 1740,
@@ -11130,7 +11130,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "MV_E31_T2_SENSOR_ALARM_GLOBAL"
+        "text": "MV_E31_T2_SENSOR_ALARM_GLOBAL",
     },
     {
         "idx": 1741,
@@ -11139,7 +11139,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E31_T31_SETPOINT"
+        "text": "MV_E31_T31_SETPOINT",
     },
     {
         "idx": 1743,
@@ -11148,7 +11148,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_E31_T32_ACKNOWLEDGED"
+        "text": "MV_E31_T32_ACKNOWLEDGED",
     },
     {
         "idx": 1744,
@@ -11157,7 +11157,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_ENABLE_CONDENSATIONGUARD_BY_EXT_GLOBAL"
+        "text": "MV_ENABLE_CONDENSATIONGUARD_BY_EXT_GLOBAL",
     },
     {
         "idx": 1745,
@@ -11166,7 +11166,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_ENABLE_COOLING_BLOCK_BY_EXT_GLOBAL"
+        "text": "MV_ENABLE_COOLING_BLOCK_BY_EXT_GLOBAL",
     },
     {
         "idx": 1746,
@@ -11175,7 +11175,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_ENABLE_HEATING_BLOCK_BY_EXT_GLOBAL"
+        "text": "MV_ENABLE_HEATING_BLOCK_BY_EXT_GLOBAL",
     },
     {
         "idx": 1747,
@@ -11184,7 +11184,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_ENABLE_HIGH_PROTECTION_HS_BY_EXT_GLOBAL"
+        "text": "MV_ENABLE_HIGH_PROTECTION_HS_BY_EXT_GLOBAL",
     },
     {
         "idx": 1748,
@@ -11193,7 +11193,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_EX1_Q2_GLOBAL"
+        "text": "MV_EX1_Q2_GLOBAL",
     },
     {
         "idx": 1749,
@@ -11202,7 +11202,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_Ex_T1_ALARM_BITMASK"
+        "text": "MV_Ex_T1_ALARM_BITMASK",
     },
     {
         "idx": 1750,
@@ -11211,7 +11211,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_Ex_T1_ALARM_GLOBAL"
+        "text": "MV_Ex_T1_ALARM_GLOBAL",
     },
     {
         "idx": 1751,
@@ -11220,7 +11220,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_FREEZEGUARD_ACTIVE_BITMASK"
+        "text": "MV_FREEZEGUARD_ACTIVE_BITMASK",
     },
     {
         "idx": 1752,
@@ -11229,7 +11229,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_FREEZEGUARD_ACTIVE_GLOBAL"
+        "text": "MV_FREEZEGUARD_ACTIVE_GLOBAL",
     },
     {
         "idx": 1753,
@@ -11238,7 +11238,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_HIGHTEMP_HS_ACTIVE_BITMASK"
+        "text": "MV_HIGHTEMP_HS_ACTIVE_BITMASK",
     },
     {
         "idx": 1754,
@@ -11247,7 +11247,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_HIGHTEMP_HS_ACTIVE_GLOBAL"
+        "text": "MV_HIGHTEMP_HS_ACTIVE_GLOBAL",
     },
     {
         "idx": 1755,
@@ -11256,7 +11256,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_HIGHTEMP_HS_ALERT_ACTIVE_BITMASK"
+        "text": "MV_HIGHTEMP_HS_ALERT_ACTIVE_BITMASK",
     },
     {
         "idx": 1756,
@@ -11265,7 +11265,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_HOLIDAY_ACTIVE_BITMASK"
+        "text": "MV_HOLIDAY_ACTIVE_BITMASK",
     },
     {
         "idx": 1757,
@@ -11274,7 +11274,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_HOLIDAY_ACTIVE_GLOBAL"
+        "text": "MV_HOLIDAY_ACTIVE_GLOBAL",
     },
     {
         "idx": 1758,
@@ -11283,7 +11283,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_ICONS_TIMEPROGRAM_ACTIVE_BITMASK"
+        "text": "MV_ICONS_TIMEPROGRAM_ACTIVE_BITMASK",
     },
     {
         "idx": 1759,
@@ -11292,7 +11292,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_ICONS_TIMEPROGRAM_ACTIVE_GLOBAL"
+        "text": "MV_ICONS_TIMEPROGRAM_ACTIVE_GLOBAL",
     },
     {
         "idx": 1760,
@@ -11301,7 +11301,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_INVERT_EXT_INPUT_GLOBAL"
+        "text": "MV_INVERT_EXT_INPUT_GLOBAL",
     },
     {
         "idx": 1761,
@@ -11310,7 +11310,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_PID_ACTUAL_1"
+        "text": "MV_PID_ACTUAL_1",
     },
     {
         "idx": 1763,
@@ -11319,7 +11319,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_PID_ACTUAL_2"
+        "text": "MV_PID_ACTUAL_2",
     },
     {
         "idx": 1765,
@@ -11328,7 +11328,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_PID_ACTUAL_3"
+        "text": "MV_PID_ACTUAL_3",
     },
     {
         "idx": 1767,
@@ -11337,7 +11337,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_PID_ACTUAL_4"
+        "text": "MV_PID_ACTUAL_4",
     },
     {
         "idx": 1769,
@@ -11346,7 +11346,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_PID_ACTUAL_5"
+        "text": "MV_PID_ACTUAL_5",
     },
     {
         "idx": 1771,
@@ -11355,7 +11355,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_PID_ACTUAL_6"
+        "text": "MV_PID_ACTUAL_6",
     },
     {
         "idx": 1773,
@@ -11364,7 +11364,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_PID_ACTUAL_7"
+        "text": "MV_PID_ACTUAL_7",
     },
     {
         "idx": 1775,
@@ -11373,7 +11373,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_PID_ACTUAL_GLOBAL"
+        "text": "MV_PID_ACTUAL_GLOBAL",
     },
     {
         "idx": 1777,
@@ -11382,7 +11382,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_PID_ACTUAL_PRI_COOLING"
+        "text": "MV_PID_ACTUAL_PRI_COOLING",
     },
     {
         "idx": 1779,
@@ -11391,7 +11391,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_PID_ACTUAL_SEC_COOLING"
+        "text": "MV_PID_ACTUAL_SEC_COOLING",
     },
     {
         "idx": 1781,
@@ -11400,7 +11400,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_PID_SETPOINT_1"
+        "text": "MV_PID_SETPOINT_1",
     },
     {
         "idx": 1783,
@@ -11409,7 +11409,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_PID_SETPOINT_2"
+        "text": "MV_PID_SETPOINT_2",
     },
     {
         "idx": 1785,
@@ -11418,7 +11418,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_PID_SETPOINT_3"
+        "text": "MV_PID_SETPOINT_3",
     },
     {
         "idx": 1787,
@@ -11427,7 +11427,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_PID_SETPOINT_4"
+        "text": "MV_PID_SETPOINT_4",
     },
     {
         "idx": 1789,
@@ -11436,7 +11436,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_PID_SETPOINT_5"
+        "text": "MV_PID_SETPOINT_5",
     },
     {
         "idx": 1791,
@@ -11445,7 +11445,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_PID_SETPOINT_6"
+        "text": "MV_PID_SETPOINT_6",
     },
     {
         "idx": 1793,
@@ -11454,7 +11454,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_PID_SETPOINT_7"
+        "text": "MV_PID_SETPOINT_7",
     },
     {
         "idx": 1795,
@@ -11463,7 +11463,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_PID_SETPOINT_GLOBAL"
+        "text": "MV_PID_SETPOINT_GLOBAL",
     },
     {
         "idx": 1797,
@@ -11472,7 +11472,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_PID_SETPOINT_PRI_COOLING"
+        "text": "MV_PID_SETPOINT_PRI_COOLING",
     },
     {
         "idx": 1799,
@@ -11481,7 +11481,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_PID_SETPOINT_SEC_COOLING"
+        "text": "MV_PID_SETPOINT_SEC_COOLING",
     },
     {
         "idx": 1801,
@@ -11490,7 +11490,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_ROOMSENSOR_KNOB_ALARM_BITMASK"
+        "text": "MV_ROOMSENSOR_KNOB_ALARM_BITMASK",
     },
     {
         "idx": 1803,
@@ -11499,7 +11499,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_ROOMSENSOR_KNOB_ALARM_GLOBAL"
+        "text": "MV_ROOMSENSOR_KNOB_ALARM_GLOBAL",
     },
     {
         "idx": 1804,
@@ -11508,7 +11508,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T1_SETPOINT_1"
+        "text": "MV_T1_SETPOINT_1",
     },
     {
         "idx": 1806,
@@ -11517,7 +11517,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T1_SETPOINT_2"
+        "text": "MV_T1_SETPOINT_2",
     },
     {
         "idx": 1808,
@@ -11526,7 +11526,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T1_SETPOINT_3"
+        "text": "MV_T1_SETPOINT_3",
     },
     {
         "idx": 1810,
@@ -11535,7 +11535,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T1_SETPOINT_4"
+        "text": "MV_T1_SETPOINT_4",
     },
     {
         "idx": 1812,
@@ -11544,7 +11544,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T1_SETPOINT_5"
+        "text": "MV_T1_SETPOINT_5",
     },
     {
         "idx": 1814,
@@ -11553,7 +11553,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T1_SETPOINT_6"
+        "text": "MV_T1_SETPOINT_6",
     },
     {
         "idx": 1816,
@@ -11562,7 +11562,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T1_SETPOINT_7"
+        "text": "MV_T1_SETPOINT_7",
     },
     {
         "idx": 1818,
@@ -11571,7 +11571,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T1_SETPOINT_GLOBAL"
+        "text": "MV_T1_SETPOINT_GLOBAL",
     },
     {
         "idx": 1820,
@@ -11580,7 +11580,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T1_SETPOINT_PRI_COOLING"
+        "text": "MV_T1_SETPOINT_PRI_COOLING",
     },
     {
         "idx": 1822,
@@ -11589,7 +11589,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T1_SETPOINT_SEC_COOLING"
+        "text": "MV_T1_SETPOINT_SEC_COOLING",
     },
     {
         "idx": 1824,
@@ -11598,7 +11598,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 5,
-        "text": "MV_T5_ACKNOWLEDGED_BITMASK"
+        "text": "MV_T5_ACKNOWLEDGED_BITMASK",
     },
     {
         "idx": 1826,
@@ -11607,7 +11607,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 5,
-        "text": "MV_T5_ACTUAL_1"
+        "text": "MV_T5_ACTUAL_1",
     },
     {
         "idx": 1828,
@@ -11616,7 +11616,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ACTUAL_1_ROUND_OFFED"
+        "text": "MV_T5_ACTUAL_1_ROUND_OFFED",
     },
     {
         "idx": 1830,
@@ -11625,7 +11625,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ACTUAL_2"
+        "text": "MV_T5_ACTUAL_2",
     },
     {
         "idx": 1832,
@@ -11634,7 +11634,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ACTUAL_2_ROUND_OFFED"
+        "text": "MV_T5_ACTUAL_2_ROUND_OFFED",
     },
     {
         "idx": 1834,
@@ -11643,7 +11643,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ACTUAL_3"
+        "text": "MV_T5_ACTUAL_3",
     },
     {
         "idx": 1836,
@@ -11652,7 +11652,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ACTUAL_3_ROUND_OFFED"
+        "text": "MV_T5_ACTUAL_3_ROUND_OFFED",
     },
     {
         "idx": 1838,
@@ -11661,7 +11661,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ACTUAL_4"
+        "text": "MV_T5_ACTUAL_4",
     },
     {
         "idx": 1840,
@@ -11670,7 +11670,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ACTUAL_4_ROUND_OFFED"
+        "text": "MV_T5_ACTUAL_4_ROUND_OFFED",
     },
     {
         "idx": 1842,
@@ -11679,7 +11679,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ACTUAL_5"
+        "text": "MV_T5_ACTUAL_5",
     },
     {
         "idx": 1844,
@@ -11688,7 +11688,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ACTUAL_5_ROUND_OFFED"
+        "text": "MV_T5_ACTUAL_5_ROUND_OFFED",
     },
     {
         "idx": 1846,
@@ -11697,7 +11697,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ACTUAL_6"
+        "text": "MV_T5_ACTUAL_6",
     },
     {
         "idx": 1848,
@@ -11706,7 +11706,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ACTUAL_6_ROUND_OFFED"
+        "text": "MV_T5_ACTUAL_6_ROUND_OFFED",
     },
     {
         "idx": 1850,
@@ -11715,7 +11715,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ACTUAL_7"
+        "text": "MV_T5_ACTUAL_7",
     },
     {
         "idx": 1852,
@@ -11724,7 +11724,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ACTUAL_7_ROUND_OFFED"
+        "text": "MV_T5_ACTUAL_7_ROUND_OFFED",
     },
     {
         "idx": 1854,
@@ -11733,7 +11733,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ACTUAL_GLOBAL"
+        "text": "MV_T5_ACTUAL_GLOBAL",
     },
     {
         "idx": 1856,
@@ -11742,7 +11742,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ACTUAL_PRI_COOLING"
+        "text": "MV_T5_ACTUAL_PRI_COOLING",
     },
     {
         "idx": 1858,
@@ -11751,7 +11751,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ACTUAL_SEC_COOLING"
+        "text": "MV_T5_ACTUAL_SEC_COOLING",
     },
     {
         "idx": 1860,
@@ -11760,7 +11760,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ATTENUATED_1"
+        "text": "MV_T5_ATTENUATED_1",
     },
     {
         "idx": 1862,
@@ -11769,7 +11769,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ATTENUATED_2"
+        "text": "MV_T5_ATTENUATED_2",
     },
     {
         "idx": 1864,
@@ -11778,7 +11778,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ATTENUATED_3"
+        "text": "MV_T5_ATTENUATED_3",
     },
     {
         "idx": 1866,
@@ -11787,7 +11787,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ATTENUATED_4"
+        "text": "MV_T5_ATTENUATED_4",
     },
     {
         "idx": 1868,
@@ -11796,7 +11796,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ATTENUATED_5"
+        "text": "MV_T5_ATTENUATED_5",
     },
     {
         "idx": 1870,
@@ -11805,7 +11805,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ATTENUATED_6"
+        "text": "MV_T5_ATTENUATED_6",
     },
     {
         "idx": 1872,
@@ -11814,7 +11814,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ATTENUATED_7"
+        "text": "MV_T5_ATTENUATED_7",
     },
     {
         "idx": 1874,
@@ -11823,7 +11823,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ATTENUATED_PRI_COOLING"
+        "text": "MV_T5_ATTENUATED_PRI_COOLING",
     },
     {
         "idx": 1876,
@@ -11832,7 +11832,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_ATTENUATED_SEC_COOLING"
+        "text": "MV_T5_ATTENUATED_SEC_COOLING",
     },
     {
         "idx": 1878,
@@ -11841,7 +11841,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_CONNECTED_BITMASK"
+        "text": "MV_T5_CONNECTED_BITMASK",
     },
     {
         "idx": 1880,
@@ -11850,7 +11850,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_SETPOINT_1"
+        "text": "MV_T5_SETPOINT_1",
     },
     {
         "idx": 1882,
@@ -11859,7 +11859,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_SETPOINT_2"
+        "text": "MV_T5_SETPOINT_2",
     },
     {
         "idx": 1884,
@@ -11868,7 +11868,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_SETPOINT_3"
+        "text": "MV_T5_SETPOINT_3",
     },
     {
         "idx": 1886,
@@ -11877,7 +11877,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_SETPOINT_4"
+        "text": "MV_T5_SETPOINT_4",
     },
     {
         "idx": 1888,
@@ -11886,7 +11886,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_SETPOINT_5"
+        "text": "MV_T5_SETPOINT_5",
     },
     {
         "idx": 1890,
@@ -11895,7 +11895,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_SETPOINT_6"
+        "text": "MV_T5_SETPOINT_6",
     },
     {
         "idx": 1892,
@@ -11904,7 +11904,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_SETPOINT_7"
+        "text": "MV_T5_SETPOINT_7",
     },
     {
         "idx": 1894,
@@ -11913,7 +11913,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_SETPOINT_ACTUAL_1"
+        "text": "MV_T5_SETPOINT_ACTUAL_1",
     },
     {
         "idx": 1896,
@@ -11922,7 +11922,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_SETPOINT_ACTUAL_2"
+        "text": "MV_T5_SETPOINT_ACTUAL_2",
     },
     {
         "idx": 1898,
@@ -11931,7 +11931,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_SETPOINT_ACTUAL_3"
+        "text": "MV_T5_SETPOINT_ACTUAL_3",
     },
     {
         "idx": 1900,
@@ -11940,7 +11940,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_SETPOINT_ACTUAL_4"
+        "text": "MV_T5_SETPOINT_ACTUAL_4",
     },
     {
         "idx": 1902,
@@ -11949,7 +11949,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_SETPOINT_ACTUAL_5"
+        "text": "MV_T5_SETPOINT_ACTUAL_5",
     },
     {
         "idx": 1904,
@@ -11958,7 +11958,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_SETPOINT_ACTUAL_6"
+        "text": "MV_T5_SETPOINT_ACTUAL_6",
     },
     {
         "idx": 1906,
@@ -11967,7 +11967,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_SETPOINT_ACTUAL_7"
+        "text": "MV_T5_SETPOINT_ACTUAL_7",
     },
     {
         "idx": 1908,
@@ -11976,7 +11976,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_SETPOINT_ACTUAL_GLOBAL"
+        "text": "MV_T5_SETPOINT_ACTUAL_GLOBAL",
     },
     {
         "idx": 1910,
@@ -11985,7 +11985,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_SETPOINT_ACTUAL_PRI_COOLING"
+        "text": "MV_T5_SETPOINT_ACTUAL_PRI_COOLING",
     },
     {
         "idx": 1912,
@@ -11994,7 +11994,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_SETPOINT_ACTUAL_SEC_COOLING"
+        "text": "MV_T5_SETPOINT_ACTUAL_SEC_COOLING",
     },
     {
         "idx": 1914,
@@ -12003,7 +12003,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_SETPOINT_PRI_COOLING"
+        "text": "MV_T5_SETPOINT_PRI_COOLING",
     },
     {
         "idx": 1916,
@@ -12012,7 +12012,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_T5_SETPOINT_SEC_COOLING"
+        "text": "MV_T5_SETPOINT_SEC_COOLING",
     },
     {
         "idx": 1918,
@@ -12021,7 +12021,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_TIMER_HEATING_COOLING_DELAY_1"
+        "text": "MV_TIMER_HEATING_COOLING_DELAY_1",
     },
     {
         "idx": 1920,
@@ -12030,7 +12030,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_TIMER_HEATING_COOLING_DELAY_2"
+        "text": "MV_TIMER_HEATING_COOLING_DELAY_2",
     },
     {
         "idx": 1922,
@@ -12039,7 +12039,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_TIMER_HEATING_COOLING_DELAY_3"
+        "text": "MV_TIMER_HEATING_COOLING_DELAY_3",
     },
     {
         "idx": 1924,
@@ -12048,7 +12048,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_TIMER_HEATING_COOLING_DELAY_4"
+        "text": "MV_TIMER_HEATING_COOLING_DELAY_4",
     },
     {
         "idx": 1926,
@@ -12057,7 +12057,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_TIMER_HEATING_COOLING_DELAY_5"
+        "text": "MV_TIMER_HEATING_COOLING_DELAY_5",
     },
     {
         "idx": 1928,
@@ -12066,7 +12066,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_TIMER_HEATING_COOLING_DELAY_6"
+        "text": "MV_TIMER_HEATING_COOLING_DELAY_6",
     },
     {
         "idx": 1930,
@@ -12075,7 +12075,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_TIMER_HEATING_COOLING_DELAY_7"
+        "text": "MV_TIMER_HEATING_COOLING_DELAY_7",
     },
     {
         "idx": 1932,
@@ -12084,7 +12084,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_TIMER_HEATING_COOLING_DELAY_GLOBAL"
+        "text": "MV_TIMER_HEATING_COOLING_DELAY_GLOBAL",
     },
     {
         "idx": 1934,
@@ -12093,7 +12093,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_TIMER_HEATING_COOLING_DELAY_PRI_COOLING"
+        "text": "MV_TIMER_HEATING_COOLING_DELAY_PRI_COOLING",
     },
     {
         "idx": 1936,
@@ -12102,7 +12102,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "MV_TIMER_HEATING_COOLING_DELAY_SEC_COOLING"
+        "text": "MV_TIMER_HEATING_COOLING_DELAY_SEC_COOLING",
     },
     {
         "idx": 1938,
@@ -12111,7 +12111,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PARTY_MODE_CIRCUIT_1"
+        "text": "PARTY_MODE_CIRCUIT_1",
     },
     {
         "idx": 1939,
@@ -12120,7 +12120,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PARTY_MODE_CIRCUIT_2"
+        "text": "PARTY_MODE_CIRCUIT_2",
     },
     {
         "idx": 1940,
@@ -12129,7 +12129,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PARTY_MODE_CIRCUIT_3"
+        "text": "PARTY_MODE_CIRCUIT_3",
     },
     {
         "idx": 1941,
@@ -12138,7 +12138,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PARTY_MODE_CIRCUIT_4"
+        "text": "PARTY_MODE_CIRCUIT_4",
     },
     {
         "idx": 1942,
@@ -12147,7 +12147,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PARTY_MODE_CIRCUIT_5"
+        "text": "PARTY_MODE_CIRCUIT_5",
     },
     {
         "idx": 1943,
@@ -12156,7 +12156,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "PARTY_MODE_CIRCUIT_6"
+        "text": "PARTY_MODE_CIRCUIT_6",
     },
     {
         "idx": 1944,
@@ -12165,7 +12165,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PARTY_MODE_CIRCUIT_7"
+        "text": "PARTY_MODE_CIRCUIT_7",
     },
     {
         "idx": 1945,
@@ -12174,7 +12174,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PARTY_MODE_CIRCUIT_8"
+        "text": "PARTY_MODE_CIRCUIT_8",
     },
     {
         "idx": 1946,
@@ -12183,7 +12183,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PARTY_MODE_CIRCUIT_GLOBAL"
+        "text": "PARTY_MODE_CIRCUIT_GLOBAL",
     },
     {
         "idx": 1947,
@@ -12192,7 +12192,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PARTY_MODE_TIME"
+        "text": "PARTY_MODE_TIME",
     },
     {
         "idx": 1948,
@@ -12201,7 +12201,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PGU_ACTIVATED"
+        "text": "PGU_ACTIVATED",
     },
     {
         "idx": 1949,
@@ -12210,7 +12210,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PGU_CONNECTED"
+        "text": "PGU_CONNECTED",
     },
     {
         "idx": 1950,
@@ -12219,7 +12219,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "int",
         "read": 0,
-        "text": "PGU_CORRECTION_L1_A"
+        "text": "PGU_CORRECTION_L1_A",
     },
     {
         "idx": 1951,
@@ -12228,7 +12228,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "int",
         "read": 0,
-        "text": "PGU_CORRECTION_L2_A"
+        "text": "PGU_CORRECTION_L2_A",
     },
     {
         "idx": 1952,
@@ -12237,7 +12237,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "int",
         "read": 0,
-        "text": "PGU_CORRECTION_L3_A"
+        "text": "PGU_CORRECTION_L3_A",
     },
     {
         "idx": 1953,
@@ -12246,7 +12246,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PGU_CURRENT_MARGIN"
+        "text": "PGU_CURRENT_MARGIN",
     },
     {
         "idx": 1954,
@@ -12255,7 +12255,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PGU_L1_A"
+        "text": "PGU_L1_A",
     },
     {
         "idx": 1956,
@@ -12264,7 +12264,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PGU_L2_A"
+        "text": "PGU_L2_A",
     },
     {
         "idx": 1958,
@@ -12273,7 +12273,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PGU_L3_A"
+        "text": "PGU_L3_A",
     },
     {
         "idx": 1960,
@@ -12282,7 +12282,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PGU_MAIN_FUSE"
+        "text": "PGU_MAIN_FUSE",
     },
     {
         "idx": 1961,
@@ -12291,7 +12291,7 @@ PARAMETER_DATA = [
         "min": 5,
         "format": "int",
         "read": 0,
-        "text": "PGU_RECONNECTION_TIME"
+        "text": "PGU_RECONNECTION_TIME",
     },
     {
         "idx": 1963,
@@ -12300,7 +12300,7 @@ PARAMETER_DATA = [
         "min": 230,
         "format": "int",
         "read": 0,
-        "text": "PGU_SUPPLY_VOLTAGE"
+        "text": "PGU_SUPPLY_VOLTAGE",
     },
     {
         "idx": 1965,
@@ -12309,7 +12309,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PGU_TRIGGERED"
+        "text": "PGU_TRIGGERED",
     },
     {
         "idx": 1966,
@@ -12318,7 +12318,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PGU_TRIGGERED_PHASE1"
+        "text": "PGU_TRIGGERED_PHASE1",
     },
     {
         "idx": 1967,
@@ -12327,7 +12327,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PGU_TRIGGERED_PHASE2"
+        "text": "PGU_TRIGGERED_PHASE2",
     },
     {
         "idx": 1968,
@@ -12336,7 +12336,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PGU_TRIGGERED_PHASE3"
+        "text": "PGU_TRIGGERED_PHASE3",
     },
     {
         "idx": 1969,
@@ -12345,7 +12345,7 @@ PARAMETER_DATA = [
         "min": 5,
         "format": "int",
         "read": 0,
-        "text": "PGU_TRIGGERED_TIME"
+        "text": "PGU_TRIGGERED_TIME",
     },
     {
         "idx": 1971,
@@ -12354,7 +12354,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PGU_VERSION"
+        "text": "PGU_VERSION",
     },
     {
         "idx": 1973,
@@ -12363,7 +12363,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PHASE_DETECTOR_ACKNOWLEDGED"
+        "text": "PHASE_DETECTOR_ACKNOWLEDGED",
     },
     {
         "idx": 1974,
@@ -12372,7 +12372,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PHASE_DETECTOR_ACKNOWLEDGED_2"
+        "text": "PHASE_DETECTOR_ACKNOWLEDGED_2",
     },
     {
         "idx": 1975,
@@ -12381,7 +12381,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "POOL_ACTIVE"
+        "text": "POOL_ACTIVE",
     },
     {
         "idx": 1976,
@@ -12390,7 +12390,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "POOL_BLOCKED_BY_EXT"
+        "text": "POOL_BLOCKED_BY_EXT",
     },
     {
         "idx": 1977,
@@ -12399,7 +12399,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "POOL_DIFF_CONST"
+        "text": "POOL_DIFF_CONST",
     },
     {
         "idx": 1978,
@@ -12408,7 +12408,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "POOL_DIFF_CONST_2"
+        "text": "POOL_DIFF_CONST_2",
     },
     {
         "idx": 1979,
@@ -12417,7 +12417,7 @@ PARAMETER_DATA = [
         "min": 2,
         "format": "int",
         "read": 0,
-        "text": "POOL_DIFF_MAX"
+        "text": "POOL_DIFF_MAX",
     },
     {
         "idx": 1980,
@@ -12426,7 +12426,7 @@ PARAMETER_DATA = [
         "min": 2,
         "format": "int",
         "read": 0,
-        "text": "POOL_DIFF_MAX_2"
+        "text": "POOL_DIFF_MAX_2",
     },
     {
         "idx": 1981,
@@ -12435,7 +12435,7 @@ PARAMETER_DATA = [
         "min": 2,
         "format": "int",
         "read": 0,
-        "text": "POOL_DIFF_MIN"
+        "text": "POOL_DIFF_MIN",
     },
     {
         "idx": 1982,
@@ -12444,7 +12444,7 @@ PARAMETER_DATA = [
         "min": 2,
         "format": "int",
         "read": 0,
-        "text": "POOL_DIFF_MIN_2"
+        "text": "POOL_DIFF_MIN_2",
     },
     {
         "idx": 1983,
@@ -12453,7 +12453,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "POOL_EXTERN_BLOCKED"
+        "text": "POOL_EXTERN_BLOCKED",
     },
     {
         "idx": 1984,
@@ -12462,7 +12462,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "POOL_EXT_INPUT_INV"
+        "text": "POOL_EXT_INPUT_INV",
     },
     {
         "idx": 1985,
@@ -12471,7 +12471,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "POOL_PID_D"
+        "text": "POOL_PID_D",
     },
     {
         "idx": 1987,
@@ -12480,7 +12480,7 @@ PARAMETER_DATA = [
         "min": 50,
         "format": "int",
         "read": 0,
-        "text": "POOL_PID_I"
+        "text": "POOL_PID_I",
     },
     {
         "idx": 1989,
@@ -12489,7 +12489,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "POOL_PID_MAX"
+        "text": "POOL_PID_MAX",
     },
     {
         "idx": 1991,
@@ -12498,7 +12498,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "POOL_PID_MIN"
+        "text": "POOL_PID_MIN",
     },
     {
         "idx": 1993,
@@ -12507,7 +12507,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "POOL_PID_P"
+        "text": "POOL_PID_P",
     },
     {
         "idx": 1995,
@@ -12516,7 +12516,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "POOL_REQUEST"
+        "text": "POOL_REQUEST",
     },
     {
         "idx": 1996,
@@ -12525,7 +12525,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "POOL_REQUEST_2"
+        "text": "POOL_REQUEST_2",
     },
     {
         "idx": 1997,
@@ -12534,7 +12534,7 @@ PARAMETER_DATA = [
         "min": 40,
         "format": "tem",
         "read": 0,
-        "text": "POOL_SETPOINT_TEMP"
+        "text": "POOL_SETPOINT_TEMP",
     },
     {
         "idx": 1999,
@@ -12543,7 +12543,7 @@ PARAMETER_DATA = [
         "min": 15,
         "format": "int",
         "read": 0,
-        "text": "POOL_START_DELAY_TIME"
+        "text": "POOL_START_DELAY_TIME",
     },
     {
         "idx": 2000,
@@ -12552,7 +12552,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "POOL_START_TEMP"
+        "text": "POOL_START_TEMP",
     },
     {
         "idx": 2002,
@@ -12561,7 +12561,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "POOL_STOP_TEMP"
+        "text": "POOL_STOP_TEMP",
     },
     {
         "idx": 2004,
@@ -12570,7 +12570,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "POOL_USE_COMPRESSOR_1"
+        "text": "POOL_USE_COMPRESSOR_1",
     },
     {
         "idx": 2005,
@@ -12579,7 +12579,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "POOL_USE_COMPRESSOR_2"
+        "text": "POOL_USE_COMPRESSOR_2",
     },
     {
         "idx": 2006,
@@ -12588,7 +12588,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "POOL_VALVE_DELAY_AFTER_DEFROST"
+        "text": "POOL_VALVE_DELAY_AFTER_DEFROST",
     },
     {
         "idx": 2007,
@@ -12597,7 +12597,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "POOL_VALVE_POSITION"
+        "text": "POOL_VALVE_POSITION",
     },
     {
         "idx": 2009,
@@ -12606,7 +12606,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "POOL_VALVE_RUNNING_TIME"
+        "text": "POOL_VALVE_RUNNING_TIME",
     },
     {
         "idx": 2011,
@@ -12615,7 +12615,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "POPUP_WINDOW_DELAY"
+        "text": "POPUP_WINDOW_DELAY",
     },
     {
         "idx": 2012,
@@ -12624,7 +12624,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PROGRAM_GENERATION"
+        "text": "PROGRAM_GENERATION",
     },
     {
         "idx": 2013,
@@ -12633,7 +12633,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "PROGRAM_REVISION"
+        "text": "PROGRAM_REVISION",
     },
     {
         "idx": 2014,
@@ -12642,7 +12642,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "PROGRAM_VERSION"
+        "text": "PROGRAM_VERSION",
     },
     {
         "idx": 2016,
@@ -12651,7 +12651,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "PUMP_DHW_ACTIVE"
+        "text": "PUMP_DHW_ACTIVE",
     },
     {
         "idx": 2017,
@@ -12660,7 +12660,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "t15",
         "read": 1,
-        "text": "PUMP_DHW_PROGRAM1_START_TIME"
+        "text": "PUMP_DHW_PROGRAM1_START_TIME",
     },
     {
         "idx": 2018,
@@ -12669,7 +12669,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "t15",
         "read": 1,
-        "text": "PUMP_DHW_PROGRAM1_STOP_TIME"
+        "text": "PUMP_DHW_PROGRAM1_STOP_TIME",
     },
     {
         "idx": 2019,
@@ -12678,7 +12678,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "t15",
         "read": 1,
-        "text": "PUMP_DHW_PROGRAM2_START_TIME"
+        "text": "PUMP_DHW_PROGRAM2_START_TIME",
     },
     {
         "idx": 2020,
@@ -12687,7 +12687,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "t15",
         "read": 1,
-        "text": "PUMP_DHW_PROGRAM2_STOP_TIME"
+        "text": "PUMP_DHW_PROGRAM2_STOP_TIME",
     },
     {
         "idx": 2021,
@@ -12696,7 +12696,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "t15",
         "read": 1,
-        "text": "PUMP_DHW_PROGRAM3_START_TIME"
+        "text": "PUMP_DHW_PROGRAM3_START_TIME",
     },
     {
         "idx": 2022,
@@ -12705,7 +12705,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "t15",
         "read": 1,
-        "text": "PUMP_DHW_PROGRAM3_STOP_TIME"
+        "text": "PUMP_DHW_PROGRAM3_STOP_TIME",
     },
     {
         "idx": 2023,
@@ -12714,7 +12714,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "t15",
         "read": 1,
-        "text": "PUMP_DHW_PROGRAM4_START_TIME"
+        "text": "PUMP_DHW_PROGRAM4_START_TIME",
     },
     {
         "idx": 2024,
@@ -12723,7 +12723,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "t15",
         "read": 1,
-        "text": "PUMP_DHW_PROGRAM4_STOP_TIME"
+        "text": "PUMP_DHW_PROGRAM4_STOP_TIME",
     },
     {
         "idx": 2025,
@@ -12732,7 +12732,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_E71_G71_BLOCKED_BY_EXT"
+        "text": "PUMP_E71_G71_BLOCKED_BY_EXT",
     },
     {
         "idx": 2026,
@@ -12741,7 +12741,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_E71_G71_START_DIFF"
+        "text": "PUMP_E71_G71_START_DIFF",
     },
     {
         "idx": 2027,
@@ -12750,7 +12750,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_E71_G71_START_MODE"
+        "text": "PUMP_E71_G71_START_MODE",
     },
     {
         "idx": 2028,
@@ -12759,7 +12759,7 @@ PARAMETER_DATA = [
         "min": 20,
         "format": "int",
         "read": 0,
-        "text": "PUMP_E71_G71_START_TEMP"
+        "text": "PUMP_E71_G71_START_TEMP",
     },
     {
         "idx": 2029,
@@ -12768,7 +12768,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_E72_G71_BLOCKED_BY_EXT"
+        "text": "PUMP_E72_G71_BLOCKED_BY_EXT",
     },
     {
         "idx": 2030,
@@ -12777,7 +12777,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_E72_G71_START_DIFF"
+        "text": "PUMP_E72_G71_START_DIFF",
     },
     {
         "idx": 2031,
@@ -12786,7 +12786,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_E72_G71_START_MODE"
+        "text": "PUMP_E72_G71_START_MODE",
     },
     {
         "idx": 2032,
@@ -12795,7 +12795,7 @@ PARAMETER_DATA = [
         "min": 20,
         "format": "int",
         "read": 0,
-        "text": "PUMP_E72_G71_START_TEMP"
+        "text": "PUMP_E72_G71_START_TEMP",
     },
     {
         "idx": 2033,
@@ -12804,7 +12804,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_G1_CONTINUAL"
+        "text": "PUMP_G1_CONTINUAL",
     },
     {
         "idx": 2034,
@@ -12813,7 +12813,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_G2_CONTINUAL"
+        "text": "PUMP_G2_CONTINUAL",
     },
     {
         "idx": 2035,
@@ -12822,7 +12822,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_G2_LOW_TEMPERATURE"
+        "text": "PUMP_G2_LOW_TEMPERATURE",
     },
     {
         "idx": 2036,
@@ -12831,7 +12831,7 @@ PARAMETER_DATA = [
         "min": 20,
         "format": "int",
         "read": 0,
-        "text": "PUMP_G2_MAX_TEMPERATURE"
+        "text": "PUMP_G2_MAX_TEMPERATURE",
     },
     {
         "idx": 2037,
@@ -12840,7 +12840,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_G3_ACTIVE_IN_COOLING"
+        "text": "PUMP_G3_ACTIVE_IN_COOLING",
     },
     {
         "idx": 2038,
@@ -12849,7 +12849,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_G3_CONTINUAL"
+        "text": "PUMP_G3_CONTINUAL",
     },
     {
         "idx": 2039,
@@ -12858,7 +12858,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_G3_EXTERN_ACTIVATED_BY_E21_EXT_1"
+        "text": "PUMP_G3_EXTERN_ACTIVATED_BY_E21_EXT_1",
     },
     {
         "idx": 2040,
@@ -12867,7 +12867,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_G3_EXTERN_ACTIVATED_BY_E21_EXT_2"
+        "text": "PUMP_G3_EXTERN_ACTIVATED_BY_E21_EXT_2",
     },
     {
         "idx": 2041,
@@ -12876,7 +12876,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_G3_EXTERN_ACTIVATED_BY_E22_EXT_1"
+        "text": "PUMP_G3_EXTERN_ACTIVATED_BY_E22_EXT_1",
     },
     {
         "idx": 2042,
@@ -12885,7 +12885,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_G3_EXTERN_ACTIVATED_BY_E22_EXT_2"
+        "text": "PUMP_G3_EXTERN_ACTIVATED_BY_E22_EXT_2",
     },
     {
         "idx": 2043,
@@ -12894,7 +12894,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_G3_EXTERN_ACTIVE"
+        "text": "PUMP_G3_EXTERN_ACTIVE",
     },
     {
         "idx": 2044,
@@ -12903,7 +12903,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_G3_LOW_PRESSURE_HEAT_CARRIER_ACTIVATED_BY_E21_EXT_1"
+        "text": "PUMP_G3_LOW_PRESSURE_HEAT_CARRIER_ACTIVATED_BY_E21_EXT_1",
     },
     {
         "idx": 2045,
@@ -12912,7 +12912,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_G3_LOW_PRESSURE_HEAT_CARRIER_ACTIVATED_BY_E21_EXT_2"
+        "text": "PUMP_G3_LOW_PRESSURE_HEAT_CARRIER_ACTIVATED_BY_E21_EXT_2",
     },
     {
         "idx": 2046,
@@ -12921,7 +12921,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_G3_LOW_PRESSURE_HEAT_CARRIER_ACTIVATED_BY_E22_EXT_1"
+        "text": "PUMP_G3_LOW_PRESSURE_HEAT_CARRIER_ACTIVATED_BY_E22_EXT_1",
     },
     {
         "idx": 2047,
@@ -12930,7 +12930,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_G3_LOW_PRESSURE_HEAT_CARRIER_ACTIVATED_BY_E22_EXT_2"
+        "text": "PUMP_G3_LOW_PRESSURE_HEAT_CARRIER_ACTIVATED_BY_E22_EXT_2",
     },
     {
         "idx": 2048,
@@ -12939,7 +12939,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_G3_LOW_PRESSURE_HEAT_CARRIER_ACTIVE"
+        "text": "PUMP_G3_LOW_PRESSURE_HEAT_CARRIER_ACTIVE",
     },
     {
         "idx": 2049,
@@ -12948,7 +12948,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_G3_MAX_HASTIGHET"
+        "text": "PUMP_G3_MAX_HASTIGHET",
     },
     {
         "idx": 2050,
@@ -12957,7 +12957,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_G3_MAX_SPEED_AT_COMPRESSOR_FREQUENCY"
+        "text": "PUMP_G3_MAX_SPEED_AT_COMPRESSOR_FREQUENCY",
     },
     {
         "idx": 2051,
@@ -12966,7 +12966,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_G3_MIN_HASTIGHET"
+        "text": "PUMP_G3_MIN_HASTIGHET",
     },
     {
         "idx": 2052,
@@ -12975,7 +12975,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_G3_MIN_SPEED_AT_COMPRESSOR_FREQUENCY"
+        "text": "PUMP_G3_MIN_SPEED_AT_COMPRESSOR_FREQUENCY",
     },
     {
         "idx": 2053,
@@ -12984,7 +12984,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "REMOTE_GET_DISPLAY"
+        "text": "REMOTE_GET_DISPLAY",
     },
     {
         "idx": 2054,
@@ -12993,7 +12993,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RESET_LARMHISTORY"
+        "text": "RESET_LARMHISTORY",
     },
     {
         "idx": 2055,
@@ -13002,7 +13002,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RESET_LARMINFO"
+        "text": "RESET_LARMINFO",
     },
     {
         "idx": 2056,
@@ -13011,7 +13011,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RESET_LARMLOG"
+        "text": "RESET_LARMLOG",
     },
     {
         "idx": 2057,
@@ -13020,7 +13020,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RESET_SYSVAR"
+        "text": "RESET_SYSVAR",
     },
     {
         "idx": 2058,
@@ -13029,7 +13029,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RESTART_ADDITIONAL_TIMER_BLOCKED"
+        "text": "RESTART_ADDITIONAL_TIMER_BLOCKED",
     },
     {
         "idx": 2059,
@@ -13038,7 +13038,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RIGGKORNING"
+        "text": "RIGGKORNING",
     },
     {
         "idx": 2060,
@@ -13047,7 +13047,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ROOM_BLOCK"
+        "text": "ROOM_BLOCK",
     },
     {
         "idx": 2061,
@@ -13056,7 +13056,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ROOM_BUZZER_BLOCKED"
+        "text": "ROOM_BUZZER_BLOCKED",
     },
     {
         "idx": 2062,
@@ -13065,7 +13065,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ROOM_DIAL_RANGE"
+        "text": "ROOM_DIAL_RANGE",
     },
     {
         "idx": 2063,
@@ -13074,7 +13074,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ROOM_DIAL_RANGE_GLOBAL"
+        "text": "ROOM_DIAL_RANGE_GLOBAL",
     },
     {
         "idx": 2064,
@@ -13083,7 +13083,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "ROOM_EXTERN_SETPOINT_TEMP_BY_E21_EXT_1"
+        "text": "ROOM_EXTERN_SETPOINT_TEMP_BY_E21_EXT_1",
     },
     {
         "idx": 2066,
@@ -13092,7 +13092,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "ROOM_EXTERN_SETPOINT_TEMP_BY_E21_EXT_2"
+        "text": "ROOM_EXTERN_SETPOINT_TEMP_BY_E21_EXT_2",
     },
     {
         "idx": 2068,
@@ -13101,7 +13101,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "ROOM_EXTERN_SETPOINT_TEMP_BY_E22_EXT_1"
+        "text": "ROOM_EXTERN_SETPOINT_TEMP_BY_E22_EXT_1",
     },
     {
         "idx": 2070,
@@ -13110,7 +13110,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "ROOM_EXTERN_SETPOINT_TEMP_BY_E22_EXT_2"
+        "text": "ROOM_EXTERN_SETPOINT_TEMP_BY_E22_EXT_2",
     },
     {
         "idx": 2072,
@@ -13119,7 +13119,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ROOM_EXTERN_SETPOINT_TEMP_GLOBAL"
+        "text": "ROOM_EXTERN_SETPOINT_TEMP_GLOBAL",
     },
     {
         "idx": 2074,
@@ -13128,7 +13128,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ROOM_EXTERN_TEMPERATURE_ACTIVE_1"
+        "text": "ROOM_EXTERN_TEMPERATURE_ACTIVE_1",
     },
     {
         "idx": 2075,
@@ -13137,7 +13137,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ROOM_EXTERN_TEMPERATURE_ACTIVE_2"
+        "text": "ROOM_EXTERN_TEMPERATURE_ACTIVE_2",
     },
     {
         "idx": 2076,
@@ -13146,7 +13146,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ROOM_EXTERN_TEMPERATURE_ACTIVE_3"
+        "text": "ROOM_EXTERN_TEMPERATURE_ACTIVE_3",
     },
     {
         "idx": 2077,
@@ -13155,7 +13155,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ROOM_EXTERN_TEMPERATURE_ACTIVE_4"
+        "text": "ROOM_EXTERN_TEMPERATURE_ACTIVE_4",
     },
     {
         "idx": 2078,
@@ -13164,7 +13164,7 @@ PARAMETER_DATA = [
         "min": 100,
         "format": "tem",
         "read": 1,
-        "text": "ROOM_HOLIDAY_SETPOINT_BASE_TEMP"
+        "text": "ROOM_HOLIDAY_SETPOINT_BASE_TEMP",
     },
     {
         "idx": 2080,
@@ -13173,7 +13173,7 @@ PARAMETER_DATA = [
         "min": 100,
         "format": "int",
         "read": 0,
-        "text": "ROOM_HOLIDAY_SETPOINT_BASE_TEMP_GLOBAL"
+        "text": "ROOM_HOLIDAY_SETPOINT_BASE_TEMP_GLOBAL",
     },
     {
         "idx": 2082,
@@ -13182,7 +13182,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ROOM_INFLUENCE"
+        "text": "ROOM_INFLUENCE",
     },
     {
         "idx": 2084,
@@ -13191,7 +13191,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ROOM_INFLUENCE_CONST"
+        "text": "ROOM_INFLUENCE_CONST",
     },
     {
         "idx": 2085,
@@ -13200,7 +13200,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ROOM_INFLUENCE_CONST_GLOBAL"
+        "text": "ROOM_INFLUENCE_CONST_GLOBAL",
     },
     {
         "idx": 2086,
@@ -13209,7 +13209,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ROOM_LED_ALLOWED"
+        "text": "ROOM_LED_ALLOWED",
     },
     {
         "idx": 2087,
@@ -13218,7 +13218,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ROOM_LED_BLOCKED"
+        "text": "ROOM_LED_BLOCKED",
     },
     {
         "idx": 2088,
@@ -13227,7 +13227,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_1_5FRI"
+        "text": "ROOM_PROGRAM_1_5FRI",
     },
     {
         "idx": 2090,
@@ -13236,7 +13236,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_1_1MON"
+        "text": "ROOM_PROGRAM_1_1MON",
     },
     {
         "idx": 2092,
@@ -13245,7 +13245,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_1_6SAT"
+        "text": "ROOM_PROGRAM_1_6SAT",
     },
     {
         "idx": 2094,
@@ -13254,7 +13254,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_1_7SUN"
+        "text": "ROOM_PROGRAM_1_7SUN",
     },
     {
         "idx": 2096,
@@ -13263,7 +13263,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_1_4THU"
+        "text": "ROOM_PROGRAM_1_4THU",
     },
     {
         "idx": 2098,
@@ -13272,7 +13272,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_1_2TUE"
+        "text": "ROOM_PROGRAM_1_2TUE",
     },
     {
         "idx": 2100,
@@ -13281,7 +13281,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_1_3WED"
+        "text": "ROOM_PROGRAM_1_3WED",
     },
     {
         "idx": 2102,
@@ -13290,7 +13290,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_2_5FRI"
+        "text": "ROOM_PROGRAM_2_5FRI",
     },
     {
         "idx": 2104,
@@ -13299,7 +13299,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_2_1MON"
+        "text": "ROOM_PROGRAM_2_1MON",
     },
     {
         "idx": 2106,
@@ -13308,7 +13308,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_2_6SAT"
+        "text": "ROOM_PROGRAM_2_6SAT",
     },
     {
         "idx": 2108,
@@ -13317,7 +13317,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_2_7SUN"
+        "text": "ROOM_PROGRAM_2_7SUN",
     },
     {
         "idx": 2110,
@@ -13326,7 +13326,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_2_4THU"
+        "text": "ROOM_PROGRAM_2_4THU",
     },
     {
         "idx": 2112,
@@ -13335,7 +13335,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_2_2TUE"
+        "text": "ROOM_PROGRAM_2_2TUE",
     },
     {
         "idx": 2114,
@@ -13344,7 +13344,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_2_3WED"
+        "text": "ROOM_PROGRAM_2_3WED",
     },
     {
         "idx": 2116,
@@ -13353,7 +13353,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 0,
-        "text": "ROOM_PROGRAM_FRI_GLOBAL"
+        "text": "ROOM_PROGRAM_FRI_GLOBAL",
     },
     {
         "idx": 2118,
@@ -13362,7 +13362,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "rp2",
         "read": 1,
-        "text": "ROOM_PROGRAM_MODE"
+        "text": "ROOM_PROGRAM_MODE",
     },
     {
         "idx": 2119,
@@ -13371,7 +13371,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "rp2",
         "read": 0,
-        "text": "ROOM_PROGRAM_MODE_GLOBAL"
+        "text": "ROOM_PROGRAM_MODE_GLOBAL",
     },
     {
         "idx": 2120,
@@ -13380,7 +13380,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 0,
-        "text": "ROOM_PROGRAM_MON_GLOBAL"
+        "text": "ROOM_PROGRAM_MON_GLOBAL",
     },
     {
         "idx": 2122,
@@ -13389,7 +13389,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 0,
-        "text": "ROOM_PROGRAM_SAT_GLOBAL"
+        "text": "ROOM_PROGRAM_SAT_GLOBAL",
     },
     {
         "idx": 2124,
@@ -13398,7 +13398,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 0,
-        "text": "ROOM_PROGRAM_SUN_GLOBAL"
+        "text": "ROOM_PROGRAM_SUN_GLOBAL",
     },
     {
         "idx": 2126,
@@ -13407,7 +13407,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 0,
-        "text": "ROOM_PROGRAM_THU_GLOBAL"
+        "text": "ROOM_PROGRAM_THU_GLOBAL",
     },
     {
         "idx": 2128,
@@ -13416,7 +13416,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 0,
-        "text": "ROOM_PROGRAM_TUE_GLOBAL"
+        "text": "ROOM_PROGRAM_TUE_GLOBAL",
     },
     {
         "idx": 2130,
@@ -13425,7 +13425,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "sw1",
         "read": 0,
-        "text": "ROOM_PROGRAM_WED_GLOBAL"
+        "text": "ROOM_PROGRAM_WED_GLOBAL",
     },
     {
         "idx": 2132,
@@ -13434,7 +13434,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ROOM_SENSOR_SHOW_OUTDOOR_TEMP"
+        "text": "ROOM_SENSOR_SHOW_OUTDOOR_TEMP",
     },
     {
         "idx": 2133,
@@ -13443,7 +13443,7 @@ PARAMETER_DATA = [
         "min": 100,
         "format": "tem",
         "read": 1,
-        "text": "ROOM_SETPOINT_BASE_TEMP"
+        "text": "ROOM_SETPOINT_BASE_TEMP",
     },
     {
         "idx": 2135,
@@ -13452,7 +13452,7 @@ PARAMETER_DATA = [
         "min": 100,
         "format": "tem",
         "read": 0,
-        "text": "ROOM_SETPOINT_BASE_TEMP_GLOBAL"
+        "text": "ROOM_SETPOINT_BASE_TEMP_GLOBAL",
     },
     {
         "idx": 2137,
@@ -13461,7 +13461,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "ROOM_SETPOINT_OFFSET"
+        "text": "ROOM_SETPOINT_OFFSET",
     },
     {
         "idx": 2139,
@@ -13470,7 +13470,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "ROOM_SETPOINT_OFFSET_GLOBAL"
+        "text": "ROOM_SETPOINT_OFFSET_GLOBAL",
     },
     {
         "idx": 2141,
@@ -13479,7 +13479,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "ROOM_SETPOINT_TEMP"
+        "text": "ROOM_SETPOINT_TEMP",
     },
     {
         "idx": 2143,
@@ -13488,7 +13488,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ROOM_TIMECONTROLLED"
+        "text": "ROOM_TIMECONTROLLED",
     },
     {
         "idx": 2144,
@@ -13497,7 +13497,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "rp1",
         "read": 1,
-        "text": "ROOM_TIMEPROGRAM"
+        "text": "ROOM_TIMEPROGRAM",
     },
     {
         "idx": 2145,
@@ -13506,7 +13506,7 @@ PARAMETER_DATA = [
         "min": 100,
         "format": "tem",
         "read": 0,
-        "text": "ROOM_TIMEPROGRAMMED_SETPOINT_BASE_TEMP"
+        "text": "ROOM_TIMEPROGRAMMED_SETPOINT_BASE_TEMP",
     },
     {
         "idx": 2147,
@@ -13515,7 +13515,7 @@ PARAMETER_DATA = [
         "min": 100,
         "format": "tem",
         "read": 0,
-        "text": "ROOM_TIMEPROGRAMMED_SETPOINT_BASE_TEMP_GLOBAL"
+        "text": "ROOM_TIMEPROGRAMMED_SETPOINT_BASE_TEMP_GLOBAL",
     },
     {
         "idx": 2149,
@@ -13524,7 +13524,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "rp1",
         "read": 0,
-        "text": "ROOM_TIMEPROGRAM_GLOBAL"
+        "text": "ROOM_TIMEPROGRAM_GLOBAL",
     },
     {
         "idx": 2150,
@@ -13533,7 +13533,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_CONNECTED"
+        "text": "RTU800B_CONNECTED",
     },
     {
         "idx": 2151,
@@ -13542,7 +13542,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_CONNECTED_2"
+        "text": "RTU800B_CONNECTED_2",
     },
     {
         "idx": 2152,
@@ -13551,7 +13551,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_CONNECTED_3"
+        "text": "RTU800B_CONNECTED_3",
     },
     {
         "idx": 2153,
@@ -13560,7 +13560,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_CONNECTED_4"
+        "text": "RTU800B_CONNECTED_4",
     },
     {
         "idx": 2154,
@@ -13569,7 +13569,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_CONNECTED_5"
+        "text": "RTU800B_CONNECTED_5",
     },
     {
         "idx": 2155,
@@ -13578,7 +13578,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_CONNECTED_6"
+        "text": "RTU800B_CONNECTED_6",
     },
     {
         "idx": 2156,
@@ -13587,7 +13587,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_CONNECTED_7"
+        "text": "RTU800B_CONNECTED_7",
     },
     {
         "idx": 2157,
@@ -13596,7 +13596,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_CONNECTED_8"
+        "text": "RTU800B_CONNECTED_8",
     },
     {
         "idx": 2158,
@@ -13605,7 +13605,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_CONNECTED_BITMASK"
+        "text": "RTU800B_CONNECTED_BITMASK",
     },
     {
         "idx": 2159,
@@ -13614,7 +13614,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_CONNECTED_GLOBAL"
+        "text": "RTU800B_CONNECTED_GLOBAL",
     },
     {
         "idx": 2160,
@@ -13623,7 +13623,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_GENERATION"
+        "text": "RTU800B_GENERATION",
     },
     {
         "idx": 2161,
@@ -13632,7 +13632,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_GENERATION_2"
+        "text": "RTU800B_GENERATION_2",
     },
     {
         "idx": 2162,
@@ -13641,7 +13641,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_GENERATION_3"
+        "text": "RTU800B_GENERATION_3",
     },
     {
         "idx": 2163,
@@ -13650,7 +13650,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_GENERATION_4"
+        "text": "RTU800B_GENERATION_4",
     },
     {
         "idx": 2164,
@@ -13659,7 +13659,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_GENERATION_5"
+        "text": "RTU800B_GENERATION_5",
     },
     {
         "idx": 2165,
@@ -13668,7 +13668,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_GENERATION_6"
+        "text": "RTU800B_GENERATION_6",
     },
     {
         "idx": 2166,
@@ -13677,7 +13677,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_GENERATION_7"
+        "text": "RTU800B_GENERATION_7",
     },
     {
         "idx": 2167,
@@ -13686,7 +13686,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_GENERATION_8"
+        "text": "RTU800B_GENERATION_8",
     },
     {
         "idx": 2168,
@@ -13695,7 +13695,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_REVISION"
+        "text": "RTU800B_REVISION",
     },
     {
         "idx": 2169,
@@ -13704,7 +13704,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_REVISION_2"
+        "text": "RTU800B_REVISION_2",
     },
     {
         "idx": 2170,
@@ -13713,7 +13713,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_REVISION_3"
+        "text": "RTU800B_REVISION_3",
     },
     {
         "idx": 2171,
@@ -13722,7 +13722,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_REVISION_4"
+        "text": "RTU800B_REVISION_4",
     },
     {
         "idx": 2172,
@@ -13731,7 +13731,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_REVISION_5"
+        "text": "RTU800B_REVISION_5",
     },
     {
         "idx": 2173,
@@ -13740,7 +13740,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_REVISION_6"
+        "text": "RTU800B_REVISION_6",
     },
     {
         "idx": 2174,
@@ -13749,7 +13749,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_REVISION_7"
+        "text": "RTU800B_REVISION_7",
     },
     {
         "idx": 2175,
@@ -13758,7 +13758,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_REVISION_8"
+        "text": "RTU800B_REVISION_8",
     },
     {
         "idx": 2176,
@@ -13767,7 +13767,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_SUPPORTS_NEW_MESSAGES"
+        "text": "RTU800B_SUPPORTS_NEW_MESSAGES",
     },
     {
         "idx": 2177,
@@ -13776,7 +13776,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_SUPPORTS_NEW_MESSAGES_BITMASK"
+        "text": "RTU800B_SUPPORTS_NEW_MESSAGES_BITMASK",
     },
     {
         "idx": 2178,
@@ -13785,7 +13785,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_SYSTEM_STATUS"
+        "text": "RTU800B_SYSTEM_STATUS",
     },
     {
         "idx": 2179,
@@ -13794,7 +13794,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_VERSION"
+        "text": "RTU800B_VERSION",
     },
     {
         "idx": 2180,
@@ -13803,7 +13803,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_VERSION_2"
+        "text": "RTU800B_VERSION_2",
     },
     {
         "idx": 2181,
@@ -13812,7 +13812,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_VERSION_3"
+        "text": "RTU800B_VERSION_3",
     },
     {
         "idx": 2182,
@@ -13821,7 +13821,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_VERSION_4"
+        "text": "RTU800B_VERSION_4",
     },
     {
         "idx": 2183,
@@ -13830,7 +13830,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_VERSION_5"
+        "text": "RTU800B_VERSION_5",
     },
     {
         "idx": 2184,
@@ -13839,7 +13839,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_VERSION_6"
+        "text": "RTU800B_VERSION_6",
     },
     {
         "idx": 2185,
@@ -13848,7 +13848,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_VERSION_7"
+        "text": "RTU800B_VERSION_7",
     },
     {
         "idx": 2186,
@@ -13857,7 +13857,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RTU800B_VERSION_8"
+        "text": "RTU800B_VERSION_8",
     },
     {
         "idx": 2187,
@@ -13866,7 +13866,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SCREED_DRYING_ACTIVATED"
+        "text": "SCREED_DRYING_ACTIVATED",
     },
     {
         "idx": 2188,
@@ -13875,7 +13875,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SCREED_DRYING_COOLING_STEP_COUNT"
+        "text": "SCREED_DRYING_COOLING_STEP_COUNT",
     },
     {
         "idx": 2190,
@@ -13884,7 +13884,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SCREED_DRYING_CURRENT_HOUR"
+        "text": "SCREED_DRYING_CURRENT_HOUR",
     },
     {
         "idx": 2191,
@@ -13893,7 +13893,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SCREED_DRYING_CURRENT_PROGRAM_STEP"
+        "text": "SCREED_DRYING_CURRENT_PROGRAM_STEP",
     },
     {
         "idx": 2193,
@@ -13902,7 +13902,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SCREED_DRYING_DAYS_AT_MAX_TEMPERATURE"
+        "text": "SCREED_DRYING_DAYS_AT_MAX_TEMPERATURE",
     },
     {
         "idx": 2194,
@@ -13911,7 +13911,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "SCREED_DRYING_DAYS_PER_COOLING_STEP"
+        "text": "SCREED_DRYING_DAYS_PER_COOLING_STEP",
     },
     {
         "idx": 2195,
@@ -13920,7 +13920,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "SCREED_DRYING_DAYS_PER_HEATING_STEP"
+        "text": "SCREED_DRYING_DAYS_PER_HEATING_STEP",
     },
     {
         "idx": 2196,
@@ -13929,7 +13929,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SCREED_DRYING_HEATING_STEP_COUNT"
+        "text": "SCREED_DRYING_HEATING_STEP_COUNT",
     },
     {
         "idx": 2198,
@@ -13938,7 +13938,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SCREED_DRYING_HEAT_SOURCE"
+        "text": "SCREED_DRYING_HEAT_SOURCE",
     },
     {
         "idx": 2199,
@@ -13947,7 +13947,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SCREED_DRYING_INCOMPLETE"
+        "text": "SCREED_DRYING_INCOMPLETE",
     },
     {
         "idx": 2200,
@@ -13956,7 +13956,7 @@ PARAMETER_DATA = [
         "min": 250,
         "format": "tem",
         "read": 0,
-        "text": "SCREED_DRYING_MAX_TEMPERATURE"
+        "text": "SCREED_DRYING_MAX_TEMPERATURE",
     },
     {
         "idx": 2202,
@@ -13965,7 +13965,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SCREED_DRYING_PROGRAM_STEP_COUNT"
+        "text": "SCREED_DRYING_PROGRAM_STEP_COUNT",
     },
     {
         "idx": 2204,
@@ -13974,7 +13974,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SCREED_DRYING_REQUEST"
+        "text": "SCREED_DRYING_REQUEST",
     },
     {
         "idx": 2205,
@@ -13983,7 +13983,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 0,
-        "text": "SCREED_DRYING_SETPOINT_TEMP"
+        "text": "SCREED_DRYING_SETPOINT_TEMP",
     },
     {
         "idx": 2207,
@@ -13992,7 +13992,7 @@ PARAMETER_DATA = [
         "min": 10,
         "format": "int",
         "read": 0,
-        "text": "SCREED_DRYING_TEMPERATURE_STEP_COOLING"
+        "text": "SCREED_DRYING_TEMPERATURE_STEP_COOLING",
     },
     {
         "idx": 2208,
@@ -14001,7 +14001,7 @@ PARAMETER_DATA = [
         "min": 10,
         "format": "int",
         "read": 0,
-        "text": "SCREED_DRYING_TEMPERATURE_STEP_HEATING"
+        "text": "SCREED_DRYING_TEMPERATURE_STEP_HEATING",
     },
     {
         "idx": 2209,
@@ -14010,7 +14010,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SCREENSAVER_ACTIVE"
+        "text": "SCREENSAVER_ACTIVE",
     },
     {
         "idx": 2210,
@@ -14019,7 +14019,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "SCREENSAVER_DELAY_TIME"
+        "text": "SCREENSAVER_DELAY_TIME",
     },
     {
         "idx": 2211,
@@ -14028,7 +14028,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "int",
         "read": 0,
-        "text": "SENSORS_E74_T1_CORRECTION"
+        "text": "SENSORS_E74_T1_CORRECTION",
     },
     {
         "idx": 2212,
@@ -14037,7 +14037,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "SENSORS_E74_T1_DISPLAY_TEMP"
+        "text": "SENSORS_E74_T1_DISPLAY_TEMP",
     },
     {
         "idx": 2214,
@@ -14046,7 +14046,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SENSORS_E74_T1_STATUS"
+        "text": "SENSORS_E74_T1_STATUS",
     },
     {
         "idx": 2215,
@@ -14055,7 +14055,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SENSORS_E74_T1_TEMP"
+        "text": "SENSORS_E74_T1_TEMP",
     },
     {
         "idx": 2217,
@@ -14064,7 +14064,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "int",
         "read": 0,
-        "text": "SENSORS_E74_T3_CORRECTION"
+        "text": "SENSORS_E74_T3_CORRECTION",
     },
     {
         "idx": 2218,
@@ -14073,7 +14073,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "SENSORS_E74_T3_DISPLAY_TEMP"
+        "text": "SENSORS_E74_T3_DISPLAY_TEMP",
     },
     {
         "idx": 2220,
@@ -14082,7 +14082,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SENSORS_E74_T3_STATUS"
+        "text": "SENSORS_E74_T3_STATUS",
     },
     {
         "idx": 2221,
@@ -14091,7 +14091,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "SENSORS_E74_T3_TEMP"
+        "text": "SENSORS_E74_T3_TEMP",
     },
     {
         "idx": 2223,
@@ -14100,7 +14100,7 @@ PARAMETER_DATA = [
         "min": -50,
         "format": "int",
         "read": 0,
-        "text": "SENSORS_E74_T7_CORRECTION"
+        "text": "SENSORS_E74_T7_CORRECTION",
     },
     {
         "idx": 2224,
@@ -14109,7 +14109,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SENSORS_E74_T7_DISPLAY_TEMP"
+        "text": "SENSORS_E74_T7_DISPLAY_TEMP",
     },
     {
         "idx": 2226,
@@ -14118,7 +14118,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SENSORS_E74_T7_STATUS"
+        "text": "SENSORS_E74_T7_STATUS",
     },
     {
         "idx": 2227,
@@ -14127,7 +14127,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "tem",
         "read": 1,
-        "text": "SENSORS_E74_T7_TEMP"
+        "text": "SENSORS_E74_T7_TEMP",
     },
     {
         "idx": 2229,
@@ -14136,7 +14136,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SETUP_COMPLETED"
+        "text": "SETUP_COMPLETED",
     },
     {
         "idx": 2230,
@@ -14145,7 +14145,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SOLAR_ACTIVATED"
+        "text": "SOLAR_ACTIVATED",
     },
     {
         "idx": 2231,
@@ -14154,7 +14154,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SOLAR_ACTIVE"
+        "text": "SOLAR_ACTIVE",
     },
     {
         "idx": 2232,
@@ -14163,7 +14163,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SOLAR_DHW_BLOCK"
+        "text": "SOLAR_DHW_BLOCK",
     },
     {
         "idx": 2233,
@@ -14172,7 +14172,7 @@ PARAMETER_DATA = [
         "min": 70,
         "format": "int",
         "read": 0,
-        "text": "SOLAR_DIFF_START_TEMP"
+        "text": "SOLAR_DIFF_START_TEMP",
     },
     {
         "idx": 2234,
@@ -14181,7 +14181,7 @@ PARAMETER_DATA = [
         "min": 35,
         "format": "int",
         "read": 0,
-        "text": "SOLAR_DIFF_STOP_TEMP"
+        "text": "SOLAR_DIFF_STOP_TEMP",
     },
     {
         "idx": 2235,
@@ -14190,7 +14190,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SOLAR_FREEZEGUARD_ACTIVE"
+        "text": "SOLAR_FREEZEGUARD_ACTIVE",
     },
     {
         "idx": 2236,
@@ -14199,7 +14199,7 @@ PARAMETER_DATA = [
         "min": 40,
         "format": "int",
         "read": 0,
-        "text": "SOLAR_FREEZEGUARD_START_TEMP"
+        "text": "SOLAR_FREEZEGUARD_START_TEMP",
     },
     {
         "idx": 2237,
@@ -14208,7 +14208,7 @@ PARAMETER_DATA = [
         "min": 40,
         "format": "int",
         "read": 0,
-        "text": "SOLAR_FREEZEGUARD_STOP_TEMP"
+        "text": "SOLAR_FREEZEGUARD_STOP_TEMP",
     },
     {
         "idx": 2238,
@@ -14217,7 +14217,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SOLAR_PIPE_FUNCTION"
+        "text": "SOLAR_PIPE_FUNCTION",
     },
     {
         "idx": 2239,
@@ -14226,7 +14226,7 @@ PARAMETER_DATA = [
         "min": 90,
         "format": "int",
         "read": 0,
-        "text": "SOLAR_PRIO_DHW_BLOCK_TEMP"
+        "text": "SOLAR_PRIO_DHW_BLOCK_TEMP",
     },
     {
         "idx": 2241,
@@ -14235,7 +14235,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SOLAR_SOUTHEUROPE"
+        "text": "SOLAR_SOUTHEUROPE",
     },
     {
         "idx": 2242,
@@ -14244,7 +14244,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SOLAR_T1_HIGH"
+        "text": "SOLAR_T1_HIGH",
     },
     {
         "idx": 2243,
@@ -14253,7 +14253,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SOLAR_T1_LOW"
+        "text": "SOLAR_T1_LOW",
     },
     {
         "idx": 2244,
@@ -14262,7 +14262,7 @@ PARAMETER_DATA = [
         "min": 100,
         "format": "int",
         "read": 0,
-        "text": "SOLAR_T1_MAX_TEMP"
+        "text": "SOLAR_T1_MAX_TEMP",
     },
     {
         "idx": 2245,
@@ -14271,7 +14271,7 @@ PARAMETER_DATA = [
         "min": 10,
         "format": "int",
         "read": 0,
-        "text": "SOLAR_T1_MIN_TEMP"
+        "text": "SOLAR_T1_MIN_TEMP",
     },
     {
         "idx": 2246,
@@ -14280,7 +14280,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SOLAR_T7_HIGH"
+        "text": "SOLAR_T7_HIGH",
     },
     {
         "idx": 2247,
@@ -14289,7 +14289,7 @@ PARAMETER_DATA = [
         "min": 20,
         "format": "int",
         "read": 0,
-        "text": "SOLAR_T7_MAX_TEMP"
+        "text": "SOLAR_T7_MAX_TEMP",
     },
     {
         "idx": 2248,
@@ -14298,7 +14298,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "SOLAR_T7_RESTART_DIFF"
+        "text": "SOLAR_T7_RESTART_DIFF",
     },
     {
         "idx": 2249,
@@ -14307,7 +14307,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "hm1",
         "read": 1,
-        "text": "STATS_COMPRESSOR_DHW"
+        "text": "STATS_COMPRESSOR_DHW",
     },
     {
         "idx": 2253,
@@ -14316,7 +14316,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "hm1",
         "read": 0,
-        "text": "STATS_COMPRESSOR_DHW_2"
+        "text": "STATS_COMPRESSOR_DHW_2",
     },
     {
         "idx": 2257,
@@ -14325,7 +14325,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "hm1",
         "read": 1,
-        "text": "STATS_COMPRESSOR_HEATING"
+        "text": "STATS_COMPRESSOR_HEATING",
     },
     {
         "idx": 2261,
@@ -14334,7 +14334,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "hm1",
         "read": 0,
-        "text": "STATS_COMPRESSOR_HEATING_2"
+        "text": "STATS_COMPRESSOR_HEATING_2",
     },
     {
         "idx": 2265,
@@ -14343,7 +14343,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "hm2",
         "read": 0,
-        "text": "STATS_COMPRESSOR_HZ_DHW"
+        "text": "STATS_COMPRESSOR_HZ_DHW",
     },
     {
         "idx": 2269,
@@ -14352,7 +14352,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "hm2",
         "read": 0,
-        "text": "STATS_COMPRESSOR_HZ_HEATING"
+        "text": "STATS_COMPRESSOR_HZ_HEATING",
     },
     {
         "idx": 2273,
@@ -14361,7 +14361,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_COMPRESSOR_POOL"
+        "text": "STATS_COMPRESSOR_POOL",
     },
     {
         "idx": 2277,
@@ -14370,7 +14370,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_COMPRESSOR_POOL_2"
+        "text": "STATS_COMPRESSOR_POOL_2",
     },
     {
         "idx": 2281,
@@ -14379,7 +14379,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_COMPRESSOR_RESET"
+        "text": "STATS_COMPRESSOR_RESET",
     },
     {
         "idx": 2282,
@@ -14388,7 +14388,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "STATS_COMPRESSOR_START_DHW"
+        "text": "STATS_COMPRESSOR_START_DHW",
     },
     {
         "idx": 2286,
@@ -14397,7 +14397,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_COMPRESSOR_START_DHW_2"
+        "text": "STATS_COMPRESSOR_START_DHW_2",
     },
     {
         "idx": 2290,
@@ -14406,7 +14406,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "STATS_COMPRESSOR_START_HEATING"
+        "text": "STATS_COMPRESSOR_START_HEATING",
     },
     {
         "idx": 2294,
@@ -14415,7 +14415,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_COMPRESSOR_START_HEATING_2"
+        "text": "STATS_COMPRESSOR_START_HEATING_2",
     },
     {
         "idx": 2298,
@@ -14424,7 +14424,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_COMPRESSOR_START_POOL"
+        "text": "STATS_COMPRESSOR_START_POOL",
     },
     {
         "idx": 2302,
@@ -14433,7 +14433,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_COMPRESSOR_START_POOL_2"
+        "text": "STATS_COMPRESSOR_START_POOL_2",
     },
     {
         "idx": 2306,
@@ -14442,7 +14442,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_CONTACTOR_1"
+        "text": "STATS_CONTACTOR_1",
     },
     {
         "idx": 2310,
@@ -14451,7 +14451,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_CONTACTOR_2"
+        "text": "STATS_CONTACTOR_2",
     },
     {
         "idx": 2314,
@@ -14460,7 +14460,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_CONTACTOR_RESET"
+        "text": "STATS_CONTACTOR_RESET",
     },
     {
         "idx": 2315,
@@ -14469,7 +14469,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_CONTROL"
+        "text": "STATS_CONTROL",
     },
     {
         "idx": 2319,
@@ -14478,7 +14478,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_CONTROL_RESET"
+        "text": "STATS_CONTROL_RESET",
     },
     {
         "idx": 2320,
@@ -14487,7 +14487,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "pw3",
         "read": 1,
-        "text": "STATS_ELECTR_ADD_DHW"
+        "text": "STATS_ELECTR_ADD_DHW",
     },
     {
         "idx": 2324,
@@ -14496,7 +14496,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "pw3",
         "read": 1,
-        "text": "STATS_ELECTR_ADD_HEATING"
+        "text": "STATS_ELECTR_ADD_HEATING",
     },
     {
         "idx": 2328,
@@ -14505,7 +14505,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "pw3",
         "read": 0,
-        "text": "STATS_ELECTR_ADD_POOL"
+        "text": "STATS_ELECTR_ADD_POOL",
     },
     {
         "idx": 2332,
@@ -14514,7 +14514,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_ELECTR_ADD_RESET"
+        "text": "STATS_ELECTR_ADD_RESET",
     },
     {
         "idx": 2333,
@@ -14523,7 +14523,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_ENERGY_HIDE_MENU"
+        "text": "STATS_ENERGY_HIDE_MENU",
     },
     {
         "idx": 2334,
@@ -14532,7 +14532,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "pw2",
         "read": 1,
-        "text": "STATS_ENERGY_OUTPUT"
+        "text": "STATS_ENERGY_OUTPUT",
     },
     {
         "idx": 2338,
@@ -14541,7 +14541,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "pw2",
         "read": 1,
-        "text": "STATS_ENERGY_OUTPUT_DHW"
+        "text": "STATS_ENERGY_OUTPUT_DHW",
     },
     {
         "idx": 2342,
@@ -14550,7 +14550,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "pw2",
         "read": 1,
-        "text": "STATS_ENERGY_OUTPUT_HEATING"
+        "text": "STATS_ENERGY_OUTPUT_HEATING",
     },
     {
         "idx": 2346,
@@ -14559,7 +14559,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "pw2",
         "read": 0,
-        "text": "STATS_ENERGY_OUTPUT_POOL"
+        "text": "STATS_ENERGY_OUTPUT_POOL",
     },
     {
         "idx": 2350,
@@ -14568,7 +14568,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "STATS_OP_DHW"
+        "text": "STATS_OP_DHW",
     },
     {
         "idx": 2354,
@@ -14577,7 +14577,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "STATS_OP_HEATING"
+        "text": "STATS_OP_HEATING",
     },
     {
         "idx": 2358,
@@ -14586,7 +14586,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_OP_RESET"
+        "text": "STATS_OP_RESET",
     },
     {
         "idx": 2359,
@@ -14595,7 +14595,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_RESET"
+        "text": "STATS_RESET",
     },
     {
         "idx": 2360,
@@ -14604,7 +14604,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_ST_COMPRESSOR_AVERAGE_HZ_DHW"
+        "text": "STATS_ST_COMPRESSOR_AVERAGE_HZ_DHW",
     },
     {
         "idx": 2361,
@@ -14613,7 +14613,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_ST_COMPRESSOR_AVERAGE_HZ_HEATING"
+        "text": "STATS_ST_COMPRESSOR_AVERAGE_HZ_HEATING",
     },
     {
         "idx": 2362,
@@ -14622,7 +14622,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "hm1",
         "read": 0,
-        "text": "STATS_ST_COMPRESSOR_DHW"
+        "text": "STATS_ST_COMPRESSOR_DHW",
     },
     {
         "idx": 2366,
@@ -14631,7 +14631,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "hm1",
         "read": 0,
-        "text": "STATS_ST_COMPRESSOR_DHW_2"
+        "text": "STATS_ST_COMPRESSOR_DHW_2",
     },
     {
         "idx": 2370,
@@ -14640,7 +14640,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "hm1",
         "read": 0,
-        "text": "STATS_ST_COMPRESSOR_HEATING"
+        "text": "STATS_ST_COMPRESSOR_HEATING",
     },
     {
         "idx": 2374,
@@ -14649,7 +14649,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "hm1",
         "read": 0,
-        "text": "STATS_ST_COMPRESSOR_HEATING_2"
+        "text": "STATS_ST_COMPRESSOR_HEATING_2",
     },
     {
         "idx": 2378,
@@ -14658,7 +14658,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "hm2",
         "read": 0,
-        "text": "STATS_ST_COMPRESSOR_HZ_DHW"
+        "text": "STATS_ST_COMPRESSOR_HZ_DHW",
     },
     {
         "idx": 2382,
@@ -14667,7 +14667,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "hm2",
         "read": 0,
-        "text": "STATS_ST_COMPRESSOR_HZ_HEATING"
+        "text": "STATS_ST_COMPRESSOR_HZ_HEATING",
     },
     {
         "idx": 2386,
@@ -14676,7 +14676,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_ST_COMPRESSOR_HZ_POOL"
+        "text": "STATS_ST_COMPRESSOR_HZ_POOL",
     },
     {
         "idx": 2390,
@@ -14685,7 +14685,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_ST_COMPRESSOR_POOL"
+        "text": "STATS_ST_COMPRESSOR_POOL",
     },
     {
         "idx": 2394,
@@ -14694,7 +14694,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_ST_COMPRESSOR_POOL_2"
+        "text": "STATS_ST_COMPRESSOR_POOL_2",
     },
     {
         "idx": 2398,
@@ -14703,7 +14703,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_ST_COMPRESSOR_RESET"
+        "text": "STATS_ST_COMPRESSOR_RESET",
     },
     {
         "idx": 2399,
@@ -14712,7 +14712,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_ST_COMPRESSOR_START_DHW"
+        "text": "STATS_ST_COMPRESSOR_START_DHW",
     },
     {
         "idx": 2403,
@@ -14721,7 +14721,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_ST_COMPRESSOR_START_DHW_2"
+        "text": "STATS_ST_COMPRESSOR_START_DHW_2",
     },
     {
         "idx": 2407,
@@ -14730,7 +14730,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_ST_COMPRESSOR_START_HEATING"
+        "text": "STATS_ST_COMPRESSOR_START_HEATING",
     },
     {
         "idx": 2411,
@@ -14739,7 +14739,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_ST_COMPRESSOR_START_HEATING_2"
+        "text": "STATS_ST_COMPRESSOR_START_HEATING_2",
     },
     {
         "idx": 2415,
@@ -14748,7 +14748,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_ST_COMPRESSOR_START_POOL"
+        "text": "STATS_ST_COMPRESSOR_START_POOL",
     },
     {
         "idx": 2419,
@@ -14757,7 +14757,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_ST_COMPRESSOR_START_POOL_2"
+        "text": "STATS_ST_COMPRESSOR_START_POOL_2",
     },
     {
         "idx": 2423,
@@ -14766,7 +14766,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_ST_COMPRESSOR_START_RESET"
+        "text": "STATS_ST_COMPRESSOR_START_RESET",
     },
     {
         "idx": 2424,
@@ -14775,7 +14775,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_ST_CONTACTOR_1"
+        "text": "STATS_ST_CONTACTOR_1",
     },
     {
         "idx": 2428,
@@ -14784,7 +14784,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_ST_CONTACTOR_2"
+        "text": "STATS_ST_CONTACTOR_2",
     },
     {
         "idx": 2432,
@@ -14793,7 +14793,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_ST_CONTACTOR_RESET"
+        "text": "STATS_ST_CONTACTOR_RESET",
     },
     {
         "idx": 2433,
@@ -14802,7 +14802,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "pw3",
         "read": 0,
-        "text": "STATS_ST_ELECTR_ADD_DHW"
+        "text": "STATS_ST_ELECTR_ADD_DHW",
     },
     {
         "idx": 2437,
@@ -14811,7 +14811,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "pw3",
         "read": 0,
-        "text": "STATS_ST_ELECTR_ADD_HEATING"
+        "text": "STATS_ST_ELECTR_ADD_HEATING",
     },
     {
         "idx": 2441,
@@ -14820,7 +14820,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "pw3",
         "read": 0,
-        "text": "STATS_ST_ELECTR_ADD_POOL"
+        "text": "STATS_ST_ELECTR_ADD_POOL",
     },
     {
         "idx": 2445,
@@ -14829,7 +14829,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_ST_ELECTR_ADD_RESET"
+        "text": "STATS_ST_ELECTR_ADD_RESET",
     },
     {
         "idx": 2446,
@@ -14838,7 +14838,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_ST_OP_DHW"
+        "text": "STATS_ST_OP_DHW",
     },
     {
         "idx": 2450,
@@ -14847,7 +14847,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_ST_OP_HEATING"
+        "text": "STATS_ST_OP_HEATING",
     },
     {
         "idx": 2454,
@@ -14856,7 +14856,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_ST_OP_RESET"
+        "text": "STATS_ST_OP_RESET",
     },
     {
         "idx": 2455,
@@ -14865,7 +14865,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "STATS_ST_RESET"
+        "text": "STATS_ST_RESET",
     },
     {
         "idx": 2456,
@@ -14874,7 +14874,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "SUMMARY_ALARM_MODE"
+        "text": "SUMMARY_ALARM_MODE",
     },
     {
         "idx": 2457,
@@ -14883,7 +14883,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TEMP"
+        "text": "TEMP",
     },
     {
         "idx": 2461,
@@ -14892,7 +14892,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TILLSKOTT_DRIFTTILLSTAND"
+        "text": "TILLSKOTT_DRIFTTILLSTAND",
     },
     {
         "idx": 2462,
@@ -14901,7 +14901,7 @@ PARAMETER_DATA = [
         "min": 10,
         "format": "int",
         "read": 0,
-        "text": "TILLSKOTT_RAMP_TID"
+        "text": "TILLSKOTT_RAMP_TID",
     },
     {
         "idx": 2463,
@@ -14910,7 +14910,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TILLSKOTT_UTSIGNAL_UT"
+        "text": "TILLSKOTT_UTSIGNAL_UT",
     },
     {
         "idx": 2465,
@@ -14919,7 +14919,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "UI_BRAND"
+        "text": "UI_BRAND",
     },
     {
         "idx": 2466,
@@ -14928,7 +14928,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "USER_CONFIRMATION"
+        "text": "USER_CONFIRMATION",
     },
     {
         "idx": 2467,
@@ -14937,7 +14937,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "USER_CONFIRMATION_OBJECT"
+        "text": "USER_CONFIRMATION_OBJECT",
     },
     {
         "idx": 2468,
@@ -14946,7 +14946,7 @@ PARAMETER_DATA = [
         "min": 10,
         "format": "int",
         "read": 0,
-        "text": "VS_DIREKTSTART_GRANS"
+        "text": "VS_DIREKTSTART_GRANS",
     },
     {
         "idx": 2469,
@@ -14955,7 +14955,7 @@ PARAMETER_DATA = [
         "min": 10,
         "format": "int",
         "read": 0,
-        "text": "VS_DIREKTSTOPP_GRANS"
+        "text": "VS_DIREKTSTOPP_GRANS",
     },
     {
         "idx": 2470,
@@ -14964,7 +14964,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "XDHW_COMPRESSOR_REQUEST"
+        "text": "XDHW_COMPRESSOR_REQUEST",
     },
     {
         "idx": 2471,
@@ -14973,7 +14973,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "XDHW_COMPRESSOR_REQUEST_2"
+        "text": "XDHW_COMPRESSOR_REQUEST_2",
     },
     {
         "idx": 2472,
@@ -14982,7 +14982,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "XDHW_REQUEST"
+        "text": "XDHW_REQUEST",
     },
     {
         "idx": 2473,
@@ -14991,7 +14991,7 @@ PARAMETER_DATA = [
         "min": 500,
         "format": "tem",
         "read": 0,
-        "text": "XDHW_STOP_TEMP"
+        "text": "XDHW_STOP_TEMP",
     },
     {
         "idx": 2475,
@@ -15000,7 +15000,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "XDHW_TIME"
+        "text": "XDHW_TIME",
     },
     {
         "idx": 2476,
@@ -15009,7 +15009,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "XDHW_WEEKPROGRAM_DAY"
+        "text": "XDHW_WEEKPROGRAM_DAY",
     },
     {
         "idx": 2477,
@@ -15018,7 +15018,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "XDHW_WEEKPROGRAM_DURATION_TIME"
+        "text": "XDHW_WEEKPROGRAM_DURATION_TIME",
     },
     {
         "idx": 2478,
@@ -15027,7 +15027,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "XDHW_WEEKPROGRAM_FAILED"
+        "text": "XDHW_WEEKPROGRAM_FAILED",
     },
     {
         "idx": 2479,
@@ -15036,7 +15036,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "XDHW_WEEKPROGRAM_HAS_FINISHED"
+        "text": "XDHW_WEEKPROGRAM_HAS_FINISHED",
     },
     {
         "idx": 2480,
@@ -15045,7 +15045,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "XDHW_WEEKPROGRAM_HOUR"
+        "text": "XDHW_WEEKPROGRAM_HOUR",
     },
     {
         "idx": 2481,
@@ -15054,7 +15054,7 @@ PARAMETER_DATA = [
         "min": 10,
         "format": "int",
         "read": 0,
-        "text": "XDHW_WEEKPROGRAM_MAX_TIME"
+        "text": "XDHW_WEEKPROGRAM_MAX_TIME",
     },
     {
         "idx": 2482,
@@ -15063,7 +15063,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 1,
-        "text": "XDHW_WEEKPROGRAM_REQUEST"
+        "text": "XDHW_WEEKPROGRAM_REQUEST",
     },
     {
         "idx": 2483,
@@ -15072,7 +15072,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "XDHW_WEEKPROGRAM_SAVED_DAY"
+        "text": "XDHW_WEEKPROGRAM_SAVED_DAY",
     },
     {
         "idx": 2484,
@@ -15081,7 +15081,7 @@ PARAMETER_DATA = [
         "min": 480,
         "format": "tem",
         "read": 1,
-        "text": "XDHW_WEEKPROGRAM_STOP_TEMP"
+        "text": "XDHW_WEEKPROGRAM_STOP_TEMP",
     },
     {
         "idx": 2486,
@@ -15090,7 +15090,7 @@ PARAMETER_DATA = [
         "min": 1,
         "format": "int",
         "read": 0,
-        "text": "XDHW_WEEKPROGRAM_WEEK"
+        "text": "XDHW_WEEKPROGRAM_WEEK",
     },
     {
         "idx": 2487,
@@ -15099,7 +15099,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "XDHW_WEEKPROGRAM_WARM_KEEPING_TIMER"
+        "text": "XDHW_WEEKPROGRAM_WARM_KEEPING_TIMER",
     },
     {
         "idx": 2488,
@@ -15108,7 +15108,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "VV_MAX_TIMER"
+        "text": "VV_MAX_TIMER",
     },
     {
         "idx": 2489,
@@ -15117,7 +15117,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "XDHW_TIMER"
+        "text": "XDHW_TIMER",
     },
     {
         "idx": 2490,
@@ -15126,7 +15126,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "VV_RAD_TIMER"
+        "text": "VV_RAD_TIMER",
     },
     {
         "idx": 2491,
@@ -15135,7 +15135,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RAD_MAX_TIMER"
+        "text": "RAD_MAX_TIMER",
     },
     {
         "idx": 2492,
@@ -15144,7 +15144,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "RAD_BEHOV_BLOCKERING_TIMER"
+        "text": "RAD_BEHOV_BLOCKERING_TIMER",
     },
     {
         "idx": 2493,
@@ -15153,7 +15153,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEGREE_MINUTE_SAMPLE_TIMER"
+        "text": "DEGREE_MINUTE_SAMPLE_TIMER",
     },
     {
         "idx": 2494,
@@ -15162,7 +15162,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_SEASON_START_DELAY_TIMER"
+        "text": "HEATING_SEASON_START_DELAY_TIMER",
     },
     {
         "idx": 2495,
@@ -15171,7 +15171,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "FREEZEGUARD_DELAY_TIMER"
+        "text": "FREEZEGUARD_DELAY_TIMER",
     },
     {
         "idx": 2496,
@@ -15180,7 +15180,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TILLSKOTT_RAMP_TIMER"
+        "text": "TILLSKOTT_RAMP_TIMER",
     },
     {
         "idx": 2497,
@@ -15189,7 +15189,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_STARTUP_TIMER"
+        "text": "COMPRESSOR_STARTUP_TIMER",
     },
     {
         "idx": 2498,
@@ -15198,7 +15198,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_START_TIMER"
+        "text": "COMPRESSOR_START_TIMER",
     },
     {
         "idx": 2499,
@@ -15207,7 +15207,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_START_DELAY_TIMER"
+        "text": "COMPRESSOR_START_DELAY_TIMER",
     },
     {
         "idx": 2500,
@@ -15216,7 +15216,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "EXERCISE_TIMER"
+        "text": "EXERCISE_TIMER",
     },
     {
         "idx": 2501,
@@ -15225,7 +15225,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_TEMP_LIMIT_TIMER"
+        "text": "ADDITIONAL_TEMP_LIMIT_TIMER",
     },
     {
         "idx": 2502,
@@ -15234,7 +15234,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_G1_OPTIMIZED_TIMER"
+        "text": "PUMP_G1_OPTIMIZED_TIMER",
     },
     {
         "idx": 2503,
@@ -15243,7 +15243,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_G2_TEMP_BLOCK_TIMER"
+        "text": "PUMP_G2_TEMP_BLOCK_TIMER",
     },
     {
         "idx": 2504,
@@ -15252,7 +15252,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PUMP_G2_TEMP_BLOCK_TIMER_2"
+        "text": "PUMP_G2_TEMP_BLOCK_TIMER_2",
     },
     {
         "idx": 2505,
@@ -15261,7 +15261,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_SEASON_STOP_DELAY_TIMER"
+        "text": "HEATING_SEASON_STOP_DELAY_TIMER",
     },
     {
         "idx": 2506,
@@ -15270,7 +15270,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ALARM_MODE_DELAY_TIMER"
+        "text": "ALARM_MODE_DELAY_TIMER",
     },
     {
         "idx": 2507,
@@ -15279,7 +15279,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "LARMSUMMER_DELAY_TIMER"
+        "text": "LARMSUMMER_DELAY_TIMER",
     },
     {
         "idx": 2508,
@@ -15288,7 +15288,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "LARMSUMMER_INTERVAL_TIMER"
+        "text": "LARMSUMMER_INTERVAL_TIMER",
     },
     {
         "idx": 2509,
@@ -15297,7 +15297,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SCREENSAVER_TIMER"
+        "text": "SCREENSAVER_TIMER",
     },
     {
         "idx": 2510,
@@ -15306,7 +15306,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "QUICKMENU_TIMER"
+        "text": "QUICKMENU_TIMER",
     },
     {
         "idx": 2511,
@@ -15315,7 +15315,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COOLING_FAN_STOP_DELAY_TIMER"
+        "text": "COOLING_FAN_STOP_DELAY_TIMER",
     },
     {
         "idx": 2512,
@@ -15324,7 +15324,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TILLSKOTT_START_TIMER"
+        "text": "TILLSKOTT_START_TIMER",
     },
     {
         "idx": 2513,
@@ -15333,7 +15333,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "LP_LARM_DELAY_TIMER"
+        "text": "LP_LARM_DELAY_TIMER",
     },
     {
         "idx": 2514,
@@ -15342,7 +15342,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "LP_2_LARM_DELAY_TIMER"
+        "text": "LP_2_LARM_DELAY_TIMER",
     },
     {
         "idx": 2515,
@@ -15351,7 +15351,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_MAX_TIMER"
+        "text": "DEFROST_MAX_TIMER",
     },
     {
         "idx": 2516,
@@ -15360,7 +15360,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_MAX_TIMER_2"
+        "text": "DEFROST_MAX_TIMER_2",
     },
     {
         "idx": 2517,
@@ -15369,7 +15369,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_MIN_BREAK_TIMER"
+        "text": "DEFROST_MIN_BREAK_TIMER",
     },
     {
         "idx": 2518,
@@ -15378,7 +15378,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_MIN_BREAK_TIMER_2"
+        "text": "DEFROST_MIN_BREAK_TIMER_2",
     },
     {
         "idx": 2519,
@@ -15387,7 +15387,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_BLOCK_TIMER"
+        "text": "DEFROST_BLOCK_TIMER",
     },
     {
         "idx": 2520,
@@ -15396,7 +15396,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_BLOCK_TIMER_2"
+        "text": "DEFROST_BLOCK_TIMER_2",
     },
     {
         "idx": 2521,
@@ -15405,7 +15405,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_FAN_TIMER"
+        "text": "DEFROST_FAN_TIMER",
     },
     {
         "idx": 2522,
@@ -15414,7 +15414,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_FAN_TIMER_2"
+        "text": "DEFROST_FAN_TIMER_2",
     },
     {
         "idx": 2523,
@@ -15423,7 +15423,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_DELTA_TIMER"
+        "text": "DEFROST_DELTA_TIMER",
     },
     {
         "idx": 2524,
@@ -15432,7 +15432,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DEFROST_DELTA_TIMER_2"
+        "text": "DEFROST_DELTA_TIMER_2",
     },
     {
         "idx": 2525,
@@ -15441,7 +15441,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_CABLE_TIMER"
+        "text": "HEATING_CABLE_TIMER",
     },
     {
         "idx": 2526,
@@ -15450,7 +15450,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HEATING_CABLE_TIMER_2"
+        "text": "HEATING_CABLE_TIMER_2",
     },
     {
         "idx": 2527,
@@ -15459,7 +15459,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_BLOCK_HIGH_T2_TIMER"
+        "text": "ADDITIONAL_BLOCK_HIGH_T2_TIMER",
     },
     {
         "idx": 2528,
@@ -15468,7 +15468,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "NEUTRALZONE_LIMITATION_TIMER"
+        "text": "NEUTRALZONE_LIMITATION_TIMER",
     },
     {
         "idx": 2529,
@@ -15477,7 +15477,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_EXTERNAL_HEAT_VALVE_DELAY_TIMER"
+        "text": "ADDITIONAL_EXTERNAL_HEAT_VALVE_DELAY_TIMER",
     },
     {
         "idx": 2530,
@@ -15486,7 +15486,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "T8_T9_DELAY_TIMER"
+        "text": "T8_T9_DELAY_TIMER",
     },
     {
         "idx": 2531,
@@ -15495,7 +15495,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "T8_T9_2_DELAY_TIMER"
+        "text": "T8_T9_2_DELAY_TIMER",
     },
     {
         "idx": 2532,
@@ -15504,7 +15504,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "T8_T9_DELAY_AFTER_SWITCH_TIMER"
+        "text": "T8_T9_DELAY_AFTER_SWITCH_TIMER",
     },
     {
         "idx": 2533,
@@ -15513,7 +15513,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "T8_T9_2_DELAY_AFTER_SWITCH_TIMER"
+        "text": "T8_T9_2_DELAY_AFTER_SWITCH_TIMER",
     },
     {
         "idx": 2534,
@@ -15522,7 +15522,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "T10_T11_DELAY_TIMER"
+        "text": "T10_T11_DELAY_TIMER",
     },
     {
         "idx": 2535,
@@ -15531,7 +15531,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "T10_T11_2_DELAY_TIMER"
+        "text": "T10_T11_2_DELAY_TIMER",
     },
     {
         "idx": 2536,
@@ -15540,7 +15540,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "T10_T11_DELAY_AFTER_SWITCH_TIMER"
+        "text": "T10_T11_DELAY_AFTER_SWITCH_TIMER",
     },
     {
         "idx": 2537,
@@ -15549,7 +15549,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "T10_T11_2_DELAY_AFTER_SWITCH_TIMER"
+        "text": "T10_T11_2_DELAY_AFTER_SWITCH_TIMER",
     },
     {
         "idx": 2538,
@@ -15558,7 +15558,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_LIMITATION_DEFROST_DELAY_TIMER"
+        "text": "ADDITIONAL_LIMITATION_DEFROST_DELAY_TIMER",
     },
     {
         "idx": 2539,
@@ -15567,7 +15567,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "POOL_ADDITIONALHEAT_DELAY_TIMER"
+        "text": "POOL_ADDITIONALHEAT_DELAY_TIMER",
     },
     {
         "idx": 2540,
@@ -15576,7 +15576,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_HEATING_START_DELAY_AT_CASCADE"
+        "text": "TIMER_HEATING_START_DELAY_AT_CASCADE",
     },
     {
         "idx": 2541,
@@ -15585,7 +15585,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_HEATING_STOP_DELAY_AT_CASCADE"
+        "text": "TIMER_HEATING_STOP_DELAY_AT_CASCADE",
     },
     {
         "idx": 2542,
@@ -15594,7 +15594,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "SCREED_DRYING_TIMER"
+        "text": "SCREED_DRYING_TIMER",
     },
     {
         "idx": 2543,
@@ -15603,7 +15603,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_START_TIMER_2"
+        "text": "COMPRESSOR_START_TIMER_2",
     },
     {
         "idx": 2544,
@@ -15612,7 +15612,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "COMPRESSOR_START_DELAY_TIMER_2"
+        "text": "COMPRESSOR_START_DELAY_TIMER_2",
     },
     {
         "idx": 2545,
@@ -15621,7 +15621,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENVELOPE_BLOCK_AFTER_VV_TIMER"
+        "text": "ENVELOPE_BLOCK_AFTER_VV_TIMER",
     },
     {
         "idx": 2546,
@@ -15630,7 +15630,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENVELOPE_BLOCK_AFTER_HG_TIMER"
+        "text": "ENVELOPE_BLOCK_AFTER_HG_TIMER",
     },
     {
         "idx": 2547,
@@ -15639,7 +15639,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENVELOPE_2_BLOCK_AFTER_VV_TIMER"
+        "text": "ENVELOPE_2_BLOCK_AFTER_VV_TIMER",
     },
     {
         "idx": 2548,
@@ -15648,7 +15648,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENVELOPE_2_BLOCK_AFTER_HG_TIMER"
+        "text": "ENVELOPE_2_BLOCK_AFTER_HG_TIMER",
     },
     {
         "idx": 2549,
@@ -15657,7 +15657,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENVELOPE_BLOCK_OUTDOOR_ACKNOWLEDGE_TIMER"
+        "text": "ENVELOPE_BLOCK_OUTDOOR_ACKNOWLEDGE_TIMER",
     },
     {
         "idx": 2550,
@@ -15666,7 +15666,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ENVELOPE_2_BLOCK_AFTER_GT2_LOW_TIMER"
+        "text": "ENVELOPE_2_BLOCK_AFTER_GT2_LOW_TIMER",
     },
     {
         "idx": 2551,
@@ -15675,7 +15675,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "PARTY_MODE_TIMER"
+        "text": "PARTY_MODE_TIMER",
     },
     {
         "idx": 2552,
@@ -15684,7 +15684,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "D_VALVE_STARTUP_TIMER"
+        "text": "D_VALVE_STARTUP_TIMER",
     },
     {
         "idx": 2553,
@@ -15693,7 +15693,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "POOL_START_DELAY_TIMER"
+        "text": "POOL_START_DELAY_TIMER",
     },
     {
         "idx": 2554,
@@ -15702,7 +15702,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "ADDITIONAL_SYNCH_VALVE_TIMER"
+        "text": "ADDITIONAL_SYNCH_VALVE_TIMER",
     },
     {
         "idx": 2555,
@@ -15711,7 +15711,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "DHW_PROTECTIVE_ANODE_ALERT_DELAY_TIMER"
+        "text": "DHW_PROTECTIVE_ANODE_ALERT_DELAY_TIMER",
     },
     {
         "idx": 2556,
@@ -15720,7 +15720,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_DEFROST_DELAY_COMPRESSOR_START"
+        "text": "TIMER_DEFROST_DELAY_COMPRESSOR_START",
     },
     {
         "idx": 2557,
@@ -15729,7 +15729,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_DEFROST_DELAY_4_WAY_VALVE_SWITCH"
+        "text": "TIMER_DEFROST_DELAY_4_WAY_VALVE_SWITCH",
     },
     {
         "idx": 2558,
@@ -15738,7 +15738,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_DEFROST_DELAY_COMPRESSOR_2_START"
+        "text": "TIMER_DEFROST_DELAY_COMPRESSOR_2_START",
     },
     {
         "idx": 2559,
@@ -15747,7 +15747,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_DEFROST_DELAY_4_WAY_VALVE_2_SWITCH"
+        "text": "TIMER_DEFROST_DELAY_4_WAY_VALVE_2_SWITCH",
     },
     {
         "idx": 2560,
@@ -15756,7 +15756,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_SOLAR_PIPE_DELAY"
+        "text": "TIMER_SOLAR_PIPE_DELAY",
     },
     {
         "idx": 2561,
@@ -15765,7 +15765,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_SOLAR_PIPE_EXERCISE"
+        "text": "TIMER_SOLAR_PIPE_EXERCISE",
     },
     {
         "idx": 2562,
@@ -15774,7 +15774,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_SOLAR_T1_HIGH"
+        "text": "TIMER_SOLAR_T1_HIGH",
     },
     {
         "idx": 2563,
@@ -15783,7 +15783,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_SOLAR_T1_LOW"
+        "text": "TIMER_SOLAR_T1_LOW",
     },
     {
         "idx": 2564,
@@ -15792,7 +15792,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "LP_STOP_MAX_TIMER"
+        "text": "LP_STOP_MAX_TIMER",
     },
     {
         "idx": 2565,
@@ -15801,7 +15801,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HP_STOP_MAX_TIMER"
+        "text": "HP_STOP_MAX_TIMER",
     },
     {
         "idx": 2566,
@@ -15810,7 +15810,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "LP_STOP_MAX_TIMER_2"
+        "text": "LP_STOP_MAX_TIMER_2",
     },
     {
         "idx": 2567,
@@ -15819,7 +15819,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "HP_STOP_MAX_TIMER_2"
+        "text": "HP_STOP_MAX_TIMER_2",
     },
     {
         "idx": 2568,
@@ -15828,7 +15828,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_G2_AFTER_XDHW"
+        "text": "TIMER_G2_AFTER_XDHW",
     },
     {
         "idx": 2569,
@@ -15837,7 +15837,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_SOLAR_T1_DELAY_BEFORE_SHORT_CIRCUIT"
+        "text": "TIMER_SOLAR_T1_DELAY_BEFORE_SHORT_CIRCUIT",
     },
     {
         "idx": 2570,
@@ -15846,7 +15846,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_SOLAR_T1_CONTROLLED_RISE"
+        "text": "TIMER_SOLAR_T1_CONTROLLED_RISE",
     },
     {
         "idx": 2571,
@@ -15855,7 +15855,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_CIRCULATION_G2_ADJUST_TIMER"
+        "text": "TIMER_CIRCULATION_G2_ADJUST_TIMER",
     },
     {
         "idx": 2572,
@@ -15864,7 +15864,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_DHW_E21_COMPRESSOR_TEMPORARY_STOP_DELAY"
+        "text": "TIMER_DHW_E21_COMPRESSOR_TEMPORARY_STOP_DELAY",
     },
     {
         "idx": 2573,
@@ -15873,7 +15873,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_DHW_E22_COMPRESSOR_TEMPORARY_STOP_DELAY"
+        "text": "TIMER_DHW_E22_COMPRESSOR_TEMPORARY_STOP_DELAY",
     },
     {
         "idx": 2574,
@@ -15882,7 +15882,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_ACCESS_LEVEL"
+        "text": "TIMER_ACCESS_LEVEL",
     },
     {
         "idx": 2575,
@@ -15891,7 +15891,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_CIRCULATION_E21_G2_TEMPORARY_STOP"
+        "text": "TIMER_CIRCULATION_E21_G2_TEMPORARY_STOP",
     },
     {
         "idx": 2576,
@@ -15900,7 +15900,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_CIRCULATION_E22_G2_TEMPORARY_STOP"
+        "text": "TIMER_CIRCULATION_E22_G2_TEMPORARY_STOP",
     },
     {
         "idx": 2577,
@@ -15909,7 +15909,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_COMMUNICATION_BAD_CANBUS_REBOOT_DELAY"
+        "text": "TIMER_COMMUNICATION_BAD_CANBUS_REBOOT_DELAY",
     },
     {
         "idx": 2578,
@@ -15918,7 +15918,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_CIRCULATION_E21_G2_MEAN_VALUE_SAMPLE_TIME"
+        "text": "TIMER_CIRCULATION_E21_G2_MEAN_VALUE_SAMPLE_TIME",
     },
     {
         "idx": 2579,
@@ -15927,7 +15927,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_CIRCULATION_E22_G2_MEAN_VALUE_SAMPLE_TIME"
+        "text": "TIMER_CIRCULATION_E22_G2_MEAN_VALUE_SAMPLE_TIME",
     },
     {
         "idx": 2580,
@@ -15936,7 +15936,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_CIRCULATION_E21_G2_INIT"
+        "text": "TIMER_CIRCULATION_E21_G2_INIT",
     },
     {
         "idx": 2581,
@@ -15945,7 +15945,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_CIRCULATION_E22_G2_INIT"
+        "text": "TIMER_CIRCULATION_E22_G2_INIT",
     },
     {
         "idx": 2582,
@@ -15954,7 +15954,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_MV_E12_FREEZEGUARD"
+        "text": "TIMER_MV_E12_FREEZEGUARD",
     },
     {
         "idx": 2583,
@@ -15963,7 +15963,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_MV_E12_CALIBRATE_PID"
+        "text": "TIMER_MV_E12_CALIBRATE_PID",
     },
     {
         "idx": 2584,
@@ -15972,7 +15972,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_MV_E12_PID_SV41"
+        "text": "TIMER_MV_E12_PID_SV41",
     },
     {
         "idx": 2585,
@@ -15981,7 +15981,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_MV_E12_M_VALVE_DEFROST"
+        "text": "TIMER_MV_E12_M_VALVE_DEFROST",
     },
     {
         "idx": 2586,
@@ -15990,7 +15990,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_MV_E12_INIT_SV41"
+        "text": "TIMER_MV_E12_INIT_SV41",
     },
     {
         "idx": 2587,
@@ -15999,7 +15999,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_MV_E21_M_VALVE_DEFROST"
+        "text": "TIMER_MV_E21_M_VALVE_DEFROST",
     },
     {
         "idx": 2588,
@@ -16008,7 +16008,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_MV_E12_M_VALVE_LIMITATION"
+        "text": "TIMER_MV_E12_M_VALVE_LIMITATION",
     },
     {
         "idx": 2589,
@@ -16017,7 +16017,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_MV_E12_M_VALVE_PULS_PAUS"
+        "text": "TIMER_MV_E12_M_VALVE_PULS_PAUS",
     },
     {
         "idx": 2590,
@@ -16026,7 +16026,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_MV_E12_STARTUP_DELAY"
+        "text": "TIMER_MV_E12_STARTUP_DELAY",
     },
     {
         "idx": 2591,
@@ -16035,7 +16035,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_MV_E12_HEATING_SEASON_STOP_DELAY"
+        "text": "TIMER_MV_E12_HEATING_SEASON_STOP_DELAY",
     },
     {
         "idx": 2592,
@@ -16044,7 +16044,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_MV_E12_HEATING_SEASON_START_DELAY"
+        "text": "TIMER_MV_E12_HEATING_SEASON_START_DELAY",
     },
     {
         "idx": 2593,
@@ -16053,7 +16053,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_MV_E12_ATTENUATION"
+        "text": "TIMER_MV_E12_ATTENUATION",
     },
     {
         "idx": 2594,
@@ -16062,7 +16062,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_MV_E12_DEFROST"
+        "text": "TIMER_MV_E12_DEFROST",
     },
     {
         "idx": 2595,
@@ -16071,7 +16071,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_DEFROST_MAX_RUNNING_TIME_BETWEEN_DEFROSTS_2"
+        "text": "TIMER_DEFROST_MAX_RUNNING_TIME_BETWEEN_DEFROSTS_2",
     },
     {
         "idx": 2596,
@@ -16080,7 +16080,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_DEFROST_MAX_RUNNING_TIME_BETWEEN_DEFROSTS"
+        "text": "TIMER_DEFROST_MAX_RUNNING_TIME_BETWEEN_DEFROSTS",
     },
     {
         "idx": 2597,
@@ -16089,7 +16089,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_DHW_E21_T3_START_TEMP_ADJ"
+        "text": "TIMER_DHW_E21_T3_START_TEMP_ADJ",
     },
     {
         "idx": 2598,
@@ -16098,7 +16098,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_DHW_E22_T3_START_TEMP_ADJ"
+        "text": "TIMER_DHW_E22_T3_START_TEMP_ADJ",
     },
     {
         "idx": 2599,
@@ -16107,7 +16107,7 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_SYSTEM_INIT"
+        "text": "TIMER_SYSTEM_INIT",
     },
     {
         "idx": 2600,
@@ -16116,6 +16116,100 @@ PARAMETER_DATA = [
         "min": 0,
         "format": "int",
         "read": 0,
-        "text": "TIMER_COMPRESSOR_START_DELAY_AT_CASCADE"
-    }
+        "text": "TIMER_COMPRESSOR_START_DELAY_AT_CASCADE",
+    },
 ]
+
+
+# =========================================================================
+# Helper Functions for Discovery Protocol
+# These allow discovery.py to enrich discovered parameters with format/read
+# metadata from the static fallback data.
+# =========================================================================
+
+from typing import Dict, Optional, cast
+
+# Build lookup dictionaries for fast access by name
+_FORMAT_BY_NAME: Dict[str, str] = {
+    str(p["text"]).upper(): str(p["format"]) for p in PARAMETER_DATA
+}
+_READ_BY_NAME: Dict[str, int] = {
+    str(p["text"]).upper(): cast(int, p["read"]) for p in PARAMETER_DATA
+}
+_PARAM_BY_NAME = {str(p["text"]).upper(): p for p in PARAMETER_DATA}
+_PARAM_BY_IDX = {p["idx"]: p for p in PARAMETER_DATA}
+
+
+def get_format_for_name(name: str) -> Optional[str]:
+    """Get the FHEM format type for a parameter by name.
+
+    # PROTOCOL: Format lookup for discovery enrichment
+
+    Args:
+        name: Parameter name (case-insensitive)
+
+    Returns:
+        Format string ('tem', 'pw2', 'int', etc.) or None if not found
+
+    Example:
+        >>> get_format_for_name('OUTDOOR_TEMP')
+        'tem'
+        >>> get_format_for_name('ACCESS_LEVEL')
+        'int'
+    """
+    return _FORMAT_BY_NAME.get(name.upper())
+
+
+def get_read_flag_for_name(name: str) -> Optional[int]:
+    """Get the read-only flag for a parameter by name.
+
+    # PROTOCOL: Read flag lookup for discovery enrichment
+    # In FHEM: read=0 means writable (not polled), read=1 means read-only (polled)
+
+    Args:
+        name: Parameter name (case-insensitive)
+
+    Returns:
+        Read flag (0=writable, 1=read-only) or None if not found
+
+    Example:
+        >>> get_read_flag_for_name('ACCESS_LEVEL')
+        0
+        >>> get_read_flag_for_name('STATUS')
+        1
+    """
+    return _READ_BY_NAME.get(name.upper())
+
+
+def get_parameter_by_name(name: str) -> Optional[dict]:
+    """Get full parameter definition by name.
+
+    Args:
+        name: Parameter name (case-insensitive)
+
+    Returns:
+        Parameter dict with all fields, or None if not found
+
+    Example:
+        >>> p = get_parameter_by_name('ACCESS_LEVEL')
+        >>> p['idx'], p['format']
+        (1, 'int')
+    """
+    return _PARAM_BY_NAME.get(name.upper())
+
+
+def get_parameter_by_idx(idx: int) -> Optional[dict]:
+    """Get full parameter definition by index.
+
+    Args:
+        idx: Parameter index
+
+    Returns:
+        Parameter dict with all fields, or None if not found
+
+    Example:
+        >>> p = get_parameter_by_idx(1)
+        >>> p['text']
+        'ACCESS_LEVEL'
+    """
+    return _PARAM_BY_IDX.get(idx)

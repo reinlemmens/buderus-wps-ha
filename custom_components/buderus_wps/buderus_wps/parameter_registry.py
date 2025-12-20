@@ -58,7 +58,9 @@ class ParameterRegistry:
 
     def override_with_device(self, entries: List[dict]) -> None:
         """Replace registry contents with device-provided entries."""
-        self.__init__(entries)
+        self._parameters = [self._to_parameter(p) for p in entries]
+        self._by_name = {p.text.upper(): p for p in self._parameters}
+        self._by_idx = {p.idx: p for p in self._parameters}
 
     @property
     def parameters(self) -> List[Parameter]:

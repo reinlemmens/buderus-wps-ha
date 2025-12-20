@@ -95,19 +95,58 @@ xdg-open htmlcov/index.html  # Linux
 
 ## Code Quality Tools
 
+### Pre-commit Hooks (Recommended)
+
+This project uses pre-commit hooks to ensure code quality. Install them with:
+
 ```bash
-# Format code
-black .
-
-# Lint code
-ruff check .
-
-# Type checking
-mypy buderus_wps buderus_wps_cli
-
-# Run all quality checks
-black . && ruff check . && mypy buderus_wps buderus_wps_cli
+pip install pre-commit
+pre-commit install
 ```
+
+Hooks run automatically on `git commit`. To run manually:
+
+```bash
+pre-commit run --all-files
+```
+
+### Quality Check Script
+
+Run all quality checks with the convenience script:
+
+```bash
+# Run all checks (formatting, linting, type checking, tests)
+./scripts/check-quality.sh
+
+# Auto-fix formatting issues
+./scripts/check-quality.sh --fix
+
+# Quick check (skip tests)
+./scripts/check-quality.sh --quick
+```
+
+### Individual Tools
+
+```bash
+# Format with black
+black --config pyproject.toml buderus_wps/ custom_components/buderus_wps/ tests/
+
+# Lint with ruff
+ruff check --config pyproject.toml buderus_wps/ custom_components/buderus_wps/
+
+# Type check with mypy
+mypy buderus_wps/ --config-file pyproject.toml
+mypy custom_components/buderus_wps/buderus_wps/ --config-file pyproject.toml
+```
+
+### CI/CD
+
+Pull requests automatically run:
+- **Lint & Format** - black and ruff checks
+- **Type Check** - mypy on library and custom component
+- **Tests** - pytest on Python 3.9, 3.10, 3.11, 3.12
+
+See `.github/workflows/quality.yml` for details.
 
 ## Mocking Strategy
 
@@ -186,6 +225,66 @@ Hardware Verified: 2025-12-16 on Raspberry Pi with USBtin
 # End-to-end validation in actual HA instance (REQUIRED before release)
 # See "End-to-End Validation" section below
 ```
+
+## Beta Deployment (Without HACS)
+
+For testing beta releases before publishing to HACS:
+
+### Quick Deploy
+
+```bash
+# Deploy and restart in one command
+./scripts/deploy-beta.sh --restart
+
+# Deploy without restart (restart manually later)
+./scripts/deploy-beta.sh
+```
+
+### What the Deploy Script Does
+
+1. **Builds** the release zip from `custom_components/buderus_wps/`
+2. **Transfers** to HA host via rsync
+3. **Installs** by removing old integration and extracting new one
+4. **Optionally restarts** Home Assistant Core
+
+### Manual Steps (if scripts don't work)
+
+```bash
+# 1. Build release zip
+cd custom_components
+zip -r ../buderus-wps-ha-vX.Y.Z.zip buderus_wps/ -x "*.pyc" -x "*__pycache__*"
+
+# 2. Transfer via rsync
+rsync -az buderus-wps-ha-vX.Y.Z.zip hassio@homeassistant.local:~/
+
+# 3. Install on HA
+ssh hassio@homeassistant.local "sudo rm -rf /config/custom_components/buderus_wps && \
+  cd /config/custom_components && sudo unzip -o ~/buderus-wps-ha.zip"
+
+# 4. Restart HA (requires login shell for supervisor token)
+ssh hassio@homeassistant.local "bash -l -c 'ha core restart'"
+```
+
+### Restart Home Assistant
+
+```bash
+# Via script
+./scripts/ha-restart.sh
+
+# Or directly (MUST use bash -l for login shell)
+ssh hassio@homeassistant.local "bash -l -c 'ha core restart'"
+```
+
+**Note:** The `bash -l` is required because the supervisor token is set in the login shell environment.
+
+### Check Logs After Deployment
+
+```bash
+# Watch HA logs for errors
+ssh hassio@homeassistant.local "sudo docker logs homeassistant 2>&1 | grep -i buderus | tail -50"
+```
+
+---
 
 ## End-to-End Validation (Required Before Release)
 

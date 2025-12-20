@@ -8,8 +8,8 @@ from datetime import time
 
 import pytest
 
-from buderus_wps.schedule_codec import ScheduleCodec, ScheduleSlot, WeeklySchedule
 from buderus_wps.exceptions import ValidationError
+from buderus_wps.schedule_codec import ScheduleCodec, ScheduleSlot, WeeklySchedule
 
 
 class TestTimeToSlot:

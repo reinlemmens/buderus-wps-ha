@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Debug script to wait for a second data frame after the 1-byte response."""
 
-import time
 import logging
-logging.basicConfig(level=logging.INFO, format='%(message)s')
+import time
+
+logging.basicConfig(level=logging.INFO, format="%(message)s")
 
 from buderus_wps import USBtinAdapter
 from buderus_wps.can_message import CANMessage
@@ -18,19 +19,16 @@ print(f"Request ID:  0x{request_id:08X}")
 print(f"Response ID: 0x{response_id:08X}")
 print()
 
-adapter = USBtinAdapter('/dev/ttyACM0', timeout=5.0)
+adapter = USBtinAdapter("/dev/ttyACM0", timeout=5.0)
 adapter.connect()
 
 # Send RTR request
 request = CANMessage(
-    arbitration_id=request_id,
-    data=b'',
-    is_extended_id=True,
-    is_remote_frame=True
+    arbitration_id=request_id, data=b"", is_extended_id=True, is_remote_frame=True
 )
 
 adapter.flush_input_buffer()
-adapter._write_command(request.to_usbtin_format().encode('ascii'))
+adapter._write_command(request.to_usbtin_format().encode("ascii"))
 
 # Wait and collect ALL frames on the response ID for 10 seconds
 print(f"Watching for frames on 0x{response_id:08X} for 10 seconds...")
@@ -57,7 +55,7 @@ while time.time() - start < 10.0:
                 temp = raw / 10.0
                 temps.append((elapsed, frame.arbitration_id, raw, temp))
 
-print(f"\n=== Summary ===")
+print("\n=== Summary ===")
 print(f"Responses on 0x{response_id:08X}: {len(responses)}")
 for t, dlc, data in responses:
     print(f"  t={t:.2f}s dlc={dlc} data=0x{data}")
@@ -66,14 +64,18 @@ if len(responses) == 1 and responses[0][1] == 1:
     print("\n*** Only got 1-byte ACK, no 2-byte data frame followed ***")
 
 if temps:
-    print(f"\nOther 2-byte frames that look like temperatures:")
+    print("\nOther 2-byte frames that look like temperatures:")
     unique_ids = {}
     for t, can_id, raw, temp in temps:
         if can_id not in unique_ids:
             unique_ids[can_id] = (raw, temp)
-            idx_from_id = ((can_id ^ 0x0C003FE0) >> 14) if (can_id & 0x3FFF) == 0x3FE0 else None
+            idx_from_id = (
+                ((can_id ^ 0x0C003FE0) >> 14) if (can_id & 0x3FFF) == 0x3FE0 else None
+            )
             if idx_from_id is not None and idx_from_id > 0 and idx_from_id < 4096:
-                print(f"  0x{can_id:08X} (idx={idx_from_id}): {temp}°C (raw=0x{raw:04X})")
+                print(
+                    f"  0x{can_id:08X} (idx={idx_from_id}): {temp}°C (raw=0x{raw:04X})"
+                )
             else:
                 print(f"  0x{can_id:08X}: {temp}°C (raw=0x{raw:04X})")
 

@@ -5,23 +5,10 @@ Tests all controller classes with mocked HeatPumpClient.
 """
 
 from datetime import date, datetime, time
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
-from buderus_wps.menu_api import (
-    Alarm,
-    AlarmController,
-    Circuit,
-    EnergyView,
-    HotWaterController,
-    MenuAPI,
-    MenuNavigator,
-    StatusSnapshot,
-    StatusView,
-    VacationController,
-    VacationPeriod,
-)
 from buderus_wps.enums import (
     AlarmCategory,
     CircuitType,
@@ -36,6 +23,19 @@ from buderus_wps.exceptions import (
     ParameterNotFoundError,
     ReadOnlyError,
     ValidationError,
+)
+from buderus_wps.menu_api import (
+    Alarm,
+    AlarmController,
+    Circuit,
+    EnergyView,
+    HotWaterController,
+    MenuAPI,
+    MenuNavigator,
+    StatusSnapshot,
+    StatusView,
+    VacationController,
+    VacationPeriod,
 )
 from buderus_wps.schedule_codec import ScheduleSlot, WeeklySchedule
 
@@ -416,11 +416,13 @@ class TestVacationController:
         """Set DHW vacation period."""
         ctrl = VacationController(mock_client)
 
-        ctrl.set_hot_water(VacationPeriod(
-            active=True,
-            start_date=date(2024, 12, 1),
-            end_date=date(2024, 12, 15),
-        ))
+        ctrl.set_hot_water(
+            VacationPeriod(
+                active=True,
+                start_date=date(2024, 12, 1),
+                end_date=date(2024, 12, 15),
+            )
+        )
         assert mock_client.write_value.call_count == 2
 
     def test_clear_hot_water(self, mock_client):

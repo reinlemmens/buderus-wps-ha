@@ -10,12 +10,8 @@ These tests cover:
 - Data source property reporting
 """
 
-import json
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 from unittest.mock import AsyncMock, MagicMock, patch
-
-import pytest
 
 
 # Mock CAN adapter for testing
@@ -60,17 +56,31 @@ class TestHeatPumpCacheHit:
 
     def test_loads_from_valid_cache(self, tmp_path):
         """Verify HeatPump uses cache when available and valid."""
-        from buderus_wps.parameter import HeatPump
         from buderus_wps.cache import ParameterCache
+        from buderus_wps.parameter import HeatPump
 
         # Create valid cache
         cache_path = tmp_path / "params.json"
         cache = ParameterCache(cache_path)
         test_params = [
-            {"idx": 0, "extid": "814A53C66A0802", "min": 0, "max": 0,
-             "format": "int", "read": 0, "text": "CACHED_PARAM_0"},
-            {"idx": 1, "extid": "61E1E1FC660023", "min": 0, "max": 5,
-             "format": "int", "read": 0, "text": "CACHED_PARAM_1"},
+            {
+                "idx": 0,
+                "extid": "814A53C66A0802",
+                "min": 0,
+                "max": 0,
+                "format": "int",
+                "read": 0,
+                "text": "CACHED_PARAM_0",
+            },
+            {
+                "idx": 1,
+                "extid": "61E1E1FC660023",
+                "min": 0,
+                "max": 5,
+                "format": "int",
+                "read": 0,
+                "text": "CACHED_PARAM_1",
+            },
         ]
         cache.save(test_params)
 
@@ -86,15 +96,22 @@ class TestHeatPumpCacheHit:
 
     def test_cache_hit_does_not_trigger_discovery(self, tmp_path):
         """Verify discovery is not attempted when cache is valid."""
-        from buderus_wps.parameter import HeatPump
         from buderus_wps.cache import ParameterCache
+        from buderus_wps.parameter import HeatPump
 
         # Create valid cache
         cache_path = tmp_path / "params.json"
         cache = ParameterCache(cache_path)
         test_params = [
-            {"idx": 0, "extid": "814A53C66A0802", "min": 0, "max": 0,
-             "format": "int", "read": 0, "text": "TEST_PARAM"},
+            {
+                "idx": 0,
+                "extid": "814A53C66A0802",
+                "min": 0,
+                "max": 0,
+                "format": "int",
+                "read": 0,
+                "text": "TEST_PARAM",
+            },
         ]
         cache.save(test_params)
 
@@ -120,8 +137,15 @@ class TestHeatPumpDiscovery:
 
         # Mock the discovery to return test parameters
         mock_params = [
-            {"idx": 0, "extid": "814A53C66A0802", "min": 0, "max": 0,
-             "format": "int", "read": 0, "text": "DISCOVERED_PARAM_0"},
+            {
+                "idx": 0,
+                "extid": "814A53C66A0802",
+                "min": 0,
+                "max": 0,
+                "format": "int",
+                "read": 0,
+                "text": "DISCOVERED_PARAM_0",
+            },
         ]
 
         with patch("buderus_wps.discovery.ParameterDiscovery") as MockDiscovery:
@@ -137,14 +161,21 @@ class TestHeatPumpDiscovery:
 
     def test_discovery_result_saved_to_cache(self, tmp_path):
         """Verify discovered parameters are cached for next time."""
-        from buderus_wps.parameter import HeatPump
         from buderus_wps.cache import ParameterCache
+        from buderus_wps.parameter import HeatPump
 
         cache_path = tmp_path / "new_cache.json"
 
         mock_params = [
-            {"idx": 0, "extid": "814A53C66A0802", "min": 0, "max": 0,
-             "format": "int", "read": 0, "text": "DISCOVERED_AND_CACHED"},
+            {
+                "idx": 0,
+                "extid": "814A53C66A0802",
+                "min": 0,
+                "max": 0,
+                "format": "int",
+                "read": 0,
+                "text": "DISCOVERED_AND_CACHED",
+            },
         ]
 
         with patch("buderus_wps.discovery.ParameterDiscovery") as MockDiscovery:
@@ -187,7 +218,9 @@ class TestHeatPumpFallback:
 
         with patch("buderus_wps.discovery.ParameterDiscovery") as MockDiscovery:
             mock_discovery = MagicMock()
-            mock_discovery.discover = AsyncMock(side_effect=Exception("Discovery failed"))
+            mock_discovery.discover = AsyncMock(
+                side_effect=Exception("Discovery failed")
+            )
             MockDiscovery.return_value = mock_discovery
 
             mock_adapter = MockCANAdapter()
@@ -217,22 +250,36 @@ class TestHeatPumpForceDiscovery:
 
     def test_force_discovery_ignores_cache(self, tmp_path):
         """Verify force_discovery=True ignores valid cache."""
-        from buderus_wps.parameter import HeatPump
         from buderus_wps.cache import ParameterCache
+        from buderus_wps.parameter import HeatPump
 
         # Create valid cache with different parameters
         cache_path = tmp_path / "params.json"
         cache = ParameterCache(cache_path)
         cache_params = [
-            {"idx": 0, "extid": "814A53C66A0802", "min": 0, "max": 0,
-             "format": "int", "read": 0, "text": "OLD_CACHED_PARAM"},
+            {
+                "idx": 0,
+                "extid": "814A53C66A0802",
+                "min": 0,
+                "max": 0,
+                "format": "int",
+                "read": 0,
+                "text": "OLD_CACHED_PARAM",
+            },
         ]
         cache.save(cache_params)
 
         # Mock discovery to return different parameters
         discovered_params = [
-            {"idx": 0, "extid": "814A53C66A0802", "min": 0, "max": 0,
-             "format": "int", "read": 0, "text": "FRESH_DISCOVERED_PARAM"},
+            {
+                "idx": 0,
+                "extid": "814A53C66A0802",
+                "min": 0,
+                "max": 0,
+                "format": "int",
+                "read": 0,
+                "text": "FRESH_DISCOVERED_PARAM",
+            },
         ]
 
         with patch("buderus_wps.discovery.ParameterDiscovery") as MockDiscovery:
@@ -242,9 +289,7 @@ class TestHeatPumpForceDiscovery:
 
             mock_adapter = MockCANAdapter()
             heat_pump = HeatPump(
-                adapter=mock_adapter,
-                cache_path=cache_path,
-                force_discovery=True
+                adapter=mock_adapter, cache_path=cache_path, force_discovery=True
             )
 
             # Should use discovery, not cache
@@ -254,19 +299,37 @@ class TestHeatPumpForceDiscovery:
 
     def test_force_discovery_updates_cache(self, tmp_path):
         """Verify force_discovery updates existing cache."""
-        from buderus_wps.parameter import HeatPump
         from buderus_wps.cache import ParameterCache
+        from buderus_wps.parameter import HeatPump
 
         # Create initial cache
         cache_path = tmp_path / "params.json"
         cache = ParameterCache(cache_path)
-        cache.save([{"idx": 0, "extid": "000", "min": 0, "max": 0,
-                     "format": "int", "read": 0, "text": "OLD"}])
+        cache.save(
+            [
+                {
+                    "idx": 0,
+                    "extid": "000",
+                    "min": 0,
+                    "max": 0,
+                    "format": "int",
+                    "read": 0,
+                    "text": "OLD",
+                }
+            ]
+        )
 
         # Mock discovery
         new_params = [
-            {"idx": 0, "extid": "814A53C66A0802", "min": 0, "max": 100,
-             "format": "int", "read": 0, "text": "UPDATED"},
+            {
+                "idx": 0,
+                "extid": "814A53C66A0802",
+                "min": 0,
+                "max": 100,
+                "format": "int",
+                "read": 0,
+                "text": "UPDATED",
+            },
         ]
 
         with patch("buderus_wps.discovery.ParameterDiscovery") as MockDiscovery:
@@ -288,13 +351,24 @@ class TestHeatPumpDataSourceProperty:
 
     def test_data_source_cache(self, tmp_path):
         """Verify data_source returns 'cache' when loaded from cache."""
-        from buderus_wps.parameter import HeatPump
         from buderus_wps.cache import ParameterCache
+        from buderus_wps.parameter import HeatPump
 
         cache_path = tmp_path / "params.json"
         cache = ParameterCache(cache_path)
-        cache.save([{"idx": 0, "extid": "814A53C66A0802", "min": 0, "max": 0,
-                     "format": "int", "read": 0, "text": "CACHED"}])
+        cache.save(
+            [
+                {
+                    "idx": 0,
+                    "extid": "814A53C66A0802",
+                    "min": 0,
+                    "max": 0,
+                    "format": "int",
+                    "read": 0,
+                    "text": "CACHED",
+                }
+            ]
+        )
 
         heat_pump = HeatPump(cache_path=cache_path)
         assert heat_pump.data_source == "cache"
@@ -307,10 +381,19 @@ class TestHeatPumpDataSourceProperty:
 
         with patch("buderus_wps.discovery.ParameterDiscovery") as MockDiscovery:
             mock_discovery = MagicMock()
-            mock_discovery.discover = AsyncMock(return_value=[
-                {"idx": 0, "extid": "814A53C66A0802", "min": 0, "max": 0,
-                 "format": "int", "read": 0, "text": "DISCOVERED"}
-            ])
+            mock_discovery.discover = AsyncMock(
+                return_value=[
+                    {
+                        "idx": 0,
+                        "extid": "814A53C66A0802",
+                        "min": 0,
+                        "max": 0,
+                        "format": "int",
+                        "read": 0,
+                        "text": "DISCOVERED",
+                    }
+                ]
+            )
             MockDiscovery.return_value = mock_discovery
 
             mock_adapter = MockCANAdapter()
@@ -330,13 +413,24 @@ class TestHeatPumpUsingFallbackProperty:
 
     def test_using_fallback_false_with_cache(self, tmp_path):
         """Verify using_fallback is False when loaded from cache."""
-        from buderus_wps.parameter import HeatPump
         from buderus_wps.cache import ParameterCache
+        from buderus_wps.parameter import HeatPump
 
         cache_path = tmp_path / "params.json"
         cache = ParameterCache(cache_path)
-        cache.save([{"idx": 0, "extid": "814A53C66A0802", "min": 0, "max": 0,
-                     "format": "int", "read": 0, "text": "CACHED"}])
+        cache.save(
+            [
+                {
+                    "idx": 0,
+                    "extid": "814A53C66A0802",
+                    "min": 0,
+                    "max": 0,
+                    "format": "int",
+                    "read": 0,
+                    "text": "CACHED",
+                }
+            ]
+        )
 
         heat_pump = HeatPump(cache_path=cache_path)
         assert heat_pump.using_fallback is False
@@ -349,10 +443,19 @@ class TestHeatPumpUsingFallbackProperty:
 
         with patch("buderus_wps.discovery.ParameterDiscovery") as MockDiscovery:
             mock_discovery = MagicMock()
-            mock_discovery.discover = AsyncMock(return_value=[
-                {"idx": 0, "extid": "814A53C66A0802", "min": 0, "max": 0,
-                 "format": "int", "read": 0, "text": "DISCOVERED"}
-            ])
+            mock_discovery.discover = AsyncMock(
+                return_value=[
+                    {
+                        "idx": 0,
+                        "extid": "814A53C66A0802",
+                        "min": 0,
+                        "max": 0,
+                        "format": "int",
+                        "read": 0,
+                        "text": "DISCOVERED",
+                    }
+                ]
+            )
             MockDiscovery.return_value = mock_discovery
 
             mock_adapter = MockCANAdapter()
@@ -400,13 +503,25 @@ class TestHeatPumpLogging:
     def test_logs_cache_hit(self, tmp_path, caplog):
         """Verify cache hit is logged."""
         import logging
-        from buderus_wps.parameter import HeatPump
+
         from buderus_wps.cache import ParameterCache
+        from buderus_wps.parameter import HeatPump
 
         cache_path = tmp_path / "params.json"
         cache = ParameterCache(cache_path)
-        cache.save([{"idx": 0, "extid": "814A53C66A0802", "min": 0, "max": 0,
-                     "format": "int", "read": 0, "text": "CACHED"}])
+        cache.save(
+            [
+                {
+                    "idx": 0,
+                    "extid": "814A53C66A0802",
+                    "min": 0,
+                    "max": 0,
+                    "format": "int",
+                    "read": 0,
+                    "text": "CACHED",
+                }
+            ]
+        )
 
         with caplog.at_level(logging.INFO):
             HeatPump(cache_path=cache_path)
@@ -416,6 +531,7 @@ class TestHeatPumpLogging:
     def test_logs_fallback(self, caplog):
         """Verify fallback is logged as warning."""
         import logging
+
         from buderus_wps.parameter import HeatPump
 
         with caplog.at_level(logging.WARNING):

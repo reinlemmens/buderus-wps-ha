@@ -6,9 +6,6 @@ when using broadcast mode.
 
 from __future__ import annotations
 
-import json
-import pytest
-
 
 class TestBroadcastReadTextOutputContract:
     """Contract tests for text output format with broadcast source."""
@@ -16,15 +13,22 @@ class TestBroadcastReadTextOutputContract:
     def test_text_output_includes_source_field(self) -> None:
         """Text output must include source indication."""
         # Contract: output format is "PARAM_NAME = VALUE  (raw=0xXX, idx=NNN, source=SOURCE)"
-        expected_pattern = r"^[\w_]+ = .+  \(raw=0x[0-9A-Fa-f]+, idx=\d+, source=(rtr|broadcast)\)$"
+        expected_pattern = (
+            r"^[\w_]+ = .+  \(raw=0x[0-9A-Fa-f]+, idx=\d+, source=(rtr|broadcast)\)$"
+        )
 
         # Example valid outputs
         valid_rtr = "GT2_TEMP = 10.5 C  (raw=0x0069, idx=10, source=rtr)"
         valid_broadcast = "GT2_TEMP = 10.5 C  (raw=0x0069, idx=10, source=broadcast)"
 
         import re
-        assert re.match(expected_pattern, valid_rtr), "RTR source format must match contract"
-        assert re.match(expected_pattern, valid_broadcast), "Broadcast source format must match contract"
+
+        assert re.match(
+            expected_pattern, valid_rtr
+        ), "RTR source format must match contract"
+        assert re.match(
+            expected_pattern, valid_broadcast
+        ), "Broadcast source format must match contract"
 
 
 class TestBroadcastReadJsonOutputContract:
@@ -38,7 +42,7 @@ class TestBroadcastReadJsonOutputContract:
             "idx": 10,
             "raw": "0069",
             "decoded": 10.5,
-            "source": "broadcast"
+            "source": "broadcast",
         }
 
         assert "source" in json_output
@@ -65,12 +69,12 @@ class TestBroadcastReadJsonOutputContract:
             "idx": 10,
             "raw": "0069",
             "decoded": 10.5,
-            "source": "rtr"
+            "source": "rtr",
         }
 
-        assert required_fields.issubset(json_output.keys()), (
-            f"Missing required fields: {required_fields - set(json_output.keys())}"
-        )
+        assert required_fields.issubset(
+            json_output.keys()
+        ), f"Missing required fields: {required_fields - set(json_output.keys())}"
 
 
 class TestBroadcastReadErrorContract:
@@ -84,6 +88,7 @@ class TestBroadcastReadErrorContract:
 
         # Verify the format pattern
         import re
+
         pattern = r"^ERROR: [\w_]+ not available via broadcast$"
         assert re.match(pattern, expected_error)
 
@@ -96,7 +101,10 @@ class TestBroadcastReadErrorContract:
 
         # Verify the format pattern
         import re
-        pattern = r"^ERROR: No broadcast data received for [\w_]+ within [\d.]+ seconds$"
+
+        pattern = (
+            r"^ERROR: No broadcast data received for [\w_]+ within [\d.]+ seconds$"
+        )
         assert re.match(pattern, expected_error)
 
 
@@ -106,7 +114,9 @@ class TestFallbackWarningContract:
     def test_fallback_triggered_warning_format(self) -> None:
         """Warning message format when fallback is triggered."""
         # Contract: "WARNING: RTR returned invalid data, using broadcast fallback"
-        expected_warning = "WARNING: RTR returned invalid data, using broadcast fallback"
+        expected_warning = (
+            "WARNING: RTR returned invalid data, using broadcast fallback"
+        )
 
         assert "WARNING:" in expected_warning
         assert "broadcast fallback" in expected_warning
@@ -114,7 +124,9 @@ class TestFallbackWarningContract:
     def test_fallback_failed_warning_format(self) -> None:
         """Warning message format when fallback fails."""
         # Contract: "WARNING: RTR returned invalid data, broadcast fallback failed"
-        expected_warning = "WARNING: RTR returned invalid data, broadcast fallback failed"
+        expected_warning = (
+            "WARNING: RTR returned invalid data, broadcast fallback failed"
+        )
 
         assert "WARNING:" in expected_warning
         assert "fallback failed" in expected_warning

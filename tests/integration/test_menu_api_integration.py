@@ -4,14 +4,14 @@ Integration tests for Menu API - T021, T030, T039, T048, T057, T064, T073, T079,
 Tests Menu API with mocked HeatPumpClient simulating realistic interactions.
 """
 
-from datetime import date, time
+from datetime import time
 from unittest.mock import MagicMock
 
 import pytest
 
-from buderus_wps.menu_api import MenuAPI
 from buderus_wps.enums import DHWProgramMode, OperatingMode, RoomProgramMode
 from buderus_wps.exceptions import ValidationError
+from buderus_wps.menu_api import MenuAPI
 from buderus_wps.schedule_codec import ScheduleSlot, WeeklySchedule
 
 
@@ -43,12 +43,12 @@ class TestStatusIntegration:
         """Complete status reading workflow."""
         # Simulate realistic responses using actual parameter names from STATUS_PARAMS
         responses = {
-            "GT2_TEMP": {"decoded": 8.5},       # outdoor_temp
-            "GT8_TEMP": {"decoded": 35.0},      # supply_temp
-            "GT3_TEMP": {"decoded": 52.0},      # dhw_temp
+            "GT2_TEMP": {"decoded": 8.5},  # outdoor_temp
+            "GT8_TEMP": {"decoded": 35.0},  # supply_temp
+            "GT3_TEMP": {"decoded": 52.0},  # dhw_temp
             "ROOM_TEMP_C1": {"decoded": 21.5},  # room_temp
-            "DRIFTTILLSTAND": {"decoded": 1},   # operating_mode
-            "COMPRESSOR": {"decoded": 1},       # compressor_status (matches partial)
+            "DRIFTTILLSTAND": {"decoded": 1},  # operating_mode
+            "COMPRESSOR": {"decoded": 1},  # compressor_status (matches partial)
         }
 
         def read_param(name):

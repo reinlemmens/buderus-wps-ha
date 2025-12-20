@@ -10,7 +10,7 @@ Behavior follows Feature Spec 003 (Program-Based Switching Control).
 """
 
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Optional, Protocol
 
 
 class ParameterIO(Protocol):
@@ -53,7 +53,7 @@ class ProgramSwitchingController:
     """
 
     def __init__(
-        self, io: ParameterIO, config: ProgramSwitchConfig | None = None
+        self, io: ParameterIO, config: Optional[ProgramSwitchConfig] = None
     ) -> None:
         if io is None:
             raise ValueError("io cannot be None")

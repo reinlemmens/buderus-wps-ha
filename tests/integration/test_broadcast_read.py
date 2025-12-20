@@ -8,8 +8,9 @@ Tests cover:
 
 from __future__ import annotations
 
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import Mock, MagicMock, patch
 
 
 class TestBroadcastReadWithMockAdapter:
@@ -24,7 +25,9 @@ class TestBroadcastReadWithMockAdapter:
 
         # Mock BroadcastMonitor.collect() to return cached readings
         # Patch at the source module where it's imported from
-        with patch('buderus_wps.broadcast_monitor.BroadcastMonitor') as mock_monitor_class:
+        with patch(
+            "buderus_wps.broadcast_monitor.BroadcastMonitor"
+        ) as mock_monitor_class:
             mock_cache = MagicMock()
             mock_reading = MagicMock()
             mock_reading.is_temperature = True
@@ -58,7 +61,9 @@ class TestBroadcastReadWithMockAdapter:
 
         mock_adapter = MagicMock()
 
-        with patch('buderus_wps.broadcast_monitor.BroadcastMonitor') as mock_monitor_class:
+        with patch(
+            "buderus_wps.broadcast_monitor.BroadcastMonitor"
+        ) as mock_monitor_class:
             mock_cache = MagicMock()
             mock_cache.get_by_idx_and_base.return_value = None  # No data
 
@@ -76,7 +81,9 @@ class TestBroadcastReadWithMockAdapter:
 
         mock_adapter = MagicMock()
 
-        with patch('buderus_wps.broadcast_monitor.BroadcastMonitor') as mock_monitor_class:
+        with patch(
+            "buderus_wps.broadcast_monitor.BroadcastMonitor"
+        ) as mock_monitor_class:
             mock_cache = MagicMock()
             mock_cache.get_by_idx_and_base.return_value = None
 

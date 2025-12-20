@@ -9,6 +9,7 @@ correctly implement the FHEM CAN ID construction formulas.
 """
 
 import pytest
+
 from buderus_wps.parameter import Parameter
 
 
@@ -23,7 +24,7 @@ def param_idx_0():
         max=0,
         format="int",
         read=0,
-        text="ACCESSORIES_CONNECTED_BITMASK"
+        text="ACCESSORIES_CONNECTED_BITMASK",
     )
 
 
@@ -37,7 +38,7 @@ def param_idx_1():
         max=5,
         format="int",
         read=0,
-        text="ACCESS_LEVEL"
+        text="ACCESS_LEVEL",
     )
 
 
@@ -51,7 +52,7 @@ def param_idx_11():
         max=40,
         format="int",
         read=0,
-        text="ADDITIONAL_BLOCK_HIGH_T2_TEMP"
+        text="ADDITIONAL_BLOCK_HIGH_T2_TEMP",
     )
 
 
@@ -65,7 +66,7 @@ def param_idx_100():
         max=100,
         format="int",
         read=0,
-        text="TEST_PARAM_100"
+        text="TEST_PARAM_100",
     )
 
 
@@ -79,7 +80,7 @@ def param_idx_1000():
         max=100,
         format="int",
         read=0,
-        text="TEST_PARAM_1000"
+        text="TEST_PARAM_1000",
     )
 
 
@@ -217,7 +218,7 @@ class TestCanIdRelationship:
                 max=100,
                 format="int",
                 read=0,
-                text=f"TEST_PARAM_{idx}"
+                text=f"TEST_PARAM_{idx}",
             )
             read_id = param.get_read_can_id()
             write_id = param.get_write_can_id()

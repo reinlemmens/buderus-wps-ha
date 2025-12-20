@@ -1,12 +1,13 @@
 """Unit tests for BroadcastMonitor class."""
 
-import pytest
 from unittest.mock import MagicMock
 
+import pytest
+
 from buderus_wps.broadcast_monitor import (
+    KNOWN_BROADCASTS,
     BroadcastMonitor,
     BroadcastReading,
-    KNOWN_BROADCASTS,
     decode_can_id,
     encode_can_id,
 )
@@ -58,7 +59,7 @@ class TestBroadcastReading:
             base=0x0060,
             idx=0,
             dlc=2,
-            raw_data=b"\x00\xCD",  # 205 = 20.5°C
+            raw_data=b"\x00\xcd",  # 205 = 20.5°C
             raw_value=205,
             timestamp=0.0,
         )
@@ -71,7 +72,7 @@ class TestBroadcastReading:
             base=0x0060,
             idx=0,
             dlc=2,
-            raw_data=b"\x00\xCD",
+            raw_data=b"\x00\xcd",
             raw_value=205,
             timestamp=0.0,
         )
@@ -84,7 +85,7 @@ class TestBroadcastReading:
             base=0x0060,
             idx=0,
             dlc=2,
-            raw_data=b"\xFF\xFF",
+            raw_data=b"\xff\xff",
             raw_value=65535,  # Too high for temperature
             timestamp=0.0,
         )
@@ -136,7 +137,7 @@ class TestGetKnownName:
             base=0x0060,
             idx=0,
             dlc=2,
-            raw_data=b"\x00\xCD",
+            raw_data=b"\x00\xcd",
             raw_value=205,
             timestamp=0.0,
         )
@@ -150,7 +151,7 @@ class TestGetKnownName:
             base=0x0060,
             idx=18,
             dlc=2,
-            raw_data=b"\x00\xBE",
+            raw_data=b"\x00\xbe",
             raw_value=190,
             timestamp=0.0,
         )
@@ -164,7 +165,7 @@ class TestGetKnownName:
             base=0x0402,
             idx=55,
             dlc=2,
-            raw_data=b"\x00\xDD",
+            raw_data=b"\x00\xdd",
             raw_value=221,
             timestamp=0.0,
         )
@@ -178,7 +179,7 @@ class TestGetKnownName:
             base=0x0402,
             idx=107,
             dlc=2,
-            raw_data=b"\x00\xE1",
+            raw_data=b"\x00\xe1",
             raw_value=225,
             timestamp=0.0,
         )
@@ -198,7 +199,7 @@ class TestGetKnownName:
             base=0x0402,
             idx=78,
             dlc=2,
-            raw_data=b"\x01\x0E",  # 270 = 27.0°C
+            raw_data=b"\x01\x0e",  # 270 = 27.0°C
             raw_value=270,
             timestamp=0.0,
         )
@@ -210,7 +211,7 @@ class TestGetKnownName:
         reading = BroadcastReading(
             can_id=0x0CFFFF00,
             base=0xFF00,  # Unknown base
-            idx=999,      # Unknown idx
+            idx=999,  # Unknown idx
             dlc=2,
             raw_data=b"\x00\x00",
             raw_value=0,
@@ -219,12 +220,14 @@ class TestGetKnownName:
         name = monitor.get_known_name(reading)
         assert name is None
 
-    def test_unknown_idx_on_known_base_returns_none(self, monitor: BroadcastMonitor) -> None:
+    def test_unknown_idx_on_known_base_returns_none(
+        self, monitor: BroadcastMonitor
+    ) -> None:
         """Test get_known_name returns None for unknown idx on known base."""
         reading = BroadcastReading(
             can_id=0x0C000060,
             base=0x0060,  # Known base
-            idx=999,      # Unknown idx for this base
+            idx=999,  # Unknown idx for this base
             dlc=2,
             raw_data=b"\x00\x00",
             raw_value=0,
@@ -258,6 +261,7 @@ class TestParamToBroadcast:
         GT2_TEMP has base=None to search all circuit bases (0x0060-0x0063).
         """
         from buderus_wps.broadcast_monitor import get_broadcast_for_param
+
         result = get_broadcast_for_param("GT2_TEMP")
         assert result == (None, 12)
 
@@ -269,12 +273,14 @@ class TestParamToBroadcast:
         which showed ~54°C instead of actual tank temp ~27°C.
         """
         from buderus_wps.broadcast_monitor import get_broadcast_for_param
+
         result = get_broadcast_for_param("GT3_TEMP")
         assert result == (0x0402, 78)
 
     def test_get_broadcast_case_insensitive(self) -> None:
         """Test get_broadcast_for_param is case-insensitive."""
         from buderus_wps.broadcast_monitor import get_broadcast_for_param
+
         assert get_broadcast_for_param("gt2_temp") == (None, 12)
         assert get_broadcast_for_param("Gt2_Temp") == (None, 12)
         assert get_broadcast_for_param("GT2_TEMP") == (None, 12)
@@ -282,12 +288,14 @@ class TestParamToBroadcast:
     def test_get_broadcast_unknown_param(self) -> None:
         """Test get_broadcast_for_param returns None for unknown parameter."""
         from buderus_wps.broadcast_monitor import get_broadcast_for_param
+
         result = get_broadcast_for_param("UNKNOWN_PARAM")
         assert result is None
 
     def test_get_broadcast_empty_string(self) -> None:
         """Test get_broadcast_for_param handles empty string."""
         from buderus_wps.broadcast_monitor import get_broadcast_for_param
+
         result = get_broadcast_for_param("")
         assert result is None
 
@@ -298,11 +306,13 @@ class TestIsTemperatureParam:
     def test_is_temperature_tem_format(self) -> None:
         """Test is_temperature_param returns True for 'tem' format."""
         from buderus_wps.broadcast_monitor import is_temperature_param
+
         assert is_temperature_param("tem") is True
 
     def test_is_temperature_temp_prefix(self) -> None:
         """Test is_temperature_param returns True for 'temp*' formats."""
         from buderus_wps.broadcast_monitor import is_temperature_param
+
         assert is_temperature_param("temp") is True
         assert is_temperature_param("temp1") is True
         assert is_temperature_param("temperature") is True
@@ -310,6 +320,7 @@ class TestIsTemperatureParam:
     def test_is_temperature_non_temp_format(self) -> None:
         """Test is_temperature_param returns False for non-temperature formats."""
         from buderus_wps.broadcast_monitor import is_temperature_param
+
         assert is_temperature_param("int") is False
         assert is_temperature_param("dp1") is False
         assert is_temperature_param("str") is False

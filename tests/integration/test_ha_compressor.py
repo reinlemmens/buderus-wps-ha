@@ -4,12 +4,13 @@ from __future__ import annotations
 
 import pytest
 
+from custom_components.buderus_wps.binary_sensor import (
+    BuderusCompressorSensor,
+    async_setup_platform,
+)
+
 # conftest.py sets up HA mocks at import time
 from custom_components.buderus_wps.const import DOMAIN
-from custom_components.buderus_wps.binary_sensor import (
-    async_setup_platform,
-    BuderusCompressorSensor,
-)
 from tests.conftest import MockBuderusData
 
 
@@ -39,9 +40,7 @@ class TestCompressorSensorDataFlow:
         assert isinstance(entities_added[0], BuderusCompressorSensor)
 
     @pytest.mark.asyncio
-    async def test_no_sensors_without_discovery_info(
-        self, mock_hass, mock_coordinator
-    ):
+    async def test_no_sensors_without_discovery_info(self, mock_hass, mock_coordinator):
         """No sensors created when discovery_info is None."""
         entities_added = []
 

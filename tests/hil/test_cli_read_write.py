@@ -12,6 +12,7 @@ Hardware requirements:
 import os
 import subprocess
 import sys
+
 import pytest
 
 # Configuration
@@ -52,6 +53,7 @@ class TestCLIRead:
         # RTR requests return 1-byte ACK, not actual temperature data
         # The CLI still displays it with °C suffix based on parameter format
         import re
+
         match = re.search(r"raw=0x([0-9A-F]+)", result.stdout)
         assert match, f"Could not find raw value in: {result.stdout}"
         raw_hex = match.group(1)
@@ -72,6 +74,7 @@ class TestCLIRead:
 
         # Extract decoded value
         import re
+
         match = re.search(r"XDHW_TIME = (\d+)", result.stdout)
         assert match, f"Could not parse value from: {result.stdout}"
         value = int(match.group(1))
@@ -105,6 +108,7 @@ class TestCLIRead:
         assert result.returncode == 0, f"Command failed: {result.stderr}"
 
         import json
+
         data = json.loads(result.stdout)
         assert "name" in data
         assert "decoded" in data
@@ -134,6 +138,7 @@ class TestCLIWrite:
 
         # Value should be 1 (or countdown started)
         import re
+
         match = re.search(r"XDHW_TIME = (\d+)", result.stdout)
         if match:
             value = int(match.group(1))
@@ -205,6 +210,7 @@ class TestCLIMonitor:
         assert result.returncode == 0
 
         import json
+
         data = json.loads(result.stdout)
         assert "count" in data
         assert "readings" in data
@@ -223,6 +229,7 @@ class TestCLIMonitor:
         assert result.returncode == 0
 
         import json
+
         data = json.loads(result.stdout)
 
         # Should capture at least some temperature readings in 5 seconds

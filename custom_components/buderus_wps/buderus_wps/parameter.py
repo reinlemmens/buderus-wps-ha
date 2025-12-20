@@ -93,6 +93,7 @@ class Parameter:
             '0x4007fe0'
         """
         from .can_ids import CAN_ID_READ_BASE
+
         return CAN_ID_READ_BASE | (self.idx << 14)
 
     def get_write_can_id(self) -> int:
@@ -111,6 +112,7 @@ class Parameter:
             '0xc007fe0'
         """
         from .can_ids import CAN_ID_WRITE_BASE
+
         return CAN_ID_WRITE_BASE | (self.idx << 14)
 
     def is_writable(self) -> bool:
@@ -194,7 +196,9 @@ class HeatPump:
         # Try cache first if path provided and not forcing discovery
         if cache_path and not force_discovery:
             from pathlib import Path
+
             from .cache import ParameterCache
+
             cache_file = Path(cache_path)
             if cache_file.exists():
                 try:
@@ -205,7 +209,10 @@ class HeatPump:
                             self._load_parameters(data)
                             self._data_source = "cache"
                             self._using_fallback = False
-                            logger.info("Loaded %d parameters from cache", len(self._params_by_idx))
+                            logger.info(
+                                "Loaded %d parameters from cache",
+                                len(self._params_by_idx),
+                            )
                             return
                 except Exception as e:
                     logger.warning("Failed to load cache: %s, using fallback", e)
@@ -220,11 +227,14 @@ class HeatPump:
 
         # Load static fallback data
         self._load_fallback()
-        logger.warning("Using fallback parameter data (%d parameters)", len(self._params_by_idx))
+        logger.warning(
+            "Using fallback parameter data (%d parameters)", len(self._params_by_idx)
+        )
 
     def _run_discovery(self) -> None:
         """Run parameter discovery protocol."""
         import asyncio
+
         from .discovery import ParameterDiscovery
 
         discovery = ParameterDiscovery(self._adapter)
@@ -252,7 +262,11 @@ class HeatPump:
 
     def _save_cache(self, elements: List[Dict[str, Any]]) -> None:
         """Save discovered elements to cache file."""
+        if not self._cache_path:
+            return
+
         from pathlib import Path
+
         from .cache import ParameterCache
 
         try:
@@ -267,6 +281,7 @@ class HeatPump:
     def _load_fallback(self) -> None:
         """Load parameters from static fallback data."""
         from .parameter_data import PARAMETER_DATA
+
         self._load_parameters(PARAMETER_DATA)
         self._data_source = "fallback"
         self._using_fallback = True
@@ -341,7 +356,7 @@ class HeatPump:
             raise KeyError(f"Unknown parameter index: {idx}")
         return param
 
-    def get_parameter(self, name_or_idx) -> Optional[Parameter]:
+    def get_parameter(self, name_or_idx: Any) -> Optional[Parameter]:
         """Look up parameter by name or index.
 
         Args:

@@ -7,16 +7,14 @@ import pytest
 # conftest.py sets up HA mocks at import time
 from custom_components.buderus_wps.const import (
     DOMAIN,
-    SENSOR_OUTDOOR,
-    SENSOR_SUPPLY,
-    SENSOR_RETURN,
-    SENSOR_DHW,
     SENSOR_BRINE_IN,
-    SENSOR_NAMES,
+    SENSOR_DHW,
+    SENSOR_OUTDOOR,
+    SENSOR_RETURN,
+    SENSOR_SUPPLY,
 )
 from custom_components.buderus_wps.sensor import (
     async_setup_platform,
-    BuderusTemperatureSensor,
 )
 from tests.conftest import MockBuderusData
 
@@ -89,9 +87,9 @@ class TestTemperatureSensorDataFlow:
 
         for sensor in entities_added:
             sensor_type = sensor._sensor_type
-            assert sensor.native_value == expected_temps[sensor_type], (
-                f"Sensor {sensor_type} value mismatch"
-            )
+            assert (
+                sensor.native_value == expected_temps[sensor_type]
+            ), f"Sensor {sensor_type} value mismatch"
 
     @pytest.mark.asyncio
     async def test_sensor_updates_when_coordinator_data_changes(

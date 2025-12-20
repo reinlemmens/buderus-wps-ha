@@ -10,6 +10,7 @@ exactly as FHEM does. This ensures compliance with Constitution Principle II
 
 import re
 import struct
+
 import pytest
 
 
@@ -18,7 +19,7 @@ class TestBinaryStructureMatchesFhem:
 
     @pytest.fixture
     def fhem_content(self):
-        with open('fhem/26_KM273v018.pm', 'r') as f:
+        with open("fhem/26_KM273v018.pm") as f:
             return f.read()
 
     def test_fhem_uses_network_byte_order(self, fhem_content):
@@ -33,7 +34,7 @@ class TestBinaryStructureMatchesFhem:
         match = re.search(pattern, fhem_content)
 
         assert match is not None, (
-            "Could not find unpack(\"nH14NNc\", ...) in FHEM source. "
+            'Could not find unpack("nH14NNc", ...) in FHEM source. '
             "Expected network byte order format string."
         )
 
@@ -70,12 +71,12 @@ class TestBinaryStructureMatchesFhem:
         # PROTOCOL: if ($imax-$i1 > 18)
         """
         # Find the header size check
-        pattern = r'if\s*\(\s*\$imax\s*-\s*\$i1\s*>\s*18\s*\)'
+        pattern = r"if\s*\(\s*\$imax\s*-\s*\$i1\s*>\s*18\s*\)"
         match = re.search(pattern, fhem_content)
 
-        assert match is not None, (
-            "Could not find header size check (> 18) in FHEM source."
-        )
+        assert (
+            match is not None
+        ), "Could not find header size check (> 18) in FHEM source."
 
         print("✓ Found 18-byte header size check")
 
@@ -85,12 +86,10 @@ class TestBinaryStructureMatchesFhem:
         # PROTOCOL: if (... ($len2 > 1) ...)
         """
         # Find the len validation
-        pattern = r'\$len2\s*>\s*1'
+        pattern = r"\$len2\s*>\s*1"
         match = re.search(pattern, fhem_content)
 
-        assert match is not None, (
-            "Could not find len > 1 validation in FHEM source."
-        )
+        assert match is not None, "Could not find len > 1 validation in FHEM source."
 
         print("✓ Found minimum len validation (len > 1)")
 
@@ -100,12 +99,10 @@ class TestBinaryStructureMatchesFhem:
         # PROTOCOL: if (... ($len2 < 100) ...)
         """
         # Find the max len validation
-        pattern = r'\$len2\s*<\s*100'
+        pattern = r"\$len2\s*<\s*100"
         match = re.search(pattern, fhem_content)
 
-        assert match is not None, (
-            "Could not find len < 100 validation in FHEM source."
-        )
+        assert match is not None, "Could not find len < 100 validation in FHEM source."
 
         print("✓ Found maximum len validation (len < 100)")
 
@@ -115,12 +112,12 @@ class TestBinaryStructureMatchesFhem:
         # PROTOCOL: my $element2 = substr(...,$i1+18,$len2-1);
         """
         # Find the name extraction
-        pattern = r'substr\s*\([^,]+,\s*\$i1\s*\+\s*18\s*,\s*\$len2\s*-\s*1\s*\)'
+        pattern = r"substr\s*\([^,]+,\s*\$i1\s*\+\s*18\s*,\s*\$len2\s*-\s*1\s*\)"
         match = re.search(pattern, fhem_content)
 
-        assert match is not None, (
-            "Could not find name extraction (substr(...,$i1+18,$len2-1)) in FHEM source."
-        )
+        assert (
+            match is not None
+        ), "Could not find name extraction (substr(...,$i1+18,$len2-1)) in FHEM source."
 
         print("✓ Found name extraction (len-1 bytes at offset 18)")
 
@@ -130,12 +127,12 @@ class TestBinaryStructureMatchesFhem:
         # PROTOCOL: $i1 += 18+$len2;
         """
         # Find the offset advancement
-        pattern = r'\$i1\s*\+=\s*18\s*\+\s*\$len2'
+        pattern = r"\$i1\s*\+=\s*18\s*\+\s*\$len2"
         match = re.search(pattern, fhem_content)
 
-        assert match is not None, (
-            "Could not find offset advancement ($i1 += 18+$len2) in FHEM source."
-        )
+        assert (
+            match is not None
+        ), "Could not find offset advancement ($i1 += 18+$len2) in FHEM source."
 
         print("✓ Found offset advancement (18 + len)")
 
@@ -149,21 +146,21 @@ class TestBinaryParsingMatchesFhem:
 
         # Create binary data that should produce ACCESS_LEVEL parameter
         # This simulates what the device would send
-        data = struct.pack('>H', 1)  # idx = 1 (big-endian)
+        data = struct.pack(">H", 1)  # idx = 1 (big-endian)
         data += bytes.fromhex("61E1E1FC660023")  # extid
-        data += struct.pack('>I', 5)  # max = 5 (big-endian unsigned)
-        data += struct.pack('>I', 0)  # min = 0 (big-endian unsigned)
-        data += struct.pack('b', 13)  # len = 13 (12 chars + null)
+        data += struct.pack(">I", 5)  # max = 5 (big-endian unsigned)
+        data += struct.pack(">I", 0)  # min = 0 (big-endian unsigned)
+        data += struct.pack("b", 13)  # len = 13 (12 chars + null)
         data += b"ACCESS_LEVEL\x00"  # name with null terminator
 
         element, _ = ParameterDiscovery.parse_element(data, 0)
 
         assert element is not None
-        assert element['idx'] == 1
-        assert element['extid'] == "61E1E1FC660023"
-        assert element['max'] == 5
-        assert element['min'] == 0
-        assert element['text'] == "ACCESS_LEVEL"
+        assert element["idx"] == 1
+        assert element["extid"] == "61E1E1FC660023"
+        assert element["max"] == 5
+        assert element["min"] == 0
+        assert element["text"] == "ACCESS_LEVEL"
 
         print("✓ Parsed ACCESS_LEVEL matches FHEM expected output")
 
@@ -178,18 +175,18 @@ class TestBinaryParsingMatchesFhem:
         # -30 as unsigned 32-bit is 0xFFFFFFE2
         min_unsigned = (-30) & 0xFFFFFFFF
 
-        data = struct.pack('>H', 11)  # idx = 11
+        data = struct.pack(">H", 11)  # idx = 11
         data += bytes.fromhex("E555E4E11002E9")  # extid
-        data += struct.pack('>I', 40)  # max = 40
-        data += struct.pack('>I', min_unsigned)  # min = -30 as unsigned
-        data += struct.pack('b', 29)  # len
+        data += struct.pack(">I", 40)  # max = 40
+        data += struct.pack(">I", min_unsigned)  # min = -30 as unsigned
+        data += struct.pack("b", 29)  # len
         data += b"ADDITIONAL_BLOCK_HIGH_T2_TEMP\x00"
 
         element, _ = ParameterDiscovery.parse_element(data, 0)
 
         assert element is not None
-        assert element['min'] == -30, f"Expected -30, got {element['min']}"
-        assert element['max'] == 40
+        assert element["min"] == -30, f"Expected -30, got {element['min']}"
+        assert element["max"] == 40
 
         print("✓ Negative min value (-30) parsed correctly like FHEM")
 
@@ -204,7 +201,7 @@ class TestBinaryParsingMatchesFhem:
         Total header = 18 bytes
         """
         # idx at offset 0, 2 bytes
-        idx_data = struct.pack('>H', 0x1234)
+        idx_data = struct.pack(">H", 0x1234)
         assert len(idx_data) == 2
 
         # extid at offset 2, 7 bytes
@@ -212,15 +209,15 @@ class TestBinaryParsingMatchesFhem:
         assert len(extid_data) == 7
 
         # max at offset 9, 4 bytes
-        max_data = struct.pack('>I', 0x12345678)
+        max_data = struct.pack(">I", 0x12345678)
         assert len(max_data) == 4
 
         # min at offset 13, 4 bytes
-        min_data = struct.pack('>I', 0x87654321)
+        min_data = struct.pack(">I", 0x87654321)
         assert len(min_data) == 4
 
         # len at offset 17, 1 byte
-        len_data = struct.pack('b', 10)
+        len_data = struct.pack("b", 10)
         assert len(len_data) == 1
 
         # Total header

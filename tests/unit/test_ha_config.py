@@ -2,11 +2,8 @@
 
 from __future__ import annotations
 
-import pytest
-
 # Note: voluptuous is mocked in conftest.py, but we can still test constants
 # and validation ranges directly
-
 from custom_components.buderus_wps.const import (
     CONF_PORT,
     CONF_SCAN_INTERVAL,
@@ -131,6 +128,7 @@ class TestConfigSchemaRequirements:
     def test_domain_key_is_buderus_wps(self):
         """Configuration must be under 'buderus_wps' domain key."""
         from custom_components.buderus_wps.const import DOMAIN
+
         assert DOMAIN == "buderus_wps"
 
     def test_required_config_keys_exist(self):

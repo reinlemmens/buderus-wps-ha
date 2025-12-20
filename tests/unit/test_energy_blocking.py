@@ -4,9 +4,7 @@ Tests for BlockingState, BlockingResult, BlockingStatus dataclasses
 and EnergyBlockingControl methods.
 """
 
-import pytest
 from unittest.mock import MagicMock
-
 
 # Phase 2: Dataclass tests (T005-T007)
 
@@ -165,8 +163,7 @@ class TestBlockCompressor:
 
     def test_block_compressor_success(self) -> None:
         """block_compressor returns success result on successful write."""
-        from unittest.mock import MagicMock
-        from buderus_wps.energy_blocking import EnergyBlockingControl, BlockingResult
+        from buderus_wps.energy_blocking import BlockingResult, EnergyBlockingControl
 
         mock_client = MagicMock()
         # Mock write succeeds, read returns blocked status
@@ -182,8 +179,10 @@ class TestBlockCompressor:
 
     def test_block_compressor_writes_correct_parameter(self) -> None:
         """block_compressor writes to COMPRESSOR_E21_EXTERN_BLOCK_BY_E21_EXT_1."""
-        from unittest.mock import MagicMock
-        from buderus_wps.energy_blocking import EnergyBlockingControl, PARAM_COMPRESSOR_BLOCK
+        from buderus_wps.energy_blocking import (
+            PARAM_COMPRESSOR_BLOCK,
+            EnergyBlockingControl,
+        )
 
         mock_client = MagicMock()
         mock_client.read_parameter.return_value = {"decoded": 1}
@@ -198,8 +197,9 @@ class TestBlockCompressor:
 
     def test_block_compressor_verifies_status(self) -> None:
         """block_compressor reads status to verify block was applied."""
-        from unittest.mock import MagicMock
-        from buderus_wps.energy_blocking import EnergyBlockingControl, PARAM_COMPRESSOR_STATUS
+        from buderus_wps.energy_blocking import (
+            EnergyBlockingControl,
+        )
 
         mock_client = MagicMock()
         mock_client.read_parameter.return_value = {"decoded": 1}
@@ -216,8 +216,7 @@ class TestUnblockCompressor:
 
     def test_unblock_compressor_success(self) -> None:
         """unblock_compressor returns success result on successful write."""
-        from unittest.mock import MagicMock
-        from buderus_wps.energy_blocking import EnergyBlockingControl, BlockingResult
+        from buderus_wps.energy_blocking import BlockingResult, EnergyBlockingControl
 
         mock_client = MagicMock()
         mock_client.read_parameter.return_value = {"decoded": 0}
@@ -232,8 +231,10 @@ class TestUnblockCompressor:
 
     def test_unblock_compressor_writes_zero(self) -> None:
         """unblock_compressor writes 0 to unblock."""
-        from unittest.mock import MagicMock
-        from buderus_wps.energy_blocking import EnergyBlockingControl, PARAM_COMPRESSOR_BLOCK
+        from buderus_wps.energy_blocking import (
+            PARAM_COMPRESSOR_BLOCK,
+            EnergyBlockingControl,
+        )
 
         mock_client = MagicMock()
         mock_client.read_parameter.return_value = {"decoded": 0}
@@ -254,8 +255,7 @@ class TestBlockAuxHeater:
 
     def test_block_aux_heater_success(self) -> None:
         """block_aux_heater returns success result on successful write."""
-        from unittest.mock import MagicMock
-        from buderus_wps.energy_blocking import EnergyBlockingControl, BlockingResult
+        from buderus_wps.energy_blocking import BlockingResult, EnergyBlockingControl
 
         mock_client = MagicMock()
         # Mock write succeeds, read returns blocked status
@@ -271,8 +271,10 @@ class TestBlockAuxHeater:
 
     def test_block_aux_heater_writes_correct_parameter(self) -> None:
         """block_aux_heater writes to ADDITIONAL_USER_BLOCKED."""
-        from unittest.mock import MagicMock
-        from buderus_wps.energy_blocking import EnergyBlockingControl, PARAM_AUX_HEATER_BLOCK
+        from buderus_wps.energy_blocking import (
+            PARAM_AUX_HEATER_BLOCK,
+            EnergyBlockingControl,
+        )
 
         mock_client = MagicMock()
         mock_client.read_parameter.return_value = {"decoded": 1}
@@ -287,8 +289,9 @@ class TestBlockAuxHeater:
 
     def test_block_aux_heater_verifies_status(self) -> None:
         """block_aux_heater reads status to verify block was applied."""
-        from unittest.mock import MagicMock
-        from buderus_wps.energy_blocking import EnergyBlockingControl, PARAM_AUX_HEATER_STATUS
+        from buderus_wps.energy_blocking import (
+            EnergyBlockingControl,
+        )
 
         mock_client = MagicMock()
         mock_client.read_parameter.return_value = {"decoded": 1}
@@ -305,8 +308,7 @@ class TestUnblockAuxHeater:
 
     def test_unblock_aux_heater_success(self) -> None:
         """unblock_aux_heater returns success result on successful write."""
-        from unittest.mock import MagicMock
-        from buderus_wps.energy_blocking import EnergyBlockingControl, BlockingResult
+        from buderus_wps.energy_blocking import BlockingResult, EnergyBlockingControl
 
         mock_client = MagicMock()
         mock_client.read_parameter.return_value = {"decoded": 0}
@@ -321,8 +323,10 @@ class TestUnblockAuxHeater:
 
     def test_unblock_aux_heater_writes_zero(self) -> None:
         """unblock_aux_heater writes 0 to unblock."""
-        from unittest.mock import MagicMock
-        from buderus_wps.energy_blocking import EnergyBlockingControl, PARAM_AUX_HEATER_BLOCK
+        from buderus_wps.energy_blocking import (
+            PARAM_AUX_HEATER_BLOCK,
+            EnergyBlockingControl,
+        )
 
         mock_client = MagicMock()
         mock_client.read_parameter.return_value = {"decoded": 0}
@@ -336,7 +340,6 @@ class TestUnblockAuxHeater:
 
     def test_unblock_aux_heater_verification_failure(self) -> None:
         """unblock_aux_heater returns failure when verification fails."""
-        from unittest.mock import MagicMock
         from buderus_wps.energy_blocking import EnergyBlockingControl
 
         mock_client = MagicMock()
@@ -358,8 +361,7 @@ class TestGetStatus:
 
     def test_get_status_returns_both_components(self) -> None:
         """get_status returns BlockingStatus with both compressor and aux_heater - T034."""
-        from unittest.mock import MagicMock
-        from buderus_wps.energy_blocking import EnergyBlockingControl, BlockingStatus
+        from buderus_wps.energy_blocking import BlockingStatus, EnergyBlockingControl
 
         mock_client = MagicMock()
         mock_client.read_parameter.side_effect = [
@@ -378,7 +380,6 @@ class TestGetStatus:
 
     def test_get_status_no_blocks_active(self) -> None:
         """get_status with no blocks active - T035."""
-        from unittest.mock import MagicMock
         from buderus_wps.energy_blocking import EnergyBlockingControl
 
         mock_client = MagicMock()
@@ -394,7 +395,6 @@ class TestGetStatus:
 
     def test_get_status_one_block_active(self) -> None:
         """get_status with one block active - T036."""
-        from unittest.mock import MagicMock
         from buderus_wps.energy_blocking import EnergyBlockingControl
 
         mock_client = MagicMock()
@@ -411,7 +411,8 @@ class TestGetStatus:
 
     def test_get_status_includes_timestamp(self) -> None:
         """get_status includes timestamp."""
-        from unittest.mock import MagicMock, patch
+        from unittest.mock import patch
+
         from buderus_wps.energy_blocking import EnergyBlockingControl
 
         mock_client = MagicMock()
@@ -433,8 +434,7 @@ class TestClearAllBlocks:
 
     def test_clear_all_blocks_clears_both_components(self) -> None:
         """clear_all_blocks clears both compressor and aux heater - T041."""
-        from unittest.mock import MagicMock
-        from buderus_wps.energy_blocking import EnergyBlockingControl, BlockingResult
+        from buderus_wps.energy_blocking import BlockingResult, EnergyBlockingControl
 
         mock_client = MagicMock()
         # Both unblock operations succeed
@@ -450,7 +450,6 @@ class TestClearAllBlocks:
 
     def test_clear_all_blocks_only_one_block_active(self) -> None:
         """clear_all_blocks when only one block active - T042."""
-        from unittest.mock import MagicMock
         from buderus_wps.energy_blocking import EnergyBlockingControl
 
         mock_client = MagicMock()
@@ -465,7 +464,6 @@ class TestClearAllBlocks:
 
     def test_clear_all_blocks_partial_failure(self) -> None:
         """clear_all_blocks reports failure if any unblock fails."""
-        from unittest.mock import MagicMock
         from buderus_wps.energy_blocking import EnergyBlockingControl
 
         mock_client = MagicMock()
@@ -479,7 +477,10 @@ class TestClearAllBlocks:
         result = control.clear_all_blocks()
 
         assert result.success is False
-        assert "aux_heater" in result.message.lower() or "partial" in result.message.lower()
+        assert (
+            "aux_heater" in result.message.lower()
+            or "partial" in result.message.lower()
+        )
 
 
 class TestBlockAll:
@@ -487,8 +488,7 @@ class TestBlockAll:
 
     def test_block_all_blocks_both_components(self) -> None:
         """block_all blocks both compressor and aux heater."""
-        from unittest.mock import MagicMock
-        from buderus_wps.energy_blocking import EnergyBlockingControl, BlockingResult
+        from buderus_wps.energy_blocking import BlockingResult, EnergyBlockingControl
 
         mock_client = MagicMock()
         # Both block operations succeed
@@ -504,7 +504,6 @@ class TestBlockAll:
 
     def test_block_all_partial_failure(self) -> None:
         """block_all reports failure if any block fails."""
-        from unittest.mock import MagicMock
         from buderus_wps.energy_blocking import EnergyBlockingControl
 
         mock_client = MagicMock()
@@ -518,7 +517,10 @@ class TestBlockAll:
         result = control.block_all()
 
         assert result.success is False
-        assert "aux_heater" in result.message.lower() or "partial" in result.message.lower()
+        assert (
+            "aux_heater" in result.message.lower()
+            or "partial" in result.message.lower()
+        )
 
 
 # Phase 7: CLI tests (T046-T049)

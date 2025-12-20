@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+from unittest.mock import AsyncMock, MagicMock
+
 import pytest
-from unittest.mock import AsyncMock, MagicMock, patch
 
 # conftest.py sets up HA mocks at import time
 from custom_components.buderus_wps.const import BACKOFF_INITIAL, BACKOFF_MAX
@@ -178,12 +179,13 @@ class TestIndefiniteCaching:
         This test verifies FR-011: Coordinator must retain last-known-good data
         indefinitely, never showing "Unknown" after first successful read.
         """
+        import time
+        from unittest.mock import MagicMock
+
         from custom_components.buderus_wps.coordinator import (
             BuderusCoordinator,
             BuderusData,
         )
-        from unittest.mock import MagicMock
-        import time
 
         coordinator = BuderusCoordinator(mock_hass, "/dev/ttyUSB0", 60)
         coordinator.hass = mock_hass
@@ -244,9 +246,10 @@ class TestIndefiniteCaching:
         This test verifies FR-005: Entity base class must add extra_state_attributes
         property with staleness metadata.
         """
-        from custom_components.buderus_wps.sensor import BuderusTemperatureSensor
-        from custom_components.buderus_wps.const import SENSOR_OUTDOOR
         import time
+
+        from custom_components.buderus_wps.const import SENSOR_OUTDOOR
+        from custom_components.buderus_wps.sensor import BuderusTemperatureSensor
 
         # Setup: Create sensor entity
         sensor = BuderusTemperatureSensor(mock_coordinator, SENSOR_OUTDOOR)

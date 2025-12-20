@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import pytest
-
 # conftest.py sets up HA mocks before we import
 from custom_components.buderus_wps.binary_sensor import BuderusCompressorSensor
 

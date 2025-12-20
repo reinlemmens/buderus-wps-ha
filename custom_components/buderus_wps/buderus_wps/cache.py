@@ -23,11 +23,11 @@ Example:
     ...     cache.save(params)
 """
 
-import json
 import hashlib
+import json
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 
 class ParameterCache:
@@ -75,7 +75,7 @@ class ParameterCache:
             return False
 
         try:
-            with open(self.cache_path, 'r') as f:
+            with open(self.cache_path) as f:
                 data = json.load(f)
 
             # Check required fields
@@ -111,15 +111,19 @@ class ParameterCache:
             return None
 
         try:
-            with open(self.cache_path, 'r') as f:
+            with open(self.cache_path) as f:
                 data = json.load(f)
-            return data.get("parameters")
+            result: Optional[List[Dict[Any, Any]]] = data.get("parameters")
+            return result
         except (json.JSONDecodeError, OSError):
             return None
 
-    def save(self, parameters: List[Dict],
-             device_id: Optional[str] = None,
-             firmware: Optional[str] = None) -> bool:
+    def save(
+        self,
+        parameters: List[Dict],
+        device_id: Optional[str] = None,
+        firmware: Optional[str] = None,
+    ) -> bool:
         """Save parameters to cache.
 
         Creates or overwrites cache file with parameter data. Includes
@@ -143,7 +147,7 @@ class ParameterCache:
                 "created": datetime.utcnow().isoformat(),
                 "element_count": len(parameters),
                 "checksum": self._compute_checksum(parameters),
-                "parameters": parameters
+                "parameters": parameters,
             }
 
             if device_id is not None:
@@ -153,7 +157,7 @@ class ParameterCache:
                 data["firmware"] = firmware
 
             # Write to file
-            with open(self.cache_path, 'w') as f:
+            with open(self.cache_path, "w") as f:
                 json.dump(data, f, indent=2)
 
             return True
@@ -189,9 +193,9 @@ class ParameterCache:
         sorted_params = sorted(parameters, key=lambda p: p.get("idx", 0))
 
         # Create deterministic JSON representation
-        json_str = json.dumps(sorted_params, sort_keys=True, separators=(',', ':'))
+        json_str = json.dumps(sorted_params, sort_keys=True, separators=(",", ":"))
 
         # Compute SHA256
-        digest = hashlib.sha256(json_str.encode('utf-8')).hexdigest()
+        digest = hashlib.sha256(json_str.encode("utf-8")).hexdigest()
 
         return f"sha256:{digest}"

@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Decode broadcast CAN IDs to find their parameter indices."""
 
-import time
 import logging
-logging.basicConfig(level=logging.INFO, format='%(message)s')
+import time
+
+logging.basicConfig(level=logging.INFO, format="%(message)s")
 
 from buderus_wps import USBtinAdapter
 from buderus_wps.parameter_registry import ParameterRegistry
@@ -13,7 +14,7 @@ registry = ParameterRegistry()
 print("Listening for broadcast frames with 2-byte temperature data...")
 print("Will try to match CAN IDs to known parameters.\n")
 
-adapter = USBtinAdapter('/dev/ttyACM0', timeout=5.0)
+adapter = USBtinAdapter("/dev/ttyACM0", timeout=5.0)
 adapter.connect()
 
 # Collect unique IDs with their data
@@ -43,9 +44,13 @@ while time.time() - start < 15.0:
             if param:
                 if param.format == "tem":
                     temp = raw / 10.0
-                    print(f"MATCH: 0x{can_id:08X} -> {param.text} (idx={param.idx}): {temp}°C (raw=0x{raw:04X})")
+                    print(
+                        f"MATCH: 0x{can_id:08X} -> {param.text} (idx={param.idx}): {temp}°C (raw=0x{raw:04X})"
+                    )
                 else:
-                    print(f"MATCH: 0x{can_id:08X} -> {param.text} (idx={param.idx}): raw=0x{raw:04X}")
+                    print(
+                        f"MATCH: 0x{can_id:08X} -> {param.text} (idx={param.idx}): raw=0x{raw:04X}"
+                    )
             else:
                 # Try to decode the ID structure
                 # Check if it matches base 0x3FE0 or other bases
@@ -60,19 +65,25 @@ while time.time() - start < 15.0:
 
                 if param_by_idx:
                     if temp and param_by_idx.format == "tem":
-                        print(f"IDX MATCH: 0x{can_id:08X} base=0x{base:04X} idx={idx_part} -> {param_by_idx.text}: {temp}°C")
+                        print(
+                            f"IDX MATCH: 0x{can_id:08X} base=0x{base:04X} idx={idx_part} -> {param_by_idx.text}: {temp}°C"
+                        )
                     else:
-                        print(f"IDX MATCH: 0x{can_id:08X} base=0x{base:04X} idx={idx_part} -> {param_by_idx.text}: raw=0x{raw:04X}")
+                        print(
+                            f"IDX MATCH: 0x{can_id:08X} base=0x{base:04X} idx={idx_part} -> {param_by_idx.text}: raw=0x{raw:04X}"
+                        )
                 elif temp:
-                    print(f"UNKNOWN: 0x{can_id:08X} base=0x{base:04X} idx={idx_part}: {temp}°C (raw=0x{raw:04X})")
+                    print(
+                        f"UNKNOWN: 0x{can_id:08X} base=0x{base:04X} idx={idx_part}: {temp}°C (raw=0x{raw:04X})"
+                    )
 
             seen_ids[can_id] = (frame.dlc, data_hex)
 
-print(f"\n=== Summary ===")
+print("\n=== Summary ===")
 print(f"Total unique 2+ byte frames seen: {len(seen_ids)}")
 
 # Specifically check for frames with base 0x3FE0 (our parameter base)
-print(f"\nFrames with base 0x3FE0 (our parameter base):")
+print("\nFrames with base 0x3FE0 (our parameter base):")
 count = 0
 for can_id in sorted(seen_ids.keys()):
     base = can_id & 0x3FFF

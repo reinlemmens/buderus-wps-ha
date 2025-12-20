@@ -105,7 +105,7 @@ class WeeklySchedule:
             raise ValueError(f"Day must be 0-6, got {day}")
         return self._days_as_list()[day]
 
-    def set_day(self, day: int, slot: ScheduleSlot) -> "WeeklySchedule":
+    def set_day(self, day: int, slot: ScheduleSlot) -> WeeklySchedule:
         """
         Create a new WeeklySchedule with one day modified.
 

@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Debug script to capture ALL CAN traffic after RTR request."""
 
-import time
 import logging
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(message)s')
+import time
+
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s %(message)s")
 
 from buderus_wps import USBtinAdapter
 from buderus_wps.can_message import CANMessage
@@ -18,21 +19,18 @@ print(f"Request ID:  0x{request_id:08X}")
 print(f"Response ID: 0x{response_id:08X}")
 print()
 
-adapter = USBtinAdapter('/dev/ttyACM0', timeout=5.0)
+adapter = USBtinAdapter("/dev/ttyACM0", timeout=5.0)
 adapter.connect()
 
 # Build and send RTR request
 request = CANMessage(
-    arbitration_id=request_id,
-    data=b'',
-    is_extended_id=True,
-    is_remote_frame=True
+    arbitration_id=request_id, data=b"", is_extended_id=True, is_remote_frame=True
 )
 slcan = request.to_usbtin_format()
 print(f"Sending SLCAN: {repr(slcan)}")
 
 adapter.flush_input_buffer()
-adapter._write_command(slcan.encode('ascii'))
+adapter._write_command(slcan.encode("ascii"))
 
 # Read ALL frames for 5 seconds
 print("\n=== Capturing ALL frames for 5 seconds ===\n")
@@ -45,10 +43,12 @@ while time.time() - start < 5.0:
         is_response = frame.arbitration_id == response_id
         marker = "*** RESPONSE ***" if is_response else ""
         data_hex = frame.data.hex() if frame.data else ""
-        print(f"[{elapsed:5.2f}s] ID=0x{frame.arbitration_id:08X} DLC={frame.dlc} DATA={data_hex:16s} {marker}")
+        print(
+            f"[{elapsed:5.2f}s] ID=0x{frame.arbitration_id:08X} DLC={frame.dlc} DATA={data_hex:16s} {marker}"
+        )
         frames.append((elapsed, frame))
 
-print(f"\n=== Summary ===")
+print("\n=== Summary ===")
 print(f"Total frames received: {len(frames)}")
 
 # Group by ID

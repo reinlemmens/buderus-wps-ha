@@ -17,16 +17,14 @@ import pytest
 # conftest.py sets up HA mocks at import time
 from custom_components.buderus_wps.const import (
     DOMAIN,
-    SENSOR_OUTDOOR,
-    SENSOR_SUPPLY,
-    SENSOR_RETURN,
-    SENSOR_DHW,
     SENSOR_BRINE_IN,
-    SENSOR_NAMES,
+    SENSOR_DHW,
+    SENSOR_OUTDOOR,
+    SENSOR_RETURN,
+    SENSOR_SUPPLY,
 )
 from custom_components.buderus_wps.sensor import (
     async_setup_platform,
-    BuderusTemperatureSensor,
 )
 
 
@@ -218,8 +216,8 @@ class TestUS1Scenario3RetainsStaleData:
         Then sensors retain their last known values (not "unavailable")
         And entity attributes show staleness metadata
         """
-        from unittest.mock import MagicMock
         import time
+        from unittest.mock import MagicMock
 
         entities_added = []
         mock_hass.data[DOMAIN] = {"coordinator": mock_coordinator}
@@ -307,8 +305,8 @@ class TestUS1Scenario3RetainsStaleData:
         When CAN bus communication recovers
         Then sensors update to fresh values and data_is_stale becomes false
         """
-        from unittest.mock import MagicMock
         import time
+        from unittest.mock import MagicMock
 
         entities_added = []
         mock_hass.data[DOMAIN] = {"coordinator": mock_coordinator}

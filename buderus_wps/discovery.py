@@ -128,16 +128,22 @@ class ParameterDiscovery:
         try:
             # Parse fixed header (18 bytes)
             # PROTOCOL: unpack("nH14NNc", ...)
-            idx = struct.unpack_from('>H', data, offset)[0]  # n = unsigned short, big-endian
-            extid_bytes = data[offset + 2:offset + 9]  # H14 = 7 bytes -> 14 hex chars
+            idx = struct.unpack_from(">H", data, offset)[
+                0
+            ]  # n = unsigned short, big-endian
+            extid_bytes = data[offset + 2 : offset + 9]  # H14 = 7 bytes -> 14 hex chars
             extid = extid_bytes.hex().upper()
-            max_unsigned = struct.unpack_from('>I', data, offset + 9)[0]  # N = unsigned int, big-endian
-            min_unsigned = struct.unpack_from('>I', data, offset + 13)[0]  # N = unsigned int, big-endian
-            name_len = struct.unpack_from('b', data, offset + 17)[0]  # c = signed char
+            max_unsigned = struct.unpack_from(">I", data, offset + 9)[
+                0
+            ]  # N = unsigned int, big-endian
+            min_unsigned = struct.unpack_from(">I", data, offset + 13)[
+                0
+            ]  # N = unsigned int, big-endian
+            name_len = struct.unpack_from("b", data, offset + 17)[0]  # c = signed char
 
             # PROTOCOL: Convert unsigned to signed (like FHEM: unpack 'l*', pack 'L*', $val)
-            max_val = struct.unpack('i', struct.pack('I', max_unsigned))[0]
-            min_val = struct.unpack('i', struct.pack('I', min_unsigned))[0]
+            max_val = struct.unpack("i", struct.pack("I", max_unsigned))[0]
+            min_val = struct.unpack("i", struct.pack("I", min_unsigned))[0]
 
             # PROTOCOL: Validate name length (len > 1 && len < 100) from fhem line 2139
             if name_len < ParameterDiscovery.MIN_NAME_LENGTH:
@@ -147,23 +153,32 @@ class ParameterDiscovery:
 
             # Check if we have enough data for name
             name_start = offset + 18
-            name_end = name_start + name_len - 1  # len-1 bytes (excluding null terminator)
+            name_end = (
+                name_start + name_len - 1
+            )  # len-1 bytes (excluding null terminator)
             if name_end > len(data):
                 return None, -1
 
             # Extract name (PROTOCOL: substr(...,$i1+18,$len2-1))
             name_bytes = data[name_start:name_end]
-            name = name_bytes.decode('ascii', errors='replace').rstrip('\x00')
+            name = name_bytes.decode("ascii", errors="replace").rstrip("\x00")
+
+            # Look up format and read flag from static data
+            # Discovery protocol doesn't include format/read, so we get it from FHEM defaults
+            from .parameter_data import get_format_for_name, get_read_flag_for_name
+
+            format_type = get_format_for_name(name) or "int"
+            read_flag = get_read_flag_for_name(name) or 0
 
             # Build element dict
             element = {
-                'idx': idx,
-                'extid': extid,
-                'max': max_val,
-                'min': min_val,
-                'format': 'int',  # Default format
-                'read': 0,  # Default to writable (discovery doesn't provide this)
-                'text': name
+                "idx": idx,
+                "extid": extid,
+                "max": max_val,
+                "min": min_val,
+                "format": format_type,  # From FHEM static data
+                "read": read_flag,  # From FHEM static data
+                "text": name,
             }
 
             # PROTOCOL: Next element at $i1 += 18+$len2
@@ -191,10 +206,10 @@ class ParameterDiscovery:
 
         return CANMessage(
             arbitration_id=can_id,
-            data=b'',
+            data=b"",
             is_extended_id=True,
             is_remote_frame=True,
-            _requested_dlc=dlc
+            _requested_dlc=dlc,
         )
 
     def _create_data_message(self, can_id: int, data: bytes) -> Any:
@@ -210,10 +225,7 @@ class ParameterDiscovery:
         from buderus_wps.can_message import CANMessage
 
         return CANMessage(
-            arbitration_id=can_id,
-            data=data,
-            is_extended_id=True,
-            is_remote_frame=False
+            arbitration_id=can_id, data=data, is_extended_id=True, is_remote_frame=False
         )
 
     def _request_element_count(self) -> int:
@@ -262,9 +274,9 @@ class ParameterDiscovery:
         # The count is actually the total bytes of element data
         # In FHEM: readCounter from first bytes of response
         if len(response.data) >= 4:
-            count = struct.unpack('>I', response.data[:4])[0]
+            count: int = struct.unpack(">I", response.data[:4])[0]
         else:
-            count = response.data[0]
+            count = int(response.data[0])
 
         logger.info("Element data size: %d bytes", count)
         return count
@@ -294,7 +306,7 @@ class ParameterDiscovery:
 
         # Build data request payload: 4 bytes length + 4 bytes offset (big-endian)
         # PROTOCOL: T01FD3FE08[length:8hex][offset:8hex]
-        request_data = struct.pack('>II', length, offset)
+        request_data = struct.pack(">II", length, offset)
         data_request = self._create_data_message(self.ELEMENT_DATA_SEND, request_data)
 
         # PROTOCOL: FHEM sends both messages quickly without waiting for response
@@ -316,20 +328,19 @@ class ParameterDiscovery:
             chunk_data = self._adapter.receive_stream(
                 expected_bytes=expected_bytes,
                 timeout=self.CHUNK_READ_TIMEOUT,
-                frame_filter=self.ELEMENT_DATA_RECV
+                frame_filter=self.ELEMENT_DATA_RECV,
             )
-            logger.debug(
-                "Stream received: %d bytes",
-                len(chunk_data)
-            )
+            logger.debug("Stream received: %d bytes", len(chunk_data))
         except Exception as e:
             # Partial data is acceptable - might be end of element data
             logger.debug("Stream ended early: %s", e)
-            chunk_data = b''
+            chunk_data = b""
 
         logger.info(
             "Chunk complete: offset=%d, received=%d/%d bytes",
-            offset, len(chunk_data), expected_bytes
+            offset,
+            len(chunk_data),
+            expected_bytes,
         )
         return bytes(chunk_data)
 
@@ -357,16 +368,18 @@ class ParameterDiscovery:
                 continue
 
             # PROTOCOL: Validate idx is increasing (idx > $idLast) from line 2138
-            if element['idx'] <= last_idx:
+            if element["idx"] <= last_idx:
                 logger.warning(
                     "Non-increasing idx at offset %d: %d <= %d",
-                    offset, element['idx'], last_idx
+                    offset,
+                    element["idx"],
+                    last_idx,
                 )
                 offset += 1
                 continue
 
             elements.append(element)
-            last_idx = element['idx']
+            last_idx = element["idx"]
             offset = next_offset
 
             if len(elements) % 100 == 0:
@@ -414,7 +427,9 @@ class ParameterDiscovery:
 
             logger.info(
                 "Fetching chunk: offset=%d, size=%d (%.1f%% complete)",
-                offset, chunk_size, (offset / element_count) * 100
+                offset,
+                chunk_size,
+                (offset / element_count) * 100,
             )
 
             chunk = self._request_element_chunk(offset, chunk_size)

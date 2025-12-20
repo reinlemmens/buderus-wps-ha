@@ -22,7 +22,7 @@ Element data format per entry (18 bytes header + variable name):
 import logging
 import struct
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -98,7 +98,7 @@ class ElementListParser:
         # PROTOCOL: Count is in first 4 bytes, big-endian unsigned
         # Actually FHEM uses: ($value1 >> 24) which suggests only first byte
         # But full 4-byte count is safer for large element lists
-        count = struct.unpack(">I", data[:4])[0]
+        count: int = struct.unpack(">I", data[:4])[0]
         return count
 
     def parse_data_chunk(self, data: bytes) -> List[DiscoveredElement]:
@@ -132,7 +132,7 @@ class ElementListParser:
 
     def _parse_single_element(
         self, data: bytes, offset: int
-    ) -> tuple[DiscoveredElement | None, int]:
+    ) -> Tuple[Optional[DiscoveredElement], int]:
         """Parse a single element from data at given offset.
 
         Args:

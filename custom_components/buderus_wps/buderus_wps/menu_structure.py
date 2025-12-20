@@ -18,7 +18,7 @@ Menu Structure (from user manual Table 3):
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, List, Optional, Tuple
 
 
 @dataclass
@@ -43,7 +43,7 @@ class MenuItem:
     readable: bool = True
     writable: bool = False
     value_range: Optional[Tuple[Any, Any]] = None
-    children: List["MenuItem"] = field(default_factory=list)
+    children: List[MenuItem] = field(default_factory=list)
     format: Optional[str] = None
 
 
@@ -228,7 +228,7 @@ def build_menu_tree() -> MenuItem:
                     MenuItem(
                         name="Temperature",
                         description="DHW setpoint temperature (20-65°C)",
-                        parameter=DHW_PARAMS["setpoint"],
+                        parameter=str(DHW_PARAMS["setpoint"]),
                         readable=True,
                         writable=True,
                         value_range=(20, 65),
@@ -237,7 +237,7 @@ def build_menu_tree() -> MenuItem:
                     MenuItem(
                         name="Stop Temperature",
                         description="Temperature to stop DHW charging",
-                        parameter=DHW_PARAMS["stop_temp"],
+                        parameter=str(DHW_PARAMS["stop_temp"]),
                         readable=True,
                         writable=True,
                         format="temp",
@@ -245,7 +245,7 @@ def build_menu_tree() -> MenuItem:
                     MenuItem(
                         name="Extra Duration",
                         description="Extra hot water duration (minutes)",
-                        parameter=DHW_PARAMS["extra_duration"],
+                        parameter=str(DHW_PARAMS["extra_duration"]),
                         readable=True,
                         writable=True,
                         format="minutes",
@@ -253,7 +253,7 @@ def build_menu_tree() -> MenuItem:
                     MenuItem(
                         name="Program Mode",
                         description="DHW program selection (Always On/Program 1/Program 2)",
-                        parameter=DHW_PARAMS["program_mode"],
+                        parameter=str(DHW_PARAMS["program_mode"]),
                         readable=True,
                         writable=True,
                         format="enum",

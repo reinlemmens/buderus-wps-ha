@@ -18,7 +18,6 @@ CAN ID Structure for Broadcast Data (Hardware Verified 2025-12-05):
 from dataclasses import dataclass
 from typing import Optional, Tuple
 
-
 # CAN ID Prefix Constants (Bits 31-24)
 # PROTOCOL: Prefixes identify the type of CAN message
 CAN_PREFIX_DATA = 0x0C  # Response/data frame prefix

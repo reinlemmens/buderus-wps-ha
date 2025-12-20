@@ -7,8 +7,8 @@ import pytest
 # conftest.py sets up HA mocks at import time
 from custom_components.buderus_wps.const import DOMAIN
 from custom_components.buderus_wps.switch import (
-    async_setup_platform,
     BuderusEnergyBlockSwitch,
+    async_setup_platform,
 )
 from tests.conftest import MockBuderusData
 
@@ -17,9 +17,7 @@ class TestEnergyBlockSwitchDataFlow:
     """Test energy block switch data flow from coordinator."""
 
     @pytest.mark.asyncio
-    async def test_only_energy_block_switch_created(
-        self, mock_hass, mock_coordinator
-    ):
+    async def test_only_energy_block_switch_created(self, mock_hass, mock_coordinator):
         """Only energy block switch should be created (DHW extra is now a number)."""
         entities_added = []
 
@@ -58,9 +56,7 @@ class TestEnergyBlockSwitchDataFlow:
         assert len(entities_added) == 0
 
     @pytest.mark.asyncio
-    async def test_switch_reflects_coordinator_state(
-        self, mock_hass, mock_coordinator
-    ):
+    async def test_switch_reflects_coordinator_state(self, mock_hass, mock_coordinator):
         """Energy block switch state must match coordinator data."""
         entities_added = []
         # Energy blocking is enabled when both modes are set to "Off"
@@ -79,9 +75,7 @@ class TestEnergyBlockSwitchDataFlow:
         assert switch.is_on is True
 
     @pytest.mark.asyncio
-    async def test_switch_updates_when_state_changes(
-        self, mock_hass, mock_coordinator
-    ):
+    async def test_switch_updates_when_state_changes(self, mock_hass, mock_coordinator):
         """Switch updates when coordinator data changes."""
         entities_added = []
         # Start with automatic operation (not blocked)
@@ -123,9 +117,7 @@ class TestEnergyBlockCommands:
     """Test energy block switch commands."""
 
     @pytest.mark.asyncio
-    async def test_turn_on_enables_blocking(
-        self, mock_hass, mock_coordinator
-    ):
+    async def test_turn_on_enables_blocking(self, mock_hass, mock_coordinator):
         """Turning on switch should enable energy blocking."""
         entities_added = []
         mock_hass.data[DOMAIN] = {"coordinator": mock_coordinator}
@@ -145,9 +137,7 @@ class TestEnergyBlockCommands:
         mock_coordinator.async_set_dhw_program_mode.assert_called_with(2)
 
     @pytest.mark.asyncio
-    async def test_turn_off_disables_blocking(
-        self, mock_hass, mock_coordinator
-    ):
+    async def test_turn_off_disables_blocking(self, mock_hass, mock_coordinator):
         """Turning off switch should disable energy blocking."""
         entities_added = []
         mock_hass.data[DOMAIN] = {"coordinator": mock_coordinator}

@@ -12,8 +12,8 @@ Acceptance Scenarios:
 """
 
 import json
+
 import pytest
-from pathlib import Path
 
 from buderus_wps.cache import ParameterCache
 from buderus_wps.parameter_data import PARAMETER_DATA
@@ -29,16 +29,42 @@ def temp_cache_path(tmp_path):
 def sample_discovered_params():
     """Simulate discovered parameters."""
     return [
-        {"idx": 0, "extid": "814A53C66A0802", "max": 0, "min": 0, "format": "int", "read": 0, "text": "ACCESSORIES_CONNECTED_BITMASK"},
-        {"idx": 1, "extid": "61E1E1FC660023", "max": 5, "min": 0, "format": "int", "read": 0, "text": "ACCESS_LEVEL"},
-        {"idx": 11, "extid": "E555E4E11002E9", "max": 40, "min": -30, "format": "int", "read": 0, "text": "ADDITIONAL_BLOCK_HIGH_T2_TEMP"},
+        {
+            "idx": 0,
+            "extid": "814A53C66A0802",
+            "max": 0,
+            "min": 0,
+            "format": "int",
+            "read": 0,
+            "text": "ACCESSORIES_CONNECTED_BITMASK",
+        },
+        {
+            "idx": 1,
+            "extid": "61E1E1FC660023",
+            "max": 5,
+            "min": 0,
+            "format": "int",
+            "read": 0,
+            "text": "ACCESS_LEVEL",
+        },
+        {
+            "idx": 11,
+            "extid": "E555E4E11002E9",
+            "max": 40,
+            "min": -30,
+            "format": "int",
+            "read": 0,
+            "text": "ADDITIONAL_BLOCK_HIGH_T2_TEMP",
+        },
     ]
 
 
 class TestAcceptanceScenario1:
     """Scenario 1: Discovered parameters persist to cache storage."""
 
-    def test_parameters_persisted_after_save(self, temp_cache_path, sample_discovered_params):
+    def test_parameters_persisted_after_save(
+        self, temp_cache_path, sample_discovered_params
+    ):
         """Given parameters are discovered successfully,
         When the discovery completes,
         Then the system persists discovered parameters to cache storage."""
@@ -50,12 +76,14 @@ class TestAcceptanceScenario1:
         assert result is True
         assert temp_cache_path.exists()
 
-    def test_persisted_parameters_contain_all_fields(self, temp_cache_path, sample_discovered_params):
+    def test_persisted_parameters_contain_all_fields(
+        self, temp_cache_path, sample_discovered_params
+    ):
         """Persisted cache contains all parameter fields."""
         cache = ParameterCache(temp_cache_path)
         cache.save(sample_discovered_params)
 
-        with open(temp_cache_path, 'r') as f:
+        with open(temp_cache_path) as f:
             data = json.load(f)
 
         assert "parameters" in data
@@ -70,12 +98,14 @@ class TestAcceptanceScenario1:
         assert "format" in first_param
         assert "text" in first_param
 
-    def test_cache_includes_integrity_checksum(self, temp_cache_path, sample_discovered_params):
+    def test_cache_includes_integrity_checksum(
+        self, temp_cache_path, sample_discovered_params
+    ):
         """Cache includes checksum for integrity verification."""
         cache = ParameterCache(temp_cache_path)
         cache.save(sample_discovered_params)
 
-        with open(temp_cache_path, 'r') as f:
+        with open(temp_cache_path) as f:
             data = json.load(f)
 
         assert "checksum" in data
@@ -85,7 +115,9 @@ class TestAcceptanceScenario1:
 class TestAcceptanceScenario2:
     """Scenario 2: Valid cache loads without device discovery."""
 
-    def test_valid_cache_loads_parameters(self, temp_cache_path, sample_discovered_params):
+    def test_valid_cache_loads_parameters(
+        self, temp_cache_path, sample_discovered_params
+    ):
         """Given a valid cache exists,
         When the developer initializes the heat pump class,
         Then parameters are loaded from cache without device discovery."""
@@ -100,7 +132,9 @@ class TestAcceptanceScenario2:
         assert loaded is not None
         assert len(loaded) == 3
 
-    def test_loaded_parameters_match_original(self, temp_cache_path, sample_discovered_params):
+    def test_loaded_parameters_match_original(
+        self, temp_cache_path, sample_discovered_params
+    ):
         """Loaded parameters match what was originally saved."""
         cache = ParameterCache(temp_cache_path)
         cache.save(sample_discovered_params)
@@ -125,23 +159,25 @@ class TestAcceptanceScenario3:
         cache.save(sample_discovered_params)
 
         # Corrupt the cache file
-        with open(temp_cache_path, 'w') as f:
+        with open(temp_cache_path, "w") as f:
             f.write("corrupted data {{{")
 
         new_cache = ParameterCache(temp_cache_path)
         assert new_cache.is_valid() is False
         assert new_cache.load() is None
 
-    def test_tampered_parameters_detected(self, temp_cache_path, sample_discovered_params):
+    def test_tampered_parameters_detected(
+        self, temp_cache_path, sample_discovered_params
+    ):
         """Modified parameters are detected via checksum."""
         cache = ParameterCache(temp_cache_path)
         cache.save(sample_discovered_params)
 
         # Tamper with parameters
-        with open(temp_cache_path, 'r') as f:
+        with open(temp_cache_path) as f:
             data = json.load(f)
         data["parameters"][0]["max"] = 12345
-        with open(temp_cache_path, 'w') as f:
+        with open(temp_cache_path, "w") as f:
             json.dump(data, f)
 
         new_cache = ParameterCache(temp_cache_path)
@@ -168,7 +204,9 @@ class TestAcceptanceScenario3:
 class TestAcceptanceScenario4:
     """Scenario 4: Firmware version change invalidates cache."""
 
-    def test_version_mismatch_invalidates_cache(self, temp_cache_path, sample_discovered_params):
+    def test_version_mismatch_invalidates_cache(
+        self, temp_cache_path, sample_discovered_params
+    ):
         """Given the device firmware version changes,
         When the developer connects,
         Then the system invalidates cache and re-discovers parameters."""
@@ -176,10 +214,10 @@ class TestAcceptanceScenario4:
         cache.save(sample_discovered_params, firmware="v1.0.0")
 
         # Simulate cache version mismatch
-        with open(temp_cache_path, 'r') as f:
+        with open(temp_cache_path) as f:
             data = json.load(f)
         data["version"] = "0.9.0"  # Old version
-        with open(temp_cache_path, 'w') as f:
+        with open(temp_cache_path, "w") as f:
             json.dump(data, f)
 
         new_cache = ParameterCache(temp_cache_path)
@@ -194,7 +232,9 @@ class TestAcceptanceScenario4:
         cache.invalidate()
         assert not temp_cache_path.exists()
 
-    def test_can_recreate_cache_after_invalidation(self, temp_cache_path, sample_discovered_params):
+    def test_can_recreate_cache_after_invalidation(
+        self, temp_cache_path, sample_discovered_params
+    ):
         """Cache can be recreated after invalidation."""
         cache = ParameterCache(temp_cache_path)
         cache.save(sample_discovered_params)

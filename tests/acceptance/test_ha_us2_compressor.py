@@ -14,12 +14,12 @@ from __future__ import annotations
 
 import pytest
 
-# conftest.py sets up HA mocks at import time
-from custom_components.buderus_wps.const import DOMAIN
 from custom_components.buderus_wps.binary_sensor import (
     async_setup_platform,
-    BuderusCompressorSensor,
 )
+
+# conftest.py sets up HA mocks at import time
+from custom_components.buderus_wps.const import DOMAIN
 
 
 class TestUS2Scenario1CompressorRunning:
@@ -70,9 +70,7 @@ class TestUS2Scenario1CompressorRunning:
         assert compressor._attr_device_class == "running"
 
     @pytest.mark.asyncio
-    async def test_compressor_has_correct_name(
-        self, mock_hass, mock_coordinator
-    ):
+    async def test_compressor_has_correct_name(self, mock_hass, mock_coordinator):
         """
         The compressor sensor should be named "Compressor"
         (device info adds "Heat Pump" prefix).
@@ -141,9 +139,9 @@ class TestUS2Scenario3UnavailableOnDisconnect:
         )
 
         compressor = entities_added[0]
-        assert compressor.is_on is None, (
-            "Compressor should return None when disconnected"
-        )
+        assert (
+            compressor.is_on is None
+        ), "Compressor should return None when disconnected"
 
     @pytest.mark.asyncio
     async def test_compressor_becomes_unavailable_on_data_loss(

@@ -256,15 +256,6 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             USBtinAdapter,
         )
         from .buderus_wps.menu_api import MenuAPI
-        from .buderus_wps.exceptions import (
-            TimeoutError as BuderusTimeoutError,
-            DeviceCommunicationError,
-            DeviceDisconnectedError,
-            DeviceInitializationError,
-            DeviceNotFoundError,
-            DevicePermissionError,
-            ReadTimeoutError,
-        )
 
         _LOGGER.debug("Connecting to heat pump at %s", self.port)
 
@@ -317,7 +308,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
 
             try:
                 # Attempt to fetch fresh data
-                fresh_data = await self.hass.async_add_executor_job(
+                fresh_data: BuderusData = await self.hass.async_add_executor_job(
                     self._sync_fetch_data
                 )
 
@@ -404,6 +395,13 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             SENSOR_BRINE_IN: None,
         }
 
+        # Pre-fill with last known good data to prevent "Unknown" flapping
+        # if a specific sensor broadcast is missed in this cycle
+        if self._last_known_good_data is not None:
+            for key, value in self._last_known_good_data.temperatures.items():
+                if value is not None:
+                    temperatures[key] = value
+
         # Try to collect broadcast data
         broadcast_success = False
         try:
@@ -438,27 +436,35 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             if self._last_known_good_data is not None:
                 temperatures = self._last_known_good_data.temperatures.copy()
 
-        # Get compressor status from broadcast cache (best-effort)
-        # Uses COMPRESSOR_REAL_FREQUENCY (idx=278) from broadcast instead of RTR
+        # Get compressor status via RTR request (best-effort)
+        # PROTOCOL: COMPRESSOR_REAL_FREQUENCY returns 0 on some heat pump models
+        # Use COMPRESSOR_DHW_REQUEST and COMPRESSOR_HEATING_REQUEST instead
+        # These have read=1 (polled) and indicate actual compressor demand
         compressor_running = False
+        dhw_request = 0
+        heating_request = 0
         try:
-            # Read compressor frequency from broadcast cache (idx=278)
-            reading = cache.get_by_idx(278)  # COMPRESSOR_REAL_FREQUENCY idx
-            if reading is not None:
-                compressor_running = reading.raw_value > 0
-                _LOGGER.debug(
-                    "Compressor frequency from broadcast: %d Hz (running=%s)",
-                    reading.raw_value,
-                    compressor_running,
-                )
-            else:
-                _LOGGER.debug("No compressor frequency broadcast found in cache")
-                # Use stale value if available
-                if self._last_known_good_data is not None:
-                    compressor_running = self._last_known_good_data.compressor_running
+            result = self._client.read_parameter("COMPRESSOR_DHW_REQUEST")
+            dhw_request = result.get("decoded", 0) or 0
         except Exception as err:
-            _LOGGER.debug("Could not read compressor status from broadcast: %s", err)
-            # Use stale value if available
+            _LOGGER.debug("Could not read COMPRESSOR_DHW_REQUEST: %s", err)
+        try:
+            result = self._client.read_parameter("COMPRESSOR_HEATING_REQUEST")
+            heating_request = result.get("decoded", 0) or 0
+        except Exception as err:
+            _LOGGER.debug("Could not read COMPRESSOR_HEATING_REQUEST: %s", err)
+
+        # Compressor is running if either DHW or heating request is active
+        compressor_running = (dhw_request > 0) or (heating_request > 0)
+        _LOGGER.debug(
+            "Compressor status: DHW_REQUEST=%s, HEATING_REQUEST=%s, running=%s",
+            dhw_request,
+            heating_request,
+            compressor_running,
+        )
+
+        # Fallback to stale value if both reads failed
+        if dhw_request == 0 and heating_request == 0:
             if self._last_known_good_data is not None:
                 compressor_running = self._last_known_good_data.compressor_running
 

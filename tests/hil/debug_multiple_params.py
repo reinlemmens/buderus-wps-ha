@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Debug script to test multiple parameters with different characteristics."""
 
-import time
 import logging
-logging.basicConfig(level=logging.INFO, format='%(message)s')
+import time
+
+logging.basicConfig(level=logging.INFO, format="%(message)s")
 
 from buderus_wps import USBtinAdapter
 from buderus_wps.can_message import CANMessage
@@ -18,7 +19,7 @@ TEST_PARAMS = [
     (8, "OUTDOOR_TEMP", -400, 400, "tem"),  # Outdoor temp
 ]
 
-adapter = USBtinAdapter('/dev/ttyACM0', timeout=5.0)
+adapter = USBtinAdapter("/dev/ttyACM0", timeout=5.0)
 adapter.connect()
 
 print("Testing multiple parameters:")
@@ -34,14 +35,11 @@ for idx, name, min_val, max_val, fmt in TEST_PARAMS:
 
     # Send RTR request
     request = CANMessage(
-        arbitration_id=request_id,
-        data=b'',
-        is_extended_id=True,
-        is_remote_frame=True
+        arbitration_id=request_id, data=b"", is_extended_id=True, is_remote_frame=True
     )
 
     adapter.flush_input_buffer()
-    adapter._write_command(request.to_usbtin_format().encode('ascii'))
+    adapter._write_command(request.to_usbtin_format().encode("ascii"))
 
     # Wait for response on expected ID (up to 2 seconds)
     found_response = False
@@ -52,7 +50,7 @@ for idx, name, min_val, max_val, fmt in TEST_PARAMS:
             data_hex = frame.data.hex() if frame.data else ""
             print(f"  Response: dlc={frame.dlc} data=0x{data_hex}")
             if frame.dlc >= 2:
-                raw = int.from_bytes(frame.data[:2], 'big')
+                raw = int.from_bytes(frame.data[:2], "big")
                 if fmt == "tem":
                     val = raw / 10.0
                     print(f"  Decoded: {val}°C (raw={raw})")
@@ -64,7 +62,7 @@ for idx, name, min_val, max_val, fmt in TEST_PARAMS:
             break
 
     if not found_response:
-        print(f"  No response on expected ID")
+        print("  No response on expected ID")
 
     time.sleep(0.5)  # Brief pause between requests
 

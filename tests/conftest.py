@@ -8,8 +8,8 @@ from __future__ import annotations
 
 import sys
 from dataclasses import dataclass
-from typing import Any, Optional
-from unittest.mock import MagicMock, AsyncMock
+from typing import Optional
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 

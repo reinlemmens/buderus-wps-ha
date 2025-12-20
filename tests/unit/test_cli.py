@@ -1,6 +1,6 @@
 import argparse
-import sys
 import pathlib
+import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
@@ -23,9 +23,25 @@ def test_build_parser_has_commands():
 
 class DummyClient:
     def __init__(self, parameters=None, fail_on=None):
-        params = parameters if parameters is not None else [
-            type("P", (), {"text": "X", "idx": 1, "extid": "AA", "min": 0, "max": 1, "format": "int", "read": 0})
-        ]
+        params = (
+            parameters
+            if parameters is not None
+            else [
+                type(
+                    "P",
+                    (),
+                    {
+                        "text": "X",
+                        "idx": 1,
+                        "extid": "AA",
+                        "min": 0,
+                        "max": 1,
+                        "format": "int",
+                        "read": 0,
+                    },
+                )
+            ]
+        )
         self.registry = type("R", (), {"parameters": params})
         self._adapter = type("A", (), {"read_only": False})()
         self.read_value_arg = None
@@ -34,7 +50,19 @@ class DummyClient:
 
     def get(self, x):
         # Return a dummy param
-        return type("P", (), {"text": "X", "idx": 1, "extid": "AA", "min": 0, "max": 1, "format": "int", "read": 0})
+        return type(
+            "P",
+            (),
+            {
+                "text": "X",
+                "idx": 1,
+                "extid": "AA",
+                "min": 0,
+                "max": 1,
+                "format": "int",
+                "read": 0,
+            },
+        )
 
     def read_value(self, name, timeout=5.0):
         self.read_value_arg = name
@@ -88,8 +116,32 @@ def test_cmd_write_blocks_dry_run(monkeypatch):
 
 def test_cmd_dump_success_human(capsys):
     params = [
-        type("P", (), {"text": "FOO", "idx": 1, "extid": "01", "min": 0, "max": 10, "format": "int", "read": 0}),
-        type("P", (), {"text": "BAR", "idx": 2, "extid": "02", "min": 0, "max": 10, "format": "int", "read": 0}),
+        type(
+            "P",
+            (),
+            {
+                "text": "FOO",
+                "idx": 1,
+                "extid": "01",
+                "min": 0,
+                "max": 10,
+                "format": "int",
+                "read": 0,
+            },
+        ),
+        type(
+            "P",
+            (),
+            {
+                "text": "BAR",
+                "idx": 2,
+                "extid": "02",
+                "min": 0,
+                "max": 10,
+                "format": "int",
+                "read": 0,
+            },
+        ),
     ]
     client = DummyClient(parameters=params)
     args = argparse.Namespace(json=False, timeout=5.0)
@@ -101,8 +153,32 @@ def test_cmd_dump_success_human(capsys):
 
 def test_cmd_dump_json_with_error(capsys):
     params = [
-        type("P", (), {"text": "GOOD", "idx": 1, "extid": "01", "min": 0, "max": 10, "format": "int", "read": 0}),
-        type("P", (), {"text": "BAD", "idx": 2, "extid": "02", "min": 0, "max": 10, "format": "int", "read": 0}),
+        type(
+            "P",
+            (),
+            {
+                "text": "GOOD",
+                "idx": 1,
+                "extid": "01",
+                "min": 0,
+                "max": 10,
+                "format": "int",
+                "read": 0,
+            },
+        ),
+        type(
+            "P",
+            (),
+            {
+                "text": "BAD",
+                "idx": 2,
+                "extid": "02",
+                "min": 0,
+                "max": 10,
+                "format": "int",
+                "read": 0,
+            },
+        ),
     ]
     client = DummyClient(parameters=params, fail_on={"BAD"})
     args = argparse.Namespace(json=True, timeout=5.0)
@@ -143,6 +219,7 @@ def test_main_list_connects(monkeypatch):
 
 # Tests for broadcast read functionality (Feature 012)
 
+
 class TestBroadcastReadArguments:
     """Test CLI argument parsing for broadcast read feature."""
 
@@ -161,7 +238,9 @@ class TestBroadcastReadArguments:
     def test_read_duration_argument(self):
         """Test --duration argument is recognized."""
         parser = cli.build_parser()
-        args = parser.parse_args(["read", "GT2_TEMP", "--broadcast", "--duration", "10"])
+        args = parser.parse_args(
+            ["read", "GT2_TEMP", "--broadcast", "--duration", "10"]
+        )
         assert args.duration == 10.0
 
     def test_read_duration_default(self):
@@ -185,7 +264,9 @@ class TestBroadcastReadArguments:
     def test_read_all_broadcast_args_combined(self):
         """Test all broadcast-related arguments can be combined."""
         parser = cli.build_parser()
-        args = parser.parse_args(["read", "GT2_TEMP", "--broadcast", "--duration", "15", "--json"])
+        args = parser.parse_args(
+            ["read", "GT2_TEMP", "--broadcast", "--duration", "15", "--json"]
+        )
         assert args.broadcast is True
         assert args.duration == 15.0
         assert args.json is True

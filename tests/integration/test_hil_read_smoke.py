@@ -6,12 +6,12 @@ Skipped by default.
 """
 
 import os
+
 import pytest
 
-from buderus_wps import USBtinAdapter, HeatPumpClient
+from buderus_wps import HeatPumpClient, USBtinAdapter
+from buderus_wps.exceptions import DeviceCommunicationError, TimeoutError
 from buderus_wps.parameter_registry import ParameterRegistry
-from buderus_wps.exceptions import TimeoutError, DeviceCommunicationError
-
 
 pytestmark = pytest.mark.skipif(os.getenv("HIL") != "1", reason="HIL not enabled")
 

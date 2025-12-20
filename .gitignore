@@ -30,3 +30,16 @@ htmlcov/
 
 # SSH keys (private)
 .devcontainer/.ssh/
+hass-env.sh
+
+# Debug/temp files
+logfile
+fhem/fhemoutput.txt
+
+# Local settings
+.claude/settings.local.json
+
+# Release artifacts
+*.zip
+.build/
+tmp/

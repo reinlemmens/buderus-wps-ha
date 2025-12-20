@@ -37,9 +37,7 @@ class TestEnergyBlockSwitch:
         switch = BuderusEnergyBlockSwitch(mock_coordinator)
         assert switch.is_on is False
 
-    def test_switch_returns_none_when_disconnected(
-        self, mock_coordinator_disconnected
-    ):
+    def test_switch_returns_none_when_disconnected(self, mock_coordinator_disconnected):
         """Switch returns None when coordinator has no data."""
         switch = BuderusEnergyBlockSwitch(mock_coordinator_disconnected)
         assert switch.is_on is None

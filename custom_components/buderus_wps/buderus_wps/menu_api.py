@@ -17,8 +17,8 @@ Example:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date, datetime, time
-from typing import Any, Dict, List, Optional, TYPE_CHECKING
+from datetime import date, datetime
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, cast
 
 from .enums import (
     AlarmCategory,
@@ -31,22 +31,21 @@ from .exceptions import (
     AlarmNotClearableError,
     CircuitNotAvailableError,
     MenuNavigationError,
-    ParameterNotFoundError,
     ReadOnlyError,
     ValidationError,
 )
-from .schedule_codec import ScheduleCodec, ScheduleSlot, WeeklySchedule
 from .menu_structure import (
-    MenuItem,
+    ALARM_PARAMS,
+    CIRCUIT_PARAMS,
+    DHW_PARAMS,
+    ENERGY_PARAMS,
     MENU_ROOT,
     STATUS_PARAMS,
-    DHW_PARAMS,
-    CIRCUIT_PARAMS,
     VACATION_PARAMS,
-    ENERGY_PARAMS,
-    ALARM_PARAMS,
+    MenuItem,
     get_circuit_param,
 )
+from .schedule_codec import ScheduleCodec, WeeklySchedule
 
 if TYPE_CHECKING:
     from .heat_pump import HeatPumpClient
@@ -57,7 +56,15 @@ if TYPE_CHECKING:
 # =============================================================================
 
 # Day names for schedule iteration (Monday=0, Sunday=6)
-WEEKDAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+WEEKDAYS = [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday",
+]
 
 
 # =============================================================================
@@ -111,7 +118,7 @@ class Alarm:
 class StatusView:
     """Read-only access to heat pump status and temperatures."""
 
-    def __init__(self, client: "HeatPumpClient") -> None:
+    def __init__(self, client: HeatPumpClient) -> None:
         self._client = client
 
     def _read_temp(self, param_name: str) -> Optional[float]:
@@ -189,7 +196,9 @@ class StatusView:
         Based on COMPRESSOR_DHW_REQUEST and COMPRESSOR_HEATING_REQUEST parameters.
         """
         try:
-            dhw_result = self._client.read_parameter(STATUS_PARAMS["compressor_dhw_request"])
+            dhw_result = self._client.read_parameter(
+                STATUS_PARAMS["compressor_dhw_request"]
+            )
             dhw_active = int(dhw_result.get("decoded", 0)) > 0
             if dhw_active:
                 return "DHW"
@@ -197,7 +206,9 @@ class StatusView:
             pass
 
         try:
-            heat_result = self._client.read_parameter(STATUS_PARAMS["compressor_heating_request"])
+            heat_result = self._client.read_parameter(
+                STATUS_PARAMS["compressor_heating_request"]
+            )
             heat_active = int(heat_result.get("decoded", 0)) > 0
             if heat_active:
                 return "Heating"
@@ -237,7 +248,7 @@ class StatusView:
 class HotWaterController:
     """Control DHW (hot water) settings and schedules."""
 
-    def __init__(self, client: "HeatPumpClient") -> None:
+    def __init__(self, client: HeatPumpClient) -> None:
         self._client = client
 
     @property
@@ -310,7 +321,7 @@ class HotWaterController:
         slots = []
 
         for day in WEEKDAYS:
-            param_idx = DHW_PARAMS[f"{prefix}{day}"]
+            param_idx = cast(int, DHW_PARAMS[f"{prefix}{day}"])
             # PROTOCOL: Use odd index (+1) for sw2 format to get both start and end times
             read_idx = ScheduleCodec.get_sw2_read_index(param_idx)
             raw = self._client.read_value(read_idx)
@@ -331,14 +342,14 @@ class HotWaterController:
             raise ValueError("Program must be 1 or 2")
 
         # Validate all slots before writing
-        for day in range(7):
-            slot = schedule.get_day(day)
+        for day_idx in range(7):
+            slot = schedule.get_day(day_idx)
             slot.validate(resolution_minutes=30)
 
         prefix = f"schedule_p{program}_"
 
         for i, day in enumerate(WEEKDAYS):
-            param_idx = DHW_PARAMS[f"{prefix}{day}"]
+            param_idx = cast(int, DHW_PARAMS[f"{prefix}{day}"])
             slot = schedule.get_day(i)
             encoded = ScheduleCodec.encode(slot)
             self._client.write_value(param_idx, encoded)
@@ -347,7 +358,7 @@ class HotWaterController:
 class Circuit:
     """Control settings for a heating circuit."""
 
-    def __init__(self, client: "HeatPumpClient", number: int) -> None:
+    def __init__(self, client: HeatPumpClient, number: int) -> None:
         self._client = client
         self._number = number
         self._type = CircuitType.UNMIXED if number == 1 else CircuitType.MIXED
@@ -440,7 +451,9 @@ class Circuit:
         """Vacation mode settings for this circuit."""
         # Read vacation parameters for this circuit
         try:
-            start_param = get_circuit_param(VACATION_PARAMS["circuit_start"], self._number)
+            start_param = get_circuit_param(
+                VACATION_PARAMS["circuit_start"], self._number
+            )
             end_param = get_circuit_param(VACATION_PARAMS["circuit_end"], self._number)
 
             start_result = self._client.read_parameter(start_param)
@@ -472,7 +485,7 @@ class Circuit:
 class EnergyView:
     """Read-only access to energy statistics."""
 
-    def __init__(self, client: "HeatPumpClient") -> None:
+    def __init__(self, client: HeatPumpClient) -> None:
         self._client = client
 
     @property
@@ -491,7 +504,7 @@ class EnergyView:
 class AlarmController:
     """Manage alarms and information logs."""
 
-    def __init__(self, client: "HeatPumpClient") -> None:
+    def __init__(self, client: HeatPumpClient) -> None:
         self._client = client
 
     @property
@@ -537,7 +550,10 @@ class AlarmController:
         return entries
 
     def _parse_alarm(
-        self, result: Dict[str, Any], index: int, category: AlarmCategory = AlarmCategory.ALARM
+        self,
+        result: Dict[str, Any],
+        index: int,
+        category: AlarmCategory = AlarmCategory.ALARM,
     ) -> Optional[Alarm]:
         """Parse alarm data from parameter result."""
         decoded = result.get("decoded")
@@ -567,7 +583,7 @@ class AlarmController:
 class VacationController:
     """Manage vacation mode settings."""
 
-    def __init__(self, client: "HeatPumpClient") -> None:
+    def __init__(self, client: HeatPumpClient) -> None:
         self._client = client
 
     def get_circuit(self, circuit: int) -> VacationPeriod:
@@ -656,7 +672,7 @@ class VacationController:
 class MenuNavigator:
     """Navigate the menu hierarchy."""
 
-    def __init__(self, client: "HeatPumpClient") -> None:
+    def __init__(self, client: HeatPumpClient) -> None:
         self._client = client
         self._root = MENU_ROOT
         self._current = MENU_ROOT
@@ -779,7 +795,7 @@ class MenuAPI:
         >>> print(f"Outdoor: {api.status.outdoor_temperature}°C")
     """
 
-    def __init__(self, client: "HeatPumpClient") -> None:
+    def __init__(self, client: HeatPumpClient) -> None:
         """
         Initialize Menu API.
 

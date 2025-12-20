@@ -12,30 +12,27 @@ Tests cover:
 Per Constitution Principle IV: All described functionality must have tests.
 """
 
-import pytest
 from pathlib import Path
-from typing import Dict, Tuple
-from unittest.mock import patch, mock_open
+from unittest.mock import patch
+
+import pytest
 
 from buderus_wps.config import (
-    SensorType,
-    HeatingType,
-    SensorMapping,
+    DEFAULT_SENSOR_MAPPINGS,
     CircuitConfig,
     DHWConfig,
+    HeatingType,
     InstallationConfig,
-    DEFAULT_SENSOR_MAPPINGS,
-    DEFAULT_SENSOR_LABELS,
-    get_default_sensor_map,
-    get_default_config,
-    load_config,
-    _find_config_file,
-    _parse_sensor_mappings,
+    SensorMapping,
+    SensorType,
     _parse_circuits,
     _parse_dhw,
     _parse_labels,
+    _parse_sensor_mappings,
+    get_default_config,
+    get_default_sensor_map,
+    load_config,
 )
-
 
 # =============================================================================
 # SensorMapping Tests

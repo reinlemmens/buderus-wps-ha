@@ -19,7 +19,6 @@ from homeassistant.components.number import NumberMode
 from custom_components.buderus_wps.const import DOMAIN
 from custom_components.buderus_wps.number import (
     async_setup_platform,
-    BuderusDHWExtraDurationNumber,
 )
 from tests.conftest import MockBuderusData
 
@@ -57,9 +56,7 @@ class TestUS4Scenario1SettingDurationStartsProduction:
         mock_coordinator.async_request_refresh.assert_called()
 
     @pytest.mark.asyncio
-    async def test_number_box_has_correct_range(
-        self, mock_hass, mock_coordinator
-    ):
+    async def test_number_box_has_correct_range(self, mock_hass, mock_coordinator):
         """
         The number input box should have range 0-24 hours with step 1.
         """
@@ -84,9 +81,7 @@ class TestUS4Scenario2SettingZeroStopsProduction:
     """Scenario 2: Setting 0 stops DHW extra production."""
 
     @pytest.mark.asyncio
-    async def test_setting_zero_stops_production(
-        self, mock_hass, mock_coordinator
-    ):
+    async def test_setting_zero_stops_production(self, mock_hass, mock_coordinator):
         """
         Given DHW extra is active (duration > 0)
         When I set the slider to 0
@@ -116,9 +111,7 @@ class TestUS4Scenario3SliderShowsRemainingDuration:
     """Scenario 3: Slider shows remaining duration."""
 
     @pytest.mark.asyncio
-    async def test_slider_shows_remaining_hours(
-        self, mock_hass, mock_coordinator
-    ):
+    async def test_slider_shows_remaining_hours(self, mock_hass, mock_coordinator):
         """
         Given DHW extra was activated for 8 hours, 3 hours remaining
         When I view the slider
@@ -179,9 +172,7 @@ class TestUS4Scenario3SliderShowsRemainingDuration:
         assert number.native_value == 4
 
     @pytest.mark.asyncio
-    async def test_slider_shows_zero_when_not_active(
-        self, mock_hass, mock_coordinator
-    ):
+    async def test_slider_shows_zero_when_not_active(self, mock_hass, mock_coordinator):
         """
         Given DHW extra is not active
         When I view the slider
@@ -228,9 +219,7 @@ class TestUS4NumberProperties:
     """Test DHW extra duration number properties."""
 
     @pytest.mark.asyncio
-    async def test_number_has_correct_name(
-        self, mock_hass, mock_coordinator
-    ):
+    async def test_number_has_correct_name(self, mock_hass, mock_coordinator):
         """Number should be named 'DHW Extra Duration'."""
         entities_added = []
         mock_hass.data[DOMAIN] = {"coordinator": mock_coordinator}
@@ -246,9 +235,7 @@ class TestUS4NumberProperties:
         assert number._attr_name == "DHW Extra Duration"
 
     @pytest.mark.asyncio
-    async def test_number_has_correct_unit(
-        self, mock_hass, mock_coordinator
-    ):
+    async def test_number_has_correct_unit(self, mock_hass, mock_coordinator):
         """Number should use hours unit."""
         entities_added = []
         mock_hass.data[DOMAIN] = {"coordinator": mock_coordinator}

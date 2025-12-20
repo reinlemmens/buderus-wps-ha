@@ -5,8 +5,8 @@ invalidation scenarios.
 """
 
 import json
+
 import pytest
-from pathlib import Path
 
 from buderus_wps.cache import ParameterCache
 from buderus_wps.parameter_data import PARAMETER_DATA
@@ -92,10 +92,10 @@ class TestCacheChecksumVerification:
         cache.save(sample_params)
 
         # Manually modify a parameter value
-        with open(cache_path, 'r') as f:
+        with open(cache_path) as f:
             data = json.load(f)
         data["parameters"][0]["max"] = 99999  # Modify max value
-        with open(cache_path, 'w') as f:
+        with open(cache_path, "w") as f:
             json.dump(data, f)
 
         # Load should fail due to checksum mismatch
@@ -109,10 +109,10 @@ class TestCacheChecksumVerification:
         cache.save(sample_params)
 
         # Add a parameter
-        with open(cache_path, 'r') as f:
+        with open(cache_path) as f:
             data = json.load(f)
         data["parameters"].append({"idx": 9999, "text": "FAKE"})
-        with open(cache_path, 'w') as f:
+        with open(cache_path, "w") as f:
             json.dump(data, f)
 
         loaded = cache.load()
@@ -125,10 +125,10 @@ class TestCacheChecksumVerification:
         cache.save(sample_params)
 
         # Remove a parameter
-        with open(cache_path, 'r') as f:
+        with open(cache_path) as f:
             data = json.load(f)
         data["parameters"].pop()
-        with open(cache_path, 'w') as f:
+        with open(cache_path, "w") as f:
             json.dump(data, f)
 
         loaded = cache.load()
@@ -138,7 +138,9 @@ class TestCacheChecksumVerification:
 class TestCacheInvalidation:
     """Test cache invalidation scenarios."""
 
-    def test_invalidate_then_is_valid_returns_false(self, temp_cache_dir, sample_params):
+    def test_invalidate_then_is_valid_returns_false(
+        self, temp_cache_dir, sample_params
+    ):
         """Verify invalidate makes cache invalid."""
         cache_path = temp_cache_dir / "params.json"
         cache = ParameterCache(cache_path)
@@ -161,7 +163,9 @@ class TestCacheInvalidation:
         loaded = cache.load()
         assert loaded is None
 
-    def test_save_after_invalidate_creates_new_cache(self, temp_cache_dir, sample_params):
+    def test_save_after_invalidate_creates_new_cache(
+        self, temp_cache_dir, sample_params
+    ):
         """Verify save works after invalidation."""
         cache_path = temp_cache_dir / "params.json"
         cache = ParameterCache(cache_path)
@@ -183,7 +187,7 @@ class TestCacheMetadata:
         cache = ParameterCache(cache_path)
         cache.save(sample_params, device_id="BUDERUS_001")
 
-        with open(cache_path, 'r') as f:
+        with open(cache_path) as f:
             data = json.load(f)
 
         assert data["device_id"] == "BUDERUS_001"
@@ -194,7 +198,7 @@ class TestCacheMetadata:
         cache = ParameterCache(cache_path)
         cache.save(sample_params, firmware="v2.0.1")
 
-        with open(cache_path, 'r') as f:
+        with open(cache_path) as f:
             data = json.load(f)
 
         assert data["firmware"] == "v2.0.1"
@@ -205,7 +209,7 @@ class TestCacheMetadata:
         cache = ParameterCache(cache_path)
         cache.save(sample_params)
 
-        with open(cache_path, 'r') as f:
+        with open(cache_path) as f:
             data = json.load(f)
 
         assert data["element_count"] == len(sample_params)

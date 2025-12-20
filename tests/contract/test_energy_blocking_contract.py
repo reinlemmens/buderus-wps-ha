@@ -10,7 +10,6 @@ PROTOCOL: Reference FHEM 26_KM273v018.pm
 - ADDITIONAL_BLOCKED (idx 9, extid 00259EEF360272)
 """
 
-import pytest
 
 
 # Phase 3: User Story 1 contract tests (T014-T015)
@@ -24,8 +23,7 @@ class TestCompressorBlockContract:
         from buderus_wps import HeatPump
 
         hp = HeatPump()
-        param = hp.get_parameter_by_name(
-            "COMPRESSOR_E21_EXTERN_BLOCK_BY_E21_EXT_1")
+        param = hp.get_parameter_by_name("COMPRESSOR_E21_EXTERN_BLOCK_BY_E21_EXT_1")
 
         assert param is not None
         assert param.idx == 263

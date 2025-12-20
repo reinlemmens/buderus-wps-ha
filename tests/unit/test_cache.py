@@ -18,11 +18,8 @@ Cache structure (JSON):
 """
 
 import json
-import hashlib
-import tempfile
-from pathlib import Path
 from datetime import datetime
-from unittest.mock import patch
+from pathlib import Path
 
 import pytest
 
@@ -39,9 +36,33 @@ def temp_cache_path(tmp_path):
 def sample_parameters():
     """Sample parameter data for testing."""
     return [
-        {"idx": 0, "extid": "814A53C66A0802", "max": 0, "min": 0, "format": "int", "read": 0, "text": "ACCESSORIES_CONNECTED_BITMASK"},
-        {"idx": 1, "extid": "61E1E1FC660023", "max": 5, "min": 0, "format": "int", "read": 0, "text": "ACCESS_LEVEL"},
-        {"idx": 11, "extid": "E555E4E11002E9", "max": 40, "min": -30, "format": "int", "read": 0, "text": "ADDITIONAL_BLOCK_HIGH_T2_TEMP"},
+        {
+            "idx": 0,
+            "extid": "814A53C66A0802",
+            "max": 0,
+            "min": 0,
+            "format": "int",
+            "read": 0,
+            "text": "ACCESSORIES_CONNECTED_BITMASK",
+        },
+        {
+            "idx": 1,
+            "extid": "61E1E1FC660023",
+            "max": 5,
+            "min": 0,
+            "format": "int",
+            "read": 0,
+            "text": "ACCESS_LEVEL",
+        },
+        {
+            "idx": 11,
+            "extid": "E555E4E11002E9",
+            "max": 40,
+            "min": -30,
+            "format": "int",
+            "read": 0,
+            "text": "ADDITIONAL_BLOCK_HIGH_T2_TEMP",
+        },
     ]
 
 
@@ -61,7 +82,7 @@ class TestParameterCacheSave:
         cache = ParameterCache(temp_cache_path)
         cache.save(sample_parameters)
 
-        with open(temp_cache_path, 'r') as f:
+        with open(temp_cache_path) as f:
             data = json.load(f)
 
         assert isinstance(data, dict)
@@ -71,7 +92,7 @@ class TestParameterCacheSave:
         cache = ParameterCache(temp_cache_path)
         cache.save(sample_parameters)
 
-        with open(temp_cache_path, 'r') as f:
+        with open(temp_cache_path) as f:
             data = json.load(f)
 
         assert "version" in data
@@ -82,7 +103,7 @@ class TestParameterCacheSave:
         cache = ParameterCache(temp_cache_path)
         cache.save(sample_parameters)
 
-        with open(temp_cache_path, 'r') as f:
+        with open(temp_cache_path) as f:
             data = json.load(f)
 
         assert "created" in data
@@ -94,7 +115,7 @@ class TestParameterCacheSave:
         cache = ParameterCache(temp_cache_path)
         cache.save(sample_parameters)
 
-        with open(temp_cache_path, 'r') as f:
+        with open(temp_cache_path) as f:
             data = json.load(f)
 
         assert "checksum" in data
@@ -105,7 +126,7 @@ class TestParameterCacheSave:
         cache = ParameterCache(temp_cache_path)
         cache.save(sample_parameters)
 
-        with open(temp_cache_path, 'r') as f:
+        with open(temp_cache_path) as f:
             data = json.load(f)
 
         assert "parameters" in data
@@ -116,7 +137,7 @@ class TestParameterCacheSave:
         cache = ParameterCache(temp_cache_path)
         cache.save(sample_parameters)
 
-        with open(temp_cache_path, 'r') as f:
+        with open(temp_cache_path) as f:
             data = json.load(f)
 
         assert "element_count" in data
@@ -127,7 +148,7 @@ class TestParameterCacheSave:
         cache = ParameterCache(temp_cache_path)
         cache.save(sample_parameters, device_id="BUDERUS_WPS_001")
 
-        with open(temp_cache_path, 'r') as f:
+        with open(temp_cache_path) as f:
             data = json.load(f)
 
         assert data.get("device_id") == "BUDERUS_WPS_001"
@@ -137,7 +158,7 @@ class TestParameterCacheSave:
         cache = ParameterCache(temp_cache_path)
         cache.save(sample_parameters, firmware="v1.23")
 
-        with open(temp_cache_path, 'r') as f:
+        with open(temp_cache_path) as f:
             data = json.load(f)
 
         assert data.get("firmware") == "v1.23"
@@ -179,10 +200,10 @@ class TestParameterCacheLoad:
         cache.save(sample_parameters)
 
         # Corrupt the checksum
-        with open(temp_cache_path, 'r') as f:
+        with open(temp_cache_path) as f:
             data = json.load(f)
         data["checksum"] = "sha256:invalid_checksum"
-        with open(temp_cache_path, 'w') as f:
+        with open(temp_cache_path, "w") as f:
             json.dump(data, f)
 
         loaded = cache.load()
@@ -190,7 +211,7 @@ class TestParameterCacheLoad:
 
     def test_load_returns_none_for_invalid_json(self, temp_cache_path):
         """Verify load() returns None for invalid JSON."""
-        with open(temp_cache_path, 'w') as f:
+        with open(temp_cache_path, "w") as f:
             f.write("not valid json {{{")
 
         cache = ParameterCache(temp_cache_path)
@@ -200,7 +221,7 @@ class TestParameterCacheLoad:
 
     def test_load_returns_none_for_missing_parameters(self, temp_cache_path):
         """Verify load() returns None if parameters missing."""
-        with open(temp_cache_path, 'w') as f:
+        with open(temp_cache_path, "w") as f:
             json.dump({"version": "1.0.0"}, f)
 
         cache = ParameterCache(temp_cache_path)
@@ -212,7 +233,9 @@ class TestParameterCacheLoad:
 class TestParameterCacheIsValid:
     """T040: Test cache invalidation."""
 
-    def test_is_valid_returns_true_for_valid_cache(self, temp_cache_path, sample_parameters):
+    def test_is_valid_returns_true_for_valid_cache(
+        self, temp_cache_path, sample_parameters
+    ):
         """Verify is_valid() returns True for valid cache."""
         cache = ParameterCache(temp_cache_path)
         cache.save(sample_parameters)
@@ -226,36 +249,40 @@ class TestParameterCacheIsValid:
 
     def test_is_valid_returns_false_for_corrupted_file(self, temp_cache_path):
         """Verify is_valid() returns False for corrupted file."""
-        with open(temp_cache_path, 'w') as f:
+        with open(temp_cache_path, "w") as f:
             f.write("corrupted content")
 
         cache = ParameterCache(temp_cache_path)
         assert cache.is_valid() is False
 
-    def test_is_valid_returns_false_for_wrong_version(self, temp_cache_path, sample_parameters):
+    def test_is_valid_returns_false_for_wrong_version(
+        self, temp_cache_path, sample_parameters
+    ):
         """Verify is_valid() returns False for wrong version."""
         cache = ParameterCache(temp_cache_path)
         cache.save(sample_parameters)
 
         # Modify version
-        with open(temp_cache_path, 'r') as f:
+        with open(temp_cache_path) as f:
             data = json.load(f)
         data["version"] = "2.0.0"
-        with open(temp_cache_path, 'w') as f:
+        with open(temp_cache_path, "w") as f:
             json.dump(data, f)
 
         assert cache.is_valid() is False
 
-    def test_is_valid_returns_false_for_bad_checksum(self, temp_cache_path, sample_parameters):
+    def test_is_valid_returns_false_for_bad_checksum(
+        self, temp_cache_path, sample_parameters
+    ):
         """Verify is_valid() returns False for checksum mismatch."""
         cache = ParameterCache(temp_cache_path)
         cache.save(sample_parameters)
 
         # Corrupt checksum
-        with open(temp_cache_path, 'r') as f:
+        with open(temp_cache_path) as f:
             data = json.load(f)
         data["checksum"] = "sha256:0000000000000000"
-        with open(temp_cache_path, 'w') as f:
+        with open(temp_cache_path, "w") as f:
             json.dump(data, f)
 
         assert cache.is_valid() is False
@@ -291,7 +318,7 @@ class TestParameterCacheChecksum:
         cache1 = ParameterCache(temp_cache_path)
         cache1.save(sample_parameters)
 
-        with open(temp_cache_path, 'r') as f:
+        with open(temp_cache_path) as f:
             data1 = json.load(f)
         checksum1 = data1["checksum"]
 
@@ -299,7 +326,7 @@ class TestParameterCacheChecksum:
         cache2 = ParameterCache(temp_cache_path)
         cache2.save(sample_parameters)
 
-        with open(temp_cache_path, 'r') as f:
+        with open(temp_cache_path) as f:
             data2 = json.load(f)
         checksum2 = data2["checksum"]
 
@@ -310,7 +337,7 @@ class TestParameterCacheChecksum:
         cache = ParameterCache(temp_cache_path)
         cache.save(sample_parameters)
 
-        with open(temp_cache_path, 'r') as f:
+        with open(temp_cache_path) as f:
             data1 = json.load(f)
         checksum1 = data1["checksum"]
 
@@ -319,7 +346,7 @@ class TestParameterCacheChecksum:
         modified[0]["max"] = 100
         cache.save(modified)
 
-        with open(temp_cache_path, 'r') as f:
+        with open(temp_cache_path) as f:
             data2 = json.load(f)
         checksum2 = data2["checksum"]
 
