@@ -33,8 +33,9 @@ class SimpleCAN:
         time.sleep(0.1)
         self.serial.reset_input_buffer()
 
-        # Set 50kbps (S2) and open in normal mode
-        self.serial.write(b'S2\r')
+        # Set 125kbps (S4) and open in normal mode
+        # PROTOCOL: Buderus WPS uses 125kbps CAN bus speed
+        self.serial.write(b'S4\r')
         time.sleep(0.1)
 
         self.serial.write(b'O\r')
