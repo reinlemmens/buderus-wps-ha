@@ -132,6 +132,151 @@ class HeatPumpClient:
             },
         )
 
+    def read_value_with_retry(
+        self,
+        name_or_idx: Any,
+        expected_dlc: int = 2,
+        max_retries: int = 3,
+        retry_delay: float = 0.5,
+        timeout: Optional[float] = None,
+    ) -> Optional[bytes]:
+        """Read parameter value with DLC validation and retry.
+
+        Some RTR responses return fewer bytes than expected (e.g., 1 byte when
+        2 bytes are expected for temperature). This method validates the DLC
+        and retries if the response is too short.
+
+        Args:
+            name_or_idx: Parameter name or index
+            expected_dlc: Minimum expected data length (default: 2 for temperatures)
+            max_retries: Maximum number of retry attempts
+            retry_delay: Delay between retries in seconds
+            timeout: Per-request timeout
+
+        Returns:
+            Raw bytes if valid response received, None if all retries failed
+        """
+        param = self.get(name_or_idx)
+
+        for attempt in range(max_retries):
+            try:
+                raw = self.read_value(name_or_idx, timeout=timeout)
+
+                # Validate DLC
+                if len(raw) >= expected_dlc:
+                    return raw  # Valid response
+
+                # Invalid DLC - log and retry
+                self._logger.warning(
+                    "RTR response for %s has DLC=%d (expected >= %d), retry %d/%d",
+                    param.text,
+                    len(raw),
+                    expected_dlc,
+                    attempt + 1,
+                    max_retries,
+                )
+
+                if attempt < max_retries - 1:
+                    time.sleep(retry_delay)
+
+            except (DeviceCommunicationError, TimeoutError) as e:
+                self._logger.warning(
+                    "RTR read failed for %s: %s, retry %d/%d",
+                    param.text,
+                    e,
+                    attempt + 1,
+                    max_retries,
+                )
+                if attempt < max_retries - 1:
+                    time.sleep(retry_delay)
+
+        # All retries failed
+        self._logger.error(
+            "All %d RTR retries failed for %s (expected DLC >= %d)",
+            max_retries,
+            param.text,
+            expected_dlc,
+        )
+        return None
+
+    def read_parameter_with_validation(
+        self,
+        name_or_idx: Any,
+        expected_dlc: int = 2,
+        max_retries: int = 3,
+        timeout: Optional[float] = None,
+    ) -> Dict[str, Any]:
+        """Read and decode parameter with DLC validation and retry.
+
+        Returns a result dict with an 'error' key if reading failed.
+
+        Args:
+            name_or_idx: Parameter name or index
+            expected_dlc: Minimum expected data length
+            max_retries: Maximum number of retry attempts
+            timeout: Per-request timeout
+
+        Returns:
+            Dict with parameter metadata and decoded value, or error info
+        """
+        param = self.get(name_or_idx)
+        raw = self.read_value_with_retry(
+            name_or_idx,
+            expected_dlc=expected_dlc,
+            max_retries=max_retries,
+            timeout=timeout,
+        )
+
+        if raw is None:
+            return {
+                "name": param.text,
+                "idx": param.idx,
+                "format": param.format,
+                "raw": b"",
+                "decoded": None,
+                "error": "invalid_dlc",
+            }
+
+        decoded = self._decode_value(param, raw)
+
+        # Validate decoded value against min/max range
+        if decoded is not None and isinstance(decoded, (int, float)):
+            # Get human-readable range
+            from .formats import get_format_factor
+
+            factor = get_format_factor(param.format)
+            min_human = param.min * factor
+            max_human = param.max * factor
+
+            if decoded < min_human or decoded > max_human:
+                self._logger.warning(
+                    "%s decoded value %.2f out of range [%.2f, %.2f]",
+                    param.text,
+                    decoded,
+                    min_human,
+                    max_human,
+                )
+                return {
+                    "name": param.text,
+                    "idx": param.idx,
+                    "format": param.format,
+                    "raw": raw,
+                    "decoded": decoded,
+                    "error": "out_of_range",
+                }
+
+        return {
+            "name": param.text,
+            "idx": param.idx,
+            "extid": param.extid,
+            "format": param.format,
+            "min": param.min,
+            "max": param.max,
+            "read": param.read,
+            "raw": raw,
+            "decoded": decoded,
+        }
+
     def read_parameter(
         self, name_or_idx: Any, timeout: Optional[float] = None
     ) -> Dict[str, Any]:

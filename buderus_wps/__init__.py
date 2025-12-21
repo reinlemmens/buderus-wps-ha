@@ -54,6 +54,15 @@ from .config import (
     get_default_sensor_map,
     load_config,
 )
+from .element_discovery import (
+    DiscoveredElement,
+    ElementDiscovery,
+    ElementListParser,
+    ELEMENT_COUNT_REQUEST_ID,
+    ELEMENT_COUNT_RESPONSE_ID,
+    ELEMENT_DATA_REQUEST_ID,
+    ELEMENT_DATA_RESPONSE_ID,
+)
 from .energy_blocking import (
     BlockingResult,
     BlockingState,
@@ -185,4 +194,12 @@ __all__ = [
     "BlockingState",
     "BlockingStatus",
     "EnergyBlockingControl",
+    # Element Discovery
+    "DiscoveredElement",
+    "ElementDiscovery",
+    "ElementListParser",
+    "ELEMENT_COUNT_REQUEST_ID",
+    "ELEMENT_COUNT_RESPONSE_ID",
+    "ELEMENT_DATA_REQUEST_ID",
+    "ELEMENT_DATA_RESPONSE_ID",
 ]

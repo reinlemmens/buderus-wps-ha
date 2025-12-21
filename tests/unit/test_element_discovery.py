@@ -250,3 +250,231 @@ class TestDiscoveredElement:
         expected_can_id = 0x04003FE0 | (2475 << 14)
         assert elem.can_id == expected_can_id
         assert elem.can_id == 0x066AFFE0
+
+
+class TestElementDiscovery:
+    """Tests for ElementDiscovery orchestration class."""
+
+    def test_request_element_count_success(self):
+        """Successfully request element count."""
+        from unittest.mock import Mock
+
+        from buderus_wps.can_message import CANMessage
+        from buderus_wps.element_discovery import (
+            ELEMENT_COUNT_RESPONSE_ID,
+            ElementDiscovery,
+        )
+
+        # Mock adapter with successful response
+        adapter = Mock()
+        response = CANMessage(
+            arbitration_id=ELEMENT_COUNT_RESPONSE_ID,
+            data=bytes([0x00, 0x00, 0x06, 0xFD]),  # count = 1789
+            is_extended_id=True,
+        )
+        adapter.send_frame.return_value = response
+
+        discovery = ElementDiscovery(adapter)
+        count = discovery.request_element_count()
+
+        assert count == 1789
+        adapter.send_frame.assert_called_once()
+
+    def test_request_element_count_timeout(self):
+        """Handle timeout when requesting element count."""
+        from unittest.mock import Mock
+
+        from buderus_wps.element_discovery import ElementDiscovery
+        from buderus_wps.exceptions import DeviceCommunicationError, TimeoutError
+
+        adapter = Mock()
+        adapter.send_frame.side_effect = TimeoutError("Test timeout")
+
+        discovery = ElementDiscovery(adapter)
+
+        with pytest.raises(DeviceCommunicationError, match="No response"):
+            discovery.request_element_count()
+
+    def test_request_data_chunk_success(self):
+        """Successfully request element data chunk."""
+        from unittest.mock import Mock
+
+        from buderus_wps.element_discovery import ElementDiscovery
+
+        # Mock adapter returning element data
+        adapter = Mock()
+        adapter.receive_stream.return_value = bytes([0x00] * 100)
+
+        discovery = ElementDiscovery(adapter)
+        data = discovery.request_data_chunk(offset=0, size=4096)
+
+        assert len(data) == 100
+        adapter.send_frame_nowait.assert_called_once()
+        adapter.receive_stream.assert_called_once()
+
+    def test_discover_full_flow(self):
+        """Test complete discovery flow with mocked adapter."""
+        from unittest.mock import Mock
+
+        from buderus_wps.can_message import CANMessage
+        from buderus_wps.element_discovery import (
+            ELEMENT_COUNT_RESPONSE_ID,
+            ElementDiscovery,
+        )
+
+        # Create mock element data (2 elements)
+        def make_element(idx: int, name: str) -> bytes:
+            idx_bytes = idx.to_bytes(2, "big")
+            extid = bytes([0x00] * 7)
+            max_bytes = (100).to_bytes(4, "big", signed=True)
+            min_bytes = (0).to_bytes(4, "big", signed=True)
+            name_bytes = name.encode("ascii")
+            name_len = bytes([len(name_bytes) + 1])
+            return idx_bytes + extid + max_bytes + min_bytes + name_len + name_bytes
+
+        element_data = make_element(100, "PARAM_A") + make_element(101, "PARAM_B")
+
+        # Mock adapter
+        adapter = Mock()
+
+        # First call: element count response
+        count_response = CANMessage(
+            arbitration_id=ELEMENT_COUNT_RESPONSE_ID,
+            data=bytes([0x00, 0x00, 0x00, 0x02]),  # count = 2
+            is_extended_id=True,
+        )
+        adapter.send_frame.return_value = count_response
+
+        # Second call: data chunk
+        adapter.receive_stream.return_value = element_data
+
+        discovery = ElementDiscovery(adapter)
+        elements = discovery.discover()
+
+        assert len(elements) == 2
+        assert elements[0].idx == 100
+        assert elements[0].text == "PARAM_A"
+        assert elements[1].idx == 101
+        assert elements[1].text == "PARAM_B"
+
+    def test_discover_with_cache_saves_file(self, tmp_path):
+        """Test that discover_with_cache saves elements to JSON file."""
+        import json
+        from unittest.mock import Mock
+
+        from buderus_wps.can_message import CANMessage
+        from buderus_wps.element_discovery import (
+            ELEMENT_COUNT_RESPONSE_ID,
+            ElementDiscovery,
+        )
+
+        def make_element(idx: int, name: str) -> bytes:
+            idx_bytes = idx.to_bytes(2, "big")
+            extid = bytes([0xAA] * 7)
+            max_bytes = (100).to_bytes(4, "big", signed=True)
+            min_bytes = (0).to_bytes(4, "big", signed=True)
+            name_bytes = name.encode("ascii")
+            name_len = bytes([len(name_bytes) + 1])
+            return idx_bytes + extid + max_bytes + min_bytes + name_len + name_bytes
+
+        element_data = make_element(42, "TEST_PARAM")
+
+        adapter = Mock()
+        count_response = CANMessage(
+            arbitration_id=ELEMENT_COUNT_RESPONSE_ID,
+            data=bytes([0x00, 0x00, 0x00, 0x01]),
+            is_extended_id=True,
+        )
+        adapter.send_frame.return_value = count_response
+        adapter.receive_stream.return_value = element_data
+
+        cache_file = tmp_path / "cache.json"
+
+        discovery = ElementDiscovery(adapter)
+        elements = discovery.discover_with_cache(str(cache_file))
+
+        assert len(elements) == 1
+        assert elements[0].text == "TEST_PARAM"
+        assert cache_file.exists()
+
+        # Verify cache file content
+        with open(cache_file) as f:
+            cache_data = json.load(f)
+        assert cache_data["count"] == 1
+        assert cache_data["elements"][0]["text"] == "TEST_PARAM"
+
+    def test_discover_with_cache_loads_existing(self, tmp_path):
+        """Test that discover_with_cache loads from existing cache file."""
+        import json
+        from unittest.mock import Mock
+
+        from buderus_wps.element_discovery import ElementDiscovery
+
+        cache_file = tmp_path / "cache.json"
+        cache_data = {
+            "version": 1,
+            "count": 1,
+            "elements": [
+                {
+                    "idx": 99,
+                    "extid": "AABBCCDD001122",
+                    "text": "CACHED_PARAM",
+                    "min_value": -10,
+                    "max_value": 50,
+                }
+            ],
+        }
+        with open(cache_file, "w") as f:
+            json.dump(cache_data, f)
+
+        adapter = Mock()  # Should not be called
+
+        discovery = ElementDiscovery(adapter)
+        elements = discovery.discover_with_cache(str(cache_file), refresh=False)
+
+        assert len(elements) == 1
+        assert elements[0].text == "CACHED_PARAM"
+        assert elements[0].idx == 99
+        adapter.send_frame.assert_not_called()  # Cache was used
+
+    def test_discover_with_cache_refresh_ignores_existing(self, tmp_path):
+        """Test that refresh=True performs fresh discovery."""
+        import json
+        from unittest.mock import Mock
+
+        from buderus_wps.can_message import CANMessage
+        from buderus_wps.element_discovery import (
+            ELEMENT_COUNT_RESPONSE_ID,
+            ElementDiscovery,
+        )
+
+        def make_element(idx: int, name: str) -> bytes:
+            idx_bytes = idx.to_bytes(2, "big")
+            extid = bytes([0x00] * 7)
+            max_bytes = (100).to_bytes(4, "big", signed=True)
+            min_bytes = (0).to_bytes(4, "big", signed=True)
+            name_bytes = name.encode("ascii")
+            name_len = bytes([len(name_bytes) + 1])
+            return idx_bytes + extid + max_bytes + min_bytes + name_len + name_bytes
+
+        # Create cache with old data
+        cache_file = tmp_path / "cache.json"
+        with open(cache_file, "w") as f:
+            json.dump({"elements": [{"text": "OLD_PARAM"}]}, f)
+
+        # Setup adapter to return fresh data
+        adapter = Mock()
+        count_response = CANMessage(
+            arbitration_id=ELEMENT_COUNT_RESPONSE_ID,
+            data=bytes([0x00, 0x00, 0x00, 0x01]),
+            is_extended_id=True,
+        )
+        adapter.send_frame.return_value = count_response
+        adapter.receive_stream.return_value = make_element(200, "NEW_PARAM")
+
+        discovery = ElementDiscovery(adapter)
+        elements = discovery.discover_with_cache(str(cache_file), refresh=True)
+
+        assert len(elements) == 1
+        assert elements[0].text == "NEW_PARAM"  # Fresh data, not cached
+        adapter.send_frame.assert_called_once()  # Discovery was performed

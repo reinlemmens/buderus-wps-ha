@@ -437,34 +437,18 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                 temperatures = self._last_known_good_data.temperatures.copy()
 
         # Get compressor status via RTR request (best-effort)
-        # PROTOCOL: COMPRESSOR_REAL_FREQUENCY returns 0 on some heat pump models
-        # Use COMPRESSOR_DHW_REQUEST and COMPRESSOR_HEATING_REQUEST instead
-        # These have read=1 (polled) and indicate actual compressor demand
+        # PROTOCOL: COMPRESSOR_STATE (idx=294) indicates actual compressor running state
+        # Value > 0 means compressor is running. Tested on live system 2025-12-20.
+        # COMPRESSOR_REAL_FREQUENCY returns 0 on some models even when running.
         compressor_running = False
-        dhw_request = 0
-        heating_request = 0
+        compressor_state = 0
         try:
-            result = self._client.read_parameter("COMPRESSOR_DHW_REQUEST")
-            dhw_request = result.get("decoded", 0) or 0
+            result = self._client.read_parameter("COMPRESSOR_STATE")
+            compressor_state = result.get("decoded", 0) or 0
+            compressor_running = compressor_state > 0
+            _LOGGER.debug("Compressor state: %s (running=%s)", compressor_state, compressor_running)
         except Exception as err:
-            _LOGGER.debug("Could not read COMPRESSOR_DHW_REQUEST: %s", err)
-        try:
-            result = self._client.read_parameter("COMPRESSOR_HEATING_REQUEST")
-            heating_request = result.get("decoded", 0) or 0
-        except Exception as err:
-            _LOGGER.debug("Could not read COMPRESSOR_HEATING_REQUEST: %s", err)
-
-        # Compressor is running if either DHW or heating request is active
-        compressor_running = (dhw_request > 0) or (heating_request > 0)
-        _LOGGER.debug(
-            "Compressor status: DHW_REQUEST=%s, HEATING_REQUEST=%s, running=%s",
-            dhw_request,
-            heating_request,
-            compressor_running,
-        )
-
-        # Fallback to stale value if both reads failed
-        if dhw_request == 0 and heating_request == 0:
+            _LOGGER.warning("RTR FAILED for COMPRESSOR_STATE: %s", err)
             if self._last_known_good_data is not None:
                 compressor_running = self._last_known_good_data.compressor_running
 
@@ -474,7 +458,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             result = self._client.read_parameter("ADDITIONAL_BLOCKED")
             energy_blocked = int(result.get("decoded", 0)) > 0
         except Exception as err:
-            _LOGGER.debug("Could not read energy blocking status: %s", err)
+            _LOGGER.warning("RTR FAILED for ADDITIONAL_BLOCKED: %s", err)
             if self._last_known_good_data is not None:
                 energy_blocked = self._last_known_good_data.energy_blocked
 
@@ -483,27 +467,37 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         try:
             dhw_extra_duration = self._api.hot_water.extra_duration
         except Exception as err:
-            _LOGGER.debug("Could not read DHW extra duration: %s", err)
+            _LOGGER.warning("RTR FAILED for DHW_EXTRA_DURATION: %s", err)
             if self._last_known_good_data is not None:
                 dhw_extra_duration = self._last_known_good_data.dhw_extra_duration
 
         # Get heating season mode (best-effort)
+        # PROTOCOL: dp2 format returns strings like "1:Always_On" - parse int prefix
         heating_season_mode: int | None = None
         try:
             result = self._client.read_parameter("HEATING_SEASON_MODE")
-            heating_season_mode = int(result.get("decoded", 0))
+            decoded = result.get("decoded", 0)
+            if isinstance(decoded, str) and ":" in decoded:
+                heating_season_mode = int(decoded.split(":")[0])
+            else:
+                heating_season_mode = int(decoded)
         except Exception as err:
-            _LOGGER.debug("Could not read heating season mode: %s", err)
+            _LOGGER.warning("RTR FAILED for HEATING_SEASON_MODE: %s", err)
             if self._last_known_good_data is not None:
                 heating_season_mode = self._last_known_good_data.heating_season_mode
 
         # Get DHW program mode (best-effort)
+        # PROTOCOL: dp2 format returns strings like "1:Always_On" - parse int prefix
         dhw_program_mode: int | None = None
         try:
             result = self._client.read_parameter("DHW_PROGRAM_MODE")
-            dhw_program_mode = int(result.get("decoded", 0))
+            decoded = result.get("decoded", 0)
+            if isinstance(decoded, str) and ":" in decoded:
+                dhw_program_mode = int(decoded.split(":")[0])
+            else:
+                dhw_program_mode = int(decoded)
         except Exception as err:
-            _LOGGER.debug("Could not read DHW program mode: %s", err)
+            _LOGGER.warning("RTR FAILED for DHW_PROGRAM_MODE: %s", err)
             if self._last_known_good_data is not None:
                 dhw_program_mode = self._last_known_good_data.dhw_program_mode
 
