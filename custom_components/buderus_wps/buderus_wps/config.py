@@ -228,12 +228,12 @@ DEFAULT_SENSOR_MAPPINGS: List[SensorMapping] = [
     # Previous mappings tried idx=58 (~54°C), idx=78 (~24°C) - both wrong
     # Actual DHW tank temp broadcasts on 0x0270/idx=4 (~43°C matches independent sensor)
     SensorMapping(base=0x0270, idx=4, sensor=SensorType.DHW),
-    # GT1 - Brine inlet temperature
-    # GT8 - Supply/flow temperature
-    SensorMapping(base=0x0270, idx=1, sensor=SensorType.SUPPLY),
-    SensorMapping(base=0x0270, idx=7, sensor=SensorType.SUPPLY),
-    # GT9 - Return temperature
-    SensorMapping(base=0x0270, idx=0, sensor=SensorType.RETURN_TEMP),
+    # GT8 - Heat transfer fluid OUT (Supply/flow temperature)
+    # Verified 2025-12-21: idx=6 on base 0x0270 (~35-42°C when heating)
+    SensorMapping(base=0x0270, idx=6, sensor=SensorType.SUPPLY),
+    # GT9 - Heat transfer fluid IN (Return temperature)
+    # Verified 2025-12-21: idx=5 on base 0x0270 (~29-35°C when heating)
+    SensorMapping(base=0x0270, idx=5, sensor=SensorType.RETURN_TEMP),
 ]
 
 

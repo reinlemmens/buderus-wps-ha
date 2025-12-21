@@ -436,21 +436,28 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             if self._last_known_good_data is not None:
                 temperatures = self._last_known_good_data.temperatures.copy()
 
-        # Get compressor status via RTR request (best-effort)
-        # PROTOCOL: COMPRESSOR_STATE (idx=294) indicates actual compressor running state
-        # Value > 0 means compressor is running. Tested on live system 2025-12-20.
-        # COMPRESSOR_REAL_FREQUENCY returns 0 on some models even when running.
+        # Get compressor status via RTR request (best-effort with retry)
+        # PROTOCOL: COMPRESSOR_STATE (idx=294) returns state code
+        # Value 15 observed when compressor is running (verified with power sensor at 5300W)
+        # Note: COMPRESSOR_REAL_FREQUENCY and HW_COMPRESSOR_WORKING_FREQ return 0 on some models
+        # Using state > 0 as running indicator; value 15 = running, 0 = stopped
         compressor_running = False
         compressor_state = 0
-        try:
-            result = self._client.read_parameter("COMPRESSOR_STATE")
-            compressor_state = result.get("decoded", 0) or 0
-            compressor_running = compressor_state > 0
-            _LOGGER.debug("Compressor state: %s (running=%s)", compressor_state, compressor_running)
-        except Exception as err:
-            _LOGGER.warning("RTR FAILED for COMPRESSOR_STATE: %s", err)
-            if self._last_known_good_data is not None:
-                compressor_running = self._last_known_good_data.compressor_running
+        for attempt in range(3):
+            try:
+                result = self._client.read_parameter("COMPRESSOR_STATE")
+                compressor_state = int(result.get("decoded", 0) or 0)
+                compressor_running = compressor_state > 0
+                _LOGGER.debug("Compressor state: %s (running=%s)", compressor_state, compressor_running)
+                break  # Success - exit retry loop
+            except Exception as err:
+                if attempt < 2:
+                    _LOGGER.debug("RTR attempt %d/3 for COMPRESSOR_STATE failed: %s", attempt + 1, err)
+                    time.sleep(0.3)  # Brief delay before retry
+                else:
+                    _LOGGER.warning("RTR FAILED for COMPRESSOR_STATE after 3 attempts: %s", err)
+                    if self._last_known_good_data is not None:
+                        compressor_running = self._last_known_good_data.compressor_running
 
         # Get energy blocking status (best-effort)
         energy_blocked = False

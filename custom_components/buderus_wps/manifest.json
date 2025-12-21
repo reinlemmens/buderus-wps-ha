@@ -6,7 +6,7 @@
   "documentation": "https://github.com/reinlemmens/buderus-wps-ha",
   "issue_tracker": "https://github.com/reinlemmens/buderus-wps-ha/issues",
   "requirements": ["pyserial>=3.5"],
-  "version": "1.4.1-beta",
+  "version": "1.4.6-beta",
   "iot_class": "local_polling",
   "integration_type": "device"
 }
