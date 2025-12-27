@@ -413,3 +413,72 @@ class HeatPump:
             True if parameter exists, False otherwise
         """
         return idx in self._params_by_idx
+
+    def update_from_discovery(self, discovered_elements: list) -> int:
+        """Update parameter indices from discovered elements.
+
+        Merges discovered elements with existing parameters. For each discovered
+        element, if a parameter with matching text exists, its idx is updated
+        to match the device's actual index.
+
+        This is critical because different firmware versions may have different
+        idx values for the same parameter names (e.g., XDHW_TIME at idx=2475
+        in static defaults but idx=2480 on actual device).
+
+        Args:
+            discovered_elements: List of DiscoveredElement from element discovery
+                Each element must have: idx, extid, text, min_value, max_value
+
+        Returns:
+            Number of parameters updated
+        """
+        updated = 0
+        for elem in discovered_elements:
+            name = elem.text.upper()
+            if name in self._params_by_name:
+                old_param = self._params_by_name[name]
+                if old_param.idx != elem.idx:
+                    # Create new parameter with updated idx from discovery
+                    new_param = Parameter(
+                        idx=elem.idx,
+                        extid=elem.extid,
+                        min=elem.min_value,
+                        max=elem.max_value,
+                        format=old_param.format,  # Keep format from static defaults
+                        read=old_param.read,  # Keep read flag from static defaults
+                        text=old_param.text,
+                    )
+                    # Update both lookups - remove old idx, add new
+                    del self._params_by_idx[old_param.idx]
+                    self._params_by_name[name] = new_param
+                    self._params_by_idx[elem.idx] = new_param
+                    logger.info(
+                        "Updated %s: idx %d -> %d (CAN ID 0x%08X -> 0x%08X)",
+                        old_param.text,
+                        old_param.idx,
+                        elem.idx,
+                        0x04003FE0 | (old_param.idx << 14),
+                        0x04003FE0 | (elem.idx << 14),
+                    )
+                    updated += 1
+            else:
+                # New parameter not in static defaults - add it
+                new_param = Parameter(
+                    idx=elem.idx,
+                    extid=elem.extid,
+                    min=elem.min_value,
+                    max=elem.max_value,
+                    format="int",  # Default format for unknown parameters
+                    read=0,  # Assume writable
+                    text=elem.text,
+                )
+                self._params_by_name[name] = new_param
+                self._params_by_idx[elem.idx] = new_param
+                logger.debug("Added discovered parameter: %s (idx=%d)", elem.text, elem.idx)
+
+        if updated > 0:
+            self._data_source = "discovery"
+            self._using_fallback = False
+            logger.info("Updated %d parameter indices from discovery", updated)
+
+        return updated

@@ -14985,7 +14985,7 @@ PARAMETER_DATA = [
         "text": "XDHW_REQUEST",
     },
     {
-        "idx": 2473,
+        "idx": 2478,
         "extid": "EE1597E1AD010E",
         "max": 650,
         "min": 500,
@@ -14994,12 +14994,12 @@ PARAMETER_DATA = [
         "text": "XDHW_STOP_TEMP",
     },
     {
-        "idx": 2475,
+        "idx": 2480,
         "extid": "E1263DCA71010F",
         "max": 48,
         "min": 0,
         "format": "int",
-        "read": 1,
+        "read": 0,
         "text": "XDHW_TIME",
     },
     {

@@ -5,6 +5,48 @@ This module provides a menu-style interface to the heat pump that mirrors
 the physical display menu structure. It builds on top of HeatPumpClient
 to provide human-readable access to temperatures, settings, and schedules.
 
+IMPORTANT - VALUE ENCODING CONVENTION
+=====================================
+All temperature and value setters in this module expect **human-readable values**.
+The HeatPumpClient.write_value() method handles conversion to raw CAN format internally.
+
+DO NOT pre-scale values before passing to write_value(). The encoder does this automatically.
+
+Temperature Parameters (format='tem', factor=0.1):
+--------------------------------------------------
+- HEATING_CURVE_PARALLEL_OFFSET_GLOBAL (idx=804)
+    Human-readable: -10.0 to +10.0 °C
+    Raw CAN: -100 to 100
+    Usage: client.write_value("HEATING_CURVE_PARALLEL_OFFSET_GLOBAL", 2.5)
+           → Encoder converts 2.5°C to raw 25
+
+- XDHW_STOP_TEMP (idx=2478) - DHW stop charging temperature
+    Human-readable: 45.0 to 65.0 °C
+    Raw CAN: 450 to 650
+    Usage: api.hot_water.stop_temperature = 55.0  # Pass 55.0, NOT 550
+    Note: idx varies by firmware; element discovery updates actual value
+
+- DHW_SETPOINT - DHW target temperature
+    Human-readable: 45.0 to 65.0 °C
+    Usage: api.hot_water.temperature = 50.0  # Pass 50.0, NOT 500
+
+- GT*_TEMP - Temperature sensor readings (read-only)
+    Human-readable: Returned as °C directly
+    Example: api.status.outdoor_temperature returns 5.2 (meaning 5.2°C)
+
+Integer Parameters (format='int', factor=1):
+--------------------------------------------
+- XDHW_TIME (idx=2480) - Extra DHW duration
+    Human-readable: 0 to 48 hours
+    Raw CAN: 0 to 48 (same as human-readable)
+    Usage: api.hot_water.extra_duration = 2  # 2 hours
+
+Selector Parameters (format='dp2', 'rp1', etc.):
+------------------------------------------------
+- DHW_PROGRAM_MODE - DHW program selection
+    Values: 0=Automatic, 1=Always_On, 2=Always_Off
+    Usage: api.hot_water.program_mode = DHWProgramMode.AUTOMATIC
+
 Example:
     >>> from buderus_wps import USBtinAdapter, HeatPumpClient, MenuAPI
     >>> adapter = USBtinAdapter('/dev/ttyACM0')
@@ -279,16 +321,24 @@ class HotWaterController:
 
     @temperature.setter
     def temperature(self, value: float) -> None:
-        """Set temperature setpoint with validation."""
-        if not 20.0 <= value <= 65.0:
+        """Set DHW temperature setpoint.
+
+        Args:
+            value: Temperature in °C (human-readable, 45.0-65.0°C)
+                   The encoder converts this to raw format internally.
+
+        Raises:
+            ValidationError: If value outside allowed range
+        """
+        if not 45.0 <= value <= 65.0:
             raise ValidationError(
                 field="temperature",
                 value=value,
-                constraint="must be between 20 and 65 degrees",
-                allowed_range=(20.0, 65.0),
+                constraint="must be between 45 and 65 degrees",
+                allowed_range=(45.0, 65.0),
             )
-        # Temperature stored in tenths
-        self._client.write_value(DHW_PARAMS["setpoint"], int(value * 10))
+        # Pass human-readable °C value - encoder handles conversion to raw
+        self._client.write_value(DHW_PARAMS["setpoint"], value)
 
     @property
     def extra_duration(self) -> int:
@@ -309,8 +359,24 @@ class HotWaterController:
 
     @stop_temperature.setter
     def stop_temperature(self, value: float) -> None:
-        """Set stop temperature."""
-        self._client.write_value(DHW_PARAMS["stop_temp"], int(value * 10))
+        """Set DHW stop charging temperature.
+
+        Args:
+            value: Temperature in °C (human-readable, 45.0-65.0°C)
+                   The encoder converts this to raw format internally.
+
+        Raises:
+            ValidationError: If value outside allowed range
+        """
+        if not 45.0 <= value <= 65.0:
+            raise ValidationError(
+                field="stop_temperature",
+                value=value,
+                constraint="must be between 45 and 65 degrees",
+                allowed_range=(45.0, 65.0),
+            )
+        # Pass human-readable °C value - encoder handles conversion to raw
+        self._client.write_value(DHW_PARAMS["stop_temp"], value)
 
     @property
     def program_mode(self) -> DHWProgramMode:
@@ -412,8 +478,24 @@ class Circuit:
 
     @setpoint.setter
     def setpoint(self, value: float) -> None:
-        """Set target temperature."""
-        self._client.write_value(self._get_param("setpoint"), int(value * 10))
+        """Set circuit target temperature setpoint.
+
+        Args:
+            value: Temperature in °C (human-readable, 5.0-30.0°C)
+                   The encoder converts this to raw format internally.
+
+        Raises:
+            ValidationError: If value outside allowed range
+        """
+        if not 5.0 <= value <= 30.0:
+            raise ValidationError(
+                field="setpoint",
+                value=value,
+                constraint="must be between 5 and 30 degrees",
+                allowed_range=(5.0, 30.0),
+            )
+        # Pass human-readable °C value - encoder handles conversion to raw
+        self._client.write_value(self._get_param("setpoint"), value)
 
     @property
     def program_mode(self) -> RoomProgramMode:

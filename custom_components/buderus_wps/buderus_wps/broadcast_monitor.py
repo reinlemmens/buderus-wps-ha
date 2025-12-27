@@ -14,9 +14,10 @@ without relying on RTR request/response patterns.
 from __future__ import annotations
 
 import logging
+import struct
 import time
 from dataclasses import dataclass, field
-from typing import Callable, Dict, List, Optional
+from typing import Callable, Optional
 
 from .can_adapter import USBtinAdapter
 from .can_message import CANMessage
@@ -37,8 +38,8 @@ class BroadcastReading:
     @property
     def is_temperature(self) -> bool:
         """Check if this looks like a temperature value."""
-        # 2-byte value in reasonable temp range (0.1 to 150.0°C)
-        return self.dlc == 2 and 1 <= self.raw_value <= 1500
+        # 2-byte signed value in reasonable temp range (-50.0 to 150.0°C)
+        return self.dlc == 2 and -500 <= self.raw_value <= 1500
 
     @property
     def temperature(self) -> Optional[float]:
@@ -59,7 +60,7 @@ class BroadcastReading:
 class BroadcastCache:
     """Cache of recent broadcast readings."""
 
-    readings: Dict[int, BroadcastReading] = field(default_factory=dict)
+    readings: dict[int, BroadcastReading] = field(default_factory=dict)
 
     def update(self, reading: BroadcastReading) -> None:
         """Update cache with new reading."""
@@ -91,7 +92,7 @@ class BroadcastCache:
                 return reading
         return None
 
-    def get_temperatures(self, circuit: Optional[int] = None) -> List[BroadcastReading]:
+    def get_temperatures(self, circuit: Optional[int] = None) -> list[BroadcastReading]:
         """Get all temperature readings, optionally filtered by circuit."""
         temps = [r for r in self.readings.values() if r.is_temperature]
         if circuit is not None:
@@ -105,7 +106,7 @@ class BroadcastCache:
 
 # Known broadcast ID mappings based on observed traffic
 # Format: (base, idx) -> (name, format)
-KNOWN_BROADCASTS: Dict[tuple, tuple] = {
+KNOWN_BROADCASTS: dict[tuple[int, int], tuple[str, str]] = {
     # Outdoor temperature (idx=12 on all circuit bases) - Hardware verified
     (0x0060, 12): ("OUTDOOR_TEMP_C0", "tem"),
     (0x0061, 12): ("OUTDOOR_TEMP_C1", "tem"),
@@ -155,7 +156,7 @@ KNOWN_BROADCASTS: Dict[tuple, tuple] = {
 # Mapping from standard parameter names to broadcast idx
 # For temperature sensors, we search across all circuit bases (0x0060-0x0063)
 # For other sensors, we specify the exact base
-PARAM_TO_BROADCAST: Dict[str, tuple] = {
+PARAM_TO_BROADCAST: dict[str, tuple[Optional[int], int]] = {
     # Outdoor temperature - idx=12, broadcasts on varying circuit bases
     "GT2_TEMP": (None, 12),  # None = search all circuit bases
     # DHW temperature - idx=78 on base 0x0402/0x0403 (CORRECTED 2025-12-16)
@@ -243,7 +244,7 @@ class BroadcastMonitor:
         self._adapter = adapter
         self._logger = logger or logging.getLogger(__name__)
         self._cache = BroadcastCache()
-        self._callbacks: List[Callable[[BroadcastReading], None]] = []
+        self._callbacks: list[Callable[[BroadcastReading], None]] = []
 
     @property
     def cache(self) -> BroadcastCache:
@@ -265,10 +266,14 @@ class BroadcastMonitor:
 
         direction, idx, base = decode_can_id(frame.arbitration_id)
 
-        # Parse raw value (big-endian)
-        raw_value = 0
-        for byte in frame.data[: min(frame.dlc, 4)]:
-            raw_value = (raw_value << 8) | byte
+        # Parse raw value (big-endian, signed for 2-byte temperature values)
+        if frame.dlc >= 2:
+            # Use signed 16-bit for temperature values (supports negative temps)
+            raw_value = struct.unpack(">h", bytes(frame.data[:2]))[0]
+        elif frame.dlc == 1:
+            raw_value = frame.data[0]
+        else:
+            raw_value = 0
 
         reading = BroadcastReading(
             can_id=frame.arbitration_id,
@@ -321,7 +326,7 @@ class BroadcastMonitor:
 
         return self._cache
 
-    def collect_temperatures(self, duration: float = 5.0) -> List[BroadcastReading]:
+    def collect_temperatures(self, duration: float = 5.0) -> list[BroadcastReading]:
         """
         Collect temperature readings for specified duration.
 

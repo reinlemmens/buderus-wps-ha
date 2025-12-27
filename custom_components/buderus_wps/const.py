@@ -45,6 +45,8 @@ ICON_COMPRESSOR: Final = "mdi:engine"
 ICON_ENERGY_BLOCK: Final = "mdi:power-plug-off"
 ICON_USB: Final = "mdi:usb-port"
 ICON_WATER_HEATER: Final = "mdi:water-boiler"
+ICON_WATER_THERMOMETER: Final = "mdi:water-thermometer"
+ICON_HEATING_CURVE: Final = "mdi:chart-line"
 
 # Heating Season Mode (idx=884)
 # Used for peak hour blocking - set to OFF (2) to disable heating
