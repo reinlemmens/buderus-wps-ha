@@ -43,6 +43,16 @@ class SensorType(Enum):
     RETURN_TEMP = "return_temp"
     DHW = "dhw"
     BRINE_IN = "brine_in"
+    # Room temperature sensors (from RC10 thermostats)
+    ROOM_C1 = "room_c1"
+    ROOM_C2 = "room_c2"
+    ROOM_C3 = "room_c3"
+    ROOM_C4 = "room_c4"
+    # Room setpoint sensors (adjusted setpoints from RC10 thermostats)
+    SETPOINT_C1 = "setpoint_c1"
+    SETPOINT_C2 = "setpoint_c2"
+    SETPOINT_C3 = "setpoint_c3"
+    SETPOINT_C4 = "setpoint_c4"
 
 
 class HeatingType(Enum):
@@ -224,16 +234,34 @@ DEFAULT_SENSOR_MAPPINGS: List[SensorMapping] = [
     SensorMapping(base=0x0061, idx=12, sensor=SensorType.OUTDOOR),
     SensorMapping(base=0x0062, idx=12, sensor=SensorType.OUTDOOR),
     SensorMapping(base=0x0063, idx=12, sensor=SensorType.OUTDOOR),
-    # GT3 - DHW tank temperature (CORRECTED 2025-12-20: idx=4 on base 0x0270)
-    # Previous mappings tried idx=58 (~54°C), idx=78 (~24°C) - both wrong
-    # Actual DHW tank temp broadcasts on 0x0270/idx=4 (~43°C matches independent sensor)
-    SensorMapping(base=0x0270, idx=4, sensor=SensorType.DHW),
+    # GT3 - DHW tank temperature
+    # DEPRECATED: Broadcast mapping is WRONG - GT3 is NOT in broadcasts.
+    # DHW is now read via RTR in coordinator.py using discovered GT3_TEMP idx.
+    # Verified 2026-01-02: GT3_TEMP requires RTR read, idx varies by firmware (682 on tested HP).
+    # Keeping this mapping disabled - the RTR read in coordinator.py takes precedence.
+    # SensorMapping(base=0x0270, idx=4, sensor=SensorType.DHW),  # WRONG - was DHW setpoint
     # GT8 - Heat transfer fluid OUT (Supply/flow temperature)
     # Verified 2025-12-21: idx=6 on base 0x0270 (~35-42°C when heating)
     SensorMapping(base=0x0270, idx=6, sensor=SensorType.SUPPLY),
     # GT9 - Heat transfer fluid IN (Return temperature)
     # Verified 2025-12-21: idx=5 on base 0x0270 (~29-35°C when heating)
     SensorMapping(base=0x0270, idx=5, sensor=SensorType.RETURN_TEMP),
+    # Room temperatures from RC10 thermostats (verified 2024-12-28)
+    # All circuits broadcast room temp on their respective base at idx=0
+    # C1: base=0x0060, idx=0 - verified working
+    # C2: base=0x0061, idx=0 - verified 2024-12-28
+    # C3: base=0x0062, idx=0 - verified 2024-12-28 (alternate: 0x0402/idx=55)
+    # C4: base=0x0063, idx=0 - verified 2024-12-28
+    SensorMapping(base=0x0060, idx=0, sensor=SensorType.ROOM_C1),
+    SensorMapping(base=0x0061, idx=0, sensor=SensorType.ROOM_C2),
+    SensorMapping(base=0x0062, idx=0, sensor=SensorType.ROOM_C3),
+    SensorMapping(base=0x0063, idx=0, sensor=SensorType.ROOM_C4),
+    # Room setpoints from RC10 thermostats
+    # idx=33 on circuit bases 0x0060-0x0063 (adjusted setpoint from heating curve)
+    SensorMapping(base=0x0060, idx=33, sensor=SensorType.SETPOINT_C1),
+    SensorMapping(base=0x0061, idx=33, sensor=SensorType.SETPOINT_C2),
+    SensorMapping(base=0x0062, idx=33, sensor=SensorType.SETPOINT_C3),
+    SensorMapping(base=0x0063, idx=33, sensor=SensorType.SETPOINT_C4),
 ]
 
 

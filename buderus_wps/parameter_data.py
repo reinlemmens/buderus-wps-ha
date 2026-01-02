@@ -1910,7 +1910,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_QUICKSTART",
     },
     {
-        "idx": 278,
+        "idx": 279,
         "extid": "014AF08A5700AC",
         "max": 0,
         "min": 0,
@@ -2045,7 +2045,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_START_DELAY_TIME",
     },
     {
-        "idx": 294,
+        "idx": 295,
         "extid": "01CFDE450B00B2",
         "max": 0,
         "min": 0,
@@ -2054,7 +2054,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_STATE",
     },
     {
-        "idx": 295,
+        "idx": 296,
         "extid": "01516FA1EE0664",
         "max": 0,
         "min": 0,
@@ -4617,22 +4617,25 @@ PARAMETER_DATA = [
         "text": "GT3_KVITTERA_MANUELLT",
     },
     {
-        "idx": 680,
+        "idx": 681,
         "extid": "0054B7AA2C0067",
         "max": 0,
         "min": 0,
         "format": "int",
         "read": 0,
         "text": "GT3_STATUS",
+        # NOTE: idx updated from 680 to 681 based on hardware discovery (2026-01-02)
     },
     {
-        "idx": 681,
+        "idx": 682,
         "extid": "0EB5CF43420068",
         "max": 0,
         "min": 0,
         "format": "tem",
         "read": 1,
         "text": "GT3_TEMP",
+        # NOTE: idx updated from 681 to 682 based on hardware discovery (2026-01-02)
+        # Heat pump reports GT3_TEMP at idx=682, NOT static list's idx=681
     },
     {
         "idx": 683,
@@ -14985,7 +14988,7 @@ PARAMETER_DATA = [
         "text": "XDHW_REQUEST",
     },
     {
-        "idx": 2473,
+        "idx": 2478,
         "extid": "EE1597E1AD010E",
         "max": 650,
         "min": 500,
@@ -14994,12 +14997,12 @@ PARAMETER_DATA = [
         "text": "XDHW_STOP_TEMP",
     },
     {
-        "idx": 2475,
+        "idx": 2480,
         "extid": "E1263DCA71010F",
         "max": 48,
         "min": 0,
         "format": "int",
-        "read": 1,
+        "read": 0,
         "text": "XDHW_TIME",
     },
     {

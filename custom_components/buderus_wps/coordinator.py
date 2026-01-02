@@ -20,6 +20,14 @@ from .const import (
     SENSOR_DHW,
     SENSOR_OUTDOOR,
     SENSOR_RETURN,
+    SENSOR_ROOM_C1,
+    SENSOR_ROOM_C2,
+    SENSOR_ROOM_C3,
+    SENSOR_ROOM_C4,
+    SENSOR_SETPOINT_C1,
+    SENSOR_SETPOINT_C2,
+    SENSOR_SETPOINT_C3,
+    SENSOR_SETPOINT_C4,
     SENSOR_SUPPLY,
 )
 
@@ -33,9 +41,11 @@ class BuderusData:
     temperatures: dict[str, float | None]
     compressor_running: bool
     energy_blocked: bool
-    dhw_extra_duration: int  # Hours remaining (0-24), 0 = not active
+    dhw_extra_duration: int  # Hours remaining (0-48), 0 = not active
     heating_season_mode: int | None  # 0=Winter, 1=Auto, 2=Off
     dhw_program_mode: int | None  # 0=Auto, 1=On, 2=Off
+    heating_curve_offset: float | None  # Parallel offset in °C (-10.0 to +10.0)
+    dhw_stop_temp: float | None  # DHW stop charging temperature (50.0-65.0°C)
 
 
 class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
@@ -74,6 +84,10 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         self._manually_disconnected: bool = (
             False  # Track intentional disconnect for CLI access
         )
+        # DHW boost fallback: used when XDHW_TIME writes don't take on the device.
+        self._dhw_boost_end_time: float | None = None
+        self._dhw_boost_original_program_mode: int | None = None
+        self._dhw_boost_task: asyncio.Task[None] | None = None
 
     async def async_setup(self) -> bool:
         """Set up the connection to the heat pump."""
@@ -91,6 +105,9 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         if self._reconnect_task is not None:
             self._reconnect_task.cancel()
             self._reconnect_task = None
+        if self._dhw_boost_task is not None:
+            self._dhw_boost_task.cancel()
+            self._dhw_boost_task = None
         if self._connected:
             await self.hass.async_add_executor_job(self._sync_disconnect)
             self._connected = False
@@ -255,6 +272,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             HeatPumpClient,
             USBtinAdapter,
         )
+        from .buderus_wps.element_discovery import ElementDiscovery
         from .buderus_wps.menu_api import MenuAPI
 
         _LOGGER.debug("Connecting to heat pump at %s", self.port)
@@ -262,7 +280,50 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         self._adapter = USBtinAdapter(self.port)
         self._adapter.connect()
 
+        # Create registry with static defaults first
         self._registry = HeatPump()
+
+        # Run element discovery to get actual device indices
+        # This is critical because firmware versions may have different idx values
+        # for the same parameter names (e.g., XDHW_TIME at idx=2475 in static
+        # defaults but idx=2480 on actual device)
+        try:
+            discovery = ElementDiscovery(self._adapter)
+            # Use cache to speed up subsequent connections
+            # Cache stored in /tmp so it persists across HA restarts but not reboots
+            # Static defaults now have correct indices for XDHW_STOP_TEMP/XDHW_TIME
+            # Cache expires after 24 hours or if previous discovery was incomplete
+            discovered = discovery.discover_with_cache(
+                cache_path="/tmp/buderus_wps_elements.json",
+                refresh=False,  # Use cache if available
+                max_cache_age=86400.0,  # 24 hours - refresh stale cache
+                timeout=30.0,
+                max_retries=3,  # Retry incomplete discovery up to 3 times
+                min_completion_ratio=0.95,  # Require 95% of reported elements
+            )
+            if discovered:
+                updated = self._registry.update_from_discovery(discovered)
+                _LOGGER.info(
+                    "Element discovery: %d elements, %d indices updated",
+                    len(discovered),
+                    updated,
+                )
+                # Log key parameters for debugging
+                for name in ["XDHW_STOP_TEMP", "XDHW_TIME"]:
+                    param = self._registry.get_parameter(name)
+                    if param:
+                        _LOGGER.info(
+                            "%s: idx=%d, CAN ID=0x%08X",
+                            name,
+                            param.idx,
+                            0x04003FE0 | (param.idx << 14),
+                        )
+        except Exception as err:
+            _LOGGER.warning(
+                "Element discovery failed, using static defaults: %s",
+                err,
+            )
+
         self._client = HeatPumpClient(self._adapter, self._registry)
         self._monitor = BroadcastMonitor(self._adapter)
         self._api = MenuAPI(self._client)
@@ -393,6 +454,14 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             SENSOR_RETURN: None,
             SENSOR_DHW: None,
             SENSOR_BRINE_IN: None,
+            SENSOR_ROOM_C1: None,
+            SENSOR_ROOM_C2: None,
+            SENSOR_ROOM_C3: None,
+            SENSOR_ROOM_C4: None,
+            SENSOR_SETPOINT_C1: None,
+            SENSOR_SETPOINT_C2: None,
+            SENSOR_SETPOINT_C3: None,
+            SENSOR_SETPOINT_C4: None,
         }
 
         # Pre-fill with last known good data to prevent "Unknown" flapping
@@ -436,26 +505,40 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             if self._last_known_good_data is not None:
                 temperatures = self._last_known_good_data.temperatures.copy()
 
+        # Get GT3_TEMP (DHW temperature) via RTR (best-effort)
+        # PROTOCOL: GT3_TEMP must be read via RTR, NOT broadcast.
+        # The broadcast mapping in config.py is incorrect - broadcasts don't contain GT3.
+        # Element discovery finds the correct idx (682 on tested heat pump, varies by model).
+        # The raw sensor value is returned; display may show +4K adjustment (GT3_KORRIGERING).
+        # Verified 2026-01-02: idx=682 returns correct DHW temperature via RTR.
+        try:
+            result = self._client.read_parameter("GT3_TEMP")
+            decoded = result.get("decoded", 0)
+            if decoded is not None:
+                dhw_temp = float(decoded)
+                temperatures[SENSOR_DHW] = dhw_temp
+                _LOGGER.debug("GT3_TEMP (DHW) via RTR: %.1f°C", dhw_temp)
+        except Exception as err:
+            _LOGGER.warning("RTR FAILED for GT3_TEMP: %s", err)
+            # Keep any broadcast or stale value that may exist
+
         # Get compressor status via RTR request (best-effort with retry)
-        # PROTOCOL: COMPRESSOR_STATE (idx=294) returns state code
-        # Value 15 observed when compressor is running (verified with power sensor at 5300W)
-        # Note: COMPRESSOR_REAL_FREQUENCY and HW_COMPRESSOR_WORKING_FREQ return 0 on some models
-        # Using state > 0 as running indicator; value 15 = running, 0 = stopped
+        # PROTOCOL: COMPRESSOR_REAL_FREQUENCY > 0 means compressor is running
+        # Verified in menu_api.py (2024-12-02): frequency shows actual Hz when running, 0 when stopped
         compressor_running = False
-        compressor_state = 0
         for attempt in range(3):
             try:
-                result = self._client.read_parameter("COMPRESSOR_STATE")
-                compressor_state = int(result.get("decoded", 0) or 0)
-                compressor_running = compressor_state > 0
-                _LOGGER.debug("Compressor state: %s (running=%s)", compressor_state, compressor_running)
+                result = self._client.read_parameter("COMPRESSOR_REAL_FREQUENCY")
+                frequency = int(result.get("decoded", 0) or 0)
+                compressor_running = frequency > 0
+                _LOGGER.debug("Compressor frequency: %d Hz (running=%s)", frequency, compressor_running)
                 break  # Success - exit retry loop
             except Exception as err:
                 if attempt < 2:
-                    _LOGGER.debug("RTR attempt %d/3 for COMPRESSOR_STATE failed: %s", attempt + 1, err)
+                    _LOGGER.debug("RTR attempt %d/3 for COMPRESSOR_REAL_FREQUENCY failed: %s", attempt + 1, err)
                     time.sleep(0.3)  # Brief delay before retry
                 else:
-                    _LOGGER.warning("RTR FAILED for COMPRESSOR_STATE after 3 attempts: %s", err)
+                    _LOGGER.warning("RTR FAILED for COMPRESSOR_REAL_FREQUENCY after 3 attempts: %s", err)
                     if self._last_known_good_data is not None:
                         compressor_running = self._last_known_good_data.compressor_running
 
@@ -471,12 +554,18 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
 
         # Get DHW extra duration (best-effort)
         dhw_extra_duration = 0
-        try:
-            dhw_extra_duration = self._api.hot_water.extra_duration
-        except Exception as err:
-            _LOGGER.warning("RTR FAILED for DHW_EXTRA_DURATION: %s", err)
-            if self._last_known_good_data is not None:
-                dhw_extra_duration = self._last_known_good_data.dhw_extra_duration
+        if self._dhw_boost_end_time is not None:
+            remaining_seconds = self._dhw_boost_end_time - time.time()
+            if remaining_seconds > 0:
+                # Round up to whole hours for a stable UI value.
+                dhw_extra_duration = int((remaining_seconds + 3599) // 3600)
+        else:
+            try:
+                dhw_extra_duration = self._api.hot_water.extra_duration
+            except Exception as err:
+                _LOGGER.warning("RTR FAILED for DHW_EXTRA_DURATION: %s", err)
+                if self._last_known_good_data is not None:
+                    dhw_extra_duration = self._last_known_good_data.dhw_extra_duration
 
         # Get heating season mode (best-effort)
         # PROTOCOL: dp2 format returns strings like "1:Always_On" - parse int prefix
@@ -508,6 +597,32 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             if self._last_known_good_data is not None:
                 dhw_program_mode = self._last_known_good_data.dhw_program_mode
 
+        # Get heating curve parallel offset (best-effort)
+        # PROTOCOL: Use GLOBAL parameter (idx=804) which is the user-adjustable setting
+        # visible in the heat pump menu as "Parallel offset" / "Parallelle verschuiving"
+        # The non-GLOBAL version (idx=802) is a different internal parameter
+        heating_curve_offset: float | None = None
+        try:
+            result = self._client.read_parameter("HEATING_CURVE_PARALLEL_OFFSET_GLOBAL")
+            decoded = result.get("decoded")
+            if decoded is not None:
+                heating_curve_offset = float(decoded)
+        except Exception as err:
+            _LOGGER.warning("RTR FAILED for HEATING_CURVE_PARALLEL_OFFSET_GLOBAL: %s", err)
+            if self._last_known_good_data is not None:
+                heating_curve_offset = self._last_known_good_data.heating_curve_offset
+
+        # Get DHW stop temperature (best-effort)
+        # PROTOCOL: XDHW_STOP_TEMP controls when DHW charging stops (50-65°C)
+        dhw_stop_temp: float | None = None
+        try:
+            if self._api is not None:
+                dhw_stop_temp = self._api.hot_water.stop_temperature
+        except Exception as err:
+            _LOGGER.warning("RTR FAILED for XDHW_STOP_TEMP: %s", err)
+            if self._last_known_good_data is not None:
+                dhw_stop_temp = self._last_known_good_data.dhw_stop_temp
+
         # Build result with mix of fresh and stale data
         result = BuderusData(
             temperatures=temperatures,
@@ -516,6 +631,8 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             dhw_extra_duration=dhw_extra_duration,
             heating_season_mode=heating_season_mode,
             dhw_program_mode=dhw_program_mode,
+            heating_curve_offset=heating_curve_offset,
+            dhw_stop_temp=dhw_stop_temp,
         )
 
         # Check if we got at least SOME fresh data
@@ -563,20 +680,135 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         """Set DHW extra production duration.
 
         Args:
-            hours: Duration in hours (0-24). 0 stops extra production.
+            hours: Duration in hours (0-48). 0 stops extra production.
         """
+        if hours < 0:
+            raise ValueError(f"DHW extra duration must be >= 0, got {hours}")
+
         async with self._lock:
-            await self.hass.async_add_executor_job(
-                self._sync_set_dhw_extra_duration, hours
+            if hours == 0:
+                await self._async_stop_dhw_boost_locked()
+                return
+
+            result: dict[str, Any] = await self.hass.async_add_executor_job(
+                self._sync_start_dhw_extra_duration, hours
             )
 
-    def _sync_set_dhw_extra_duration(self, hours: int) -> None:
-        """Synchronous DHW extra duration set (runs in executor)."""
-        self._api.hot_water.extra_duration = hours
-        if hours > 0:
-            _LOGGER.info("Started DHW extra production for %d hours", hours)
-        else:
-            _LOGGER.info("Stopped DHW extra production")
+            if result.get("strategy") == "program_mode_override":
+                end_time = time.time() + hours * 3600
+                self._dhw_boost_end_time = end_time
+                self._dhw_boost_original_program_mode = result.get("original_program_mode")
+
+                if self._dhw_boost_task is not None:
+                    self._dhw_boost_task.cancel()
+                self._dhw_boost_task = self.hass.async_create_task(
+                    self._async_dhw_boost_timer(end_time),
+                    name="buderus_wps_dhw_boost_timer",
+                )
+            else:
+                # XDHW_TIME accepted (or we at least attempted it) -> no HA-side timer needed.
+                self._dhw_boost_end_time = None
+                self._dhw_boost_original_program_mode = None
+                if self._dhw_boost_task is not None:
+                    self._dhw_boost_task.cancel()
+                    self._dhw_boost_task = None
+
+    async def _async_stop_dhw_boost_locked(self) -> None:
+        """Stop any active DHW boost and restore program mode when applicable.
+
+        Must be called with ``self._lock`` held.
+        """
+        if self._dhw_boost_task is not None:
+            self._dhw_boost_task.cancel()
+            self._dhw_boost_task = None
+
+        # Always attempt to stop XDHW_TIME-based boost if the device supports it.
+        await self.hass.async_add_executor_job(self._sync_write_xdhw_time, 0)
+
+        original_mode = self._dhw_boost_original_program_mode
+        self._dhw_boost_end_time = None
+        self._dhw_boost_original_program_mode = None
+
+        # If we used program-mode override, restore previous mode.
+        if original_mode is not None and self._client is not None:
+            await self.hass.async_add_executor_job(self._sync_set_dhw_program_mode, original_mode)
+        _LOGGER.info("Stopped DHW extra production")
+
+    async def _async_dhw_boost_timer(self, end_time: float) -> None:
+        """Timer task to automatically stop DHW boost after the requested duration."""
+        try:
+            delay = max(end_time - time.time(), 0)
+            await asyncio.sleep(delay)
+            async with self._lock:
+                # If the timer was extended/replaced, ignore this run.
+                if self._dhw_boost_end_time != end_time:
+                    return
+                await self._async_stop_dhw_boost_locked()
+            await self.async_request_refresh()
+        except asyncio.CancelledError:
+            return
+        except Exception as err:
+            _LOGGER.error("DHW boost timer failed: %s", err)
+
+    def _sync_write_xdhw_time(self, hours: int) -> None:
+        """Try to write XDHW_TIME via MenuAPI (best-effort)."""
+        try:
+            if self._api is None:
+                return
+            self._api.hot_water.extra_duration = hours
+        except Exception as err:
+            _LOGGER.debug("XDHW_TIME write ignored/failed: %s", err)
+
+    def _sync_start_dhw_extra_duration(self, hours: int) -> dict[str, Any]:
+        """Start DHW extra production for a duration.
+
+        Strategy:
+        1) Try the device-native XDHW_TIME write.
+           With element discovery, this should use the correct CAN ID for the device.
+        2) Only fall back to program mode override if XDHW_TIME write fails.
+
+        Note: We don't verify the write via readback because:
+        - Element discovery ensures we're using the correct parameter index
+        - FHEM also trusts the write without verification
+        - Readback adds latency and can fail due to CAN bus traffic
+        """
+        # 1) Try native extra duration with discovered parameter index
+        try:
+            if self._api is not None:
+                self._api.hot_water.extra_duration = hours
+                _LOGGER.info(
+                    "Started DHW extra production for %d hours (XDHW_TIME)", hours
+                )
+                return {"strategy": "xdhw_time"}
+        except Exception as err:
+            _LOGGER.warning(
+                "XDHW_TIME write failed, falling back to program mode: %s", err
+            )
+
+        # 2) Fallback: program mode override
+        original_program_mode: int | None = None
+        try:
+            if self._client is not None:
+                result = self._client.read_parameter("DHW_PROGRAM_MODE")
+                decoded = result.get("decoded", 0)
+                if isinstance(decoded, str) and ":" in decoded:
+                    original_program_mode = int(decoded.split(":")[0])
+                else:
+                    original_program_mode = int(decoded)
+        except Exception as err:
+            _LOGGER.debug("Failed to read current DHW_PROGRAM_MODE: %s", err)
+
+        if self._client is not None:
+            self._client.write_value("DHW_PROGRAM_MODE", 1)  # Always On
+
+        _LOGGER.info(
+            "Started DHW extra production for %d hours (fallback: DHW program mode override)",
+            hours,
+        )
+        return {
+            "strategy": "program_mode_override",
+            "original_program_mode": original_program_mode,
+        }
 
     async def async_set_heating_season_mode(self, mode: int) -> None:
         """Set heating season mode for peak hour blocking.
@@ -615,3 +847,73 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         _LOGGER.info(
             "Set DHW program mode to %s (%d)", mode_names.get(mode, "Unknown"), mode
         )
+
+    async def async_set_heating_curve_offset(self, offset: float) -> None:
+        """Set heating curve parallel offset.
+
+        Args:
+            offset: Parallel offset in °C (-10.0 to +10.0)
+
+        Raises:
+            ValueError: If offset outside allowed range
+        """
+        if not -10.0 <= offset <= 10.0:
+            raise ValueError(
+                f"Heating curve offset must be between -10.0 and +10.0°C, got {offset}"
+            )
+        _LOGGER.debug("async_set_heating_curve_offset called with offset=%.1f", offset)
+        try:
+            async with self._lock:
+                await self.hass.async_add_executor_job(
+                    self._sync_set_heating_curve_offset, offset
+                )
+            _LOGGER.debug("async_set_heating_curve_offset completed successfully")
+        except Exception as err:
+            _LOGGER.error("async_set_heating_curve_offset FAILED: %s", err)
+            raise
+
+    def _sync_set_heating_curve_offset(self, offset: float) -> None:
+        """Synchronous heating curve offset set (runs in executor)."""
+        _LOGGER.debug("_sync_set_heating_curve_offset called with offset=%.1f", offset)
+        try:
+            # Write to GLOBAL parameter (idx=804) which is the user-adjustable setting
+            self._client.write_value("HEATING_CURVE_PARALLEL_OFFSET_GLOBAL", offset)
+            _LOGGER.info("Set heating curve parallel offset to %.1f°C", offset)
+        except Exception as err:
+            _LOGGER.error("_sync_set_heating_curve_offset FAILED: %s", err)
+            raise
+
+    async def async_set_dhw_stop_temp(self, temp: float) -> None:
+        """Set DHW stop charging temperature.
+
+        Args:
+            temp: Temperature in °C (50.0 to 65.0)
+
+        Raises:
+            ValueError: If temperature outside allowed range
+        """
+        if not 50.0 <= temp <= 65.0:
+            raise ValueError(
+                f"DHW stop temperature must be between 50.0 and 65.0°C, got {temp}"
+            )
+        _LOGGER.debug("async_set_dhw_stop_temp called with temp=%.1f", temp)
+        try:
+            async with self._lock:
+                await self.hass.async_add_executor_job(
+                    self._sync_set_dhw_stop_temp, temp
+                )
+            _LOGGER.debug("async_set_dhw_stop_temp completed successfully")
+        except Exception as err:
+            _LOGGER.error("async_set_dhw_stop_temp FAILED: %s", err)
+            raise
+
+    def _sync_set_dhw_stop_temp(self, temp: float) -> None:
+        """Synchronous DHW stop temp set (runs in executor)."""
+        _LOGGER.debug("_sync_set_dhw_stop_temp called with temp=%.1f", temp)
+        try:
+            if self._api is not None:
+                self._api.hot_water.stop_temperature = temp
+            _LOGGER.info("Set DHW stop temperature to %.1f°C", temp)
+        except Exception as err:
+            _LOGGER.error("_sync_set_dhw_stop_temp FAILED: %s", err)
+            raise

@@ -102,10 +102,16 @@ RC10 room controllers broadcast their data to **different locations depending on
 
 #### Circuit-Specific RC10 Broadcast Patterns
 
-| Circuit | RC10 Display | Room Temp Location | Demand Location |
-|---------|--------------|-------------------|-----------------|
-| C1 | Shows "1" | idx=0, base=0x0060 | idx=18, base=0x0060 |
-| C3 | Shows "3" | idx=55, base=0x0402 | idx=107, base=0x0402 |
+All RC10 room controllers broadcast room temperature at **idx=0** and adjusted setpoint at **idx=33** on their respective circuit bases. This pattern was verified across all 4 circuits on 2024-12-28.
+
+| Circuit | Base | Room Temp (idx) | Adjusted Setpoint (idx) | Verified |
+|---------|------|-----------------|-------------------------|----------|
+| C1 | 0x0060 | 0 | 33 | Yes (20.5°C) |
+| C2 | 0x0061 | 0 | 33 | Yes (22.0°C) - 2024-12-28 |
+| C3 | 0x0062 | 0 | 33 | Yes (22.5°C) - 2024-12-28 |
+| C4 | 0x0063 | 0 | 33 | Yes (23.9°C) - 2024-12-28 |
+
+**Note**: C3 also broadcasts on alternate location (idx=55, base=0x0402) for legacy compatibility.
 
 #### Demand Setpoint Index Pattern
 
@@ -128,15 +134,37 @@ The RC10 controlling Circuit 1 broadcasts on **circuit-specific base 0x0060**:
 | 0x0C14C060 | 0x0060 | 83 | C1 RC10 Room Temperature (copy) | Yes |
 | 0x0C048060 | 0x0060 | 18 | C1 RC10 Temperature Demand/Setpoint | Yes (19.0°C) |
 
-#### C3 RC10 Controller (Circuit 3)
+#### C2 RC10 Controller (Circuit 2)
 
-The RC10 controlling Circuit 3 broadcasts on **shared base 0x0402**:
+The RC10 controlling Circuit 2 broadcasts on **circuit-specific base 0x0061**:
 
 | CAN ID | Base | Index | Description | Verified |
 |--------|------|-------|-------------|----------|
-| 0x0C0DC402 | 0x0402 | 55 | C3 RC10 Room Temperature | Yes (22.1°C) |
+| 0x0C000061 | 0x0061 | 0 | C2 RC10 Room Temperature | Yes (22.0°C) - 2024-12-28 |
+| 0x0C14C061 | 0x0061 | 83 | C2 RC10 Room Temperature (copy) | Yes |
+| 0x0C084061 | 0x0061 | 33 | C2 RC10 Adjusted Setpoint | Yes - 2024-12-28 |
+
+#### C3 RC10 Controller (Circuit 3)
+
+The RC10 controlling Circuit 3 broadcasts on **circuit-specific base 0x0062** (primary) and **shared base 0x0402** (alternate):
+
+| CAN ID | Base | Index | Description | Verified |
+|--------|------|-------|-------------|----------|
+| 0x0C000062 | 0x0062 | 0 | C3 RC10 Room Temperature | Yes (22.5°C) - 2024-12-28 |
+| 0x0C084062 | 0x0062 | 33 | C3 RC10 Adjusted Setpoint | Yes - 2024-12-28 |
+| 0x0C0DC402 | 0x0402 | 55 | C3 RC10 Room Temperature (alternate) | Yes (legacy location) |
 | 0x0C188402 | 0x0402 | 98 | C3 RC10 Room Temperature (copy) | Yes |
 | 0x0C1AC402 | 0x0402 | 107 | C3 RC10 Temperature Demand/Setpoint | Yes (change captured: 18.5→21.5°C) |
+
+#### C4 RC10 Controller (Circuit 4)
+
+The RC10 controlling Circuit 4 broadcasts on **circuit-specific base 0x0063**:
+
+| CAN ID | Base | Index | Description | Verified |
+|--------|------|-------|-------------|----------|
+| 0x0C000063 | 0x0063 | 0 | C4 RC10 Room Temperature | Yes (23.9°C) - 2024-12-28 |
+| 0x0C14C063 | 0x0063 | 83 | C4 RC10 Room Temperature (copy) | Yes |
+| 0x0C084063 | 0x0063 | 33 | C4 RC10 Adjusted Setpoint | Yes - 2024-12-28 |
 
 **Important Notes**:
 - The number displayed on the RC10 indicates which heating circuit it controls
@@ -144,12 +172,52 @@ The RC10 controlling Circuit 3 broadcasts on **shared base 0x0402**:
 - Demand values may show intermediate transition values when changed (e.g., 21.0 → 19.5 → 19.0)
 - Some broadcasts occur less frequently than others (demand may require 30+ second captures)
 
-### DHW (Domestic Hot Water) Temperature
+### DHW (Domestic Hot Water) Temperature - GT3_TEMP
 
-| CAN ID | Base | Index | Description |
-|--------|------|-------|-------------|
-| 0x0C0E8060 | 0x0060 | 58 | DHW Actual Temperature |
-| 0x0C0E8062 | 0x0062 | 58 | DHW Actual Temperature (copy) |
+**CRITICAL: GT3_TEMP (DHW actual temperature) is NOT available via broadcast.**
+
+Broadcasts do NOT contain the actual DHW tank temperature. GT3_TEMP must be read via RTR.
+
+#### Why Broadcast Mapping Failed
+
+Previous attempts to map GT3_TEMP to broadcasts were incorrect:
+
+| Attempted Mapping | Base | Index | Actual Content | Status |
+|-------------------|------|-------|----------------|--------|
+| ~~DHW from circuit~~ | 0x0060 | 58 | DHW setpoint/supply, NOT actual temp | **WRONG** |
+| ~~DHW from 0x0270~~ | 0x0270 | 4 | DHW setpoint (~50°C), NOT actual temp | **WRONG** |
+| ~~DHW from 0x0402~~ | 0x0402 | 78 | Unknown (~23°C), NOT actual temp | **WRONG** |
+
+#### Correct Method: RTR Read
+
+GT3_TEMP must be read via RTR using the element discovery idx:
+
+| Parameter | Static idx | Discovered idx | Notes |
+|-----------|------------|----------------|-------|
+| GT3_TEMP | 681 | **682** | Varies by firmware! |
+
+**CRITICAL INDEX DISCREPANCY**: The static parameter list (from FHEM) says GT3_TEMP is at idx=681, but the heat pump dynamically reports idx=682. Using idx=681 returns GT3_STATUS (DLC=1), not the temperature.
+
+#### Hardware Verification (2026-01-02)
+
+| Test | Request idx | DLC | Result |
+|------|-------------|-----|--------|
+| Static idx=681 | 681 | 1 | status=1 (GT3_STATUS) |
+| Discovered idx=682 | 682 | **2** | **38.8°C** (GT3_TEMP) ✓ |
+
+The raw sensor value (38.8°C) differs from display (42.8°C) by exactly 4.0K due to a configured calibration offset (GT3_KORRIGERING = +4.0K in installer menu).
+
+#### Implementation
+
+GT3_TEMP is read via RTR in `coordinator.py`:
+
+```python
+# Read GT3_TEMP via RTR (uses discovered idx from element discovery)
+result = self._client.read_parameter("GT3_TEMP")
+dhw_temp = float(result.get("decoded", 0))
+```
+
+The element discovery automatically finds the correct idx for the specific heat pump firmware.
 
 ### Heat Pump Internal Sensors
 
@@ -663,3 +731,12 @@ wps-cli read GT9_TEMP --broadcast
 | 2025-12-10 | Updated parameter_data.py with hardware-verified idx values for HEATING_SEASON_* params |
 | 2025-12-10 | **NEW**: DHW_PROGRAM_MODE (idx=489) verified writable for DHW blocking (0=Auto, 1=On, 2=Off) |
 | 2025-12-12 | Added CLI named value support: `wps-cli write HEATING_SEASON_MODE winter/summer/automatic` |
+| 2024-12-28 | **NEW**: Verified all 4 circuits broadcast room temp at idx=0 on respective circuit bases (0x0060-0x0063) |
+| 2024-12-28 | Added C2 and C4 RC10 controller sections; all circuits now use consistent idx=0 for room temp, idx=33 for setpoint |
+| 2024-12-28 | Updated C3 section: primary location is now idx=0/base=0x0062, alternate is idx=55/base=0x0402 for legacy |
+| 2024-12-28 | Hardware verified room temperatures: C1=20.5°C, C2=22.0°C, C3=22.5°C, C4=23.9°C (C4 not on heat pump menu) |
+| 2026-01-02 | **CRITICAL FIX**: GT3_TEMP (DHW) is NOT in broadcasts - must use RTR read |
+| 2026-01-02 | Discovered GT3_TEMP idx mismatch: static=681 (wrong), discovered=682 (correct) |
+| 2026-01-02 | Documented GT3_KORRIGERING +4.0K calibration offset causing display vs raw value difference |
+| 2026-01-02 | Updated coordinator.py to read GT3_TEMP via RTR instead of broadcast |
+| 2026-01-02 | Deprecated broadcast mappings for DHW in config.py and broadcast_monitor.py |
