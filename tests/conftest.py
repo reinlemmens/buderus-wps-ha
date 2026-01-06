@@ -195,6 +195,9 @@ class MockBuderusData:
     dhw_extra_duration: int
     heating_season_mode: Optional[int] = None
     dhw_program_mode: Optional[int] = None
+    heating_curve_offset: Optional[float] = None
+    dhw_stop_temp: Optional[float] = None
+    dhw_setpoint: Optional[float] = None
 
 
 @pytest.fixture
@@ -219,6 +222,9 @@ def mock_buderus_data(mock_temperatures: dict[str, float]) -> MockBuderusData:
         dhw_extra_duration=0,
         heating_season_mode=1,
         dhw_program_mode=0,
+        heating_curve_offset=0.0,
+        dhw_stop_temp=55.0,
+        dhw_setpoint=50.0,
     )
 
 
@@ -236,8 +242,14 @@ def mock_coordinator(mock_buderus_data: MockBuderusData) -> MagicMock:
     coordinator.async_set_dhw_extra_duration = AsyncMock()
     coordinator.async_set_heating_season_mode = AsyncMock()
     coordinator.async_set_dhw_program_mode = AsyncMock()
+    coordinator.async_set_dhw_stop_temp = AsyncMock()
+    coordinator.async_set_dhw_setpoint = AsyncMock()
+    coordinator.async_set_heating_curve_offset = AsyncMock()
     coordinator.async_manual_connect = AsyncMock()
     coordinator.async_manual_disconnect = AsyncMock()
+
+    # Sync methods for optimistic update
+    coordinator.async_set_updated_data = MagicMock()
 
     # Manual disconnect state
     coordinator._manually_disconnected = False

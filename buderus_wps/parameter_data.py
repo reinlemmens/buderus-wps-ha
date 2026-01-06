@@ -2702,7 +2702,9 @@ PARAMETER_DATA = [
         "text": "DHW_CALCULATED_E22_T3_START_TEMP_SEC_PER_TENTH_ADJ",
     },
     {
-        "idx": 385,
+        # Note: FHEM runtime discovery found idx=386, not 385 as in original docs
+        # Verified via CAN capture: request 0x460BFE0 (idx 386) returns 53.0°C
+        "idx": 386,
         "extid": "EE5991A93A02B8",
         "max": 700,
         "min": 400,

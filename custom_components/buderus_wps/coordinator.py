@@ -46,6 +46,7 @@ class BuderusData:
     dhw_program_mode: int | None  # 0=Auto, 1=On, 2=Off
     heating_curve_offset: float | None  # Parallel offset in °C (-10.0 to +10.0)
     dhw_stop_temp: float | None  # DHW stop charging temperature (50.0-65.0°C)
+    dhw_setpoint: float | None  # DHW setpoint temperature (40.0-70.0°C)
 
 
 class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
@@ -623,6 +624,22 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             if self._last_known_good_data is not None:
                 dhw_stop_temp = self._last_known_good_data.dhw_stop_temp
 
+        # Get DHW setpoint temperature (best-effort)
+        # PROTOCOL: DHW_CALCULATED_SETPOINT_TEMP is the normal DHW setpoint (40-70°C)
+        # Note: parameter_defaults.py idx corrected from 385 to 386 per FHEM discovery
+        dhw_setpoint: float | None = None
+        try:
+            result = self._client.read_parameter("DHW_CALCULATED_SETPOINT_TEMP")
+            raw = result.get("raw")
+            decoded = result.get("decoded")
+            _LOGGER.debug("DHW_CALCULATED_SETPOINT_TEMP: raw=%s, decoded=%s", raw, decoded)
+            if decoded is not None:
+                dhw_setpoint = float(decoded)
+        except Exception as err:
+            _LOGGER.warning("RTR FAILED for DHW_CALCULATED_SETPOINT_TEMP: %s", err)
+            if self._last_known_good_data is not None:
+                dhw_setpoint = self._last_known_good_data.dhw_setpoint
+
         # Build result with mix of fresh and stale data
         result = BuderusData(
             temperatures=temperatures,
@@ -633,6 +650,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             dhw_program_mode=dhw_program_mode,
             heating_curve_offset=heating_curve_offset,
             dhw_stop_temp=dhw_stop_temp,
+            dhw_setpoint=dhw_setpoint,
         )
 
         # Check if we got at least SOME fresh data
@@ -916,4 +934,39 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             _LOGGER.info("Set DHW stop temperature to %.1f°C", temp)
         except Exception as err:
             _LOGGER.error("_sync_set_dhw_stop_temp FAILED: %s", err)
+            raise
+
+    async def async_set_dhw_setpoint(self, temp: float) -> None:
+        """Set DHW setpoint temperature.
+
+        Args:
+            temp: Temperature in °C (40.0 to 70.0)
+
+        Raises:
+            ValueError: If temperature outside allowed range
+        """
+        if not 40.0 <= temp <= 70.0:
+            raise ValueError(
+                f"DHW setpoint must be between 40.0 and 70.0°C, got {temp}"
+            )
+        _LOGGER.debug("async_set_dhw_setpoint called with temp=%.1f", temp)
+        try:
+            async with self._lock:
+                await self.hass.async_add_executor_job(
+                    self._sync_set_dhw_setpoint, temp
+                )
+            _LOGGER.debug("async_set_dhw_setpoint completed successfully")
+        except Exception as err:
+            _LOGGER.error("async_set_dhw_setpoint FAILED: %s", err)
+            raise
+
+    def _sync_set_dhw_setpoint(self, temp: float) -> None:
+        """Synchronous DHW setpoint set (runs in executor)."""
+        _LOGGER.debug("_sync_set_dhw_setpoint called with temp=%.1f", temp)
+        try:
+            # Note: parameter_defaults.py idx corrected from 385 to 386 per FHEM discovery
+            self._client.write_value("DHW_CALCULATED_SETPOINT_TEMP", temp)
+            _LOGGER.info("Set DHW setpoint to %.1f°C", temp)
+        except Exception as err:
+            _LOGGER.error("_sync_set_dhw_setpoint FAILED: %s", err)
             raise

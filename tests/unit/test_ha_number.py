@@ -6,7 +6,10 @@ import pytest
 from homeassistant.components.number import NumberMode
 
 # conftest.py sets up HA mocks before we import
-from custom_components.buderus_wps.number import BuderusDHWExtraDurationNumber
+from custom_components.buderus_wps.number import (
+    BuderusDHWExtraDurationNumber,
+    BuderusDHWSetpointNumber,
+)
 
 
 class TestDHWExtraDurationNumber:
@@ -28,9 +31,9 @@ class TestDHWExtraDurationNumber:
         assert number._attr_native_min_value == 0
 
     def test_number_has_correct_max_value(self, mock_coordinator):
-        """DHW extra duration max value must be 24."""
+        """DHW extra duration max value must be 48."""
         number = BuderusDHWExtraDurationNumber(mock_coordinator)
-        assert number._attr_native_max_value == 24
+        assert number._attr_native_max_value == 48
 
     def test_number_has_correct_step(self, mock_coordinator):
         """DHW extra duration step must be 1."""
@@ -85,3 +88,69 @@ class TestDHWExtraDurationNumber:
         await number.async_set_native_value(0)
 
         mock_coordinator.async_set_dhw_extra_duration.assert_called_once_with(0)
+
+
+class TestDHWSetpointNumber:
+    """Test DHW setpoint temperature number entity."""
+
+    def test_number_has_correct_name(self, mock_coordinator):
+        """DHW setpoint must be named 'DHW Setpoint Temperature'."""
+        number = BuderusDHWSetpointNumber(mock_coordinator)
+        assert number._attr_name == "DHW Setpoint Temperature"
+
+    def test_number_has_correct_icon(self, mock_coordinator):
+        """DHW setpoint must have water-thermometer icon."""
+        number = BuderusDHWSetpointNumber(mock_coordinator)
+        assert number._attr_icon == "mdi:water-thermometer"
+
+    def test_number_has_correct_min_value(self, mock_coordinator):
+        """DHW setpoint min value must be 40.0°C."""
+        number = BuderusDHWSetpointNumber(mock_coordinator)
+        assert number._attr_native_min_value == 40.0
+
+    def test_number_has_correct_max_value(self, mock_coordinator):
+        """DHW setpoint max value must be 70.0°C."""
+        number = BuderusDHWSetpointNumber(mock_coordinator)
+        assert number._attr_native_max_value == 70.0
+
+    def test_number_has_correct_step(self, mock_coordinator):
+        """DHW setpoint step must be 0.5°C."""
+        number = BuderusDHWSetpointNumber(mock_coordinator)
+        assert number._attr_native_step == 0.5
+
+    def test_number_has_correct_unit(self, mock_coordinator):
+        """DHW setpoint must use Celsius unit."""
+        from homeassistant.const import UnitOfTemperature
+        number = BuderusDHWSetpointNumber(mock_coordinator)
+        assert number._attr_native_unit_of_measurement == UnitOfTemperature.CELSIUS
+
+    def test_number_has_box_mode(self, mock_coordinator):
+        """DHW setpoint must use box mode for direct value input."""
+        number = BuderusDHWSetpointNumber(mock_coordinator)
+        assert number._attr_mode == NumberMode.BOX
+
+    def test_number_returns_current_setpoint(self, mock_coordinator):
+        """Number returns current DHW setpoint from coordinator."""
+        mock_coordinator.data.dhw_setpoint = 55.0
+        number = BuderusDHWSetpointNumber(mock_coordinator)
+        assert number.native_value == 55.0
+
+    def test_number_returns_none_when_disconnected(self, mock_coordinator_disconnected):
+        """Number returns None when coordinator has no data."""
+        number = BuderusDHWSetpointNumber(mock_coordinator_disconnected)
+        assert number.native_value is None
+
+    def test_number_entity_key(self, mock_coordinator):
+        """Number must use correct entity key for unique ID."""
+        number = BuderusDHWSetpointNumber(mock_coordinator)
+        assert number.entity_key == "dhw_setpoint"
+
+    @pytest.mark.asyncio
+    async def test_set_value_calls_coordinator(self, mock_coordinator):
+        """Setting value should call coordinator.async_set_dhw_setpoint."""
+        number = BuderusDHWSetpointNumber(mock_coordinator)
+        await number.async_set_native_value(55.0)
+
+        mock_coordinator.async_set_dhw_setpoint.assert_called_once_with(55.0)
+        # Uses optimistic update instead of refresh (consistent with BuderusDHWStopTempNumber)
+        mock_coordinator.async_set_updated_data.assert_called_once()

@@ -25,6 +25,18 @@ SENSOR_RETURN: Final = "return_temp"
 SENSOR_DHW: Final = "dhw"
 SENSOR_BRINE_IN: Final = "brine_in"
 
+# Room temperature sensors (from RC10 thermostats)
+SENSOR_ROOM_C1: Final = "room_c1"
+SENSOR_ROOM_C2: Final = "room_c2"
+SENSOR_ROOM_C3: Final = "room_c3"
+SENSOR_ROOM_C4: Final = "room_c4"
+
+# Room setpoint sensors (adjusted setpoints from RC10 thermostats)
+SENSOR_SETPOINT_C1: Final = "setpoint_c1"
+SENSOR_SETPOINT_C2: Final = "setpoint_c2"
+SENSOR_SETPOINT_C3: Final = "setpoint_c3"
+SENSOR_SETPOINT_C4: Final = "setpoint_c4"
+
 # Sensor display names (entity-only, device name prepended by HA when has_entity_name=True)
 SENSOR_NAMES: Final = {
     SENSOR_OUTDOOR: "Outdoor Temperature",
@@ -32,6 +44,14 @@ SENSOR_NAMES: Final = {
     SENSOR_RETURN: "Return Temperature",
     SENSOR_DHW: "Hot Water Temperature",
     SENSOR_BRINE_IN: "Brine Inlet Temperature",
+    SENSOR_ROOM_C1: "Room Temperature C1",
+    SENSOR_ROOM_C2: "Room Temperature C2",
+    SENSOR_ROOM_C3: "Room Temperature C3",
+    SENSOR_ROOM_C4: "Room Temperature C4",
+    SENSOR_SETPOINT_C1: "Room Setpoint C1",
+    SENSOR_SETPOINT_C2: "Room Setpoint C2",
+    SENSOR_SETPOINT_C3: "Room Setpoint C3",
+    SENSOR_SETPOINT_C4: "Room Setpoint C4",
 }
 
 # Device info
@@ -45,6 +65,8 @@ ICON_COMPRESSOR: Final = "mdi:engine"
 ICON_ENERGY_BLOCK: Final = "mdi:power-plug-off"
 ICON_USB: Final = "mdi:usb-port"
 ICON_WATER_HEATER: Final = "mdi:water-boiler"
+ICON_WATER_THERMOMETER: Final = "mdi:water-thermometer"
+ICON_HEATING_CURVE: Final = "mdi:chart-line"
 
 # Heating Season Mode (idx=884)
 # Used for peak hour blocking - set to OFF (2) to disable heating

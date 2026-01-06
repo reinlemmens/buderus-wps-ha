@@ -2685,7 +2685,9 @@ PARAMETER_DEFAULTS = [
         "text": "DHW_CALCULATED_E22_T3_START_TEMP_SEC_PER_TENTH_ADJ",
     },
     {
-        "idx": 385,
+        # Note: FHEM runtime discovery found idx=386, not 385 as in original docs
+        # Verified via CAN capture: request 0x460BFE0 (idx 386) returns 53.0°C
+        "idx": 386,
         "extid": "EE5991A93A02B8",
         "max": 700,
         "min": 400,
@@ -3251,15 +3253,17 @@ PARAMETER_DEFAULTS = [
         "read": 1,
         "text": "DHW_PROGRAM_MODE",
     },
-    {
-        "idx": 489,
-        "extid": "E14502BDB103E4",
-        "max": 1,
-        "min": 0,
-        "format": "int",
-        "read": 0,
-        "text": "DHW_PROTECTIVE_ANODE_INSTALLED",
-    },
+    # DISABLED: DHW_PROTECTIVE_ANODE_INSTALLED - idx=489 conflicts with DHW_PROGRAM_MODE
+    # which is hardware-verified at idx=489. Original FHEM entry kept for reference:
+    # {
+    #     "idx": 489,
+    #     "extid": "E14502BDB103E4",
+    #     "max": 1,
+    #     "min": 0,
+    #     "format": "int",
+    #     "read": 0,
+    #     "text": "DHW_PROTECTIVE_ANODE_INSTALLED",
+    # },
     {
         "idx": 490,
         "extid": "0083F0FFFB00FC",
