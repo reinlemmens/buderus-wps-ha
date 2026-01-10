@@ -5,10 +5,19 @@ from __future__ import annotations
 # conftest.py sets up HA mocks before we import
 from custom_components.buderus_wps.const import (
     SENSOR_BRINE_IN,
+    SENSOR_BRINE_OUT,
     SENSOR_DHW,
     SENSOR_NAMES,
     SENSOR_OUTDOOR,
     SENSOR_RETURN,
+    SENSOR_ROOM_C1,
+    SENSOR_ROOM_C2,
+    SENSOR_ROOM_C3,
+    SENSOR_ROOM_C4,
+    SENSOR_SETPOINT_C1,
+    SENSOR_SETPOINT_C2,
+    SENSOR_SETPOINT_C3,
+    SENSOR_SETPOINT_C4,
     SENSOR_SUPPLY,
 )
 
@@ -28,14 +37,23 @@ class TestSensorConstants:
                 name, str
             ), f"Sensor name for type '{sensor_type}' must be a string"
 
-    def test_five_sensors_defined(self):
-        """Must have exactly 5 temperature sensors defined."""
+    def test_all_sensors_defined(self):
+        """Must have all temperature sensors defined (6 core + 4 room + 4 setpoint)."""
         expected_sensors = {
             SENSOR_OUTDOOR,
             SENSOR_SUPPLY,
             SENSOR_RETURN,
             SENSOR_DHW,
             SENSOR_BRINE_IN,
+            SENSOR_BRINE_OUT,
+            SENSOR_ROOM_C1,
+            SENSOR_ROOM_C2,
+            SENSOR_ROOM_C3,
+            SENSOR_ROOM_C4,
+            SENSOR_SETPOINT_C1,
+            SENSOR_SETPOINT_C2,
+            SENSOR_SETPOINT_C3,
+            SENSOR_SETPOINT_C4,
         }
         assert set(SENSOR_NAMES.keys()) == expected_sensors
 
@@ -55,6 +73,10 @@ class TestSensorConstants:
         """DHW sensor must have correct entity name."""
         assert SENSOR_NAMES[SENSOR_DHW] == "Hot Water Temperature"
 
-    def test_brine_sensor_name(self):
+    def test_brine_in_sensor_name(self):
         """Brine inlet sensor must have correct entity name."""
-        assert SENSOR_NAMES[SENSOR_BRINE_IN] == "Brine Inlet Temperature"
+        assert SENSOR_NAMES[SENSOR_BRINE_IN] == "GT10 Brine Inlet"
+
+    def test_brine_out_sensor_name(self):
+        """Brine outlet sensor must have correct entity name."""
+        assert SENSOR_NAMES[SENSOR_BRINE_OUT] == "GT11 Brine Outlet"

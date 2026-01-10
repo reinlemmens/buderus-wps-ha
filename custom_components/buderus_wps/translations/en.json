@@ -24,7 +24,8 @@
         "title": "Buderus WPS Options",
         "description": "Configure polling and behavior settings",
         "data": {
-          "scan_interval": "Scan Interval (seconds)"
+          "scan_interval": "Scan Interval (seconds)",
+          "parameter_allowlist": "Parameter Allowlist (comma-separated names or indices)"
         }
       }
     }

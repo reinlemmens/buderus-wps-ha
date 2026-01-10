@@ -256,22 +256,42 @@ class TestGetDefaultSensorMap:
         """Test that default map contains expected verified mappings."""
         sensor_map = get_default_sensor_map()
 
-        # Check key verified mappings
-        # NOTE: DHW mapping corrected on 2024-12-16 from (0x0060, 58) to (0x0402, 78)
-        # (0x0060, 58) showed ~54°C which is setpoint, not actual tank temp ~27°C
-        assert sensor_map.get((0x0402, 38)) == "outdoor"
-        assert sensor_map.get((0x0402, 78)) == "dhw"  # Corrected DHW temp mapping
-        assert sensor_map.get((0x0270, 1)) == "supply"
-        assert sensor_map.get((0x0270, 0)) == "return_temp"
-        assert sensor_map.get((0x0060, 12)) == "brine_in"
+        # Check key verified mappings (updated 2024-12-28)
+        # Outdoor: idx=12 on circuit bases
+        assert sensor_map.get((0x0060, 12)) == "outdoor"
+        # DHW: idx=4 on base 0x0270
+        assert sensor_map.get((0x0270, 4)) == "dhw"
+        # Supply (GT8): idx=6 on base 0x0270
+        assert sensor_map.get((0x0270, 6)) == "supply"
+        # Return (GT9): idx=5 on base 0x0270
+        assert sensor_map.get((0x0270, 5)) == "return_temp"
+        # Room temperatures from RC10 thermostats (verified 2024-12-28)
+        assert sensor_map.get((0x0060, 0)) == "room_c1"
+        assert sensor_map.get((0x0061, 0)) == "room_c2"
+        assert sensor_map.get((0x0062, 0)) == "room_c3"
+        assert sensor_map.get((0x0063, 0)) == "room_c4"
+        # Room setpoints from RC10 thermostats (idx=33 on circuit bases)
+        assert sensor_map.get((0x0060, 33)) == "setpoint_c1"
+        assert sensor_map.get((0x0061, 33)) == "setpoint_c2"
+        assert sensor_map.get((0x0062, 33)) == "setpoint_c3"
+        assert sensor_map.get((0x0063, 33)) == "setpoint_c4"
 
-    def test_returns_all_five_sensor_types(self) -> None:
-        """Test that all 5 core sensors are represented."""
+    def test_returns_all_sensor_types(self) -> None:
+        """Test that all core, room, and setpoint sensors are represented."""
         sensor_map = get_default_sensor_map()
         sensor_values = set(sensor_map.values())
 
-        expected_sensors = {"outdoor", "supply", "return_temp", "dhw", "brine_in"}
+        # Core sensors (brine_in not in default broadcast mappings)
+        expected_sensors = {"outdoor", "supply", "return_temp", "dhw"}
         assert expected_sensors.issubset(sensor_values)
+
+        # Room temperature sensors (all 4 circuits)
+        room_sensors = {"room_c1", "room_c2", "room_c3", "room_c4"}
+        assert room_sensors.issubset(sensor_values)
+
+        # Room setpoint sensors (all 4 circuits)
+        setpoint_sensors = {"setpoint_c1", "setpoint_c2", "setpoint_c3", "setpoint_c4"}
+        assert setpoint_sensors.issubset(sensor_values)
 
 
 # =============================================================================

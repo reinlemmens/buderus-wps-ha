@@ -262,3 +262,82 @@ class TestParameterValidateValue:
         # Invalid values
         assert param.validate_value(-1) is False
         assert param.validate_value(16777217) is False
+
+
+class TestHeatPumpDiscoveredNames:
+    """Test HeatPump._discovered_names tracking."""
+
+    def test_is_discovered_returns_false_initially(self):
+        """Test is_discovered() returns False for params without discovery."""
+        from buderus_wps.parameter import HeatPump
+
+        hp = HeatPump()  # Uses static fallback
+
+        # No parameters should be marked as discovered
+        assert hp.is_discovered("ACCESS_LEVEL") is False
+        assert hp.is_discovered("GT3_TEMP") is False
+
+    def test_mark_discovered_adds_names(self):
+        """Test mark_discovered() adds names to _discovered_names set."""
+        from buderus_wps.parameter import HeatPump
+
+        hp = HeatPump()
+
+        hp.mark_discovered(["ACCESS_LEVEL", "GT3_TEMP"])
+
+        assert hp.is_discovered("ACCESS_LEVEL") is True
+        assert hp.is_discovered("GT3_TEMP") is True
+        assert hp.is_discovered("UNKNOWN_PARAM") is False
+
+    def test_is_discovered_case_insensitive(self):
+        """Test is_discovered() is case-insensitive."""
+        from buderus_wps.parameter import HeatPump
+
+        hp = HeatPump()
+        hp.mark_discovered(["ACCESS_LEVEL"])
+
+        assert hp.is_discovered("access_level") is True
+        assert hp.is_discovered("Access_Level") is True
+        assert hp.is_discovered("ACCESS_LEVEL") is True
+
+    def test_update_from_discovery_marks_all_elements(self):
+        """Test update_from_discovery() marks all discovered elements."""
+        from buderus_wps.element_discovery import DiscoveredElement
+        from buderus_wps.parameter import HeatPump
+
+        hp = HeatPump()
+
+        # Create mock discovered elements
+        discovered = [
+            DiscoveredElement(
+                idx=1,
+                extid="61E1E1FC660023",
+                text="ACCESS_LEVEL",
+                min_value=0,
+                max_value=5,
+            ),
+            DiscoveredElement(
+                idx=682,  # Different from static default (681)
+                extid="0EB5CF43420068",
+                text="GT3_TEMP",
+                min_value=-400,
+                max_value=1500,
+            ),
+            DiscoveredElement(
+                idx=999,
+                extid="AABBCCDD001122",
+                text="NEW_PARAM",  # Not in static defaults
+                min_value=0,
+                max_value=100,
+            ),
+        ]
+
+        hp.update_from_discovery(discovered)
+
+        # All discovered elements should be marked
+        assert hp.is_discovered("ACCESS_LEVEL") is True
+        assert hp.is_discovered("GT3_TEMP") is True
+        assert hp.is_discovered("NEW_PARAM") is True
+
+        # Params NOT in discovery should NOT be marked
+        assert hp.is_discovered("GT10_TEMP") is False

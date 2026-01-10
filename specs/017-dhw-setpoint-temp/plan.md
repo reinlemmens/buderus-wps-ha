@@ -1,108 +1,104 @@
-# Implementation Plan: DHW Setpoint Temperature Parameter
+# Implementation Plan: [FEATURE]
 
-**Branch**: `017-dhw-setpoint-temp` | **Date**: 2026-01-04 | **Spec**: [spec.md](spec.md)
-**Input**: Feature specification from `/specs/017-dhw-setpoint-temp/spec.md`
+**Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
+**Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
+
+**Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
 
 ## Summary
 
-Add the `DHW_CALCULATED_SETPOINT_TEMP` parameter (idx 385, range 40-70°C) as a readable and writable entity across the library, CLI, and Home Assistant integration. This parameter controls the target temperature for normal DHW (domestic hot water) operation, distinct from the existing `XDHW_STOP_TEMP` used during boost mode.
-
-**Technical Approach**: Follow the existing pattern established by `BuderusDHWStopTempNumber` - add coordinator read/write methods, create a new number entity, and leverage existing CLI infrastructure. No new architectural components required.
+[Extract from feature spec: primary requirement + technical approach from research]
 
 ## Technical Context
 
-**Language/Version**: Python 3.9+ (Home Assistant compatibility requirement)
-**Primary Dependencies**: homeassistant, pyserial (existing)
-**Storage**: N/A (reads/writes to heat pump via CAN bus)
-**Testing**: pytest with contract, integration, unit, and acceptance test layers
-**Target Platform**: Home Assistant on Linux (Supervisor add-on)
-**Project Type**: Single project with library + HA integration
-**Performance Goals**: 30s page load, 10s write confirmation, 5s CLI response (from spec)
-**Constraints**: CAN bus communication latency, serial port access
-**Scale/Scope**: Single heat pump, single user
+<!--
+  ACTION REQUIRED: Replace the content in this section with the technical details
+  for the project. The structure here is presented in advisory capacity to guide
+  the iteration process.
+-->
+
+**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
+**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
+**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
+**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
+**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
+**Project Type**: [single/web/mobile - determines source structure]  
+**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
+**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
+**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-No project-specific constitution gates defined. Following established patterns:
-- [x] Library-first: Parameter already in `parameter_defaults.py`
-- [x] CLI interface: Will use existing `read_parameter`/`write_value` methods
-- [x] Testing: Will add unit tests for new coordinator methods and HA entity
-- [x] Simplicity: Follows existing `BuderusDHWStopTempNumber` pattern exactly
+[Gates determined based on constitution file]
 
 ## Project Structure
 
 ### Documentation (this feature)
 
 ```text
-specs/017-dhw-setpoint-temp/
-├── spec.md              # Feature specification (complete)
-├── plan.md              # This file
-├── research.md          # Phase 0 output
-├── data-model.md        # Phase 1 output
-├── quickstart.md        # Phase 1 output
-├── contracts/           # Phase 1 output
-└── tasks.md             # Phase 2 output (/speckit.tasks command)
+specs/[###-feature]/
+├── plan.md              # This file (/speckit.plan command output)
+├── research.md          # Phase 0 output (/speckit.plan command)
+├── data-model.md        # Phase 1 output (/speckit.plan command)
+├── quickstart.md        # Phase 1 output (/speckit.plan command)
+├── contracts/           # Phase 1 output (/speckit.plan command)
+└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
 ```
 
 ### Source Code (repository root)
+<!--
+  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
+  for this feature. Delete unused options and expand the chosen structure with
+  real paths (e.g., apps/admin, packages/something). The delivered plan must
+  not include Option labels.
+-->
 
 ```text
-buderus_wps/                    # Core library (parameter already defined)
-├── parameter_defaults.py       # DHW_CALCULATED_SETPOINT_TEMP already at idx 385
-├── heat_pump.py               # read_parameter/write_value (existing)
-└── menu_api.py                # Optional: add property accessor
-
-custom_components/buderus_wps/  # Home Assistant integration
-├── coordinator.py             # Add dhw_setpoint read + async_set_dhw_setpoint method
-├── number.py                  # Add BuderusDHWSetpointNumber entity
-└── const.py                   # Add icon constant if needed
+# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
+src/
+├── models/
+├── services/
+├── cli/
+└── lib/
 
 tests/
-├── unit/
-│   └── test_ha_number.py      # Add tests for new number entity
+├── contract/
 ├── integration/
-│   └── test_coordinator.py    # Add tests for coordinator methods
-└── contract/
-    └── test_dhw_setpoint.py   # Contract tests for parameter read/write
+└── unit/
+
+# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
+backend/
+├── src/
+│   ├── models/
+│   ├── services/
+│   └── api/
+└── tests/
+
+frontend/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   └── services/
+└── tests/
+
+# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
+api/
+└── [same as backend above]
+
+ios/ or android/
+└── [platform-specific structure: feature modules, UI flows, platform tests]
 ```
 
-**Structure Decision**: Single project structure - this feature adds to existing modules without new components.
+**Structure Decision**: [Document the selected structure and reference the real
+directories captured above]
 
 ## Complexity Tracking
 
-No constitution violations. Feature follows established patterns with minimal additions:
-- 1 new field in `BuderusData` dataclass
-- 2 new coordinator methods (read in `_sync_fetch_data`, write `async_set_dhw_setpoint`)
-- 1 new number entity class (following `BuderusDHWStopTempNumber` pattern)
+> **Fill ONLY if Constitution Check has violations that must be justified**
 
----
-
-## Phase 0: Research
-
-### Research Tasks
-
-1. **Verify parameter behavior**: Confirm `DHW_CALCULATED_SETPOINT_TEMP` (idx 385) read/write works on actual hardware
-2. **Identify existing patterns**: Review `BuderusDHWStopTempNumber` implementation for consistency
-3. **Check step increment**: Determine appropriate step (0.5°C vs 1.0°C)
-
-### Findings
-
-See [research.md](research.md) for detailed findings.
-
----
-
-## Phase 1: Design
-
-### Data Model
-
-See [data-model.md](data-model.md) for entity definitions.
-
-### API Contracts
-
-See [contracts/](contracts/) for interface definitions.
-
-### Quick Start
-
-See [quickstart.md](quickstart.md) for implementation guide.
+| Violation | Why Needed | Simpler Alternative Rejected Because |
+|-----------|------------|-------------------------------------|
+| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
+| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |

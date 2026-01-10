@@ -1,0 +1,35 @@
+read_parameter:
+  name: Read Parameter
+  description: Read any parameter by name or index via RTR.
+  fields:
+    name_or_idx:
+      name: Parameter Name Or Index
+      description: Parameter text (e.g., GT3_TEMP) or numeric index (e.g., 279).
+      required: true
+      example: GT3_TEMP
+      selector:
+        text: {}
+    entry_id:
+      name: Entry Id
+      description: Target config entry id when multiple devices are configured.
+      required: false
+      selector:
+        text: {}
+    expected_dlc:
+      name: Expected DLC
+      description: Minimum expected data length in bytes for validation.
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 8
+          mode: box
+    timeout:
+      name: Timeout
+      description: Per-request timeout in seconds.
+      required: false
+      selector:
+        number:
+          min: 0.1
+          max: 10
+          mode: box

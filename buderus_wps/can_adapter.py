@@ -705,7 +705,7 @@ class USBtinAdapter:
             raw_buffer = bytearray()
             start_time = time.time()
             idle_count = 0
-            max_idle = 50  # Allow 50 idle cycles (50ms) before giving up
+            max_idle = 200  # Allow 200 idle cycles (200ms) for slower devices/bus congestion
             last_data_time = start_time
 
             while len(data) < expected_bytes:

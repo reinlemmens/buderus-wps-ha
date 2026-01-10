@@ -142,7 +142,7 @@ class BuderusDHWStopTempNumber(BuderusEntity, NumberEntity):
     Higher values mean more stored hot water but higher energy use.
     """
 
-    _attr_name = "DHW Stop Temperature"
+    _attr_name = "XDHW Stop Temperature"
     _attr_icon = ICON_WATER_THERMOMETER
     _attr_native_min_value = 50.0
     _attr_native_max_value = 65.0
@@ -156,7 +156,7 @@ class BuderusDHWStopTempNumber(BuderusEntity, NumberEntity):
         entry: ConfigEntry | None = None,
     ) -> None:
         """Initialize the DHW stop temperature number."""
-        super().__init__(coordinator, "dhw_stop_temp", entry)
+        super().__init__(coordinator, "xdhw_stop_temp", entry)
 
     @property
     def native_value(self) -> float | None:

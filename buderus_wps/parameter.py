@@ -188,6 +188,7 @@ class HeatPump:
         """
         self._params_by_name: Dict[str, Parameter] = {}
         self._params_by_idx: Dict[int, Parameter] = {}
+        self._discovered_names: set = set()  # Names with discovered/cached idx
         self._data_source = "fallback"
         self._using_fallback = True
         self._adapter = adapter
@@ -303,6 +304,15 @@ class HeatPump:
                     read=item.get("read", 0),
                     text=item["text"],
                 )
+                # Warn on duplicate indices - second entry overwrites first
+                if param.idx in self._params_by_idx:
+                    existing = self._params_by_idx[param.idx]
+                    logger.warning(
+                        "Duplicate idx=%d: %s overwrites %s (only one accessible by index)",
+                        param.idx,
+                        param.text,
+                        existing.text,
+                    )
                 self._params_by_name[param.text.upper()] = param
                 self._params_by_idx[param.idx] = param
             except (KeyError, TypeError) as e:
@@ -413,3 +423,138 @@ class HeatPump:
             True if parameter exists, False otherwise
         """
         return idx in self._params_by_idx
+
+    def is_discovered(self, name: str) -> bool:
+        """Check if parameter has a discovered/cached idx.
+
+        Only parameters with idx values from discovery or cache should be used
+        for CAN communication. Parameters with only static default idx values
+        may have incorrect indices for this firmware version.
+
+        Args:
+            name: Parameter name to check (case-insensitive)
+
+        Returns:
+            True if parameter idx came from discovery/cache, False otherwise
+        """
+        return name.upper() in self._discovered_names
+
+    def mark_discovered(self, names: List[str]) -> None:
+        """Mark parameters as having discovered idx values.
+
+        Called when loading from cache or after discovery to indicate
+        which parameters have reliable idx values.
+
+        Args:
+            names: List of parameter names to mark as discovered
+        """
+        for name in names:
+            self._discovered_names.add(name.upper())
+        logger.debug("Marked %d parameters as discovered", len(names))
+
+    def update_from_discovery(self, discovered_elements: list) -> int:
+        """Update parameter indices from discovered elements.
+
+        Merges discovered elements with existing parameters. For each discovered
+        element, if a parameter with matching text exists, its idx is updated
+        to match the device's actual index.
+
+        This is critical because different firmware versions may have different
+        idx values for the same parameter names (e.g., XDHW_TIME at idx=2475
+        in static defaults but idx=2480 on actual device).
+
+        Args:
+            discovered_elements: List of DiscoveredElement from element discovery
+                Each element must have: idx, extid, text, min_value, max_value
+
+        Returns:
+            Number of parameters updated
+        """
+        updated = 0
+        for elem in discovered_elements:
+            name = elem.text.upper()
+            if name in self._params_by_name:
+                old_param = self._params_by_name[name]
+
+                # Check if ANY field needs updating (idx, extid, min, or max)
+                idx_changed = old_param.idx != elem.idx
+                extid_changed = old_param.extid != elem.extid
+                min_changed = old_param.min != elem.min_value
+                max_changed = old_param.max != elem.max_value
+                needs_update = idx_changed or extid_changed or min_changed or max_changed
+
+                if needs_update:
+                    # Create new parameter with all values from discovery
+                    # (but keep format/read from static defaults)
+                    new_param = Parameter(
+                        idx=elem.idx,
+                        extid=elem.extid,
+                        min=elem.min_value,
+                        max=elem.max_value,
+                        format=old_param.format,  # Keep format from static defaults
+                        read=old_param.read,  # Keep read flag from static defaults
+                        text=old_param.text,
+                    )
+
+                    # Update lookups
+                    if idx_changed:
+                        # Remove old idx mapping if idx changed
+                        del self._params_by_idx[old_param.idx]
+                        logger.info(
+                            "Updated %s: idx %d -> %d (CAN ID 0x%08X -> 0x%08X)",
+                            old_param.text,
+                            old_param.idx,
+                            elem.idx,
+                            0x04003FE0 | (old_param.idx << 14),
+                            0x04003FE0 | (elem.idx << 14),
+                        )
+                    else:
+                        # Log metadata changes when idx is same
+                        changes = []
+                        if extid_changed:
+                            changes.append(f"extid {old_param.extid} -> {elem.extid}")
+                        if min_changed:
+                            changes.append(f"min {old_param.min} -> {elem.min_value}")
+                        if max_changed:
+                            changes.append(f"max {old_param.max} -> {elem.max_value}")
+                        logger.debug(
+                            "Updated %s metadata: %s",
+                            old_param.text,
+                            ", ".join(changes),
+                        )
+
+                    self._params_by_name[name] = new_param
+                    self._params_by_idx[elem.idx] = new_param
+                    updated += 1
+            else:
+                # New parameter not in static defaults - add it
+                new_param = Parameter(
+                    idx=elem.idx,
+                    extid=elem.extid,
+                    min=elem.min_value,
+                    max=elem.max_value,
+                    format="int",  # Default format for unknown parameters
+                    read=0,  # Assume writable
+                    text=elem.text,
+                )
+                self._params_by_name[name] = new_param
+                self._params_by_idx[elem.idx] = new_param
+                logger.debug("Added discovered parameter: %s (idx=%d)", elem.text, elem.idx)
+
+        # Mark ALL discovered elements as having reliable idx values
+        for elem in discovered_elements:
+            self._discovered_names.add(elem.text.upper())
+
+        if updated > 0:
+            self._data_source = "discovery"
+            self._using_fallback = False
+            logger.info("Updated %d parameter indices from discovery", updated)
+
+        logger.info(
+            "Element discovery: %d elements, %d indices updated, %d parameters now discovered",
+            len(discovered_elements),
+            updated,
+            len(self._discovered_names),
+        )
+
+        return updated

@@ -37,6 +37,7 @@ ELEMENT_COUNT_REQUEST_ID = 0x01FD7FE0  # R01FD7FE00 (RTR)
 ELEMENT_COUNT_RESPONSE_ID = 0x09FD7FE0  # T09FD7FE0
 ELEMENT_DATA_REQUEST_ID = 0x01FD3FE0  # T01FD3FE08...
 ELEMENT_DATA_RESPONSE_ID = 0x09FDBFE0  # T09FDBFE0
+ELEMENT_BUFFER_READ_ID = 0x01FDBFE0  # R01FDBFE00 (RTR)
 
 # PROTOCOL: Element header size (before variable-length name)
 ELEMENT_HEADER_SIZE = 18
@@ -78,14 +79,14 @@ class ElementListParser:
     """
 
     def parse_count_response(self, can_id: int, data: bytes) -> int:
-        """Parse element count from T09FD7FE0 response.
+        """Parse total element data length from T09FD7FE0 response.
 
         Args:
             can_id: The CAN arbitration ID of the response
             data: The CAN message data bytes (4+ bytes)
 
         Returns:
-            The total number of elements available
+            Total number of element data bytes available
 
         Raises:
             ValueError: If CAN ID doesn't match or data is too short
@@ -102,8 +103,8 @@ class ElementListParser:
             )
 
         # PROTOCOL: Count is in first 4 bytes, big-endian unsigned
-        # Actually FHEM uses: ($value1 >> 24) which suggests only first byte
-        # But full 4-byte count is safer for large element lists
+        # FHEM uses: ($value1 >> 24) which extracts the first 4 bytes
+        # from the response payload when treated as a multi-byte integer.
         count: int = struct.unpack(">I", data[:4])[0]
         return count
 
@@ -176,8 +177,8 @@ class ElementListParser:
         # Actual name length is name_length - 1 (excluding null terminator)
         actual_name_len = name_length - 1
 
-        # Check if we have enough data for the name
-        if offset + ELEMENT_HEADER_SIZE + actual_name_len > len(data):
+        # Check if we have enough data for the name + null terminator
+        if offset + ELEMENT_HEADER_SIZE + name_length > len(data):
             logger.warning(
                 f"Element at offset {offset} has name_length={name_length} but "
                 f"only {len(data) - offset - ELEMENT_HEADER_SIZE} bytes remain"
@@ -202,8 +203,8 @@ class ElementListParser:
                 )
                 return None, ELEMENT_HEADER_SIZE + actual_name_len
 
-        # Total bytes consumed
-        total_bytes = ELEMENT_HEADER_SIZE + actual_name_len
+        # Total bytes consumed (includes null terminator)
+        total_bytes = ELEMENT_HEADER_SIZE + name_length
 
         element = DiscoveredElement(
             idx=idx,
@@ -252,21 +253,26 @@ class ElementDiscovery:
         self._adapter = adapter
         self._logger = discovery_logger or logger
         self._parser = ElementListParser()
+        self._last_reported_bytes: int = 0  # Tracks reported byte count from last discovery
+        self._last_received_bytes: int = 0  # Tracks received byte count from last discovery
 
-    def request_element_count(self, timeout: float = 5.0) -> int:
-        """Request the number of discoverable elements.
+    def request_element_count(
+        self, timeout: float = 5.0, max_retries: int = 3
+    ) -> int:
+        """Request the total element data length.
 
         Sends an RTR frame to ELEMENT_COUNT_REQUEST_ID and expects a 4-byte
-        response with the element count.
+        response with the element count. Retries on failure.
 
         Args:
-            timeout: Maximum time to wait for response
+            timeout: Maximum time to wait for response per attempt
+            max_retries: Number of attempts before giving up (default: 3)
 
         Returns:
-            Number of discoverable elements
+            Total element data length in bytes
 
         Raises:
-            DeviceCommunicationError: No valid response received
+            DeviceCommunicationError: No valid response after all retries
         """
         from .can_message import CANMessage
         from .exceptions import DeviceCommunicationError, TimeoutError
@@ -278,22 +284,69 @@ class ElementDiscovery:
             is_remote_frame=True,
         )
 
-        self._logger.debug(
-            "Requesting element count via RTR to 0x%08X", ELEMENT_COUNT_REQUEST_ID
-        )
+        last_error: Optional[Exception] = None
 
-        try:
-            response = self._adapter.send_frame(request, timeout=timeout)
-        except TimeoutError:
-            raise DeviceCommunicationError(
-                "No response to element count request",
-                context={"request_id": f"0x{ELEMENT_COUNT_REQUEST_ID:08X}"},
+        for attempt in range(max_retries):
+            self._logger.debug(
+                "Requesting element count via RTR to 0x%08X (attempt %d/%d)",
+                ELEMENT_COUNT_REQUEST_ID,
+                attempt + 1,
+                max_retries,
             )
 
-        # Parse response
-        count = self._parser.parse_count_response(response.arbitration_id, response.data)
-        self._logger.info("Element count: %d", count)
-        return count
+            try:
+                response = self._adapter.send_frame(request, timeout=timeout)
+
+                # If we got unrelated traffic, keep reading until the expected response
+                start_time = time.time()
+                while response.arbitration_id != ELEMENT_COUNT_RESPONSE_ID:
+                    remaining = timeout - (time.time() - start_time)
+                    if remaining <= 0:
+                        raise TimeoutError(
+                            "Timed out waiting for element count response",
+                            context={
+                                "expected_id": f"0x{ELEMENT_COUNT_RESPONSE_ID:08X}",
+                                "last_id": f"0x{response.arbitration_id:08X}",
+                            },
+                        )
+                    response = self._adapter.receive_frame(timeout=min(1.0, remaining))
+
+                # Parse response
+                count = self._parser.parse_count_response(
+                    response.arbitration_id, response.data
+                )
+                self._logger.info("Element data length: %d bytes", count)
+                return count
+
+            except TimeoutError as e:
+                last_error = e
+                if attempt < max_retries - 1:
+                    self._logger.warning(
+                        "Count request attempt %d/%d timed out, retrying in 0.5s",
+                        attempt + 1,
+                        max_retries,
+                    )
+                    time.sleep(0.5)
+
+            except ValueError as e:
+                last_error = e
+                if attempt < max_retries - 1:
+                    self._logger.warning(
+                        "Count request attempt %d/%d got invalid response: %s, retrying in 0.5s",
+                        attempt + 1,
+                        max_retries,
+                        e,
+                    )
+                    time.sleep(0.5)
+
+        # All retries exhausted
+        raise DeviceCommunicationError(
+            f"No valid response to element count request after {max_retries} attempts",
+            context={
+                "request_id": f"0x{ELEMENT_COUNT_REQUEST_ID:08X}",
+                "last_error": str(last_error),
+            },
+        )
 
     def request_data_chunk(
         self,
@@ -304,7 +357,8 @@ class ElementDiscovery:
         """Request a chunk of element data.
 
         Sends a data frame with size (4 bytes) and offset (4 bytes) to
-        ELEMENT_DATA_REQUEST_ID, then collects the streamed response frames.
+        ELEMENT_DATA_REQUEST_ID, then sends an RTR to ELEMENT_BUFFER_READ_ID
+        to trigger the streamed response frames.
 
         Args:
             offset: Byte offset to start reading from
@@ -337,8 +391,19 @@ class ElementDiscovery:
             ELEMENT_DATA_REQUEST_ID,
         )
 
+        # Flush pending traffic to avoid mixing with discovery frames
+        self._adapter.flush_input_buffer()
+
         # Send request without waiting (responses come as stream)
         self._adapter.send_frame_nowait(request)
+        # Trigger buffered data stream (FHEM sends RTR immediately after request)
+        buffer_request = CANMessage(
+            arbitration_id=ELEMENT_BUFFER_READ_ID,
+            data=b"",
+            is_extended_id=True,
+            is_remote_frame=True,
+        )
+        self._adapter.send_frame_nowait(buffer_request)
 
         # Collect response stream
         try:
@@ -359,38 +424,47 @@ class ElementDiscovery:
                 },
             )
 
-    def discover(self, timeout: float = 30.0) -> List[DiscoveredElement]:
+    def discover(
+        self,
+        timeout: float = 30.0,
+        min_completion_ratio: float = 0.95,
+    ) -> List[DiscoveredElement]:
         """Discover all available parameters from the heat pump.
 
         This is the main entry point for parameter discovery. It:
-        1. Requests the element count
+        1. Requests the element data length
         2. Reads element data in chunks
         3. Parses all element definitions
+        4. Validates completeness against reported byte count
 
         Args:
             timeout: Maximum time for complete discovery
+            min_completion_ratio: Minimum ratio of actual/reported bytes required
+                (default 0.95 = 95%). Set to 0.0 to disable validation.
 
         Returns:
             List of all discovered elements
 
         Raises:
             DeviceCommunicationError: Discovery failed
+            DiscoveryIncompleteError: Fewer bytes than min_completion_ratio
         """
-        from .exceptions import DeviceCommunicationError
+        from .exceptions import DeviceCommunicationError, DiscoveryIncompleteError
 
         start_time = time.time()
 
-        # Step 1: Get element count
-        count = self.request_element_count(timeout=5.0)
+        # Step 1: Get element data length in bytes
+        reported_bytes = self.request_element_count(timeout=5.0)
+        self._last_reported_bytes = reported_bytes  # Store for cache metadata
 
-        if count == 0:
-            self._logger.warning("Heat pump reported 0 elements")
+        if reported_bytes == 0:
+            self._logger.warning("Heat pump reported 0 bytes of element data")
             return []
 
-        # Estimate total data size
-        estimated_size = count * self.BYTES_PER_ELEMENT
+        # Estimated total data size (already in bytes)
+        estimated_size = reported_bytes
         self._logger.info(
-            "Discovering %d elements (~%d bytes estimated)", count, estimated_size
+            "Discovering element list (%d bytes reported)", estimated_size
         )
 
         # Step 2: Read data in chunks
@@ -399,7 +473,7 @@ class ElementDiscovery:
         chunks_read = 0
         max_chunks = (estimated_size // self.CHUNK_SIZE) + 5  # Extra margin
 
-        while chunks_read < max_chunks:
+        while chunks_read < max_chunks and offset < reported_bytes:
             elapsed = time.time() - start_time
             remaining = timeout - elapsed
             if remaining <= 0:
@@ -407,9 +481,10 @@ class ElementDiscovery:
                 break
 
             try:
+                chunk_size = min(self.CHUNK_SIZE, reported_bytes - offset)
                 chunk = self.request_data_chunk(
                     offset=offset,
-                    size=self.CHUNK_SIZE,
+                    size=chunk_size,
                     timeout=min(remaining, 5.0),
                 )
                 all_data.extend(chunk)
@@ -417,7 +492,7 @@ class ElementDiscovery:
                 chunks_read += 1
 
                 # If we got less than requested, we're done
-                if len(chunk) < self.CHUNK_SIZE:
+                if len(chunk) < chunk_size:
                     self._logger.debug(
                         "Got partial chunk (%d bytes), discovery complete", len(chunk)
                     )
@@ -429,13 +504,47 @@ class ElementDiscovery:
                 break
 
         self._logger.info("Received %d bytes total in %d chunks", len(all_data), chunks_read)
+        self._last_received_bytes = len(all_data)
 
         # Step 3: Parse elements
         elements = self._parser.parse_data_chunk(bytes(all_data))
 
+        # Step 4: Validate completeness against reported bytes
+        actual_bytes = len(all_data)
+        completion_ratio = actual_bytes / reported_bytes if reported_bytes > 0 else 1.0
+
+        if actual_bytes > reported_bytes:
+            self._logger.warning(
+                "Discovery returned more bytes than reported: %d vs %d",
+                actual_bytes,
+                reported_bytes,
+            )
+        elif completion_ratio < min_completion_ratio:
+            self._logger.warning(
+                "Discovery incomplete: got %d/%d bytes (%.1f%%), "
+                "threshold is %.0f%%",
+                actual_bytes,
+                reported_bytes,
+                completion_ratio * 100,
+                min_completion_ratio * 100,
+            )
+            raise DiscoveryIncompleteError(actual_bytes, reported_bytes)
+        elif actual_bytes < reported_bytes:
+            # Below 100% but above threshold - log but continue
+            self._logger.info(
+                "Discovery mostly complete: got %d/%d bytes (%.1f%%)",
+                actual_bytes,
+                reported_bytes,
+                completion_ratio * 100,
+            )
+
         elapsed = time.time() - start_time
         self._logger.info(
-            "Discovery complete: %d elements in %.1fs", len(elements), elapsed
+            "Discovery complete: %d/%d bytes in %.1fs (%d elements parsed)",
+            actual_bytes,
+            reported_bytes,
+            elapsed,
+            len(elements),
         )
 
         return elements
@@ -444,52 +553,215 @@ class ElementDiscovery:
         self,
         cache_path: str,
         refresh: bool = False,
+        max_cache_age: Optional[float] = None,
         timeout: float = 30.0,
+        max_retries: int = 3,
+        min_completion_ratio: float = 0.95,
     ) -> List[DiscoveredElement]:
-        """Discover elements with optional caching.
+        """Discover elements with caching and fail-fast behavior.
 
-        If a cache file exists and refresh is False, loads from cache.
-        Otherwise performs discovery and saves to cache.
+        IMPORTANT: This method implements fail-fast on fresh install and
+        cache-only fallback. It NEVER falls back to static defaults for idx.
+
+        Behavior:
+        - If valid cache exists and refresh=False: Load from cache
+        - If discovery succeeds: Save to cache and return
+        - If discovery fails AND valid cache exists: Fall back to cache
+        - If discovery fails AND no cache (fresh install): Raise DiscoveryRequiredError
 
         Args:
             cache_path: Path to cache file (JSON format)
             refresh: If True, always perform fresh discovery
-            timeout: Maximum time for discovery
+            max_cache_age: Maximum cache age in seconds. If cache is older, refresh.
+                          None means no age limit (default).
+            timeout: Maximum time for discovery per attempt
+            max_retries: Number of retry attempts on incomplete discovery (default: 3)
+            min_completion_ratio: Minimum ratio of actual/reported bytes required
+                (default 0.95 = 95%). Set to 0.0 to disable validation.
 
         Returns:
             List of discovered elements
+
+        Raises:
+            DiscoveryRequiredError: On fresh install when discovery fails
         """
+        from .exceptions import DiscoveryIncompleteError, DiscoveryRequiredError
+
+        # Track if we have a valid cache to fall back to
+        cached_elements: Optional[List[DiscoveredElement]] = None
+        cache_existed = False
+
         # Try loading from cache
-        if not refresh and os.path.exists(cache_path):
+        if os.path.exists(cache_path):
             try:
                 with open(cache_path, "r") as f:
                     cache_data = json.load(f)
 
-                elements = [
-                    DiscoveredElement(
-                        idx=e["idx"],
-                        extid=e["extid"],
-                        text=e["text"],
-                        min_value=e["min_value"],
-                        max_value=e["max_value"],
+                # Log cache metadata if available (version 2)
+                version = cache_data.get("version", 1)
+                complete = cache_data.get("complete", True)
+                reported = cache_data.get(
+                    "reported_bytes", cache_data.get("reported_count", "?")
+                )
+                actual = cache_data.get("actual_bytes", "?")
+
+                # Only consider complete caches as valid fallback
+                if complete:
+                    cached_elements = [
+                        DiscoveredElement(
+                            idx=e["idx"],
+                            extid=e["extid"],
+                            text=e["text"],
+                            min_value=e["min_value"],
+                            max_value=e["max_value"],
+                        )
+                        for e in cache_data.get("elements", [])
+                    ]
+                    cache_existed = True
+                    self._logger.debug(
+                        "Valid cache available: %d elements (v%d, bytes=%s/%s)",
+                        len(cached_elements),
+                        version,
+                        actual,
+                        reported,
                     )
-                    for e in cache_data.get("elements", [])
-                ]
-                self._logger.info("Loaded %d elements from cache: %s", len(elements), cache_path)
-                return elements
+
+                # Check cache age if max_cache_age specified
+                needs_refresh = refresh
+                if max_cache_age is not None and not refresh:
+                    # Support both version 1 (timestamp as float) and version 2 (timestamp_unix)
+                    cache_timestamp = cache_data.get(
+                        "timestamp_unix", cache_data.get("timestamp", 0)
+                    )
+                    # Handle ISO format timestamps from version 2
+                    if isinstance(cache_timestamp, str):
+                        cache_timestamp = cache_data.get("timestamp_unix", 0)
+
+                    cache_age = time.time() - cache_timestamp
+                    if cache_age > max_cache_age:
+                        self._logger.info(
+                            "Cache expired (age=%.0fs > max=%.0fs), will refresh",
+                            cache_age,
+                            max_cache_age,
+                        )
+                        needs_refresh = True
+                    else:
+                        self._logger.debug(
+                            "Cache valid (age=%.0fs <= max=%.0fs)",
+                            cache_age,
+                            max_cache_age,
+                        )
+
+                # Force refresh if cached discovery was incomplete
+                if not complete and not refresh:
+                    self._logger.warning(
+                        "Cached discovery incomplete (%s/%s bytes), will refresh",
+                        actual,
+                        reported,
+                    )
+                    needs_refresh = True
+
+                # Return cached elements if no refresh needed
+                if not needs_refresh and cached_elements:
+                    self._logger.info(
+                        "Loaded %d elements from cache v%d: %s (bytes=%s/%s)",
+                        len(cached_elements),
+                        version,
+                        cache_path,
+                        actual,
+                        reported,
+                    )
+                    return cached_elements
 
             except (json.JSONDecodeError, KeyError, OSError) as e:
                 self._logger.warning("Failed to load cache: %s", e)
 
-        # Perform discovery
-        elements = self.discover(timeout=timeout)
+        # Perform discovery with retry on incomplete results
+        elements: List[DiscoveredElement] = []
+        last_error: Optional[Exception] = None
+        discovery_succeeded = False
 
-        # Save to cache
+        for attempt in range(max_retries):
+            try:
+                self._logger.debug(
+                    "Discovery attempt %d/%d", attempt + 1, max_retries
+                )
+                elements = self.discover(
+                    timeout=timeout,
+                    min_completion_ratio=min_completion_ratio,
+                )
+                discovery_succeeded = True
+                break  # Success - exit retry loop
+
+            except DiscoveryIncompleteError as e:
+                last_error = e
+                if attempt < max_retries - 1:
+                    self._logger.warning(
+                        "Discovery attempt %d/%d incomplete (%d/%d bytes), "
+                        "retrying in 1s...",
+                        attempt + 1,
+                        max_retries,
+                        e.actual_count,
+                        e.reported_count,
+                    )
+                    time.sleep(1.0)  # Brief delay before retry
+
+            except Exception as e:
+                last_error = e
+                if attempt < max_retries - 1:
+                    self._logger.warning(
+                        "Discovery attempt %d/%d failed: %s, retrying in 1s...",
+                        attempt + 1,
+                        max_retries,
+                        e,
+                    )
+                    time.sleep(1.0)
+
+        # Handle discovery failure
+        if not discovery_succeeded:
+            if cache_existed and cached_elements:
+                # Cache-only fallback: use last successful discovery
+                self._logger.warning(
+                    "Discovery failed after %d attempts, falling back to cached data "
+                    "(%d elements). Last error: %s",
+                    max_retries,
+                    len(cached_elements),
+                    last_error,
+                )
+                return cached_elements
+            else:
+                # Fail-fast: no cache means we can't proceed with reliable idx values
+                error_detail = str(last_error) if last_error else "unknown error"
+                self._logger.error(
+                    "Discovery failed after %d attempts with no valid cache. "
+                    "Cannot proceed without discovered parameter indices. Error: %s",
+                    max_retries,
+                    error_detail,
+                )
+                raise DiscoveryRequiredError(error_detail)
+
+        # Save successful discovery to cache
         try:
+            from datetime import datetime, timezone
+
+            reported_bytes = self._last_reported_bytes
+            actual_bytes = self._last_received_bytes
+            actual_count = len(elements)
+            is_complete = (
+                actual_bytes >= reported_bytes * min_completion_ratio
+                if reported_bytes > 0
+                else True
+            )
+
             cache_data = {
-                "version": 1,
-                "timestamp": time.time(),
-                "count": len(elements),
+                "version": 2,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "timestamp_unix": time.time(),
+                "reported_count": reported_bytes,  # Backward compatibility (bytes)
+                "actual_count": actual_count,
+                "reported_bytes": reported_bytes,
+                "actual_bytes": actual_bytes,
+                "complete": is_complete,
                 "elements": [
                     {
                         "idx": e.idx,
@@ -503,7 +775,14 @@ class ElementDiscovery:
             }
             with open(cache_path, "w") as f:
                 json.dump(cache_data, f, indent=2)
-            self._logger.info("Saved %d elements to cache: %s", len(elements), cache_path)
+            self._logger.info(
+                "Saved %d elements (%d/%d bytes) to cache: %s (complete=%s)",
+                actual_count,
+                actual_bytes,
+                reported_bytes,
+                cache_path,
+                is_complete,
+            )
         except OSError as e:
             self._logger.warning("Failed to save cache: %s", e)
 

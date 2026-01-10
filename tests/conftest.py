@@ -7,8 +7,8 @@ testing the integration without the full HA runtime environment.
 from __future__ import annotations
 
 import sys
-from dataclasses import dataclass
-from typing import Optional
+from dataclasses import dataclass, field
+from typing import Any, Optional
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -198,6 +198,9 @@ class MockBuderusData:
     heating_curve_offset: Optional[float] = None
     dhw_stop_temp: Optional[float] = None
     dhw_setpoint: Optional[float] = None
+    compressor_state: Optional[int] = None
+    compressor_frequency: Optional[int] = None
+    parameter_results: dict[str, dict[str, Any]] = field(default_factory=dict)
 
 
 @pytest.fixture

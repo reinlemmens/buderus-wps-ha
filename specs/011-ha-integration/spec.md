@@ -17,7 +17,7 @@ As a homeowner, I want to see my heat pump's temperature readings in Home Assist
 
 **Acceptance Scenarios**:
 
-1. **Given** the integration is configured with the correct serial port, **When** Home Assistant starts, **Then** five temperature sensors appear: Outdoor, Supply, Return, DHW (hot water tank), and Brine Inlet
+1. **Given** the integration is configured with the correct serial port, **When** Home Assistant starts, **Then** 13 temperature sensors appear: 5 core sensors (Outdoor, Supply, Return, DHW, Brine Inlet), 4 room temperature sensors (C1-C4 from RC10 thermostats), and 4 room setpoint sensors (C1-C4 target temperatures)
 2. **Given** the heat pump is operating normally, **When** I view the sensors in Home Assistant, **Then** I see temperature values in Celsius that update periodically
 3. **Given** the serial connection is lost, **When** Home Assistant polls for data, **Then** sensors retain their last known values with a "stale" indicator in entity attributes, and reconnection is attempted with exponential backoff
 
@@ -73,6 +73,22 @@ As a homeowner, I want to start extra hot water production via Home Assistant so
 
 ---
 
+### User Story 5 - Set DHW Stop Temperature (Priority: P2)
+
+As a homeowner, I want to adjust the hot water stop temperature via Home Assistant so that I can control when the heat pump stops heating the DHW tank, balancing energy efficiency with hot water availability.
+
+**Why this priority**: DHW stop temperature directly affects energy consumption and comfort. A higher stop temperature means more stored hot water but higher energy use. It complements the DHW extra production control by allowing users to fine-tune DHW heating behavior.
+
+**Independent Test**: Can be tested by setting the stop temperature and verifying the heat pump stops DHW charging when the tank reaches the configured temperature.
+
+**Acceptance Scenarios**:
+
+1. **Given** the integration is running, **When** I view the DHW Stop Temperature control, **Then** I see a number entity displaying the current stop temperature in the 50-65°C range
+2. **Given** I set the stop temperature to 55°C, **When** the heat pump processes the command, **Then** DHW charging stops when the tank reaches 55°C
+3. **Given** I try to set a temperature outside the 50-65°C range, **When** validation occurs, **Then** the value is rejected and the entity retains its previous valid value
+
+---
+
 ### Edge Cases
 
 - What happens when the USB serial device is disconnected? The integration should mark all entities as "unavailable" and attempt reconnection.
@@ -86,7 +102,7 @@ As a homeowner, I want to start extra hot water production via Home Assistant so
 ### Functional Requirements
 
 - **FR-001**: Integration MUST discover and connect to the heat pump via USB serial port
-- **FR-002**: Integration MUST provide temperature sensors for: Outdoor, Supply, Return, DHW, and Brine Inlet
+- **FR-002**: Integration MUST provide temperature sensors for: Outdoor, Supply, Return, DHW, Brine Inlet, Room Temperature (C1-C4), and Room Setpoint (C1-C4)
 - **FR-003**: Integration MUST provide a binary sensor showing compressor running status
 - **FR-004**: Integration MUST provide a switch to enable/disable energy blocking
 - **FR-005**: Integration MUST provide a control to start/stop extra DHW production
@@ -96,27 +112,30 @@ As a homeowner, I want to start extra hot water production via Home Assistant so
 - **FR-009**: Integration MUST log errors with sufficient detail for troubleshooting
 - **FR-010**: Integration MUST maintain a persistent connection to the heat pump (not reconnect on every poll)
 - **FR-011**: Integration MUST retain last-known-good sensor values indefinitely when CAN bus communication is unavailable, displaying stale data with attributes indicating: `last_update_age_seconds`, `last_successful_update`, and `data_is_stale` (boolean). Sensors MUST only show "unavailable" before their first successful read.
+- **FR-012**: Integration MUST provide a number entity for DHW stop temperature control (50-65°C range, 0.5°C step)
 
 ### Key Entities
 
 Entity naming convention: Entity-only names (e.g., "Outdoor Temperature", "Compressor") with `has_entity_name=True`. Home Assistant automatically prepends device name "Heat Pump" in the UI, resulting in "Heat Pump Outdoor Temperature", "Heat Pump Compressor", etc.
 
-- **Temperature Sensor**: Represents a temperature reading from the heat pump. Key attributes: value (Celsius), sensor type (outdoor/supply/return/dhw/brine), last update timestamp
+- **Temperature Sensor**: Represents a temperature reading from the heat pump. Key attributes: value (Celsius), sensor type (outdoor/supply/return/dhw/brine/room_c1-c4/setpoint_c1-c4), last update timestamp. Room temperatures and setpoints are read from RC10 thermostat broadcasts on circuit bases 0x0060-0x0063
 - **Compressor Status**: Binary state indicating whether the compressor is running. Derived from compressor frequency parameter
 - **Energy Block Switch**: Toggle control for blocking heat pump energy usage. Maps to the ADDITIONAL_BLOCKED parameter
 - **DHW Extra Control**: Number input (0-24 hours) for setting extra hot water production duration. Setting to 0 stops extra production; setting 1-24 starts heating for that duration. Uses the DHW_EXTRA_DURATION parameter
+- **DHW Stop Temperature**: Number input (50-65°C, step 0.5°C) for setting the temperature at which DHW tank heating stops. Higher values mean more stored hot water but higher energy use. Maps to the XDHW_STOP_TEMP parameter
 
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
 
-- **SC-001**: All five temperature sensors display accurate readings within 0.5 degrees of actual values
+- **SC-001**: All 13 temperature sensors display accurate readings within 0.5 degrees of actual values
 - **SC-002**: Compressor status updates within 60 seconds of state change
 - **SC-003**: Energy blocking takes effect within 30 seconds of switch toggle
 - **SC-004**: DHW extra production starts within 30 seconds of command
 - **SC-005**: Integration remains stable for 24+ hours of continuous operation without memory leaks or crashes
 - **SC-006**: Connection recovery completes within 2 minutes after USB device reconnection
 - **SC-007**: User can configure and use the integration within 5 minutes using YAML configuration
+- **SC-008**: DHW stop temperature changes take effect within 30 seconds of command
 
 ## Clarifications
 
@@ -137,6 +156,7 @@ Entity naming convention: Entity-only names (e.g., "Outdoor Temperature", "Compr
 - Temperature readings use the passive broadcast monitoring approach for reliability
 - The ADDITIONAL_BLOCKED parameter controls energy blocking (verified in FHEM reference)
 - The DHW_EXTRA_DURATION parameter controls extra hot water production
+- The XDHW_STOP_TEMP parameter controls DHW charging stop temperature (range 50-65°C)
 
 ## Out of Scope
 

@@ -170,7 +170,8 @@ class TestGetKnownName:
             timestamp=0.0,
         )
         name = monitor.get_known_name(reading)
-        assert name == "RC10_C3_ROOM_TEMP"
+        # Renamed to _ALT since primary C3 room temp is now on base 0x0062, idx=0
+        assert name == "RC10_C3_ROOM_TEMP_ALT"
 
     def test_known_rc10_c3_demand(self, monitor: BroadcastMonitor) -> None:
         """Test get_known_name returns correct name for RC10 C3 demand."""

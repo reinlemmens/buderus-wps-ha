@@ -14,6 +14,7 @@ from homeassistant.data_entry_flow import FlowResult
 
 from .const import (
     CONF_SERIAL_DEVICE,
+    CONF_PARAMETER_ALLOWLIST,
     DEFAULT_SCAN_INTERVAL,
     DEFAULT_TIMEOUT,
     DOMAIN,
@@ -120,6 +121,17 @@ class BuderusOptionsFlow(config_entries.OptionsFlow):
                             CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
                         ),
                     ): cv.positive_int,
+                    vol.Optional(
+                        CONF_PARAMETER_ALLOWLIST,
+                        default=self._format_allowlist_default(),
+                    ): cv.string,
                 }
             ),
         )
+
+    def _format_allowlist_default(self) -> str:
+        """Return allowlist default string for the options form."""
+        allowlist = self.config_entry.options.get(CONF_PARAMETER_ALLOWLIST, "")
+        if isinstance(allowlist, (list, tuple)):
+            return ", ".join(str(item) for item in allowlist if str(item).strip())
+        return str(allowlist) if allowlist else ""

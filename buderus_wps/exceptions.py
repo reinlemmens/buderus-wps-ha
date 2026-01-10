@@ -251,3 +251,56 @@ class CircuitNotAvailableError(MenuAPIError):
             f"Circuit {circuit} not available. Available circuits: {available_circuits}",
             context={"circuit": circuit, "available_circuits": available_circuits},
         )
+
+
+# Discovery Exceptions
+
+
+class DiscoveryError(BuderusCANException):
+    """Base class for element discovery errors."""
+
+    pass
+
+
+class DiscoveryIncompleteError(DiscoveryError):
+    """Raised when element discovery returns fewer bytes than expected.
+
+    Attributes:
+        actual_count: Number of bytes actually received
+        reported_count: Number of bytes reported by the device
+        completion_ratio: Ratio of actual/reported (0.0-1.0)
+    """
+
+    def __init__(self, actual_count: int, reported_count: int) -> None:
+        self.actual_count = actual_count
+        self.reported_count = reported_count
+        self.completion_ratio = actual_count / reported_count if reported_count > 0 else 0.0
+        super().__init__(
+            f"Discovery incomplete: got {actual_count}/{reported_count} bytes "
+            f"({self.completion_ratio * 100:.1f}%)",
+            context={
+                "actual_count": actual_count,
+                "reported_count": reported_count,
+                "completion_ratio": self.completion_ratio,
+            },
+        )
+
+
+class DiscoveryRequiredError(DiscoveryError):
+    """Raised when discovery is required but failed and no valid cache exists.
+
+    This error indicates a fresh install scenario where discovery failed
+    and there's no previous successful cache to fall back to. The integration
+    cannot start with correct parameter indices.
+
+    Attributes:
+        reason: Description of why discovery failed
+    """
+
+    def __init__(self, reason: str) -> None:
+        self.reason = reason
+        super().__init__(
+            f"Discovery required but failed: {reason}. "
+            "Ensure CAN adapter is connected and heat pump is powered on, then restart.",
+            context={"reason": reason},
+        )

@@ -43,3 +43,6 @@ fhem/fhemoutput.txt
 *.zip
 .build/
 tmp/
+
+# SSH private keys (keep public key for reference)
+.devcontainer/ssh/id_ed25519

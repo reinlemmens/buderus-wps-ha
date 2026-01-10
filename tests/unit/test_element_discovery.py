@@ -82,7 +82,7 @@ class TestParseDataChunk:
         name = b"XDHW_TIME"
         name_len = bytes([len(name) + 1])  # +1 for original null terminator
 
-        data = idx_bytes + extid + max_val + min_val + name_len + name
+        data = idx_bytes + extid + max_val + min_val + name_len + name + b"\x00"
 
         elements = parser.parse_data_chunk(data)
 
@@ -107,7 +107,15 @@ class TestParseDataChunk:
             min_bytes = min_val.to_bytes(4, "big", signed=True)
             name_bytes = name.encode("ascii")
             name_len = bytes([len(name_bytes) + 1])
-            return idx_bytes + extid + max_bytes + min_bytes + name_len + name_bytes
+            return (
+                idx_bytes
+                + extid
+                + max_bytes
+                + min_bytes
+                + name_len
+                + name_bytes
+                + b"\x00"
+            )
 
         data = (
             make_element(100, "PARAM_A")
@@ -136,7 +144,7 @@ class TestParseDataChunk:
         name = b"ADDITIONAL_BLOCK_HIGH_T2_TEMP"
         name_len = bytes([len(name) + 1])
 
-        data = idx_bytes + extid + max_val + min_val + name_len + name
+        data = idx_bytes + extid + max_val + min_val + name_len + name + b"\x00"
 
         elements = parser.parse_data_chunk(data)
 
@@ -177,7 +185,7 @@ class TestParseMalformedData:
         name_len = bytes([255])  # Way too large
         name = b"SHORT"
 
-        data = idx_bytes + extid + max_val + min_val + name_len + name
+        data = idx_bytes + extid + max_val + min_val + name_len + name + b"\x00"
 
         # Should skip malformed element and continue
         elements = parser.parse_data_chunk(data)
@@ -210,7 +218,7 @@ class TestParseMalformedData:
         name = bytes([0x80, 0x81, 0x82])  # Non-ASCII
         name_len = bytes([len(name) + 1])
 
-        data = idx_bytes + extid + max_val + min_val + name_len + name
+        data = idx_bytes + extid + max_val + min_val + name_len + name + b"\x00"
 
         # Should handle gracefully (decode with 'replace' or skip)
         elements = parser.parse_data_chunk(data)
@@ -292,7 +300,7 @@ class TestElementDiscovery:
 
         discovery = ElementDiscovery(adapter)
 
-        with pytest.raises(DeviceCommunicationError, match="No response"):
+        with pytest.raises(DeviceCommunicationError, match="No valid response"):
             discovery.request_element_count()
 
     def test_request_data_chunk_success(self):
@@ -309,7 +317,7 @@ class TestElementDiscovery:
         data = discovery.request_data_chunk(offset=0, size=4096)
 
         assert len(data) == 100
-        adapter.send_frame_nowait.assert_called_once()
+        assert adapter.send_frame_nowait.call_count == 2
         adapter.receive_stream.assert_called_once()
 
     def test_discover_full_flow(self):
@@ -330,7 +338,15 @@ class TestElementDiscovery:
             min_bytes = (0).to_bytes(4, "big", signed=True)
             name_bytes = name.encode("ascii")
             name_len = bytes([len(name_bytes) + 1])
-            return idx_bytes + extid + max_bytes + min_bytes + name_len + name_bytes
+            return (
+                idx_bytes
+                + extid
+                + max_bytes
+                + min_bytes
+                + name_len
+                + name_bytes
+                + b"\x00"
+            )
 
         element_data = make_element(100, "PARAM_A") + make_element(101, "PARAM_B")
 
@@ -340,7 +356,7 @@ class TestElementDiscovery:
         # First call: element count response
         count_response = CANMessage(
             arbitration_id=ELEMENT_COUNT_RESPONSE_ID,
-            data=bytes([0x00, 0x00, 0x00, 0x02]),  # count = 2
+            data=len(element_data).to_bytes(4, "big"),
             is_extended_id=True,
         )
         adapter.send_frame.return_value = count_response
@@ -375,14 +391,22 @@ class TestElementDiscovery:
             min_bytes = (0).to_bytes(4, "big", signed=True)
             name_bytes = name.encode("ascii")
             name_len = bytes([len(name_bytes) + 1])
-            return idx_bytes + extid + max_bytes + min_bytes + name_len + name_bytes
+            return (
+                idx_bytes
+                + extid
+                + max_bytes
+                + min_bytes
+                + name_len
+                + name_bytes
+                + b"\x00"
+            )
 
         element_data = make_element(42, "TEST_PARAM")
 
         adapter = Mock()
         count_response = CANMessage(
             arbitration_id=ELEMENT_COUNT_RESPONSE_ID,
-            data=bytes([0x00, 0x00, 0x00, 0x01]),
+            data=len(element_data).to_bytes(4, "big"),
             is_extended_id=True,
         )
         adapter.send_frame.return_value = count_response
@@ -397,10 +421,14 @@ class TestElementDiscovery:
         assert elements[0].text == "TEST_PARAM"
         assert cache_file.exists()
 
-        # Verify cache file content
+        # Verify cache file content (version 2 format)
         with open(cache_file) as f:
             cache_data = json.load(f)
-        assert cache_data["count"] == 1
+        assert cache_data["version"] == 2
+        assert cache_data["reported_bytes"] == len(element_data)
+        assert cache_data["actual_bytes"] == len(element_data)
+        assert cache_data["actual_count"] == 1
+        assert cache_data["complete"] is True
         assert cache_data["elements"][0]["text"] == "TEST_PARAM"
 
     def test_discover_with_cache_loads_existing(self, tmp_path):
@@ -455,7 +483,15 @@ class TestElementDiscovery:
             min_bytes = (0).to_bytes(4, "big", signed=True)
             name_bytes = name.encode("ascii")
             name_len = bytes([len(name_bytes) + 1])
-            return idx_bytes + extid + max_bytes + min_bytes + name_len + name_bytes
+            return (
+                idx_bytes
+                + extid
+                + max_bytes
+                + min_bytes
+                + name_len
+                + name_bytes
+                + b"\x00"
+            )
 
         # Create cache with old data
         cache_file = tmp_path / "cache.json"
@@ -464,13 +500,14 @@ class TestElementDiscovery:
 
         # Setup adapter to return fresh data
         adapter = Mock()
+        fresh_data = make_element(200, "NEW_PARAM")
         count_response = CANMessage(
             arbitration_id=ELEMENT_COUNT_RESPONSE_ID,
-            data=bytes([0x00, 0x00, 0x00, 0x01]),
+            data=len(fresh_data).to_bytes(4, "big"),
             is_extended_id=True,
         )
         adapter.send_frame.return_value = count_response
-        adapter.receive_stream.return_value = make_element(200, "NEW_PARAM")
+        adapter.receive_stream.return_value = fresh_data
 
         discovery = ElementDiscovery(adapter)
         elements = discovery.discover_with_cache(str(cache_file), refresh=True)
@@ -478,3 +515,307 @@ class TestElementDiscovery:
         assert len(elements) == 1
         assert elements[0].text == "NEW_PARAM"  # Fresh data, not cached
         adapter.send_frame.assert_called_once()  # Discovery was performed
+
+    def test_discover_with_cache_incomplete_forces_refresh(self, tmp_path):
+        """Test that incomplete cache forces a refresh."""
+        import json
+        from unittest.mock import Mock
+
+        from buderus_wps.can_message import CANMessage
+        from buderus_wps.element_discovery import (
+            ELEMENT_COUNT_RESPONSE_ID,
+            ElementDiscovery,
+        )
+
+        def make_element(idx: int, name: str) -> bytes:
+            idx_bytes = idx.to_bytes(2, "big")
+            extid = bytes([0x00] * 7)
+            max_bytes = (100).to_bytes(4, "big", signed=True)
+            min_bytes = (0).to_bytes(4, "big", signed=True)
+            name_bytes = name.encode("ascii")
+            name_len = bytes([len(name_bytes) + 1])
+            return (
+                idx_bytes
+                + extid
+                + max_bytes
+                + min_bytes
+                + name_len
+                + name_bytes
+                + b"\x00"
+            )
+
+        # Create cache with incomplete discovery (complete=False)
+        cache_file = tmp_path / "cache.json"
+        cache_data = {
+            "version": 2,
+            "timestamp_unix": 0,
+            "reported_count": 100,
+            "actual_count": 50,
+            "complete": False,  # Mark as incomplete
+            "elements": [
+                {
+                    "idx": 99,
+                    "extid": "AABBCCDD001122",
+                    "text": "OLD_PARAM",
+                    "min_value": 0,
+                    "max_value": 100,
+                }
+            ],
+        }
+        with open(cache_file, "w") as f:
+            json.dump(cache_data, f)
+
+        # Setup adapter to return fresh data
+        adapter = Mock()
+        fresh_data = make_element(200, "FRESH_PARAM")
+        count_response = CANMessage(
+            arbitration_id=ELEMENT_COUNT_RESPONSE_ID,
+            data=len(fresh_data).to_bytes(4, "big"),
+            is_extended_id=True,
+        )
+        adapter.send_frame.return_value = count_response
+        adapter.receive_stream.return_value = fresh_data
+
+        discovery = ElementDiscovery(adapter)
+        elements = discovery.discover_with_cache(str(cache_file), refresh=False)
+
+        # Should have used fresh data despite refresh=False
+        assert len(elements) == 1
+        assert elements[0].text == "FRESH_PARAM"
+        adapter.send_frame.assert_called()  # Discovery was performed
+
+
+class TestDiscoveryIncompleteError:
+    """Tests for DiscoveryIncompleteError exception."""
+
+    def test_incomplete_error_attributes(self):
+        """Test DiscoveryIncompleteError has correct attributes."""
+        from buderus_wps.exceptions import DiscoveryIncompleteError
+
+        err = DiscoveryIncompleteError(50, 100)
+
+        assert err.actual_count == 50
+        assert err.reported_count == 100
+        assert err.completion_ratio == 0.5
+        assert "50/100" in str(err)
+        assert "50.0%" in str(err)
+
+    def test_discover_raises_on_incomplete(self):
+        """Test that discover() raises DiscoveryIncompleteError below threshold."""
+        from unittest.mock import Mock
+
+        from buderus_wps.can_message import CANMessage
+        from buderus_wps.element_discovery import (
+            ELEMENT_COUNT_RESPONSE_ID,
+            ElementDiscovery,
+        )
+        from buderus_wps.exceptions import DiscoveryIncompleteError
+
+        def make_element(idx: int, name: str) -> bytes:
+            idx_bytes = idx.to_bytes(2, "big")
+            extid = bytes([0x00] * 7)
+            max_bytes = (100).to_bytes(4, "big", signed=True)
+            min_bytes = (0).to_bytes(4, "big", signed=True)
+            name_bytes = name.encode("ascii")
+            name_len = bytes([len(name_bytes) + 1])
+            return (
+                idx_bytes
+                + extid
+                + max_bytes
+                + min_bytes
+                + name_len
+                + name_bytes
+                + b"\x00"
+            )
+
+        # Setup: device reports 1000 bytes, but we only get a single element
+        adapter = Mock()
+        count_response = CANMessage(
+            arbitration_id=ELEMENT_COUNT_RESPONSE_ID,
+            data=bytes([0x00, 0x00, 0x03, 0xE8]),  # reported bytes = 1000
+            is_extended_id=True,
+        )
+        adapter.send_frame.return_value = count_response
+
+        # Return only 1 element worth of data (short chunk signals completion)
+        element_data = make_element(1, "ONLY_ONE")
+        adapter.receive_stream.return_value = element_data
+
+        discovery = ElementDiscovery(adapter)
+
+        # Should raise because received bytes << reported bytes
+        with pytest.raises(DiscoveryIncompleteError) as exc_info:
+            discovery.discover(min_completion_ratio=0.95)
+
+        assert exc_info.value.actual_count == len(element_data)
+        assert exc_info.value.reported_count == 1000
+
+    def test_discover_accepts_above_threshold(self):
+        """Test that discover() accepts results above threshold."""
+        from unittest.mock import Mock
+
+        from buderus_wps.can_message import CANMessage
+        from buderus_wps.element_discovery import (
+            ELEMENT_COUNT_RESPONSE_ID,
+            ElementDiscovery,
+        )
+
+        def make_element(idx: int, name: str) -> bytes:
+            idx_bytes = idx.to_bytes(2, "big")
+            extid = bytes([0x00] * 7)
+            max_bytes = (100).to_bytes(4, "big", signed=True)
+            min_bytes = (0).to_bytes(4, "big", signed=True)
+            name_bytes = name.encode("ascii")
+            name_len = bytes([len(name_bytes) + 1])
+            return (
+                idx_bytes
+                + extid
+                + max_bytes
+                + min_bytes
+                + name_len
+                + name_bytes
+                + b"\x00"
+            )
+
+        adapter = Mock()
+        element_data = make_element(1, "PARAM_A") + make_element(2, "PARAM_B")
+        count_response = CANMessage(
+            arbitration_id=ELEMENT_COUNT_RESPONSE_ID,
+            data=len(element_data).to_bytes(4, "big"),
+            is_extended_id=True,
+        )
+        adapter.send_frame.return_value = count_response
+        adapter.receive_stream.return_value = element_data
+
+        discovery = ElementDiscovery(adapter)
+
+        # Should succeed - 2/2 = 100% >= 95%
+        elements = discovery.discover(min_completion_ratio=0.95)
+        assert len(elements) == 2
+
+
+class TestDiscoveryRequiredError:
+    """Tests for DiscoveryRequiredError exception."""
+
+    def test_discovery_required_error_attributes(self):
+        """Test DiscoveryRequiredError has correct attributes."""
+        from buderus_wps.exceptions import DiscoveryRequiredError
+
+        err = DiscoveryRequiredError("CAN bus timeout")
+
+        assert err.reason == "CAN bus timeout"
+        assert "CAN bus timeout" in str(err)
+        assert "Discovery required but failed" in str(err)
+        assert "Ensure CAN adapter" in str(err)
+
+
+class TestFailFastBehavior:
+    """Tests for fail-fast behavior when no cache exists."""
+
+    def test_fail_fast_no_cache_discovery_fails(self, tmp_path):
+        """Test that discovery fails fast when no cache and discovery fails."""
+        from unittest.mock import Mock
+
+        from buderus_wps.element_discovery import ElementDiscovery
+        from buderus_wps.exceptions import DiscoveryRequiredError, TimeoutError
+
+        # Setup: adapter always fails
+        adapter = Mock()
+        adapter.send_frame.side_effect = TimeoutError("Test timeout")
+
+        cache_file = tmp_path / "nonexistent_cache.json"
+        assert not cache_file.exists()
+
+        discovery = ElementDiscovery(adapter)
+
+        # Should raise DiscoveryRequiredError because no cache exists
+        with pytest.raises(DiscoveryRequiredError) as exc_info:
+            discovery.discover_with_cache(str(cache_file), max_retries=1)
+
+        assert "Test timeout" in str(exc_info.value)
+
+    def test_cache_only_fallback_when_cache_exists(self, tmp_path):
+        """Test that discovery falls back to cache when cache exists but discovery fails."""
+        import json
+        from unittest.mock import Mock
+
+        from buderus_wps.element_discovery import ElementDiscovery
+        from buderus_wps.exceptions import TimeoutError
+
+        # Setup: create valid cache
+        cache_file = tmp_path / "cache.json"
+        cache_data = {
+            "version": 2,
+            "timestamp_unix": 0,  # Old but complete
+            "complete": True,
+            "reported_bytes": 100,
+            "actual_bytes": 100,
+            "elements": [
+                {
+                    "idx": 42,
+                    "extid": "AABBCCDD001122",
+                    "text": "CACHED_PARAM",
+                    "min_value": 0,
+                    "max_value": 100,
+                }
+            ],
+        }
+        with open(cache_file, "w") as f:
+            json.dump(cache_data, f)
+
+        # Setup: adapter fails
+        adapter = Mock()
+        adapter.send_frame.side_effect = TimeoutError("Test timeout")
+
+        discovery = ElementDiscovery(adapter)
+
+        # Should NOT raise - falls back to cache
+        elements = discovery.discover_with_cache(
+            str(cache_file),
+            max_retries=1,
+            max_cache_age=1.0,  # Force refresh attempt (cache is old)
+        )
+
+        # Should return cached element
+        assert len(elements) == 1
+        assert elements[0].text == "CACHED_PARAM"
+        assert elements[0].idx == 42
+
+    def test_incomplete_cache_not_used_as_fallback(self, tmp_path):
+        """Test that incomplete cache is not used as fallback."""
+        import json
+        from unittest.mock import Mock
+
+        from buderus_wps.element_discovery import ElementDiscovery
+        from buderus_wps.exceptions import DiscoveryRequiredError, TimeoutError
+
+        # Setup: create INCOMPLETE cache
+        cache_file = tmp_path / "cache.json"
+        cache_data = {
+            "version": 2,
+            "timestamp_unix": 0,
+            "complete": False,  # Incomplete!
+            "reported_bytes": 100,
+            "actual_bytes": 50,
+            "elements": [
+                {
+                    "idx": 42,
+                    "extid": "AABBCCDD001122",
+                    "text": "INCOMPLETE_PARAM",
+                    "min_value": 0,
+                    "max_value": 100,
+                }
+            ],
+        }
+        with open(cache_file, "w") as f:
+            json.dump(cache_data, f)
+
+        # Setup: adapter fails
+        adapter = Mock()
+        adapter.send_frame.side_effect = TimeoutError("Test timeout")
+
+        discovery = ElementDiscovery(adapter)
+
+        # Should raise DiscoveryRequiredError - incomplete cache is not valid fallback
+        with pytest.raises(DiscoveryRequiredError):
+            discovery.discover_with_cache(str(cache_file), max_retries=1)

@@ -6,7 +6,10 @@ Monitor and control your Buderus WPS heat pump directly from Home Assistant via 
 
 ## Features
 
-- 5 temperature sensors (Outdoor, Supply, Return, DHW, Brine Inlet)
+- **13 temperature sensors**:
+  - 5 core sensors (Outdoor, Supply, Return, DHW, Brine Inlet)
+  - 4 room temperature sensors (C1-C4, from RC10 thermostats)
+  - 4 room setpoint sensors (C1-C4, target temperatures)
 - Compressor status monitoring
 - Energy blocking switch (disable heating during peak electricity rates)
 - DHW extra production control (boost hot water on demand)
@@ -34,13 +37,28 @@ Monitor and control your Buderus WPS heat pump directly from Home Assistant via 
 
 After installation, the integration creates the following entities:
 
+### Temperature Sensors
+
+| Entity | Description |
+|--------|-------------|
+| `sensor.heat_pump_outdoor_temperature` | Outside air temperature |
+| `sensor.heat_pump_supply_temperature` | Heating supply water temperature |
+| `sensor.heat_pump_return_temperature` | Heating return water temperature |
+| `sensor.heat_pump_hot_water_temperature` | Domestic hot water temperature |
+| `sensor.heat_pump_brine_inlet_temperature` | Ground source brine inlet temperature |
+| `sensor.heat_pump_room_temperature_c1` | Room temperature from RC10 thermostat (Circuit 1) |
+| `sensor.heat_pump_room_temperature_c2` | Room temperature from RC10 thermostat (Circuit 2) |
+| `sensor.heat_pump_room_temperature_c3` | Room temperature from RC10 thermostat (Circuit 3) |
+| `sensor.heat_pump_room_temperature_c4` | Room temperature from RC10 thermostat (Circuit 4) |
+| `sensor.heat_pump_room_setpoint_c1` | Target temperature for Circuit 1 |
+| `sensor.heat_pump_room_setpoint_c2` | Target temperature for Circuit 2 |
+| `sensor.heat_pump_room_setpoint_c3` | Target temperature for Circuit 3 |
+| `sensor.heat_pump_room_setpoint_c4` | Target temperature for Circuit 4 |
+
+### Controls
+
 | Entity | Type | Description |
 |--------|------|-------------|
-| `sensor.heat_pump_outdoor_temperature` | Sensor | Outside air temperature |
-| `sensor.heat_pump_supply_temperature` | Sensor | Heating supply water temperature |
-| `sensor.heat_pump_return_temperature` | Sensor | Heating return water temperature |
-| `sensor.heat_pump_hot_water_temperature` | Sensor | Domestic hot water temperature |
-| `sensor.heat_pump_brine_inlet_temperature` | Sensor | Ground source brine inlet temperature |
 | `binary_sensor.heat_pump_compressor` | Binary Sensor | Compressor running state |
 | `switch.heat_pump_energy_block` | Switch | Block heating operation |
 | `number.heat_pump_dhw_extra_duration` | Number | DHW boost duration (hours) |

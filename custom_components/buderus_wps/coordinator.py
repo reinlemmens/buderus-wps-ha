@@ -5,11 +5,12 @@ from __future__ import annotations
 import asyncio
 import logging
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import timedelta
 from typing import Any
 
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
@@ -17,6 +18,7 @@ from .const import (
     BACKOFF_MAX,
     DOMAIN,
     SENSOR_BRINE_IN,
+    SENSOR_BRINE_OUT,
     SENSOR_DHW,
     SENSOR_OUTDOOR,
     SENSOR_RETURN,
@@ -47,6 +49,9 @@ class BuderusData:
     heating_curve_offset: float | None  # Parallel offset in °C (-10.0 to +10.0)
     dhw_stop_temp: float | None  # DHW stop charging temperature (50.0-65.0°C)
     dhw_setpoint: float | None  # DHW setpoint temperature (40.0-70.0°C)
+    compressor_state: int | None = None  # Raw compressor state (debug)
+    compressor_frequency: int | None = None  # Hz (debug)
+    parameter_results: dict[str, dict[str, Any]] = field(default_factory=dict)
 
 
 class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
@@ -57,6 +62,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         hass: HomeAssistant,
         port: str,
         scan_interval: int,
+        parameter_allowlist: list[str] | None = None,
     ) -> None:
         """Initialize the coordinator."""
         super().__init__(
@@ -73,6 +79,9 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         self._api: Any = None
         self._lock = asyncio.Lock()
         self._connected = False
+        self._parameter_allowlist = [
+            item for item in (parameter_allowlist or []) if str(item).strip()
+        ]
         # Exponential backoff for reconnection
         self._backoff_delay = BACKOFF_INITIAL
         self._reconnect_task: asyncio.Task[None] | None = None
@@ -89,6 +98,11 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         self._dhw_boost_end_time: float | None = None
         self._dhw_boost_original_program_mode: int | None = None
         self._dhw_boost_task: asyncio.Task[None] | None = None
+
+    @property
+    def parameter_allowlist(self) -> list[str]:
+        """Return configured parameter allowlist entries."""
+        return list(self._parameter_allowlist)
 
     async def async_setup(self) -> bool:
         """Set up the connection to the heat pump."""
@@ -288,14 +302,24 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         # This is critical because firmware versions may have different idx values
         # for the same parameter names (e.g., XDHW_TIME at idx=2475 in static
         # defaults but idx=2480 on actual device)
+        #
+        # IMPORTANT: Cache is stored in /config/ which persists across HA restarts.
+        # On fresh install, discovery MUST succeed - we fail-fast rather than
+        # silently use static defaults which produce wrong readings.
+        from .buderus_wps.exceptions import DiscoveryRequiredError
+
+        cache_path = "/config/buderus_wps_elements.json"
+        _LOGGER.info("Element discovery cache path: %s", cache_path)
+
         try:
             discovery = ElementDiscovery(self._adapter)
             # Use cache to speed up subsequent connections
-            # Cache stored in /tmp so it persists across HA restarts but not reboots
-            # Static defaults now have correct indices for XDHW_STOP_TEMP/XDHW_TIME
             # Cache expires after 24 hours or if previous discovery was incomplete
+            # On discovery failure:
+            #   - With valid cache: falls back to cached data
+            #   - Without cache (fresh install): raises DiscoveryRequiredError
             discovered = discovery.discover_with_cache(
-                cache_path="/tmp/buderus_wps_elements.json",
+                cache_path=cache_path,
                 refresh=False,  # Use cache if available
                 max_cache_age=86400.0,  # 24 hours - refresh stale cache
                 timeout=30.0,
@@ -310,7 +334,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                     updated,
                 )
                 # Log key parameters for debugging
-                for name in ["XDHW_STOP_TEMP", "XDHW_TIME"]:
+                for name in ["XDHW_STOP_TEMP", "XDHW_TIME", "GT3_TEMP", "GT8_TEMP", "GT9_TEMP", "GT10_TEMP", "GT11_TEMP"]:
                     param = self._registry.get_parameter(name)
                     if param:
                         _LOGGER.info(
@@ -319,9 +343,17 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                             param.idx,
                             0x04003FE0 | (param.idx << 14),
                         )
+        except DiscoveryRequiredError as err:
+            # Fail-fast on fresh install - cannot proceed without discovery
+            _LOGGER.error(
+                "Discovery required but failed: %s. "
+                "Ensure CAN adapter is connected and heat pump is powered on.",
+                err.reason,
+            )
+            raise
         except Exception as err:
             _LOGGER.warning(
-                "Element discovery failed, using static defaults: %s",
+                "Element discovery error (non-fatal if cache exists): %s",
                 err,
             )
 
@@ -342,6 +374,54 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             self._client = None
             self._monitor = None
             self._api = None
+
+    def _coerce_parameter_key(self, key: str | int) -> str | int:
+        if isinstance(key, int):
+            return key
+        value = str(key).strip()
+        if value.isdigit():
+            return int(value)
+        return value
+
+    def _normalize_parameter_result(self, result: dict[str, Any]) -> dict[str, Any]:
+        normalized = dict(result)
+        raw = normalized.get("raw")
+        if isinstance(raw, (bytes, bytearray)):
+            normalized["raw"] = raw.hex()
+        return normalized
+
+    async def async_read_parameter(
+        self,
+        name_or_idx: str | int,
+        *,
+        expected_dlc: int | None = None,
+        timeout: float | None = None,
+    ) -> dict[str, Any]:
+        """Read any parameter via RTR using the active client."""
+        async with self._lock:
+            if not self._connected or self._client is None:
+                raise HomeAssistantError("Not connected to heat pump")
+            return await self.hass.async_add_executor_job(
+                self._sync_read_parameter, name_or_idx, expected_dlc, timeout
+            )
+
+    def _sync_read_parameter(
+        self,
+        name_or_idx: str | int,
+        expected_dlc: int | None = None,
+        timeout: float | None = None,
+    ) -> dict[str, Any]:
+        """Synchronous parameter read helper."""
+        if self._client is None:
+            raise HomeAssistantError("Heat pump client not available")
+        coerced = self._coerce_parameter_key(name_or_idx)
+        if expected_dlc is not None:
+            result = self._client.read_parameter_with_validation(
+                coerced, expected_dlc=expected_dlc, timeout=timeout
+            )
+        else:
+            result = self._client.read_parameter(coerced, timeout=timeout)
+        return self._normalize_parameter_result(result)
 
     async def _async_update_data(self) -> BuderusData:
         """Fetch data from the heat pump with graceful degradation.
@@ -455,6 +535,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             SENSOR_RETURN: None,
             SENSOR_DHW: None,
             SENSOR_BRINE_IN: None,
+            SENSOR_BRINE_OUT: None,
             SENSOR_ROOM_C1: None,
             SENSOR_ROOM_C2: None,
             SENSOR_ROOM_C3: None,
@@ -506,42 +587,184 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             if self._last_known_good_data is not None:
                 temperatures = self._last_known_good_data.temperatures.copy()
 
+        parameter_results: dict[str, dict[str, Any]] = {}
+        if self._parameter_allowlist:
+            for key in self._parameter_allowlist:
+                name_or_idx = self._coerce_parameter_key(key)
+                try:
+                    result = self._sync_read_parameter(name_or_idx)
+                    parameter_results[key] = result
+                except Exception as err:
+                    fallback = None
+                    if self._last_known_good_data is not None:
+                        fallback = self._last_known_good_data.parameter_results.get(key)
+                    if fallback is not None:
+                        parameter_results[key] = fallback
+                    else:
+                        parameter_results[key] = {
+                            "name": str(key),
+                            "decoded": None,
+                            "error": str(err),
+                        }
+
+        def _read_rtr_temperature(
+            name: str,
+            sensor_key: str,
+            label: str,
+            *,
+            error_level: int = logging.DEBUG,
+            dead_level: int = logging.DEBUG,
+            invalid_dlc_level: int = logging.DEBUG,
+        ) -> None:
+            try:
+                result = self._client.read_parameter_with_validation(
+                    name, expected_dlc=2
+                )
+                error = result.get("error")
+                decoded = result.get("decoded")
+
+                if error == "invalid_dlc":
+                    _LOGGER.log(
+                        invalid_dlc_level,
+                        "%s not available on this heat pump model (wrong data length)",
+                        name,
+                    )
+                    return
+
+                if decoded is None:
+                    _LOGGER.log(
+                        dead_level,
+                        "%s sensor is DEAD (disconnected or faulty)",
+                        name,
+                    )
+                    return
+
+                try:
+                    temperature = float(decoded)
+                except (TypeError, ValueError):
+                    _LOGGER.log(
+                        error_level,
+                        "%s returned non-numeric value: %s",
+                        name,
+                        decoded,
+                    )
+                    return
+
+                temperatures[sensor_key] = temperature
+                _LOGGER.debug("%s (%s) via RTR: %.1f°C", name, label, temperature)
+            except Exception as err:
+                param = self._registry.get_parameter(name)
+                idx = param.idx if param else "unknown"
+                _LOGGER.log(
+                    error_level,
+                    "RTR FAILED for %s (idx=%s): %s",
+                    name,
+                    idx,
+                    err,
+                )
+                # Keep any broadcast or stale value that may exist
+
         # Get GT3_TEMP (DHW temperature) via RTR (best-effort)
         # PROTOCOL: GT3_TEMP must be read via RTR, NOT broadcast.
         # The broadcast mapping in config.py is incorrect - broadcasts don't contain GT3.
         # Element discovery finds the correct idx (682 on tested heat pump, varies by model).
         # The raw sensor value is returned; display may show +4K adjustment (GT3_KORRIGERING).
         # Verified 2026-01-02: idx=682 returns correct DHW temperature via RTR.
-        try:
-            result = self._client.read_parameter("GT3_TEMP")
-            decoded = result.get("decoded", 0)
-            if decoded is not None:
-                dhw_temp = float(decoded)
-                temperatures[SENSOR_DHW] = dhw_temp
-                _LOGGER.debug("GT3_TEMP (DHW) via RTR: %.1f°C", dhw_temp)
-        except Exception as err:
-            _LOGGER.warning("RTR FAILED for GT3_TEMP: %s", err)
-            # Keep any broadcast or stale value that may exist
+        _read_rtr_temperature(
+            "GT3_TEMP",
+            SENSOR_DHW,
+            "DHW",
+            error_level=logging.WARNING,
+            dead_level=logging.WARNING,
+            invalid_dlc_level=logging.WARNING,
+        )
+
+        # Get GT8_TEMP (Heat transfer fluid OUT / supply) via RTR (best-effort)
+        # Broadcast values can be offset on some models; RTR provides the menu value.
+        _read_rtr_temperature("GT8_TEMP", SENSOR_SUPPLY, "Supply")
+
+        # Get GT9_TEMP (Heat transfer fluid IN / return) via RTR (best-effort)
+        # Broadcast values can be offset on some models; RTR provides the menu value.
+        _read_rtr_temperature("GT9_TEMP", SENSOR_RETURN, "Return")
+
+        # Get GT10_TEMP (Brine/collector inlet) via RTR (best-effort)
+        # PROTOCOL: GT10_TEMP is the collector circuit inlet temperature (brine in)
+        # Uses discovered idx (varies by firmware, ~638 in FHEM reference)
+        # NOTE: Not all heat pump models have this sensor
+        _read_rtr_temperature(
+            "GT10_TEMP",
+            SENSOR_BRINE_IN,
+            "Brine In",
+            invalid_dlc_level=logging.INFO,
+        )
+
+        # Get GT11_TEMP (Brine/collector outlet) via RTR (best-effort)
+        # PROTOCOL: GT11_TEMP is the collector circuit outlet temperature (brine out)
+        # Uses discovered idx (varies by firmware, ~652 in FHEM reference)
+        # NOTE: Not all heat pump models have this sensor
+        _read_rtr_temperature(
+            "GT11_TEMP",
+            SENSOR_BRINE_OUT,
+            "Brine Out",
+            invalid_dlc_level=logging.INFO,
+        )
 
         # Get compressor status via RTR request (best-effort with retry)
-        # PROTOCOL: COMPRESSOR_REAL_FREQUENCY > 0 means compressor is running
-        # Verified in menu_api.py (2024-12-02): frequency shows actual Hz when running, 0 when stopped
+        # PROTOCOL: COMPRESSOR_STATE > 0 indicates compressor running (primary)
+        # COMPRESSOR_REAL_FREQUENCY is kept as a secondary debug signal.
         compressor_running = False
+        compressor_state: int | None = None
+        compressor_frequency: int | None = None
+        state_read = False
+
+        def _parse_int(value: Any) -> int:
+            if isinstance(value, str) and ":" in value:
+                value = value.split(":")[0]
+            return int(value or 0)
+
         for attempt in range(3):
             try:
-                result = self._client.read_parameter("COMPRESSOR_REAL_FREQUENCY")
-                frequency = int(result.get("decoded", 0) or 0)
-                compressor_running = frequency > 0
-                _LOGGER.debug("Compressor frequency: %d Hz (running=%s)", frequency, compressor_running)
+                state_result = self._client.read_parameter("COMPRESSOR_STATE")
+                compressor_state = _parse_int(state_result.get("decoded", 0))
+                compressor_running = compressor_state > 0
+                state_read = True
+                _LOGGER.debug(
+                    "Compressor state: %d (running=%s)",
+                    compressor_state,
+                    compressor_running,
+                )
                 break  # Success - exit retry loop
             except Exception as err:
                 if attempt < 2:
-                    _LOGGER.debug("RTR attempt %d/3 for COMPRESSOR_REAL_FREQUENCY failed: %s", attempt + 1, err)
+                    _LOGGER.debug(
+                        "RTR attempt %d/3 for COMPRESSOR_STATE failed: %s",
+                        attempt + 1,
+                        err,
+                    )
                     time.sleep(0.3)  # Brief delay before retry
                 else:
-                    _LOGGER.warning("RTR FAILED for COMPRESSOR_REAL_FREQUENCY after 3 attempts: %s", err)
+                    _LOGGER.warning(
+                        "RTR FAILED for COMPRESSOR_STATE after 3 attempts: %s", err
+                    )
                     if self._last_known_good_data is not None:
                         compressor_running = self._last_known_good_data.compressor_running
+                        compressor_state = self._last_known_good_data.compressor_state
+
+        try:
+            result = self._client.read_parameter("COMPRESSOR_REAL_FREQUENCY")
+            compressor_frequency = _parse_int(result.get("decoded", 0))
+            _LOGGER.debug(
+                "Compressor frequency: %d Hz (state_running=%s)",
+                compressor_frequency,
+                compressor_running,
+            )
+            if not state_read and compressor_frequency > 0:
+                compressor_running = True
+        except Exception as err:
+            _LOGGER.debug("RTR FAILED for COMPRESSOR_REAL_FREQUENCY: %s", err)
+            if not state_read and self._last_known_good_data is not None:
+                compressor_running = self._last_known_good_data.compressor_running
+                compressor_frequency = self._last_known_good_data.compressor_frequency
 
         # Get energy blocking status (best-effort)
         energy_blocked = False
@@ -651,6 +874,9 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             heating_curve_offset=heating_curve_offset,
             dhw_stop_temp=dhw_stop_temp,
             dhw_setpoint=dhw_setpoint,
+            compressor_state=compressor_state,
+            compressor_frequency=compressor_frequency,
+            parameter_results=parameter_results,
         )
 
         # Check if we got at least SOME fresh data

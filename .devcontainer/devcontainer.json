@@ -4,20 +4,22 @@
   "appPort": ["7123:8123", "7357:4357"],
   "postCreateCommand": "echo 'source venv/bin/activate 2>/dev/null || true' >> ~/.bashrc && echo 'source venv/bin/activate 2>/dev/null || true' >> ~/.zshrc",
   "postStartCommand": "bash .devcontainer/devcontainer_bootstrap.sh",
-  "runArgs": ["-e", "GIT_EDITOR=code --wait", "--privileged"],
+  "runArgs": ["-e", "GIT_EDITOR=code --wait", "--privileged", "--memory=10g"],
   "workspaceFolder": "/mnt/supervisor/addons/local/${localWorkspaceFolderBasename}",
   "workspaceMount": "source=${localWorkspaceFolder},target=${containerWorkspaceFolder},type=bind,consistency=cached",
   "containerEnv": {
     "WORKSPACE_DIRECTORY": "${containerWorkspaceFolder}"
   },
-  "initializeCommand": "mkdir -p ${localEnv:HOME}/.claude-devcontainer ${localEnv:HOME}/.config/gh",
+  "initializeCommand": "mkdir -p ${localEnv:HOME}/.config/gh ${localEnv:HOME}/.config/OpenAI ${localEnv:HOME}/.gemini ${localEnv:HOME}/.claude-devcontainer ${localEnv:HOME}/.vscode-server-buderus",
   "customizations": {
     "vscode": {
       "extensions": [
         "timonwong.shellcheck",
         "esbenp.prettier-vscode",
         "anthropic.claude-code",
-        "ms-azuretools.vscode-docker"
+        "ms-azuretools.vscode-docker",
+        "openai.chatgpt",
+        "google.gemini-code-assist"
       ],
       "settings": {
         "terminal.integrated.profiles.linux": {
@@ -37,7 +39,10 @@
     "type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock",
     "type=volume,target=/var/lib/docker",
     "type=volume,target=/mnt/supervisor",
-    "source=${localEnv:HOME}/.claude-devcontainer,target=/home/vscode/.claude,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.config/gh,target=/home/vscode/.config/gh,type=bind,consistency=cached"
+    "source=${localEnv:HOME}/.config/gh,target=/home/vscode/.config/gh,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.config/OpenAI,target=/home/vscode/.config/OpenAI,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.gemini,target=/home/vscode/.gemini,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.claude-devcontainer,target=/home/vscode/.config/claude,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.vscode-server-buderus,target=/home/vscode/.vscode-server,type=bind,consistency=cached"
   ]
 }

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
     BinarySensorEntity,
@@ -56,6 +58,16 @@ class BuderusCompressorSensor(BuderusEntity, BinarySensorEntity):
     ) -> None:
         """Initialize the compressor sensor."""
         super().__init__(coordinator, "compressor_running", entry)
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return extra attributes including debug compressor signals."""
+        attrs = super().extra_state_attributes
+        if self.coordinator.data is None:
+            return attrs
+        attrs["compressor_state"] = self.coordinator.data.compressor_state
+        attrs["compressor_frequency_hz"] = self.coordinator.data.compressor_frequency
+        return attrs
 
     @property
     def is_on(self) -> bool | None:
