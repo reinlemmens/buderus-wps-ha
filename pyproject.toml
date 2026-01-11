@@ -44,7 +44,8 @@ dev = [
     "mypy>=1.5.0",
     "pre-commit>=3.5.0",
     "types-PyYAML>=6.0.0",
-    "homeassistant>=2024.3.0",  # For integration testing
+    # homeassistant is not included in dev deps - requires Python 3.11+
+    # Install manually for integration testing: pip install homeassistant>=2024.3.0
 ]
 
 [project.urls]
