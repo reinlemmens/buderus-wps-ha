@@ -259,8 +259,6 @@ class TestGetDefaultSensorMap:
         # Check key verified mappings (updated 2024-12-28)
         # Outdoor: idx=12 on circuit bases
         assert sensor_map.get((0x0060, 12)) == "outdoor"
-        # DHW: idx=4 on base 0x0270
-        assert sensor_map.get((0x0270, 4)) == "dhw"
         # Supply (GT8): idx=6 on base 0x0270
         assert sensor_map.get((0x0270, 6)) == "supply"
         # Return (GT9): idx=5 on base 0x0270
@@ -275,14 +273,15 @@ class TestGetDefaultSensorMap:
         assert sensor_map.get((0x0061, 33)) == "setpoint_c2"
         assert sensor_map.get((0x0062, 33)) == "setpoint_c3"
         assert sensor_map.get((0x0063, 33)) == "setpoint_c4"
+        # Note: DHW and brine sensors now read via RTR, not broadcast
 
     def test_returns_all_sensor_types(self) -> None:
-        """Test that all core, room, and setpoint sensors are represented."""
+        """Test that broadcast sensors are represented."""
         sensor_map = get_default_sensor_map()
         sensor_values = set(sensor_map.values())
 
-        # Core sensors (brine_in not in default broadcast mappings)
-        expected_sensors = {"outdoor", "supply", "return_temp", "dhw"}
+        # Core broadcast sensors (dhw, brine_in, brine_out now read via RTR)
+        expected_sensors = {"outdoor", "supply", "return_temp"}
         assert expected_sensors.issubset(sensor_values)
 
         # Room temperature sensors (all 4 circuits)
