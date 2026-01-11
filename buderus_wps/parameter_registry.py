@@ -9,7 +9,7 @@ an updated element list, the registry can be rebuilt with those entries.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional, Union
+from typing import Optional
 
 from .parameter_defaults import PARAMETER_DEFAULTS
 
@@ -56,7 +56,7 @@ class ParameterRegistry:
     def get_by_index(self, idx: int) -> Optional[Parameter]:
         return self._by_idx.get(idx)
 
-    def get_parameter(self, name_or_idx: Union[str, int]) -> Optional[Parameter]:
+    def get_parameter(self, name_or_idx: str | int) -> Optional[Parameter]:
         """Look up parameter by name or index.
 
         Args:
