@@ -205,13 +205,22 @@ class MockBuderusData:
 
 @pytest.fixture
 def mock_temperatures() -> dict[str, float]:
-    """Provide sample temperature data."""
+    """Provide sample temperature data for all 14 sensors."""
     return {
         "outdoor": 5.5,
         "supply": 35.0,
         "return_temp": 30.0,
         "dhw": 48.5,
         "brine_in": 8.0,
+        "brine_out": 5.5,
+        "room_c1": 21.0,
+        "room_c2": 20.5,
+        "room_c3": 19.0,
+        "room_c4": 22.0,
+        "setpoint_c1": 21.0,
+        "setpoint_c2": 21.0,
+        "setpoint_c3": 20.0,
+        "setpoint_c4": 22.0,
     }
 
 

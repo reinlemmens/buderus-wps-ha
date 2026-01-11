@@ -5,7 +5,7 @@ As a homeowner, I want to see my heat pump's temperature readings in Home Assist
 so that I can monitor system performance and detect issues without leaving my dashboard.
 
 Acceptance Scenarios:
-1. Given the integration is configured, When HA starts, Then 5 temperature sensors appear
+1. Given the integration is configured, When HA starts, Then 14 temperature sensors appear
 2. Given the heat pump is operating, When I view sensors, Then I see Celsius values
 3. Given the serial connection is lost, When HA polls, Then sensors show unavailable
 """
@@ -18,9 +18,19 @@ import pytest
 from custom_components.buderus_wps.const import (
     DOMAIN,
     SENSOR_BRINE_IN,
+    SENSOR_BRINE_OUT,
     SENSOR_DHW,
+    SENSOR_NAMES,
     SENSOR_OUTDOOR,
     SENSOR_RETURN,
+    SENSOR_ROOM_C1,
+    SENSOR_ROOM_C2,
+    SENSOR_ROOM_C3,
+    SENSOR_ROOM_C4,
+    SENSOR_SETPOINT_C1,
+    SENSOR_SETPOINT_C2,
+    SENSOR_SETPOINT_C3,
+    SENSOR_SETPOINT_C4,
     SENSOR_SUPPLY,
 )
 from custom_components.buderus_wps.sensor import (
@@ -29,14 +39,14 @@ from custom_components.buderus_wps.sensor import (
 
 
 class TestUS1Scenario1FiveSensorsAppear:
-    """Scenario 1: 5 temperature sensors appear on startup."""
+    """Scenario 1: 14 temperature sensors appear on startup."""
 
     @pytest.mark.asyncio
-    async def test_five_temperature_sensors_created(self, mock_hass, mock_coordinator):
+    async def test_all_temperature_sensors_created(self, mock_hass, mock_coordinator):
         """
         Given the integration is configured with the correct serial port
         When Home Assistant starts
-        Then five temperature sensors appear: Outdoor, Supply, Return, DHW, Brine Inlet
+        Then 14 temperature sensors appear (6 core + 4 room + 4 setpoint)
         """
         entities_added = []
         mock_hass.data[DOMAIN] = {"coordinator": mock_coordinator}
@@ -48,10 +58,11 @@ class TestUS1Scenario1FiveSensorsAppear:
             discovery_info={"platform": "buderus_wps"},
         )
 
-        # Exactly 5 sensors
+        # 14 sensors: 6 core (outdoor, supply, return, dhw, brine_in, brine_out)
+        #             + 4 room temps + 4 room setpoints
         assert (
-            len(entities_added) == 5
-        ), f"Expected 5 temperature sensors, got {len(entities_added)}"
+            len(entities_added) == 14
+        ), f"Expected 14 temperature sensors, got {len(entities_added)}"
 
         # All expected sensor types present
         sensor_types = {s._sensor_type for s in entities_added}
@@ -61,6 +72,15 @@ class TestUS1Scenario1FiveSensorsAppear:
             SENSOR_RETURN,
             SENSOR_DHW,
             SENSOR_BRINE_IN,
+            SENSOR_BRINE_OUT,
+            SENSOR_ROOM_C1,
+            SENSOR_ROOM_C2,
+            SENSOR_ROOM_C3,
+            SENSOR_ROOM_C4,
+            SENSOR_SETPOINT_C1,
+            SENSOR_SETPOINT_C2,
+            SENSOR_SETPOINT_C3,
+            SENSOR_SETPOINT_C4,
         }
         assert sensor_types == expected_types
 
@@ -68,12 +88,8 @@ class TestUS1Scenario1FiveSensorsAppear:
     async def test_sensors_have_correct_names(self, mock_hass, mock_coordinator):
         """
         Sensors must have entity-only descriptive names per HACS guidelines.
-        With has_entity_name=True, Home Assistant prepends device name "Heat Pump" in UI:
-        - Outdoor Temperature → Heat Pump Outdoor Temperature (in UI)
-        - Supply Temperature → Heat Pump Supply Temperature (in UI)
-        - Return Temperature → Heat Pump Return Temperature (in UI)
-        - Hot Water Temperature → Heat Pump Hot Water Temperature (in UI)
-        - Brine Inlet Temperature → Heat Pump Brine Inlet Temperature (in UI)
+        With has_entity_name=True, Home Assistant prepends device name "Heat Pump" in UI.
+        Sensor names include GT prefixes for easy identification.
         """
         entities_added = []
         mock_hass.data[DOMAIN] = {"coordinator": mock_coordinator}
@@ -86,13 +102,7 @@ class TestUS1Scenario1FiveSensorsAppear:
         )
 
         # Entity-only names (HA prepends "Heat Pump" device name in UI)
-        expected_names = {
-            "Outdoor Temperature",
-            "Supply Temperature",
-            "Return Temperature",
-            "Hot Water Temperature",
-            "Brine Inlet Temperature",
-        }
+        expected_names = set(SENSOR_NAMES.values())
 
         actual_names = {s.name for s in entities_added}
         assert actual_names == expected_names, (
