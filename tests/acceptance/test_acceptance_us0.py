@@ -189,7 +189,7 @@ class TestAcceptanceScenario5:
         Then it loads from static fallback data."""
         heat_pump = HeatPump()
 
-        assert heat_pump.parameter_count() == 1788
+        assert heat_pump.parameter_count() == 1784  # 1788 - 4 duplicates
         assert heat_pump.has_parameter_name("ACCESS_LEVEL")
 
     def test_fallback_parameters_have_can_id_methods(self):

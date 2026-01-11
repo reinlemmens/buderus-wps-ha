@@ -59,19 +59,19 @@ class TestSensorConstants:
 
     def test_outdoor_sensor_name(self):
         """Outdoor sensor must have correct entity name."""
-        assert SENSOR_NAMES[SENSOR_OUTDOOR] == "Outdoor Temperature"
+        assert SENSOR_NAMES[SENSOR_OUTDOOR] == "GT2 Outdoor Temperature"
 
     def test_supply_sensor_name(self):
         """Supply sensor must have correct entity name."""
-        assert SENSOR_NAMES[SENSOR_SUPPLY] == "Supply Temperature"
+        assert SENSOR_NAMES[SENSOR_SUPPLY] == "GT8 Supply Temperature"
 
     def test_return_sensor_name(self):
         """Return sensor must have correct entity name."""
-        assert SENSOR_NAMES[SENSOR_RETURN] == "Return Temperature"
+        assert SENSOR_NAMES[SENSOR_RETURN] == "GT9 Return Temperature"
 
     def test_dhw_sensor_name(self):
         """DHW sensor must have correct entity name."""
-        assert SENSOR_NAMES[SENSOR_DHW] == "Hot Water Temperature"
+        assert SENSOR_NAMES[SENSOR_DHW] == "GT3 Hot Water Temperature"
 
     def test_brine_in_sensor_name(self):
         """Brine inlet sensor must have correct entity name."""

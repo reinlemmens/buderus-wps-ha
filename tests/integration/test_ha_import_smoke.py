@@ -1,18 +1,18 @@
 """Smoke tests for Home Assistant integration imports.
 
 These tests verify that all imports used by the HA integration are available
-from the bundled library. This catches issues like missing exports in __init__.py
+from the buderus_wps library. This catches issues like missing exports in __init__.py
 or renamed classes that would cause runtime failures.
 
-IMPORTANT: These tests do NOT use the conftest.py mocks. They test the actual
-bundled library imports to ensure the integration will load successfully in
-a real Home Assistant environment.
+NOTE: The HA integration imports from .buderus_wps (bundled copy), but in the
+repo we test against the main buderus_wps package which is the source of truth.
+The deploy script copies buderus_wps/ -> custom_components/buderus_wps/buderus_wps/
 
 Run with: pytest tests/integration/test_ha_import_smoke.py -v
 """
 
 
-class TestBundledLibraryExports:
+class TestLibraryExports:
     """Verify all exports expected by HA integration are available."""
 
     def test_coordinator_imports_from_buderus_wps(self):
@@ -26,7 +26,7 @@ class TestBundledLibraryExports:
                 USBtinAdapter,
             )
         """
-        from custom_components.buderus_wps.buderus_wps import (
+        from buderus_wps import (
             BroadcastMonitor,
             HeatPump,
             HeatPumpClient,
@@ -45,7 +45,7 @@ class TestBundledLibraryExports:
         From coordinator.py line 258:
             from .buderus_wps.menu_api import MenuAPI
         """
-        from custom_components.buderus_wps.buderus_wps.menu_api import MenuAPI
+        from buderus_wps.menu_api import MenuAPI
 
         assert isinstance(MenuAPI, type)
 
@@ -63,7 +63,7 @@ class TestBundledLibraryExports:
                 ReadTimeoutError,
             )
         """
-        from custom_components.buderus_wps.buderus_wps.exceptions import (
+        from buderus_wps.exceptions import (
             DeviceCommunicationError,
             DeviceDisconnectedError,
             DeviceInitializationError,
@@ -86,9 +86,7 @@ class TestBundledLibraryExports:
         From coordinator.py line 396:
             from .buderus_wps.config import get_default_sensor_map
         """
-        from custom_components.buderus_wps.buderus_wps.config import (
-            get_default_sensor_map,
-        )
+        from buderus_wps.config import get_default_sensor_map
 
         assert callable(get_default_sensor_map)
 
@@ -103,8 +101,8 @@ class TestBundledLibraryExports:
             from .buderus_wps.can_adapter import USBtinAdapter
             from .buderus_wps.heat_pump import HeatPumpClient
         """
-        from custom_components.buderus_wps.buderus_wps.can_adapter import USBtinAdapter
-        from custom_components.buderus_wps.buderus_wps.heat_pump import HeatPumpClient
+        from buderus_wps.can_adapter import USBtinAdapter
+        from buderus_wps.heat_pump import HeatPumpClient
 
         assert isinstance(USBtinAdapter, type)
         assert isinstance(HeatPumpClient, type)
@@ -117,19 +115,17 @@ class TestBundledLibraryExports:
                 DeviceNotFoundError,
             )
         """
-        from custom_components.buderus_wps.buderus_wps.exceptions import (
-            DeviceNotFoundError,
-        )
+        from buderus_wps.exceptions import DeviceNotFoundError
 
         assert issubclass(DeviceNotFoundError, Exception)
 
 
-class TestBundledLibraryInitExports:
+class TestLibraryInitExports:
     """Verify __init__.py exports match what integration expects."""
 
     def test_all_public_exports_importable(self):
         """Verify all items in __all__ are importable."""
-        from custom_components.buderus_wps import buderus_wps
+        import buderus_wps
 
         if hasattr(buderus_wps, "__all__"):
             for name in buderus_wps.__all__:
@@ -139,7 +135,7 @@ class TestBundledLibraryInitExports:
 
     def test_heatpump_class_has_required_methods(self):
         """Verify HeatPump class has methods used by HeatPumpClient."""
-        from custom_components.buderus_wps.buderus_wps import HeatPump
+        from buderus_wps import HeatPump
 
         hp = HeatPump()
 
@@ -152,7 +148,7 @@ class TestBundledLibraryInitExports:
 
     def test_parameter_class_has_required_attributes(self):
         """Verify Parameter class has attributes used by integration."""
-        from custom_components.buderus_wps.buderus_wps import Parameter
+        from buderus_wps import Parameter
 
         # Create a test parameter
         param = Parameter(
@@ -179,7 +175,7 @@ class TestNoMockLeakage:
 
     def test_heatpump_actually_loads_parameters(self):
         """Verify HeatPump loads real parameter data, not mock."""
-        from custom_components.buderus_wps.buderus_wps import HeatPump
+        from buderus_wps import HeatPump
 
         hp = HeatPump()
 
@@ -195,7 +191,7 @@ class TestNoMockLeakage:
 
     def test_usbtinAdapter_is_real_class(self):
         """Verify USBtinAdapter is a real class with expected interface."""
-        from custom_components.buderus_wps.buderus_wps import USBtinAdapter
+        from buderus_wps import USBtinAdapter
 
         # Should have connect/disconnect methods
         assert hasattr(USBtinAdapter, "connect")

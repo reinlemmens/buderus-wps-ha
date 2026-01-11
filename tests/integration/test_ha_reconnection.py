@@ -204,6 +204,9 @@ class TestIndefiniteCaching:
             dhw_extra_duration=0,
             heating_season_mode=1,
             dhw_program_mode=0,
+            heating_curve_offset=0.0,
+            dhw_stop_temp=55.0,
+            dhw_setpoint=50.0,
         )
         coordinator._last_known_good_data = initial_data
         coordinator._last_successful_update = time.time()
