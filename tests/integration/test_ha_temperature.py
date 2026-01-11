@@ -8,9 +8,19 @@ import pytest
 from custom_components.buderus_wps.const import (
     DOMAIN,
     SENSOR_BRINE_IN,
+    SENSOR_BRINE_OUT,
     SENSOR_DHW,
+    SENSOR_NAMES,
     SENSOR_OUTDOOR,
     SENSOR_RETURN,
+    SENSOR_ROOM_C1,
+    SENSOR_ROOM_C2,
+    SENSOR_ROOM_C3,
+    SENSOR_ROOM_C4,
+    SENSOR_SETPOINT_C1,
+    SENSOR_SETPOINT_C2,
+    SENSOR_SETPOINT_C3,
+    SENSOR_SETPOINT_C4,
     SENSOR_SUPPLY,
 )
 from custom_components.buderus_wps.sensor import (
@@ -24,7 +34,7 @@ class TestTemperatureSensorDataFlow:
 
     @pytest.mark.asyncio
     async def test_sensors_created_from_coordinator(self, mock_hass, mock_coordinator):
-        """All 5 temperature sensors should be created from coordinator data."""
+        """All 14 temperature sensors should be created from coordinator data."""
         entities_added = []
 
         def capture_entities(entities):
@@ -39,7 +49,8 @@ class TestTemperatureSensorDataFlow:
             discovery_info={"platform": "buderus_wps"},
         )
 
-        assert len(entities_added) == 5
+        # 14 sensors: 6 core + 4 room + 4 setpoint
+        assert len(entities_added) == 14
         sensor_types = {s._sensor_type for s in entities_added}
         assert sensor_types == {
             SENSOR_OUTDOOR,
@@ -47,6 +58,15 @@ class TestTemperatureSensorDataFlow:
             SENSOR_RETURN,
             SENSOR_DHW,
             SENSOR_BRINE_IN,
+            SENSOR_BRINE_OUT,
+            SENSOR_ROOM_C1,
+            SENSOR_ROOM_C2,
+            SENSOR_ROOM_C3,
+            SENSOR_ROOM_C4,
+            SENSOR_SETPOINT_C1,
+            SENSOR_SETPOINT_C2,
+            SENSOR_SETPOINT_C3,
+            SENSOR_SETPOINT_C4,
         }
 
     @pytest.mark.asyncio
@@ -122,10 +142,22 @@ class TestTemperatureSensorDataFlow:
                 "return_temp": 30.0,
                 "dhw": 48.5,
                 "brine_in": 8.0,
+                "brine_out": 5.5,
+                "room_c1": 21.0,
+                "room_c2": 20.5,
+                "room_c3": 19.0,
+                "room_c4": 22.0,
+                "setpoint_c1": 21.0,
+                "setpoint_c2": 21.0,
+                "setpoint_c3": 20.0,
+                "setpoint_c4": 22.0,
             },
             compressor_running=True,
             energy_blocked=False,
             dhw_extra_duration=0,
+            heating_curve_offset=0.0,
+            dhw_stop_temp=55.0,
+            dhw_setpoint=50.0,
         )
 
         # Sensor should now reflect new value
@@ -175,16 +207,9 @@ class TestTemperatureSensorNames:
             discovery_info={"platform": "buderus_wps"},
         )
 
-        expected_names = {
-            SENSOR_OUTDOOR: "Outdoor Temperature",
-            SENSOR_SUPPLY: "Supply Temperature",
-            SENSOR_RETURN: "Return Temperature",
-            SENSOR_DHW: "Hot Water Temperature",
-            SENSOR_BRINE_IN: "Brine Inlet Temperature",
-        }
-
+        # Use SENSOR_NAMES from const.py as the expected names
         for sensor in entities_added:
-            expected = expected_names[sensor._sensor_type]
+            expected = SENSOR_NAMES[sensor._sensor_type]
             assert sensor.name == expected, (
                 f"Sensor {sensor._sensor_type} name should be '{expected}' (entity-only), "
                 f"got '{sensor.name}'"
