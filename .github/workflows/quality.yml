@@ -63,9 +63,8 @@ jobs:
 
       - name: Type check library (buderus_wps)
         run: mypy buderus_wps/ --config-file pyproject.toml
-
-      - name: Type check custom component library
-        run: mypy custom_components/buderus_wps/buderus_wps/ --config-file pyproject.toml
+        # Note: custom_components/buderus_wps/buderus_wps/ is bundled at deploy time
+        # so we only type-check the source library here
 
   test:
     name: Tests
