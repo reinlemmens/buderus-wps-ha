@@ -12,7 +12,6 @@ Run with: pytest tests/integration/test_ha_import_smoke.py -v
 """
 
 
-
 class TestBundledLibraryExports:
     """Verify all exports expected by HA integration are available."""
 

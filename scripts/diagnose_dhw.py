@@ -56,6 +56,7 @@ KNOWN_MAPPINGS = {
 @dataclass
 class TemperatureReading:
     """Statistics for a temperature reading at a specific (base, idx)."""
+
     base: int
     idx: int
     count: int = 0
@@ -110,9 +111,7 @@ class SimpleCAN:
     def connect(self) -> None:
         """Connect and initialize USBtin at 125kbps."""
         self.serial = serial.Serial(
-            port=self.port,
-            baudrate=self.baudrate,
-            timeout=self.timeout
+            port=self.port, baudrate=self.baudrate, timeout=self.timeout
         )
 
         # Close any existing connection
@@ -160,7 +159,7 @@ class SimpleCAN:
                 while b"\r" in buffer:
                     idx = buffer.index(b"\r")
                     frame_data = buffer[:idx]
-                    buffer = buffer[idx + 1:]
+                    buffer = buffer[idx + 1 :]
 
                     parsed = self._parse_frame(frame_data)
                     if parsed:
@@ -184,13 +183,15 @@ class SimpleCAN:
         if response.startswith("T") and len(response) >= 10:
             can_id = int(response[1:9], 16)
             dlc = int(response[9], 16)
-            frame_data = bytes.fromhex(response[10:10 + dlc * 2]) if dlc > 0 else b""
+            frame_data = bytes.fromhex(response[10 : 10 + dlc * 2]) if dlc > 0 else b""
             return {"type": "data", "id": can_id, "dlc": dlc, "data": frame_data}
 
         return None
 
 
-def run_diagnostic(port: str, duration: float, temp_min: float, temp_max: float) -> None:
+def run_diagnostic(
+    port: str, duration: float, temp_min: float, temp_max: float
+) -> None:
     """Run the DHW temperature diagnostic."""
     print("=" * 60)
     print("DHW Temperature Diagnostic")
@@ -253,17 +254,16 @@ def run_diagnostic(port: str, duration: float, temp_min: float, temp_max: float)
             return
 
         # Sort by temperature value for easy matching
-        sorted_readings = sorted(
-            readings.values(),
-            key=lambda r: r.avg_temp
-        )
+        sorted_readings = sorted(readings.values(), key=lambda r: r.avg_temp)
 
         # Print results
         print("=" * 60)
         print("Temperature Broadcasts (sorted by value)")
         print("=" * 60)
         print()
-        print(f"{'Base':>8}  {'Idx':>4}  {'Temp':>7}  {'Count':>5}  {'Min':>6}  {'Max':>6}  Notes")
+        print(
+            f"{'Base':>8}  {'Idx':>4}  {'Temp':>7}  {'Count':>5}  {'Min':>6}  {'Max':>6}  Notes"
+        )
         print("-" * 80)
 
         for r in sorted_readings:
@@ -321,27 +321,29 @@ def main():
         description="DHW Temperature Diagnostic - find correct GT3 sensor position"
     )
     parser.add_argument(
-        "--port", "-p",
+        "--port",
+        "-p",
         default="/dev/ttyACM0",
-        help="Serial port for USBtin adapter (default: /dev/ttyACM0)"
+        help="Serial port for USBtin adapter (default: /dev/ttyACM0)",
     )
     parser.add_argument(
-        "--duration", "-d",
+        "--duration",
+        "-d",
         type=float,
         default=60.0,
-        help="Capture duration in seconds (default: 60)"
+        help="Capture duration in seconds (default: 60)",
     )
     parser.add_argument(
         "--temp-min",
         type=float,
         default=-10.0,
-        help="Minimum temperature filter (default: -10°C)"
+        help="Minimum temperature filter (default: -10°C)",
     )
     parser.add_argument(
         "--temp-max",
         type=float,
         default=100.0,
-        help="Maximum temperature filter (default: 100°C)"
+        help="Maximum temperature filter (default: 100°C)",
     )
 
     args = parser.parse_args()
@@ -350,7 +352,7 @@ def main():
         port=args.port,
         duration=args.duration,
         temp_min=args.temp_min,
-        temp_max=args.temp_max
+        temp_max=args.temp_max,
     )
 
 

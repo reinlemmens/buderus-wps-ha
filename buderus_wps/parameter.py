@@ -481,7 +481,9 @@ class HeatPump:
                 extid_changed = old_param.extid != elem.extid
                 min_changed = old_param.min != elem.min_value
                 max_changed = old_param.max != elem.max_value
-                needs_update = idx_changed or extid_changed or min_changed or max_changed
+                needs_update = (
+                    idx_changed or extid_changed or min_changed or max_changed
+                )
 
                 if needs_update:
                     # Create new parameter with all values from discovery
@@ -539,7 +541,9 @@ class HeatPump:
                 )
                 self._params_by_name[name] = new_param
                 self._params_by_idx[elem.idx] = new_param
-                logger.debug("Added discovered parameter: %s (idx=%d)", elem.text, elem.idx)
+                logger.debug(
+                    "Added discovered parameter: %s (idx=%d)", elem.text, elem.idx
+                )
 
         # Mark ALL discovered elements as having reliable idx values
         for elem in discovered_elements:

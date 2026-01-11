@@ -55,9 +55,7 @@ class SimpleCAN:
     def connect(self) -> None:
         """Connect and initialize USBtin at 125kbps."""
         self.serial = serial.Serial(
-            port=self.port,
-            baudrate=self.baudrate,
-            timeout=self.timeout
+            port=self.port, baudrate=self.baudrate, timeout=self.timeout
         )
 
         # Close any existing connection
@@ -110,7 +108,7 @@ class SimpleCAN:
                 while b"\r" in buffer:
                     idx = buffer.index(b"\r")
                     frame_data = buffer[:idx]
-                    buffer = buffer[idx + 1:]
+                    buffer = buffer[idx + 1 :]
 
                     parsed = self._parse_frame(frame_data)
                     if parsed and parsed["type"] == "data":
@@ -134,7 +132,7 @@ class SimpleCAN:
         if response.startswith("T") and len(response) >= 10:
             can_id = int(response[1:9], 16)
             dlc = int(response[9], 16)
-            frame_data = bytes.fromhex(response[10:10 + dlc * 2]) if dlc > 0 else b""
+            frame_data = bytes.fromhex(response[10 : 10 + dlc * 2]) if dlc > 0 else b""
             return {"type": "data", "id": can_id, "dlc": dlc, "data": frame_data}
 
         # ACK
@@ -197,9 +195,10 @@ def main():
         description="Test GT3_TEMP (DHW) reading with correct discovered idx"
     )
     parser.add_argument(
-        "--port", "-p",
+        "--port",
+        "-p",
         default="/dev/ttyACM0",
-        help="Serial port for USBtin adapter (default: /dev/ttyACM0)"
+        help="Serial port for USBtin adapter (default: /dev/ttyACM0)",
     )
 
     args = parser.parse_args()
@@ -250,7 +249,9 @@ def main():
             if result["is_temperature"]:
                 marker = " <-- TEMPERATURE"
 
-            print(f"{idx:>5}  {dlc_str:>3}  {raw_str:>8}  {decoded_str:>12}  {name}{marker}")
+            print(
+                f"{idx:>5}  {dlc_str:>3}  {raw_str:>8}  {decoded_str:>12}  {name}{marker}"
+            )
 
         print()
         print("=" * 70)
@@ -289,9 +290,13 @@ def main():
             idx_681 = next((r for r in results if r["idx"] == 681), None)
             if idx_681:
                 if idx_681["dlc"] == 1:
-                    print(f"✓ idx=681 returns DLC=1 (status byte) - confirms it's GT3_STATUS")
+                    print(
+                        f"✓ idx=681 returns DLC=1 (status byte) - confirms it's GT3_STATUS"
+                    )
                 elif idx_681["is_temperature"]:
-                    print(f"✓ idx=681 returns {idx_681['decoded']} - might be GT3_TEMP on your HP")
+                    print(
+                        f"✓ idx=681 returns {idx_681['decoded']} - might be GT3_TEMP on your HP"
+                    )
 
         print()
 

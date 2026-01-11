@@ -16,7 +16,7 @@ import time
 import argparse
 from datetime import datetime
 
-sys.path.insert(0, '.')
+sys.path.insert(0, ".")
 
 from buderus_wps.can_adapter import USBtinAdapter
 from buderus_wps.heat_pump import HeatPumpClient
@@ -97,15 +97,13 @@ def main():
         description="Monitor compressor status in real-time"
     )
     parser.add_argument(
-        "--port",
-        default="/dev/ttyACM0",
-        help="Serial port (default: /dev/ttyACM0)"
+        "--port", default="/dev/ttyACM0", help="Serial port (default: /dev/ttyACM0)"
     )
     parser.add_argument(
         "--interval",
         type=float,
         default=2.0,
-        help="Update interval in seconds (default: 2.0)"
+        help="Update interval in seconds (default: 2.0)",
     )
     args = parser.parse_args()
 

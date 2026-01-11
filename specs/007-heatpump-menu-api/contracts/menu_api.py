@@ -16,8 +16,10 @@ from typing import List, Dict, Optional, Tuple, Any
 
 # === Enumerations ===
 
+
 class OperatingMode(Enum):
     """Heat pump operating states."""
+
     STANDBY = 0
     HEATING = 1
     COOLING = 2
@@ -27,6 +29,7 @@ class OperatingMode(Enum):
 
 class RoomProgramMode(Enum):
     """Room heating program modes."""
+
     HP_OPTIMIZED = 0
     PROGRAM_1 = 1
     PROGRAM_2 = 2
@@ -38,6 +41,7 @@ class RoomProgramMode(Enum):
 
 class DHWProgramMode(Enum):
     """DHW (hot water) program modes."""
+
     ALWAYS_ON = 0
     PROGRAM_1 = 1
     PROGRAM_2 = 2
@@ -45,12 +49,14 @@ class DHWProgramMode(Enum):
 
 class CircuitType(Enum):
     """Heating circuit types."""
+
     UNMIXED = auto()  # Primary circuit (circuit 1)
-    MIXED = auto()    # Secondary circuits (2-4) with mixing valve
+    MIXED = auto()  # Secondary circuits (2-4) with mixing valve
 
 
 class AlarmCategory(Enum):
     """Alarm severity categories."""
+
     INFO = 0
     WARNING = 1
     ALARM = 2
@@ -58,11 +64,13 @@ class AlarmCategory(Enum):
 
 # === Data Classes ===
 
+
 @dataclass
 class ScheduleSlot:
     """A time period within a daily schedule."""
+
     start_time: time  # Start of active period
-    end_time: time    # End of active period
+    end_time: time  # End of active period
 
     def is_active(self, at: time) -> bool:
         """Check if the given time falls within this slot."""
@@ -81,6 +89,7 @@ class ScheduleSlot:
 @dataclass
 class WeeklySchedule:
     """A complete weekly schedule with slots for each day."""
+
     monday: ScheduleSlot
     tuesday: ScheduleSlot
     wednesday: ScheduleSlot
@@ -97,6 +106,7 @@ class WeeklySchedule:
 @dataclass
 class VacationPeriod:
     """Vacation mode configuration."""
+
     active: bool
     start_date: Optional[date]
     end_date: Optional[date]
@@ -106,6 +116,7 @@ class VacationPeriod:
 @dataclass
 class Alarm:
     """An active or historical alarm."""
+
     code: int
     category: AlarmCategory
     description: str
@@ -117,6 +128,7 @@ class Alarm:
 @dataclass
 class StatusSnapshot:
     """Complete status reading from a single operation."""
+
     outdoor_temperature: float
     supply_temperature: float
     hot_water_temperature: float
@@ -128,15 +140,17 @@ class StatusSnapshot:
 @dataclass
 class MenuItem:
     """A node in the menu hierarchy."""
+
     name: str
     description: str
     readable: bool
     writable: bool
     value_range: Optional[Tuple[Any, Any]]
-    children: List['MenuItem']
+    children: List["MenuItem"]
 
 
 # === Abstract Interfaces ===
+
 
 class StatusView(ABC):
     """Read-only access to heat pump status and temperatures."""
@@ -511,6 +525,7 @@ class MenuNavigator(ABC):
 
 
 # === Main API Class ===
+
 
 class MenuAPI(ABC):
     """

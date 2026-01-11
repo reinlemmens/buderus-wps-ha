@@ -85,7 +85,11 @@ def load_existing() -> List[Dict[str, Any]]:
     return data.get("PARAMETER_DEFAULTS", [])
 
 
-def diff_entries(old: List[Dict[str, Any]], new: List[Dict[str, Any]]) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]], List[Tuple[Dict[str, Any], Dict[str, Any]]]]:
+def diff_entries(old: List[Dict[str, Any]], new: List[Dict[str, Any]]) -> Tuple[
+    List[Dict[str, Any]],
+    List[Dict[str, Any]],
+    List[Tuple[Dict[str, Any], Dict[str, Any]]],
+]:
     old_by_text = {e["text"]: e for e in old}
     new_by_text = {e["text"]: e for e in new}
     added = [v for k, v in new_by_text.items() if k not in old_by_text]
@@ -96,7 +100,10 @@ def diff_entries(old: List[Dict[str, Any]], new: List[Dict[str, Any]]) -> Tuple[
         if not old_entry:
             continue
         # compare fields
-        if any(new_entry[f] != old_entry.get(f) for f in ("idx", "extid", "min", "max", "format", "read")):
+        if any(
+            new_entry[f] != old_entry.get(f)
+            for f in ("idx", "extid", "min", "max", "format", "read")
+        ):
             modified.append((old_entry, new_entry))
     return added, removed, modified
 
@@ -128,8 +135,14 @@ def write_module(entries: List[Dict[str, Any]]) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Generate parameter_defaults.py from fhem/26_KM273v018.pm")
-    parser.add_argument("--summary", action="store_true", help="Print change summary vs existing defaults")
+    parser = argparse.ArgumentParser(
+        description="Generate parameter_defaults.py from fhem/26_KM273v018.pm"
+    )
+    parser.add_argument(
+        "--summary",
+        action="store_true",
+        help="Print change summary vs existing defaults",
+    )
     args = parser.parse_args()
 
     text = SOURCE.read_text(encoding="utf-8")
@@ -139,7 +152,9 @@ def main() -> None:
     added, removed, modified = diff_entries(old_entries, entries)
     if args.summary:
         print(f"Existing: {len(old_entries)} entries; New: {len(entries)} entries")
-        print(f"Added: {len(added)}; Removed: {len(removed)}; Modified: {len(modified)}")
+        print(
+            f"Added: {len(added)}; Removed: {len(removed)}; Modified: {len(modified)}"
+        )
     write_module(entries)
 
 

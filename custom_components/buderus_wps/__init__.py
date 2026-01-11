@@ -22,6 +22,7 @@ from homeassistant.const import CONF_SCAN_INTERVAL, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import discovery
+
 try:
     from homeassistant.core import SupportsResponse
 except ImportError:  # pragma: no cover - older HA versions
@@ -30,7 +31,9 @@ except ImportError:  # pragma: no cover - older HA versions
 from .const import (
     ATTR_ENTRY_ID,
     ATTR_EXPECTED_DLC,
+    ATTR_LIMIT,
     ATTR_NAME_OR_IDX,
+    ATTR_NAME_CONTAINS,
     ATTR_TIMEOUT,
     CONF_PORT,
     CONF_PARAMETER_ALLOWLIST,
@@ -39,6 +42,7 @@ from .const import (
     DEFAULT_PARAMETER_ALLOWLIST,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
+    SERVICE_LIST_PARAMETERS,
     SERVICE_READ_PARAMETER,
 )
 from .coordinator import BuderusCoordinator
@@ -152,11 +156,16 @@ async def _async_register_services(hass: HomeAssistant) -> None:
             vol.Optional(ATTR_TIMEOUT): vol.Coerce(float),
         }
     )
+    list_schema = vol.Schema(
+        {
+            vol.Optional(ATTR_ENTRY_ID): cv.string,
+            vol.Optional(ATTR_NAME_CONTAINS): cv.string,
+            vol.Optional(ATTR_LIMIT): cv.positive_int,
+        }
+    )
 
     async def _handle_read_parameter(call):
-        coord_id, coordinator = _resolve_coordinator(
-            hass, call.data.get(ATTR_ENTRY_ID)
-        )
+        coord_id, coordinator = _resolve_coordinator(hass, call.data.get(ATTR_ENTRY_ID))
         name_or_idx = call.data[ATTR_NAME_OR_IDX]
         expected_dlc = call.data.get(ATTR_EXPECTED_DLC)
         timeout = call.data.get(ATTR_TIMEOUT)
@@ -173,6 +182,21 @@ async def _async_register_services(hass: HomeAssistant) -> None:
             return result
         hass.bus.async_fire(f"{DOMAIN}_parameter_read", result)
 
+    async def _handle_list_parameters(call):
+        coord_id, coordinator = _resolve_coordinator(hass, call.data.get(ATTR_ENTRY_ID))
+        name_contains = call.data.get(ATTR_NAME_CONTAINS)
+        limit = call.data.get(ATTR_LIMIT)
+
+        parameters = await coordinator.async_list_parameters(
+            name_contains=name_contains,
+            limit=limit,
+        )
+        result = {"entry_id": coord_id, "parameters": parameters}
+
+        if SupportsResponse is not None:
+            return result
+        hass.bus.async_fire(f"{DOMAIN}_parameters_listed", result)
+
     if SupportsResponse is not None:
         hass.services.async_register(
             DOMAIN,
@@ -181,12 +205,25 @@ async def _async_register_services(hass: HomeAssistant) -> None:
             schema=service_schema,
             supports_response=SupportsResponse.ONLY,
         )
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_LIST_PARAMETERS,
+            _handle_list_parameters,
+            schema=list_schema,
+            supports_response=SupportsResponse.ONLY,
+        )
     else:
         hass.services.async_register(
             DOMAIN,
             SERVICE_READ_PARAMETER,
             _handle_read_parameter,
             schema=service_schema,
+        )
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_LIST_PARAMETERS,
+            _handle_list_parameters,
+            schema=list_schema,
         )
 
     domain_data["services_registered"] = True

@@ -11,6 +11,7 @@ from typing import Any, Optional, Tuple
 
 class MenuAPIError(Exception):
     """Base exception for all Menu API errors."""
+
     pass
 
 
@@ -30,7 +31,7 @@ class ValidationError(MenuAPIError):
         field: str,
         value: Any,
         constraint: str,
-        allowed_range: Optional[Tuple[Any, Any]] = None
+        allowed_range: Optional[Tuple[Any, Any]] = None,
     ):
         self.field = field
         self.value = value
@@ -97,7 +98,9 @@ class AlarmNotClearableError(MenuAPIError):
         reason: Why the alarm cannot be cleared
     """
 
-    def __init__(self, alarm_code: int, reason: str = "underlying condition not resolved"):
+    def __init__(
+        self, alarm_code: int, reason: str = "underlying condition not resolved"
+    ):
         self.alarm_code = alarm_code
         self.reason = reason
         super().__init__(f"Alarm {alarm_code} cannot be cleared: {reason}")

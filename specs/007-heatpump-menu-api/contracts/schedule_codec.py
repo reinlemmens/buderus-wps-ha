@@ -16,6 +16,7 @@ from typing import Tuple
 @dataclass
 class ScheduleSlot:
     """A time slot with start and end times."""
+
     start_time: time
     end_time: time
 

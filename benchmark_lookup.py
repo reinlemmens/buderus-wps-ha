@@ -16,19 +16,19 @@ NUM_PARAMS = 1789
 def test_simple_dict():
     """Test simple dict with uppercase keys."""
     data = {
-        f'PARAM_{i}': {
-            'idx': i,
-            'extid': f'{i:014x}',
-            'min': 0,
-            'max': 100,
-            'format': 'int',
-            'read': 0
+        f"PARAM_{i}": {
+            "idx": i,
+            "extid": f"{i:014x}",
+            "min": 0,
+            "max": 100,
+            "format": "int",
+            "read": 0,
         }
         for i in range(NUM_PARAMS)
     }
 
     # Lookup test - worst case (last item)
-    lookup_key = f'PARAM_{NUM_PARAMS-1}'
+    lookup_key = f"PARAM_{NUM_PARAMS-1}"
     result = data.get(lookup_key)
     return sys.getsizeof(data), result
 
@@ -36,18 +36,21 @@ def test_simple_dict():
 def test_ordered_dict():
     """Test OrderedDict."""
     data = OrderedDict(
-        (f'PARAM_{i}', {
-            'idx': i,
-            'extid': f'{i:014x}',
-            'min': 0,
-            'max': 100,
-            'format': 'int',
-            'read': 0
-        })
+        (
+            f"PARAM_{i}",
+            {
+                "idx": i,
+                "extid": f"{i:014x}",
+                "min": 0,
+                "max": 100,
+                "format": "int",
+                "read": 0,
+            },
+        )
         for i in range(NUM_PARAMS)
     )
 
-    lookup_key = f'PARAM_{NUM_PARAMS-1}'
+    lookup_key = f"PARAM_{NUM_PARAMS-1}"
     result = data.get(lookup_key)
     return sys.getsizeof(data), result
 
@@ -67,20 +70,22 @@ class CaseInsensitiveDict(dict):
 
 def test_case_insensitive():
     """Test case-insensitive wrapper."""
-    data = CaseInsensitiveDict({
-        f'PARAM_{i}': {
-            'idx': i,
-            'extid': f'{i:014x}',
-            'min': 0,
-            'max': 100,
-            'format': 'int',
-            'read': 0
+    data = CaseInsensitiveDict(
+        {
+            f"PARAM_{i}": {
+                "idx": i,
+                "extid": f"{i:014x}",
+                "min": 0,
+                "max": 100,
+                "format": "int",
+                "read": 0,
+            }
+            for i in range(NUM_PARAMS)
         }
-        for i in range(NUM_PARAMS)
-    })
+    )
 
     # Test with lowercase input
-    lookup_key = f'param_{NUM_PARAMS-1}'
+    lookup_key = f"param_{NUM_PARAMS-1}"
     result = data.get(lookup_key)
     return sys.getsizeof(data), result
 
@@ -114,19 +119,19 @@ class ImmutableParameterDict:
 def test_immutable():
     """Test immutable wrapper."""
     params = {
-        f'PARAM_{i}': {
-            'idx': i,
-            'extid': f'{i:014x}',
-            'min': 0,
-            'max': 100,
-            'format': 'int',
-            'read': 0
+        f"PARAM_{i}": {
+            "idx": i,
+            "extid": f"{i:014x}",
+            "min": 0,
+            "max": 100,
+            "format": "int",
+            "read": 0,
         }
         for i in range(NUM_PARAMS)
     }
     data = ImmutableParameterDict(params)
 
-    lookup_key = f'param_{NUM_PARAMS-1}'
+    lookup_key = f"param_{NUM_PARAMS-1}"
     result = data.get(lookup_key)
     return sys.getsizeof(data._params), result
 
@@ -196,17 +201,33 @@ lookup_key = f"param_{{{NUM_PARAMS-1}}}"
 
     iterations = 10000
 
-    dict_time = timeit.timeit("data.get(lookup_key)", setup=setup_dict, number=iterations)
-    print(f"Simple dict:           {dict_time*1000:.4f}ms total, {dict_time/iterations*1000000:.3f}µs per lookup")
+    dict_time = timeit.timeit(
+        "data.get(lookup_key)", setup=setup_dict, number=iterations
+    )
+    print(
+        f"Simple dict:           {dict_time*1000:.4f}ms total, {dict_time/iterations*1000000:.3f}µs per lookup"
+    )
 
-    ordered_time = timeit.timeit("data.get(lookup_key)", setup=setup_ordered, number=iterations)
-    print(f"OrderedDict:           {ordered_time*1000:.4f}ms total, {ordered_time/iterations*1000000:.3f}µs per lookup")
+    ordered_time = timeit.timeit(
+        "data.get(lookup_key)", setup=setup_ordered, number=iterations
+    )
+    print(
+        f"OrderedDict:           {ordered_time*1000:.4f}ms total, {ordered_time/iterations*1000000:.3f}µs per lookup"
+    )
 
-    case_time = timeit.timeit("data.get(lookup_key)", setup=setup_case, number=iterations)
-    print(f"CaseInsensitiveDict:   {case_time*1000:.4f}ms total, {case_time/iterations*1000000:.3f}µs per lookup")
+    case_time = timeit.timeit(
+        "data.get(lookup_key)", setup=setup_case, number=iterations
+    )
+    print(
+        f"CaseInsensitiveDict:   {case_time*1000:.4f}ms total, {case_time/iterations*1000000:.3f}µs per lookup"
+    )
 
-    immutable_time = timeit.timeit("data.get(lookup_key)", setup=setup_immutable, number=iterations)
-    print(f"ImmutableParameterDict:{immutable_time*1000:.4f}ms total, {immutable_time/iterations*1000000:.3f}µs per lookup")
+    immutable_time = timeit.timeit(
+        "data.get(lookup_key)", setup=setup_immutable, number=iterations
+    )
+    print(
+        f"ImmutableParameterDict:{immutable_time*1000:.4f}ms total, {immutable_time/iterations*1000000:.3f}µs per lookup"
+    )
 
     print()
     print("=== CONCLUSION ===")

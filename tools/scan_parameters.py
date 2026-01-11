@@ -12,22 +12,24 @@ import time
 import json
 from datetime import datetime
 
-sys.path.insert(0, '/home/rein/buderus-wps-ha')
+sys.path.insert(0, "/home/rein/buderus-wps-ha")
 
 from buderus_wps.can_adapter import USBtinAdapter
 from buderus_wps.can_message import CANMessage
 from buderus_wps.parameter_defaults import PARAMETER_DEFAULTS
 
-SERIAL_PORT = '/dev/ttyACM0'
+SERIAL_PORT = "/dev/ttyACM0"
 
 # Build reverse lookup: idx -> parameter name from static data
-STATIC_BY_IDX = {p['idx']: p['text'] for p in PARAMETER_DEFAULTS}
+STATIC_BY_IDX = {p["idx"]: p["text"] for p in PARAMETER_DEFAULTS}
 
 
 def read_param(adapter, idx, timeout=1.0):
     """Read parameter by idx, return (value, raw_bytes) or (None, None) on error."""
     can_id = 0x04003FE0 | (idx << 14)
-    r = CANMessage(arbitration_id=can_id, data=b"", is_extended_id=True, is_remote_frame=True)
+    r = CANMessage(
+        arbitration_id=can_id, data=b"", is_extended_id=True, is_remote_frame=True
+    )
     try:
         resp = adapter.send_frame(r, timeout=timeout)
         if resp and resp.data:
@@ -65,13 +67,15 @@ def scan_range(adapter, start_idx, end_idx, delay=0.05):
 
         if val is not None:
             category = classify_value(val)
-            results.append({
-                'idx': idx,
-                'value': val,
-                'raw': raw,
-                'category': category,
-                'static_name': static_name
-            })
+            results.append(
+                {
+                    "idx": idx,
+                    "value": val,
+                    "raw": raw,
+                    "category": category,
+                    "static_name": static_name,
+                }
+            )
 
             # Print interesting ones
             if category != "zero" or static_name:
@@ -104,7 +108,7 @@ def find_dhw_temperatures(adapter):
             results = scan_range(adapter, start, end)
 
             for r in results:
-                if "temp" in r['category']:
+                if "temp" in r["category"]:
                     all_temps.append(r)
 
     print("\n" + "=" * 60)
@@ -156,11 +160,7 @@ def find_xdhw_mapping(adapter):
 
             print(f"{idx:5} {val if val else 'N/A':>8} {cat:>15} {static_name:<35}")
 
-            results[idx] = {
-                'static_name': static_name,
-                'value': val,
-                'category': cat
-            }
+            results[idx] = {"static_name": static_name, "value": val, "category": cat}
 
             time.sleep(0.05)
 
@@ -182,16 +182,16 @@ def main():
 
     # Save results
     output = {
-        'timestamp': datetime.now().isoformat(),
-        'xdhw_params': xdhw_results,
-        'temperature_params': temps
+        "timestamp": datetime.now().isoformat(),
+        "xdhw_params": xdhw_results,
+        "temperature_params": temps,
     }
 
-    with open('/home/rein/buderus-wps-ha/tools/scan_results.json', 'w') as f:
+    with open("/home/rein/buderus-wps-ha/tools/scan_results.json", "w") as f:
         json.dump(output, f, indent=2, default=str)
 
     print("\nResults saved to scan_results.json")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

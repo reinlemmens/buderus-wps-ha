@@ -334,7 +334,15 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                     updated,
                 )
                 # Log key parameters for debugging
-                for name in ["XDHW_STOP_TEMP", "XDHW_TIME", "GT3_TEMP", "GT8_TEMP", "GT9_TEMP", "GT10_TEMP", "GT11_TEMP"]:
+                for name in [
+                    "XDHW_STOP_TEMP",
+                    "XDHW_TIME",
+                    "GT3_TEMP",
+                    "GT8_TEMP",
+                    "GT9_TEMP",
+                    "GT10_TEMP",
+                    "GT11_TEMP",
+                ]:
                     param = self._registry.get_parameter(name)
                     if param:
                         _LOGGER.info(
@@ -422,6 +430,43 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         else:
             result = self._client.read_parameter(coerced, timeout=timeout)
         return self._normalize_parameter_result(result)
+
+    async def async_list_parameters(
+        self,
+        *,
+        name_contains: str | None = None,
+        limit: int | None = None,
+    ) -> list[dict[str, Any]]:
+        """Return registry parameters for discovery and allowlist usage."""
+        return await self.hass.async_add_executor_job(
+            self._sync_list_parameters, name_contains, limit
+        )
+
+    def _sync_list_parameters(
+        self, name_contains: str | None, limit: int | None
+    ) -> list[dict[str, Any]]:
+        if self._registry is None:
+            raise HomeAssistantError("Parameter registry not available")
+
+        needle = name_contains.upper() if name_contains else None
+        results: list[dict[str, Any]] = []
+        for param in self._registry.parameters:
+            if needle and needle not in param.text.upper():
+                continue
+            results.append(
+                {
+                    "name": param.text,
+                    "idx": param.idx,
+                    "extid": param.extid,
+                    "format": param.format,
+                    "min": param.min,
+                    "max": param.max,
+                    "read": param.read,
+                }
+            )
+            if limit is not None and len(results) >= limit:
+                break
+        return results
 
     async def _async_update_data(self) -> BuderusData:
         """Fetch data from the heat pump with graceful degradation.
@@ -747,7 +792,9 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                         "RTR FAILED for COMPRESSOR_STATE after 3 attempts: %s", err
                     )
                     if self._last_known_good_data is not None:
-                        compressor_running = self._last_known_good_data.compressor_running
+                        compressor_running = (
+                            self._last_known_good_data.compressor_running
+                        )
                         compressor_state = self._last_known_good_data.compressor_state
 
         try:
@@ -832,7 +879,9 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             if decoded is not None:
                 heating_curve_offset = float(decoded)
         except Exception as err:
-            _LOGGER.warning("RTR FAILED for HEATING_CURVE_PARALLEL_OFFSET_GLOBAL: %s", err)
+            _LOGGER.warning(
+                "RTR FAILED for HEATING_CURVE_PARALLEL_OFFSET_GLOBAL: %s", err
+            )
             if self._last_known_good_data is not None:
                 heating_curve_offset = self._last_known_good_data.heating_curve_offset
 
@@ -855,7 +904,9 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             result = self._client.read_parameter("DHW_CALCULATED_SETPOINT_TEMP")
             raw = result.get("raw")
             decoded = result.get("decoded")
-            _LOGGER.debug("DHW_CALCULATED_SETPOINT_TEMP: raw=%s, decoded=%s", raw, decoded)
+            _LOGGER.debug(
+                "DHW_CALCULATED_SETPOINT_TEMP: raw=%s, decoded=%s", raw, decoded
+            )
             if decoded is not None:
                 dhw_setpoint = float(decoded)
         except Exception as err:
@@ -941,7 +992,9 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             if result.get("strategy") == "program_mode_override":
                 end_time = time.time() + hours * 3600
                 self._dhw_boost_end_time = end_time
-                self._dhw_boost_original_program_mode = result.get("original_program_mode")
+                self._dhw_boost_original_program_mode = result.get(
+                    "original_program_mode"
+                )
 
                 if self._dhw_boost_task is not None:
                     self._dhw_boost_task.cancel()
@@ -975,7 +1028,9 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
 
         # If we used program-mode override, restore previous mode.
         if original_mode is not None and self._client is not None:
-            await self.hass.async_add_executor_job(self._sync_set_dhw_program_mode, original_mode)
+            await self.hass.async_add_executor_job(
+                self._sync_set_dhw_program_mode, original_mode
+            )
         _LOGGER.info("Stopped DHW extra production")
 
     async def _async_dhw_boost_timer(self, end_time: float) -> None:

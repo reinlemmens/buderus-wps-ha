@@ -18,10 +18,13 @@ DEFAULT_PARAMETER_ALLOWLIST: Final = ()
 
 # Service names/fields
 SERVICE_READ_PARAMETER: Final = "read_parameter"
+SERVICE_LIST_PARAMETERS: Final = "list_parameters"
 ATTR_NAME_OR_IDX: Final = "name_or_idx"
 ATTR_ENTRY_ID: Final = "entry_id"
 ATTR_EXPECTED_DLC: Final = "expected_dlc"
 ATTR_TIMEOUT: Final = "timeout"
+ATTR_NAME_CONTAINS: Final = "name_contains"
+ATTR_LIMIT: Final = "limit"
 
 # Exponential backoff for reconnection
 BACKOFF_INITIAL: Final = 5  # Initial delay in seconds

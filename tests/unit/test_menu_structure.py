@@ -4,7 +4,6 @@ Unit tests for menu structure - T029.
 Tests the menu hierarchy definition and MenuItem dataclass.
 """
 
-
 from buderus_wps.menu_structure import (
     DHW_PARAMS,
     MENU_ROOT,

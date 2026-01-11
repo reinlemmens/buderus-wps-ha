@@ -98,8 +98,7 @@ async def async_setup_platform(
     allowlist = coordinator.parameter_allowlist
     if allowlist:
         sensors.extend(
-            BuderusParameterSensor(coordinator, param_key)
-            for param_key in allowlist
+            BuderusParameterSensor(coordinator, param_key) for param_key in allowlist
         )
 
     async_add_entities(sensors)

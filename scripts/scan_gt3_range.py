@@ -52,10 +52,12 @@ class SimpleCAN:
                 while b"\r" in buffer:
                     idx_r = buffer.index(b"\r")
                     frame = buffer[:idx_r].decode("ascii", errors="replace").strip()
-                    buffer = buffer[idx_r + 1:]
+                    buffer = buffer[idx_r + 1 :]
                     if frame.startswith("T") and len(frame) >= 10:
                         dlc = int(frame[9], 16)
-                        data = bytes.fromhex(frame[10:10 + dlc * 2]) if dlc > 0 else b""
+                        data = (
+                            bytes.fromhex(frame[10 : 10 + dlc * 2]) if dlc > 0 else b""
+                        )
                         return (dlc, data)
             time.sleep(0.01)
         return None
@@ -64,8 +66,9 @@ class SimpleCAN:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", "-p", default="/dev/ttyACM0")
-    parser.add_argument("--target", "-t", type=float, default=42.8,
-                        help="Target temperature to find")
+    parser.add_argument(
+        "--target", "-t", type=float, default=42.8, help="Target temperature to find"
+    )
     args = parser.parse_args()
 
     print(f"Scanning for temperature ~{args.target}°C...")
@@ -75,9 +78,9 @@ def main():
 
     # Scan ranges around known GT3 area
     ranges = [
-        (675, 695),    # GT3 area per static list
+        (675, 695),  # GT3 area per static list
         (1030, 1040),  # HW_GT3 area
-        (415, 440),    # DHW_GT3 area
+        (415, 440),  # DHW_GT3 area
     ]
 
     results = []

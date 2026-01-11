@@ -121,6 +121,7 @@ class TestDHWSetpointNumber:
     def test_number_has_correct_unit(self, mock_coordinator):
         """DHW setpoint must use Celsius unit."""
         from homeassistant.const import UnitOfTemperature
+
         number = BuderusDHWSetpointNumber(mock_coordinator)
         assert number._attr_native_unit_of_measurement == UnitOfTemperature.CELSIUS
 

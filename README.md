@@ -13,6 +13,7 @@ Monitor and control your Buderus WPS heat pump directly from Home Assistant via 
 - Compressor status monitoring
 - Energy blocking switch (disable heating during peak electricity rates)
 - DHW extra production control (boost hot water on demand)
+- Advanced parameter access (allowlist sensors + read/list services)
 - Automatic reconnection with exponential backoff
 
 ## Requirements
@@ -62,6 +63,37 @@ After installation, the integration creates the following entities:
 | `binary_sensor.heat_pump_compressor` | Binary Sensor | Compressor running state |
 | `switch.heat_pump_energy_block` | Switch | Block heating operation |
 | `number.heat_pump_dhw_extra_duration` | Number | DHW boost duration (hours) |
+
+### Advanced parameter access
+
+Use this when you want to expose parameters that are readable in FHEM but not part of the default entity set.
+
+1) Discover available parameters with the `buderus_wps.list_parameters` service:
+
+```yaml
+service: buderus_wps.list_parameters
+data:
+  name_contains: COMPRESSOR
+  limit: 10
+```
+
+2) Add the keys you want to the Options flow (Settings -> Devices & Services -> Buderus WPS -> Options) in the "Parameter allowlist" field (comma-separated):
+
+```
+GT10_TEMP, GT11_TEMP, COMPRESSOR_STATE
+```
+
+Allowed parameters become sensors named `Parameter <KEY>` and update on the normal refresh interval.
+
+You can also read a single parameter on demand:
+
+```yaml
+service: buderus_wps.read_parameter
+data:
+  name: GT10_TEMP
+```
+
+If you call the service via the REST API, add `?return_response` to receive the response payload.
 
 ## Example Automations
 

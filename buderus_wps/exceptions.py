@@ -274,7 +274,9 @@ class DiscoveryIncompleteError(DiscoveryError):
     def __init__(self, actual_count: int, reported_count: int) -> None:
         self.actual_count = actual_count
         self.reported_count = reported_count
-        self.completion_ratio = actual_count / reported_count if reported_count > 0 else 0.0
+        self.completion_ratio = (
+            actual_count / reported_count if reported_count > 0 else 0.0
+        )
         super().__init__(
             f"Discovery incomplete: got {actual_count}/{reported_count} bytes "
             f"({self.completion_ratio * 100:.1f}%)",

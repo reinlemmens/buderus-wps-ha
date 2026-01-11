@@ -7,12 +7,12 @@ The FHEM extids ARE the CAN response IDs. The bus constantly broadcasts data.
 import sys
 import time
 
-sys.path.insert(0, '/home/rein/buderus-wps-ha')
+sys.path.insert(0, "/home/rein/buderus-wps-ha")
 
 from buderus_wps.can_adapter import USBtinAdapter
 from buderus_wps.can_message import CANMessage
 
-SERIAL_PORT = '/dev/ttyACM0'
+SERIAL_PORT = "/dev/ttyACM0"
 
 # FHEM readings to verify (extid/CAN-ID -> expected_value)
 FHEM_SAMPLES = {
@@ -51,7 +51,7 @@ def main():
                     frame = adapter.receive_frame(timeout=0.5)
                     if frame and frame.data:
                         can_id = frame.arbitration_id
-                        val = int.from_bytes(frame.data, 'big', signed=True)
+                        val = int.from_bytes(frame.data, "big", signed=True)
                         readings[can_id] = val
                 except Exception:
                     pass
@@ -59,7 +59,9 @@ def main():
             print(f"Collected {len(readings)} unique parameter readings\n")
 
             # Compare with FHEM
-            print(f"{'CAN ID':<12} {'FHEM':>8} {'Live':>8} {'Diff':>6} {'Match':>6} Description")
+            print(
+                f"{'CAN ID':<12} {'FHEM':>8} {'Live':>8} {'Diff':>6} {'Match':>6} Description"
+            )
             print("-" * 70)
 
             matches = 0
@@ -80,23 +82,30 @@ def main():
                     else:
                         status = "✗"
 
-                    print(f"0x{can_id:08X} {fhem_val:>8} {live_val:>8} {diff:>+6} {status:>6} {desc}")
+                    print(
+                        f"0x{can_id:08X} {fhem_val:>8} {live_val:>8} {diff:>+6} {status:>6} {desc}"
+                    )
                 else:
                     missing += 1
-                    print(f"0x{can_id:08X} {fhem_val:>8} {'N/A':>8} {'':>6} {'?':>6} {desc} (not seen)")
+                    print(
+                        f"0x{can_id:08X} {fhem_val:>8} {'N/A':>8} {'':>6} {'?':>6} {desc} (not seen)"
+                    )
 
             print("-" * 70)
-            print(f"Results: {matches} exact, {close} close (within 5), {missing} missing")
+            print(
+                f"Results: {matches} exact, {close} close (within 5), {missing} missing"
+            )
             print(f"\nNote: Small differences expected - values change in real-time!")
 
     except Exception as e:
         print(f"Error: {e}")
         import traceback
+
         traceback.print_exc()
         return 1
 
     return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

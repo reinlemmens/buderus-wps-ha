@@ -5,12 +5,12 @@ import sys
 import time
 
 # Add the custom_components path to Python path
-sys.path.insert(0, '/config/custom_components/buderus_wps')
+sys.path.insert(0, "/config/custom_components/buderus_wps")
 
 from buderus_wps import USBtinAdapter, BroadcastMonitor, HeatPump, HeatPumpClient
 from buderus_wps.can_message import CANMessage
 
-PORT = '/dev/ttyACM0'
+PORT = "/dev/ttyACM0"
 TIMEOUT = 5.0
 
 
@@ -91,9 +91,9 @@ def test_discovery_protocol():
         print("\n1. Requesting element count...")
         count_request = CANMessage(
             arbitration_id=ELEMENT_COUNT_REQUEST_ID,
-            data=b'',
+            data=b"",
             is_extended_id=True,
-            is_remote_frame=True
+            is_remote_frame=True,
         )
 
         adapter.flush_input_buffer()
@@ -106,7 +106,7 @@ def test_discovery_protocol():
             if response.arbitration_id == ELEMENT_COUNT_RESPONSE_ID:
                 # Parse count from response
                 if len(response.data) >= 4:
-                    count = int.from_bytes(response.data[:4], 'big')
+                    count = int.from_bytes(response.data[:4], "big")
                     print(f"   Element count: {count}")
                 else:
                     print(f"   Data too short: {len(response.data)} bytes")
@@ -119,12 +119,12 @@ def test_discovery_protocol():
         offset = 0
 
         # Build request: 8 bytes = size (4 bytes) + offset (4 bytes)
-        request_data = chunk_size.to_bytes(4, 'big') + offset.to_bytes(4, 'big')
+        request_data = chunk_size.to_bytes(4, "big") + offset.to_bytes(4, "big")
 
         data_request = CANMessage(
             arbitration_id=ELEMENT_DATA_REQUEST_ID,
             data=request_data,
-            is_extended_id=True
+            is_extended_id=True,
         )
 
         adapter.flush_input_buffer()
@@ -133,9 +133,9 @@ def test_discovery_protocol():
         # Also send RTR to trigger response (per FHEM)
         rtr_request = CANMessage(
             arbitration_id=ELEMENT_DATA_RESPONSE_ID,
-            data=b'',
+            data=b"",
             is_extended_id=True,
-            is_remote_frame=True
+            is_remote_frame=True,
         )
 
         # Collect responses for a few seconds
@@ -149,7 +149,9 @@ def test_discovery_protocol():
                 if frame:
                     if frame.arbitration_id == ELEMENT_DATA_RESPONSE_ID:
                         received_data.extend(frame.data)
-                        print(f"   Received {len(frame.data)} bytes (total: {len(received_data)})")
+                        print(
+                            f"   Received {len(frame.data)} bytes (total: {len(received_data)})"
+                        )
             except Exception:
                 pass
 
@@ -159,10 +161,10 @@ def test_discovery_protocol():
 
             # Try to parse first element
             if len(received_data) >= 18:
-                idx = int.from_bytes(received_data[0:2], 'big')
+                idx = int.from_bytes(received_data[0:2], "big")
                 extid = received_data[2:9].hex()
-                max_val = int.from_bytes(received_data[9:13], 'big', signed=True)
-                min_val = int.from_bytes(received_data[13:17], 'big', signed=True)
+                max_val = int.from_bytes(received_data[9:13], "big", signed=True)
+                min_val = int.from_bytes(received_data[13:17], "big", signed=True)
                 name_len = received_data[17]
 
                 print(f"\n   First element:")
@@ -173,7 +175,9 @@ def test_discovery_protocol():
                 print(f"     name_len: {name_len}")
 
                 if name_len > 0 and len(received_data) >= 18 + name_len:
-                    name = received_data[18:18+name_len-1].decode('ascii', errors='replace')
+                    name = received_data[18 : 18 + name_len - 1].decode(
+                        "ascii", errors="replace"
+                    )
                     print(f"     name: {name}")
         else:
             print("   No data received")
@@ -186,13 +190,14 @@ def main():
     """Run all tests."""
     import argparse
 
-    parser = argparse.ArgumentParser(description='Test discovery and monitoring')
-    parser.add_argument('--monitor', type=float, default=0,
-                        help='Monitor broadcasts for N seconds')
-    parser.add_argument('--read', type=str, default='',
-                        help='Read a parameter by name')
-    parser.add_argument('--discovery', action='store_true',
-                        help='Test discovery protocol')
+    parser = argparse.ArgumentParser(description="Test discovery and monitoring")
+    parser.add_argument(
+        "--monitor", type=float, default=0, help="Monitor broadcasts for N seconds"
+    )
+    parser.add_argument("--read", type=str, default="", help="Read a parameter by name")
+    parser.add_argument(
+        "--discovery", action="store_true", help="Test discovery protocol"
+    )
     args = parser.parse_args()
 
     if args.monitor > 0:
@@ -212,5 +217,5 @@ def main():
         print("  --discovery     Test FHEM discovery protocol")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -12,18 +12,17 @@ import sys
 import time
 import logging
 
-sys.path.insert(0, '/home/rein/buderus-wps-ha')
+sys.path.insert(0, "/home/rein/buderus-wps-ha")
 
 from buderus_wps.can_adapter import USBtinAdapter
 from buderus_wps.can_message import CANMessage
 
 logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s %(levelname)s: %(message)s'
+    level=logging.DEBUG, format="%(asctime)s %(levelname)s: %(message)s"
 )
 logger = logging.getLogger(__name__)
 
-SERIAL_PORT = '/dev/ttyACM0'
+SERIAL_PORT = "/dev/ttyACM0"
 
 
 def calculate_can_id(idx: int) -> int:
@@ -41,16 +40,15 @@ def read_parameter(adapter: USBtinAdapter, idx: int, name: str) -> bytes:
 
     # Create RTR frame to request parameter value
     request = CANMessage(
-        arbitration_id=can_id,
-        data=b'',
-        is_extended_id=True,
-        is_remote_frame=True
+        arbitration_id=can_id, data=b"", is_extended_id=True, is_remote_frame=True
     )
 
     try:
         response = adapter.send_frame(request, timeout=5.0)
         if response:
-            logger.info(f"  Response ID=0x{response.arbitration_id:08X}, data={response.data.hex()}")
+            logger.info(
+                f"  Response ID=0x{response.arbitration_id:08X}, data={response.data.hex()}"
+            )
             return response.data
         else:
             logger.warning(f"  No response")
@@ -66,18 +64,16 @@ def write_parameter(adapter: USBtinAdapter, idx: int, name: str, value: int) -> 
     logger.info(f"Writing {name}: idx={idx}, CAN ID=0x{can_id:08X}, value={value}")
 
     # Create frame with value (2 bytes, big-endian)
-    data = value.to_bytes(2, 'big')
+    data = value.to_bytes(2, "big")
 
-    request = CANMessage(
-        arbitration_id=can_id,
-        data=data,
-        is_extended_id=True
-    )
+    request = CANMessage(arbitration_id=can_id, data=data, is_extended_id=True)
 
     try:
         response = adapter.send_frame(request, timeout=5.0)
         if response:
-            logger.info(f"  Response ID=0x{response.arbitration_id:08X}, data={response.data.hex()}")
+            logger.info(
+                f"  Response ID=0x{response.arbitration_id:08X}, data={response.data.hex()}"
+            )
             return True
         else:
             logger.warning(f"  No response")
@@ -93,10 +89,12 @@ def main():
     logger.info("=" * 60)
 
     # Two possible idx values for XDHW_TIME
-    STATIC_IDX = 2475   # From our static parameter_defaults.py
-    FHEM_IDX = 2480     # From strace of FHEM (CAN ID 0x066C3FE0)
+    STATIC_IDX = 2475  # From our static parameter_defaults.py
+    FHEM_IDX = 2480  # From strace of FHEM (CAN ID 0x066C3FE0)
 
-    logger.info(f"Static idx: {STATIC_IDX} -> CAN ID: 0x{calculate_can_id(STATIC_IDX):08X}")
+    logger.info(
+        f"Static idx: {STATIC_IDX} -> CAN ID: 0x{calculate_can_id(STATIC_IDX):08X}"
+    )
     logger.info(f"FHEM idx:   {FHEM_IDX} -> CAN ID: 0x{calculate_can_id(FHEM_IDX):08X}")
     logger.info("-" * 60)
 
@@ -130,10 +128,16 @@ def main():
             # Summary
             logger.info("-" * 60)
             logger.info("SUMMARY:")
-            logger.info(f"  Static idx read:  {static_value.hex() if static_value else 'FAILED'}")
-            logger.info(f"  FHEM idx read:    {fhem_value.hex() if fhem_value else 'FAILED'}")
+            logger.info(
+                f"  Static idx read:  {static_value.hex() if static_value else 'FAILED'}"
+            )
+            logger.info(
+                f"  FHEM idx read:    {fhem_value.hex() if fhem_value else 'FAILED'}"
+            )
             logger.info(f"  Write succeeded:  {write_result}")
-            logger.info(f"  Verify read:      {verify_value.hex() if verify_value else 'FAILED'}")
+            logger.info(
+                f"  Verify read:      {verify_value.hex() if verify_value else 'FAILED'}"
+            )
 
     except Exception as e:
         logger.error(f"Error: {e}", exc_info=True)
@@ -142,5 +146,5 @@ def main():
     return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

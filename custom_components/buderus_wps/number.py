@@ -22,12 +22,14 @@ async def async_setup_entry(
     data = hass.data[DOMAIN][entry.entry_id]
     coordinator: BuderusCoordinator = data["coordinator"]
 
-    async_add_entities([
-        BuderusDHWExtraDurationNumber(coordinator, entry),
-        BuderusHeatingCurveOffsetNumber(coordinator, entry),
-        BuderusDHWStopTempNumber(coordinator, entry),
-        BuderusDHWSetpointNumber(coordinator, entry),
-    ])
+    async_add_entities(
+        [
+            BuderusDHWExtraDurationNumber(coordinator, entry),
+            BuderusHeatingCurveOffsetNumber(coordinator, entry),
+            BuderusDHWStopTempNumber(coordinator, entry),
+            BuderusDHWSetpointNumber(coordinator, entry),
+        ]
+    )
 
 
 async def async_setup_platform(
@@ -118,20 +120,29 @@ class BuderusHeatingCurveOffsetNumber(BuderusEntity, NumberEntity):
             value: Offset in °C (-10.0 to +10.0)
         """
         import logging
+
         _LOGGER = logging.getLogger(__name__)
-        _LOGGER.debug("BuderusHeatingCurveOffsetNumber.async_set_native_value called with value=%.1f", value)
+        _LOGGER.debug(
+            "BuderusHeatingCurveOffsetNumber.async_set_native_value called with value=%.1f",
+            value,
+        )
         try:
             await self.coordinator.async_set_heating_curve_offset(value)
             # Optimistically update coordinator data for immediate UI feedback
             # The next scheduled refresh will confirm the actual value
             if self.coordinator.data is not None:
                 from dataclasses import replace
+
                 self.coordinator.async_set_updated_data(
                     replace(self.coordinator.data, heating_curve_offset=value)
                 )
-            _LOGGER.debug("BuderusHeatingCurveOffsetNumber.async_set_native_value completed")
+            _LOGGER.debug(
+                "BuderusHeatingCurveOffsetNumber.async_set_native_value completed"
+            )
         except Exception as err:
-            _LOGGER.error("BuderusHeatingCurveOffsetNumber.async_set_native_value FAILED: %s", err)
+            _LOGGER.error(
+                "BuderusHeatingCurveOffsetNumber.async_set_native_value FAILED: %s", err
+            )
             raise
 
 
@@ -172,20 +183,27 @@ class BuderusDHWStopTempNumber(BuderusEntity, NumberEntity):
             value: Temperature in °C (50.0 to 65.0)
         """
         import logging
+
         _LOGGER = logging.getLogger(__name__)
-        _LOGGER.debug("BuderusDHWStopTempNumber.async_set_native_value called with value=%.1f", value)
+        _LOGGER.debug(
+            "BuderusDHWStopTempNumber.async_set_native_value called with value=%.1f",
+            value,
+        )
         try:
             await self.coordinator.async_set_dhw_stop_temp(value)
             # Optimistically update coordinator data for immediate UI feedback
             # The next scheduled refresh will confirm the actual value
             if self.coordinator.data is not None:
                 from dataclasses import replace
+
                 self.coordinator.async_set_updated_data(
                     replace(self.coordinator.data, dhw_stop_temp=value)
                 )
             _LOGGER.debug("BuderusDHWStopTempNumber.async_set_native_value completed")
         except Exception as err:
-            _LOGGER.error("BuderusDHWStopTempNumber.async_set_native_value FAILED: %s", err)
+            _LOGGER.error(
+                "BuderusDHWStopTempNumber.async_set_native_value FAILED: %s", err
+            )
             raise
 
 
@@ -226,6 +244,7 @@ class BuderusDHWSetpointNumber(BuderusEntity, NumberEntity):
             value: Temperature in °C (40.0 to 70.0)
         """
         import logging
+
         _LOGGER = logging.getLogger(__name__)
         _LOGGER.debug("DHWSetpoint.async_set_native_value: %.1f", value)
         try:
@@ -234,6 +253,7 @@ class BuderusDHWSetpointNumber(BuderusEntity, NumberEntity):
             # The next scheduled refresh will confirm the actual value
             if self.coordinator.data is not None:
                 from dataclasses import replace
+
                 self.coordinator.async_set_updated_data(
                     replace(self.coordinator.data, dhw_setpoint=value)
                 )

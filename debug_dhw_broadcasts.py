@@ -3,7 +3,8 @@
 
 import sys
 import time
-sys.path.insert(0, '.')
+
+sys.path.insert(0, ".")
 
 from buderus_wps.broadcast_monitor import BroadcastMonitor, KNOWN_BROADCASTS
 from buderus_wps.can_adapter import USBtinAdapter
@@ -12,7 +13,7 @@ print("=== DHW Temperature Broadcast Debug ===\n")
 print("Listening to CAN broadcasts for 10 seconds...")
 print("Will show all temperature readings on base 0x0060-0x0063\n")
 
-adapter = USBtinAdapter('/dev/ttyACM0', timeout=5.0)
+adapter = USBtinAdapter("/dev/ttyACM0", timeout=5.0)
 monitor = BroadcastMonitor(adapter)
 
 try:
@@ -28,8 +29,12 @@ try:
         found_any = False
         for reading in sorted(cache.readings.values(), key=lambda r: r.idx):
             if reading.base == base and reading.is_temperature:
-                known_name = KNOWN_BROADCASTS.get((base, reading.idx), (f"UNKNOWN_{reading.idx}", ""))[0]
-                print(f"0x{base:04X}   {reading.idx:<5} {reading.temperature:>6.1f}°C     {known_name}")
+                known_name = KNOWN_BROADCASTS.get(
+                    (base, reading.idx), (f"UNKNOWN_{reading.idx}", "")
+                )[0]
+                print(
+                    f"0x{base:04X}   {reading.idx:<5} {reading.temperature:>6.1f}°C     {known_name}"
+                )
                 found_any = True
         if found_any:
             print()
@@ -48,7 +53,9 @@ try:
             reading = cache.get_by_idx_and_base(idx, base)
             if reading:
                 known_name = KNOWN_BROADCASTS.get((base, idx), ("UNKNOWN", ""))[0]
-                print(f"Base 0x{base:04X}, idx {idx}: {reading.temperature:.1f}°C ({known_name})")
+                print(
+                    f"Base 0x{base:04X}, idx {idx}: {reading.temperature:.1f}°C ({known_name})"
+                )
 
 finally:
     adapter.disconnect()

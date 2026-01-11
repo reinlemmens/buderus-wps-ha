@@ -10,8 +10,6 @@ PROTOCOL: Reference FHEM 26_KM273v018.pm
 - ADDITIONAL_BLOCKED (idx 9, extid 00259EEF360272)
 """
 
-
-
 # Phase 3: User Story 1 contract tests (T014-T015)
 
 

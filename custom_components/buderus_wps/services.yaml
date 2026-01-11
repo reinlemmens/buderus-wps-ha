@@ -33,3 +33,28 @@ read_parameter:
           min: 0.1
           max: 10
           mode: box
+list_parameters:
+  name: List Parameters
+  description: List discovered parameters with names and indices for allowlist use.
+  fields:
+    entry_id:
+      name: Entry Id
+      description: Target config entry id when multiple devices are configured.
+      required: false
+      selector:
+        text: {}
+    name_contains:
+      name: Name Contains
+      description: Filter results to parameter names containing this text.
+      required: false
+      selector:
+        text: {}
+    limit:
+      name: Limit
+      description: Maximum number of parameters to return.
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 5000
+          mode: box

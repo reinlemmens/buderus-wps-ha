@@ -14,32 +14,73 @@ import logging
 import logging.handlers
 import os
 
-from buderus_wps import USBtinAdapter, HeatPumpClient, HeatPump, BroadcastMonitor, EnergyBlockingControl
+from buderus_wps import (
+    USBtinAdapter,
+    HeatPumpClient,
+    HeatPump,
+    BroadcastMonitor,
+    EnergyBlockingControl,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="wps-cli", description="Buderus WPS CLI over USBtin")
-    parser.add_argument("--port", default="/dev/ttyACM0", help="Serial port (default: /dev/ttyACM0)")
-    parser.add_argument("--baud", type=int, default=115200, help="Baud rate (default: 115200)")
-    parser.add_argument("--timeout", type=float, default=5.0, help="Operation timeout seconds (default: 5)")
-    parser.add_argument("--read-only", action="store_true", help="Force read-only mode (block writes)")
-    parser.add_argument("--dry-run", action="store_true", help="Validate writes without sending to device")
+    parser = argparse.ArgumentParser(
+        prog="wps-cli", description="Buderus WPS CLI over USBtin"
+    )
+    parser.add_argument(
+        "--port", default="/dev/ttyACM0", help="Serial port (default: /dev/ttyACM0)"
+    )
+    parser.add_argument(
+        "--baud", type=int, default=115200, help="Baud rate (default: 115200)"
+    )
+    parser.add_argument(
+        "--timeout",
+        type=float,
+        default=5.0,
+        help="Operation timeout seconds (default: 5)",
+    )
+    parser.add_argument(
+        "--read-only", action="store_true", help="Force read-only mode (block writes)"
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Validate writes without sending to device",
+    )
     parser.add_argument("--verbose", action="store_true", help="Enable debug logging")
-    parser.add_argument("--log-file", default=None, help="Log file path (default: ~/.cache/buderus-wps/buderus.log)")
-    parser.add_argument("--cache-path", default=None, help="Parameter cache file path (enables caching)")
+    parser.add_argument(
+        "--log-file",
+        default=None,
+        help="Log file path (default: ~/.cache/buderus-wps/buderus.log)",
+    )
+    parser.add_argument(
+        "--cache-path", default=None, help="Parameter cache file path (enables caching)"
+    )
 
     sub = parser.add_subparsers(dest="command", required=True)
 
     # read
     read_p = sub.add_parser("read", help="Read a parameter by name or index")
     read_p.add_argument("param", help="Parameter name or index")
-    read_p.add_argument("--json", action="store_true", help="Output JSON (decoded + raw)")
-    read_p.add_argument("--broadcast", action="store_true",
-                        help="Read from broadcast traffic instead of RTR")
-    read_p.add_argument("--duration", type=float, default=5.0,
-                        help="Broadcast collection duration in seconds (default: 5)")
-    read_p.add_argument("--no-fallback", action="store_true",
-                        help="Disable automatic broadcast fallback for invalid RTR responses")
+    read_p.add_argument(
+        "--json", action="store_true", help="Output JSON (decoded + raw)"
+    )
+    read_p.add_argument(
+        "--broadcast",
+        action="store_true",
+        help="Read from broadcast traffic instead of RTR",
+    )
+    read_p.add_argument(
+        "--duration",
+        type=float,
+        default=5.0,
+        help="Broadcast collection duration in seconds (default: 5)",
+    )
+    read_p.add_argument(
+        "--no-fallback",
+        action="store_true",
+        help="Disable automatic broadcast fallback for invalid RTR responses",
+    )
 
     # write
     write_p = sub.add_parser("write", help="Write a parameter by name or index")
@@ -48,17 +89,30 @@ def build_parser() -> argparse.ArgumentParser:
 
     # list
     list_p = sub.add_parser("list", help="List parameters")
-    list_p.add_argument("--filter", default=None, help="Substring filter (case-insensitive) on name")
+    list_p.add_argument(
+        "--filter", default=None, help="Substring filter (case-insensitive) on name"
+    )
 
     # dump
     dump_p = sub.add_parser("dump", help="Dump all parameter values")
-    dump_p.add_argument("--json", action="store_true", help="Output JSON for all parameters")
+    dump_p.add_argument(
+        "--json", action="store_true", help="Output JSON for all parameters"
+    )
 
     # monitor
-    monitor_p = sub.add_parser("monitor", help="Monitor broadcast traffic for sensor values")
-    monitor_p.add_argument("--duration", type=float, default=10.0, help="Collection duration in seconds (default: 10)")
+    monitor_p = sub.add_parser(
+        "monitor", help="Monitor broadcast traffic for sensor values"
+    )
+    monitor_p.add_argument(
+        "--duration",
+        type=float,
+        default=10.0,
+        help="Collection duration in seconds (default: 10)",
+    )
     monitor_p.add_argument("--json", action="store_true", help="Output JSON format")
-    monitor_p.add_argument("--temps-only", action="store_true", help="Only show temperature readings")
+    monitor_p.add_argument(
+        "--temps-only", action="store_true", help="Only show temperature readings"
+    )
 
     # energy command group
     energy_p = sub.add_parser("energy", help="Energy blocking control commands")
@@ -68,23 +122,38 @@ def build_parser() -> argparse.ArgumentParser:
     energy_sub.add_parser("block-compressor", help="Block compressor from running")
 
     # energy unblock-compressor
-    energy_sub.add_parser("unblock-compressor", help="Unblock compressor, restore normal operation")
+    energy_sub.add_parser(
+        "unblock-compressor", help="Unblock compressor, restore normal operation"
+    )
 
     # energy block-aux-heater
-    energy_sub.add_parser("block-aux-heater", help="Block auxiliary heater from running")
+    energy_sub.add_parser(
+        "block-aux-heater", help="Block auxiliary heater from running"
+    )
 
     # energy unblock-aux-heater
-    energy_sub.add_parser("unblock-aux-heater", help="Unblock auxiliary heater, restore normal operation")
+    energy_sub.add_parser(
+        "unblock-aux-heater", help="Unblock auxiliary heater, restore normal operation"
+    )
 
     # energy status
-    energy_status_p = energy_sub.add_parser("status", help="Show energy blocking status")
-    energy_status_p.add_argument("--format", choices=["text", "json"], default="text", help="Output format (default: text)")
+    energy_status_p = energy_sub.add_parser(
+        "status", help="Show energy blocking status"
+    )
+    energy_status_p.add_argument(
+        "--format",
+        choices=["text", "json"],
+        default="text",
+        help="Output format (default: text)",
+    )
 
     # energy clear-all
     energy_sub.add_parser("clear-all", help="Clear all energy blocking restrictions")
 
     # energy block-all
-    energy_sub.add_parser("block-all", help="Block both compressor and auxiliary heater")
+    energy_sub.add_parser(
+        "block-all", help="Block both compressor and auxiliary heater"
+    )
 
     return parser
 
@@ -114,7 +183,9 @@ def _configure_logging(args: argparse.Namespace) -> None:
     log_file = args.log_file or os.path.expanduser("~/.cache/buderus-wps/buderus.log")
     try:
         os.makedirs(os.path.dirname(log_file), exist_ok=True)
-        handler = logging.handlers.RotatingFileHandler(log_file, maxBytes=10 * 1024 * 1024, backupCount=3)
+        handler = logging.handlers.RotatingFileHandler(
+            log_file, maxBytes=10 * 1024 * 1024, backupCount=3
+        )
         handler.setLevel(level)
         formatter = logging.Formatter("%(asctime)s %(levelname)s %(name)s: %(message)s")
         handler.setFormatter(formatter)
@@ -130,9 +201,7 @@ from typing import Optional, Tuple
 
 
 def read_from_broadcast(
-    adapter: "USBtinAdapter",
-    param_name: str,
-    duration: float = 5.0
+    adapter: "USBtinAdapter", param_name: str, duration: float = 5.0
 ) -> Optional[Tuple[float, bytes]]:
     """
     Read parameter value from broadcast traffic.
@@ -146,7 +215,9 @@ def read_from_broadcast(
         Tuple of (decoded_value, raw_bytes) or None if not found
     """
     from buderus_wps.broadcast_monitor import (
-        BroadcastMonitor, get_broadcast_for_param, CIRCUIT_BASES
+        BroadcastMonitor,
+        get_broadcast_for_param,
+        CIRCUIT_BASES,
     )
 
     mapping = get_broadcast_for_param(param_name)
@@ -198,7 +269,11 @@ def is_invalid_rtr_response(data: bytes, param_format: str) -> bool:
     return len(data) == 1
 
 
-def cmd_read(client: HeatPumpClient, args: argparse.Namespace, adapter: Optional["USBtinAdapter"] = None) -> int:
+def cmd_read(
+    client: HeatPumpClient,
+    args: argparse.Namespace,
+    adapter: Optional["USBtinAdapter"] = None,
+) -> int:
     """Read a parameter value.
 
     Supports:
@@ -211,14 +286,16 @@ def cmd_read(client: HeatPumpClient, args: argparse.Namespace, adapter: Optional
         source = "rtr"
 
         # Explicit broadcast mode (T016)
-        if getattr(args, 'broadcast', False):
+        if getattr(args, "broadcast", False):
             if adapter is None:
                 print("ERROR: Adapter required for broadcast read", file=sys.stderr)
                 return 1
 
             result = read_from_broadcast(adapter, param.text, args.duration)
             if result is None:
-                print(f"ERROR: {param.text} not available via broadcast", file=sys.stderr)
+                print(
+                    f"ERROR: {param.text} not available via broadcast", file=sys.stderr
+                )
                 return 1
 
             decoded, raw = result
@@ -229,34 +306,45 @@ def cmd_read(client: HeatPumpClient, args: argparse.Namespace, adapter: Optional
             decoded = client._decode_value(param, raw)
 
             # Automatic fallback for invalid RTR response (US2 - but check flag here)
-            if (adapter is not None and
-                not getattr(args, 'no_fallback', False) and
-                is_invalid_rtr_response(raw, param.format)):
+            if (
+                adapter is not None
+                and not getattr(args, "no_fallback", False)
+                and is_invalid_rtr_response(raw, param.format)
+            ):
 
-                print("WARNING: RTR returned invalid data, using broadcast fallback", file=sys.stderr)
+                print(
+                    "WARNING: RTR returned invalid data, using broadcast fallback",
+                    file=sys.stderr,
+                )
                 fallback = read_from_broadcast(adapter, param.text, args.duration)
                 if fallback:
                     decoded, raw = fallback
                     source = "broadcast"
                 else:
-                    print("WARNING: RTR returned invalid data, broadcast fallback failed", file=sys.stderr)
+                    print(
+                        "WARNING: RTR returned invalid data, broadcast fallback failed",
+                        file=sys.stderr,
+                    )
                     # Continue with original invalid data
 
         # Output result with source indication (US3)
-        if getattr(args, 'json', False):
+        if getattr(args, "json", False):
             import json
+
             json_output = {
                 "name": param.text,
                 "idx": param.idx,
                 "raw": raw.hex() if isinstance(raw, bytes) else raw,
                 "decoded": decoded,
-                "source": source
+                "source": source,
             }
             print(json.dumps(json_output))
         else:
             formatted = format_value(decoded, param.format)
             raw_hex = raw.hex().upper() if isinstance(raw, bytes) else str(raw)
-            print(f"{param.text} = {formatted}  (raw=0x{raw_hex}, idx={param.idx}, source={source})")
+            print(
+                f"{param.text} = {formatted}  (raw=0x{raw_hex}, idx={param.idx}, source={source})"
+            )
 
         return 0
     except Exception as e:
@@ -336,7 +424,9 @@ def cmd_list(client: HeatPumpClient, args: argparse.Namespace) -> int:
     for p in regs:
         if filt and filt not in p.text.upper():
             continue
-        print(f"{p.idx:4d} {p.extid:>14} {p.text:<40} fmt={p.format:<6} min={p.min:<6} max={p.max:<6} read={p.read}")
+        print(
+            f"{p.idx:4d} {p.extid:>14} {p.text:<40} fmt={p.format:<6} min={p.min:<6} max={p.max:<6} read={p.read}"
+        )
     return 0
 
 
@@ -348,12 +438,18 @@ def cmd_dump(client: HeatPumpClient, args: argparse.Namespace) -> int:
             res = client.read_parameter(p.text, timeout=args.timeout)
             if args.json:
                 res_copy = dict(res)
-                res_copy["raw"] = res_copy["raw"].hex() if isinstance(res_copy["raw"], (bytes, bytearray)) else res_copy["raw"]
+                res_copy["raw"] = (
+                    res_copy["raw"].hex()
+                    if isinstance(res_copy["raw"], (bytes, bytearray))
+                    else res_copy["raw"]
+                )
                 results.append(res_copy)
             else:
                 raw = res["raw"]
                 raw_hex = raw.hex() if isinstance(raw, (bytes, bytearray)) else raw
-                print(f"{p.idx:4d} {p.extid:>14} {p.text:<40} decoded={res['decoded']} raw={raw_hex} fmt={p.format} min={p.min} max={p.max} read={p.read}")
+                print(
+                    f"{p.idx:4d} {p.extid:>14} {p.text:<40} decoded={res['decoded']} raw={raw_hex} fmt={p.format} min={p.min} max={p.max} read={p.read}"
+                )
         except Exception as e:
             msg = f"{p.text}: {e}"
             errors.append(msg)
@@ -361,6 +457,7 @@ def cmd_dump(client: HeatPumpClient, args: argparse.Namespace) -> int:
                 print(f"ERROR: {msg}", file=sys.stderr)
     if args.json:
         import json
+
         print(json.dumps({"results": results, "errors": errors}))
     return 0 if not errors else 1
 
@@ -378,20 +475,23 @@ def cmd_monitor(adapter: "USBtinAdapter", args: argparse.Namespace) -> int:
 
     if args.json:
         import json
+
         results = []
         for can_id, reading in sorted(cache.readings.items()):
             name = monitor.get_known_name(reading)
-            results.append({
-                "can_id": f"0x{can_id:08X}",
-                "base": f"0x{reading.base:04X}",
-                "idx": reading.idx,
-                "name": name,
-                "dlc": reading.dlc,
-                "raw_hex": reading.raw_data.hex(),
-                "raw_value": reading.raw_value,
-                "temperature": reading.temperature,
-                "is_temperature": reading.is_temperature,
-            })
+            results.append(
+                {
+                    "can_id": f"0x{can_id:08X}",
+                    "base": f"0x{reading.base:04X}",
+                    "idx": reading.idx,
+                    "name": name,
+                    "dlc": reading.dlc,
+                    "raw_hex": reading.raw_data.hex(),
+                    "raw_value": reading.raw_value,
+                    "temperature": reading.temperature,
+                    "is_temperature": reading.is_temperature,
+                }
+            )
         print(json.dumps({"count": len(results), "readings": results}))
     else:
         if not cache.readings:
@@ -399,7 +499,9 @@ def cmd_monitor(adapter: "USBtinAdapter", args: argparse.Namespace) -> int:
             return 0
 
         print(f"\nCaptured {len(cache.readings)} unique CAN IDs:\n")
-        print(f"{'CAN ID':<12} {'Base':<8} {'Idx':<6} {'Name':<24} {'DLC':<5} {'Raw':<12} {'Value':<10}")
+        print(
+            f"{'CAN ID':<12} {'Base':<8} {'Idx':<6} {'Name':<24} {'DLC':<5} {'Raw':<12} {'Value':<10}"
+        )
         print("-" * 90)
 
         for can_id, reading in sorted(cache.readings.items()):
@@ -409,7 +511,9 @@ def cmd_monitor(adapter: "USBtinAdapter", args: argparse.Namespace) -> int:
                 value_str = f"{reading.temperature:.1f}°C"
             else:
                 value_str = str(reading.raw_value)
-            print(f"0x{can_id:08X}  0x{reading.base:04X}   {reading.idx:<6} {name:<24} {reading.dlc:<5} 0x{raw_hex:<10} {value_str}")
+            print(
+                f"0x{can_id:08X}  0x{reading.base:04X}   {reading.idx:<6} {name:<24} {reading.dlc:<5} 0x{raw_hex:<10} {value_str}"
+            )
 
     return 0
 
@@ -466,6 +570,7 @@ def cmd_energy(client: HeatPumpClient, args: argparse.Namespace) -> int:
         status = control.get_status(timeout=args.timeout)
         if args.format == "json":
             import json
+
             output = {
                 "compressor": {
                     "blocked": status.compressor.blocked,
@@ -480,8 +585,12 @@ def cmd_energy(client: HeatPumpClient, args: argparse.Namespace) -> int:
             print(json.dumps(output))
         else:
             print("Energy Blocking Status:")
-            print(f"  Compressor: {'BLOCKED' if status.compressor.blocked else 'Normal'} (source: {status.compressor.source})")
-            print(f"  Aux Heater: {'BLOCKED' if status.aux_heater.blocked else 'Normal'} (source: {status.aux_heater.source})")
+            print(
+                f"  Compressor: {'BLOCKED' if status.compressor.blocked else 'Normal'} (source: {status.compressor.source})"
+            )
+            print(
+                f"  Aux Heater: {'BLOCKED' if status.aux_heater.blocked else 'Normal'} (source: {status.aux_heater.source})"
+            )
         return 0
 
     elif args.energy_cmd == "clear-all":
@@ -515,10 +624,16 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     _configure_logging(args)
-    adapter = USBtinAdapter(args.port, baudrate=args.baud, timeout=args.timeout, read_only=args.read_only or args.dry_run)
+    adapter = USBtinAdapter(
+        args.port,
+        baudrate=args.baud,
+        timeout=args.timeout,
+        read_only=args.read_only or args.dry_run,
+    )
 
     # Use HeatPump class with optional cache path
     from pathlib import Path
+
     cache_path = Path(args.cache_path) if args.cache_path else None
     registry = HeatPump(cache_path=cache_path)
     if args.verbose:

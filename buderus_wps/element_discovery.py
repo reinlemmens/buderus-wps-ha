@@ -253,12 +253,14 @@ class ElementDiscovery:
         self._adapter = adapter
         self._logger = discovery_logger or logger
         self._parser = ElementListParser()
-        self._last_reported_bytes: int = 0  # Tracks reported byte count from last discovery
-        self._last_received_bytes: int = 0  # Tracks received byte count from last discovery
+        self._last_reported_bytes: int = (
+            0  # Tracks reported byte count from last discovery
+        )
+        self._last_received_bytes: int = (
+            0  # Tracks received byte count from last discovery
+        )
 
-    def request_element_count(
-        self, timeout: float = 5.0, max_retries: int = 3
-    ) -> int:
+    def request_element_count(self, timeout: float = 5.0, max_retries: int = 3) -> int:
         """Request the total element data length.
 
         Sends an RTR frame to ELEMENT_COUNT_REQUEST_ID and expects a 4-byte
@@ -503,7 +505,9 @@ class ElementDiscovery:
                 self._logger.debug("No more data at offset %d", offset)
                 break
 
-        self._logger.info("Received %d bytes total in %d chunks", len(all_data), chunks_read)
+        self._logger.info(
+            "Received %d bytes total in %d chunks", len(all_data), chunks_read
+        )
         self._last_received_bytes = len(all_data)
 
         # Step 3: Parse elements
@@ -683,9 +687,7 @@ class ElementDiscovery:
 
         for attempt in range(max_retries):
             try:
-                self._logger.debug(
-                    "Discovery attempt %d/%d", attempt + 1, max_retries
-                )
+                self._logger.debug("Discovery attempt %d/%d", attempt + 1, max_retries)
                 elements = self.discover(
                     timeout=timeout,
                     min_completion_ratio=min_completion_ratio,

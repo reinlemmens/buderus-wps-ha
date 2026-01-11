@@ -16,7 +16,7 @@ import time
 import logging
 
 # Add parent directory to path for imports
-sys.path.insert(0, '/home/rein/buderus-wps-ha')
+sys.path.insert(0, "/home/rein/buderus-wps-ha")
 
 from buderus_wps.can_adapter import USBtinAdapter
 from buderus_wps.can_message import CANMessage
@@ -31,13 +31,12 @@ from buderus_wps.runtime_registry import RuntimeParameterRegistry
 
 # Configure logging
 logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s %(levelname)s %(name)s: %(message)s'
+    level=logging.DEBUG, format="%(asctime)s %(levelname)s %(name)s: %(message)s"
 )
 logger = logging.getLogger(__name__)
 
 # Serial port on Raspberry Pi
-SERIAL_PORT = '/dev/ttyACM0'
+SERIAL_PORT = "/dev/ttyACM0"
 
 
 def request_element_count(adapter: USBtinAdapter) -> int:
@@ -51,9 +50,9 @@ def request_element_count(adapter: USBtinAdapter) -> int:
     # In SLCAN format: R + 8-digit ID + DLC
     rtr_frame = CANMessage(
         arbitration_id=ELEMENT_COUNT_REQUEST_ID,
-        data=b'',
+        data=b"",
         is_extended_id=True,
-        is_remote_frame=True
+        is_remote_frame=True,
     )
 
     logger.debug(f"Sending RTR frame: ID=0x{ELEMENT_COUNT_REQUEST_ID:08X}")
@@ -64,7 +63,9 @@ def request_element_count(adapter: USBtinAdapter) -> int:
     if response is None:
         raise RuntimeError("No response to element count request")
 
-    logger.debug(f"Response: ID=0x{response.arbitration_id:08X}, data={response.data.hex()}")
+    logger.debug(
+        f"Response: ID=0x{response.arbitration_id:08X}, data={response.data.hex()}"
+    )
 
     # Parse count from response
     parser = ElementListParser()
@@ -80,22 +81,20 @@ def request_element_data(adapter: USBtinAdapter, offset: int, count: int) -> byt
     PROTOCOL: Send T01FD3FE08{offset:08X}{count:08X}
     """
     # Build request data: offset (4 bytes) + count (4 bytes)
-    request_data = offset.to_bytes(4, 'big') + count.to_bytes(4, 'big')
+    request_data = offset.to_bytes(4, "big") + count.to_bytes(4, "big")
 
     request_frame = CANMessage(
-        arbitration_id=ELEMENT_DATA_REQUEST_ID,
-        data=request_data,
-        is_extended_id=True
+        arbitration_id=ELEMENT_DATA_REQUEST_ID, data=request_data, is_extended_id=True
     )
 
     logger.debug(f"Requesting elements at offset={offset}, count={count}")
 
     # This is more complex - need to receive multiple response frames
     # For now, just send request and collect responses
-    adapter._write_command(request_frame.to_usbtin_format().encode('ascii'))
+    adapter._write_command(request_frame.to_usbtin_format().encode("ascii"))
 
     # Collect response data
-    all_data = b''
+    all_data = b""
     start_time = time.time()
     timeout = 10.0
 
@@ -104,7 +103,9 @@ def request_element_data(adapter: USBtinAdapter, offset: int, count: int) -> byt
             frame = adapter.receive_frame(timeout=1.0)
             if frame and frame.arbitration_id == ELEMENT_DATA_RESPONSE_ID:
                 all_data += frame.data
-                logger.debug(f"Received {len(frame.data)} bytes, total: {len(all_data)}")
+                logger.debug(
+                    f"Received {len(frame.data)} bytes, total: {len(all_data)}"
+                )
         except Exception as e:
             logger.debug(f"Receive error: {e}")
             break
@@ -140,13 +141,13 @@ def discover_elements(adapter: USBtinAdapter) -> list:
 def find_xdhw_time(elements: list) -> dict:
     """Find XDHW_TIME in discovered elements."""
     for elem in elements:
-        if elem.text == 'XDHW_TIME':
+        if elem.text == "XDHW_TIME":
             return {
-                'idx': elem.idx,
-                'extid': elem.extid,
-                'min': elem.min_value,
-                'max': elem.max_value,
-                'can_id': elem.can_id
+                "idx": elem.idx,
+                "extid": elem.extid,
+                "min": elem.min_value,
+                "max": elem.max_value,
+                "can_id": elem.can_id,
             }
     return None
 
@@ -154,10 +155,12 @@ def find_xdhw_time(elements: list) -> dict:
 def compare_with_static():
     """Compare discovered idx with static defaults."""
     registry = RuntimeParameterRegistry(use_static_fallback=True)
-    static_elem = registry.get_by_name('XDHW_TIME')
+    static_elem = registry.get_by_name("XDHW_TIME")
 
     if static_elem:
-        logger.info(f"Static XDHW_TIME: idx={static_elem.idx}, CAN ID=0x{static_elem.can_id:08X}")
+        logger.info(
+            f"Static XDHW_TIME: idx={static_elem.idx}, CAN ID=0x{static_elem.can_id:08X}"
+        )
         return static_elem
     return None
 
@@ -189,17 +192,25 @@ def main():
                     logger.info("XDHW_TIME COMPARISON:")
                     logger.info(f"  Static idx:     {static.idx if static else 'N/A'}")
                     logger.info(f"  Discovered idx: {discovered['idx']}")
-                    logger.info(f"  Static CAN ID:     0x{static.can_id:08X}" if static else "  Static CAN ID: N/A")
+                    logger.info(
+                        f"  Static CAN ID:     0x{static.can_id:08X}"
+                        if static
+                        else "  Static CAN ID: N/A"
+                    )
                     logger.info(f"  Discovered CAN ID: 0x{discovered['can_id']:08X}")
 
-                    if static and discovered['idx'] != static.idx:
-                        logger.warning(">>> IDX MISMATCH! This explains why our writes failed!")
+                    if static and discovered["idx"] != static.idx:
+                        logger.warning(
+                            ">>> IDX MISMATCH! This explains why our writes failed!"
+                        )
                     else:
                         logger.info("IDX values match")
                 else:
                     logger.warning("XDHW_TIME not found in discovered elements")
             else:
-                logger.warning("No elements discovered - trying simple read test instead")
+                logger.warning(
+                    "No elements discovered - trying simple read test instead"
+                )
 
                 # Fall back to simple connectivity test
                 logger.info("Testing basic CAN read...")
@@ -214,5 +225,5 @@ def main():
     return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

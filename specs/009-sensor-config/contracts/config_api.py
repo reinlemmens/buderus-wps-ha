@@ -16,6 +16,7 @@ from typing import Dict, List, Optional, Tuple
 
 class SensorType(Enum):
     """Known sensor types that can be mapped from CAN broadcasts."""
+
     OUTDOOR = "outdoor"
     SUPPLY = "supply"
     RETURN_TEMP = "return_temp"
@@ -25,6 +26,7 @@ class SensorType(Enum):
 
 class CircuitType(Enum):
     """Heating circuit types."""
+
     VENTILO = "ventilo"
     FLOOR_HEATING = "floor_heating"
     UNKNOWN = "unknown"
@@ -39,6 +41,7 @@ class SensorMapping:
         idx: Parameter index within message (0-2047)
         sensor: The sensor type this address represents
     """
+
     base: int
     idx: int
     sensor: SensorType
@@ -65,6 +68,7 @@ class CircuitConfig:
         apartment: Optional apartment identifier
         label: Optional custom display label
     """
+
     number: int
     circuit_type: CircuitType = CircuitType.UNKNOWN
     apartment: Optional[str] = None
@@ -83,6 +87,7 @@ class DHWConfig:
         apartments: List of apartments with DHW access.
                    If empty/None, all apartments have access.
     """
+
     apartments: Optional[List[str]] = None
 
     def has_access(self, apartment: str) -> bool:
@@ -110,6 +115,7 @@ class InstallationConfig:
         dhw: DHW distribution configuration
         labels: Custom sensor display labels
     """
+
     version: str = "1.0"
     sensor_mappings: List[SensorMapping] = field(default_factory=list)
     circuits: List[CircuitConfig] = field(default_factory=list)
@@ -172,6 +178,7 @@ class InstallationConfig:
 
 
 # Module-level functions (public API)
+
 
 def load_config(path: Optional[str] = None) -> InstallationConfig:
     """Load configuration from file.

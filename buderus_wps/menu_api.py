@@ -99,8 +99,15 @@ if TYPE_CHECKING:
 # =============================================================================
 
 # Day names for schedule iteration (Monday=0, Sunday=6)
-WEEKDAYS = ["monday", "tuesday", "wednesday",
-            "thursday", "friday", "saturday", "sunday"]
+WEEKDAYS = [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday",
+]
 
 
 # =============================================================================
@@ -199,8 +206,7 @@ class StatusView:
     def operating_mode(self) -> OperatingMode:
         """Current operating mode."""
         try:
-            result = self._client.read_parameter(
-                STATUS_PARAMS["operating_mode"])
+            result = self._client.read_parameter(STATUS_PARAMS["operating_mode"])
             value = int(result.get("decoded", 0))
             return OperatingMode(value)
         except (KeyError, ValueError):
@@ -214,8 +220,7 @@ class StatusView:
         Verified 2024-12-02: frequency shows actual Hz when running, 0 when stopped.
         """
         try:
-            result = self._client.read_parameter(
-                STATUS_PARAMS["compressor_frequency"])
+            result = self._client.read_parameter(STATUS_PARAMS["compressor_frequency"])
             return int(result.get("decoded", 0)) > 0
         except KeyError:
             return False
@@ -224,8 +229,7 @@ class StatusView:
     def compressor_frequency(self) -> int:
         """Current compressor frequency in Hz (0 = stopped)."""
         try:
-            result = self._client.read_parameter(
-                STATUS_PARAMS["compressor_frequency"])
+            result = self._client.read_parameter(STATUS_PARAMS["compressor_frequency"])
             return int(result.get("decoded", 0))
         except KeyError:
             return 0
@@ -258,7 +262,8 @@ class StatusView:
         """
         try:
             dhw_result = self._client.read_parameter(
-                STATUS_PARAMS["compressor_dhw_request"])
+                STATUS_PARAMS["compressor_dhw_request"]
+            )
             dhw_active = int(dhw_result.get("decoded", 0)) > 0
             if dhw_active:
                 return "DHW"
@@ -267,7 +272,8 @@ class StatusView:
 
         try:
             heat_result = self._client.read_parameter(
-                STATUS_PARAMS["compressor_heating_request"])
+                STATUS_PARAMS["compressor_heating_request"]
+            )
             heat_active = int(heat_result.get("decoded", 0)) > 0
             if heat_active:
                 return "Heating"
@@ -280,8 +286,7 @@ class StatusView:
     def compressor_hours(self) -> int:
         """Total compressor run hours."""
         try:
-            result = self._client.read_parameter(
-                STATUS_PARAMS["compressor_hours"])
+            result = self._client.read_parameter(STATUS_PARAMS["compressor_hours"])
             return int(result.get("decoded", 0))
         except KeyError:
             return 0
@@ -518,8 +523,7 @@ class Circuit:
     @property
     def summer_threshold(self) -> float:
         """Summer/winter switchover temperature."""
-        result = self._client.read_parameter(
-            self._get_param("summer_threshold"))
+        result = self._client.read_parameter(self._get_param("summer_threshold"))
         return float(result.get("decoded", 0))
 
     def get_schedule(self, program: int) -> WeeklySchedule:
@@ -555,9 +559,9 @@ class Circuit:
         # Read vacation parameters for this circuit
         try:
             start_param = get_circuit_param(
-                VACATION_PARAMS["circuit_start"], self._number)
-            end_param = get_circuit_param(
-                VACATION_PARAMS["circuit_end"], self._number)
+                VACATION_PARAMS["circuit_start"], self._number
+            )
+            end_param = get_circuit_param(VACATION_PARAMS["circuit_end"], self._number)
 
             start_result = self._client.read_parameter(start_param)
             end_result = self._client.read_parameter(end_param)
@@ -616,8 +620,7 @@ class AlarmController:
         alarms = []
         for i in range(1, 6):
             try:
-                result = self._client.read_parameter(
-                    ALARM_PARAMS[f"alarm_log_{i}"])
+                result = self._client.read_parameter(ALARM_PARAMS[f"alarm_log_{i}"])
                 alarm = self._parse_alarm(result, i)
                 if alarm and not alarm.acknowledged:
                     alarms.append(alarm)
@@ -631,8 +634,7 @@ class AlarmController:
         alarms = []
         for i in range(1, 6):
             try:
-                result = self._client.read_parameter(
-                    ALARM_PARAMS[f"alarm_log_{i}"])
+                result = self._client.read_parameter(ALARM_PARAMS[f"alarm_log_{i}"])
                 alarm = self._parse_alarm(result, i)
                 if alarm:
                     alarms.append(alarm)
@@ -646,10 +648,8 @@ class AlarmController:
         entries = []
         for i in range(1, 6):
             try:
-                result = self._client.read_parameter(
-                    ALARM_PARAMS[f"info_log_{i}"])
-                entry = self._parse_alarm(
-                    result, i, category=AlarmCategory.INFO)
+                result = self._client.read_parameter(ALARM_PARAMS[f"info_log_{i}"])
+                entry = self._parse_alarm(result, i, category=AlarmCategory.INFO)
                 if entry:
                     entries.append(entry)
             except KeyError:
@@ -657,7 +657,10 @@ class AlarmController:
         return entries
 
     def _parse_alarm(
-        self, result: Dict[str, Any], index: int, category: AlarmCategory = AlarmCategory.ALARM
+        self,
+        result: Dict[str, Any],
+        index: int,
+        category: AlarmCategory = AlarmCategory.ALARM,
     ) -> Optional[Alarm]:
         """Parse alarm data from parameter result."""
         decoded = result.get("decoded")
@@ -696,10 +699,8 @@ class VacationController:
             raise CircuitNotAvailableError(circuit, [1, 2, 3, 4])
 
         try:
-            start_param = get_circuit_param(
-                VACATION_PARAMS["circuit_start"], circuit)
-            end_param = get_circuit_param(
-                VACATION_PARAMS["circuit_end"], circuit)
+            start_param = get_circuit_param(VACATION_PARAMS["circuit_start"], circuit)
+            end_param = get_circuit_param(VACATION_PARAMS["circuit_end"], circuit)
 
             start_result = self._client.read_parameter(start_param)
             end_result = self._client.read_parameter(end_param)
@@ -719,8 +720,7 @@ class VacationController:
         if not 1 <= circuit <= 4:
             raise CircuitNotAvailableError(circuit, [1, 2, 3, 4])
 
-        start_param = get_circuit_param(
-            VACATION_PARAMS["circuit_start"], circuit)
+        start_param = get_circuit_param(VACATION_PARAMS["circuit_start"], circuit)
         end_param = get_circuit_param(VACATION_PARAMS["circuit_end"], circuit)
 
         if period.active and period.start_date and period.end_date:
@@ -742,10 +742,8 @@ class VacationController:
     def hot_water(self) -> VacationPeriod:
         """DHW vacation settings."""
         try:
-            start_result = self._client.read_parameter(
-                VACATION_PARAMS["dhw_start"])
-            end_result = self._client.read_parameter(
-                VACATION_PARAMS["dhw_end"])
+            start_result = self._client.read_parameter(VACATION_PARAMS["dhw_start"])
+            end_result = self._client.read_parameter(VACATION_PARAMS["dhw_end"])
 
             start_val = start_result.get("decoded", 0)
             end_val = end_result.get("decoded", 0)

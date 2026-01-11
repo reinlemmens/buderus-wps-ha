@@ -8,7 +8,7 @@ Look for the value that matches 27.2°C (or current actual DHW temp on your disp
 import sys
 import time
 
-sys.path.insert(0, '.')
+sys.path.insert(0, ".")
 
 try:
     from buderus_wps.broadcast_monitor import BroadcastMonitor, KNOWN_BROADCASTS
@@ -26,7 +26,7 @@ print("\nListening to CAN bus for 10 seconds...")
 print("Please check your heat pump display for the ACTUAL hot water temperature.")
 print()
 
-adapter = USBtinAdapter('/dev/ttyACM0', timeout=5.0)
+adapter = USBtinAdapter("/dev/ttyACM0", timeout=5.0)
 adapter.connect()  # Must connect first!
 monitor = BroadcastMonitor(adapter)
 
@@ -48,11 +48,15 @@ try:
             known = KNOWN_BROADCASTS.get((reading.base, reading.idx))
             name = known[0] if known else f"UNKNOWN_{reading.idx}"
 
-            print(f"0x{reading.base:04X}     {reading.idx:<6} {reading.temperature:>6.1f}°C   {name}")
+            print(
+                f"0x{reading.base:04X}     {reading.idx:<6} {reading.temperature:>6.1f}°C   {name}"
+            )
 
             # Highlight potential DHW candidates (20-60°C range)
             if 20.0 <= reading.temperature <= 60.0:
-                dhw_candidates.append((reading.base, reading.idx, reading.temperature, name))
+                dhw_candidates.append(
+                    (reading.base, reading.idx, reading.temperature, name)
+                )
 
     print("\n" + "=" * 70)
     print("POTENTIAL DHW TEMPERATURE CANDIDATES (20-60°C)")
@@ -73,11 +77,15 @@ try:
     print("4. Report these values so we can update the configuration")
     print()
     print("Current mapping: Base=0x0060-0x0063, Idx=58")
-    print(f"Current reading: {cache.get_by_idx_and_base(58, 0x0060).temperature if cache.get_by_idx_and_base(58, 0x0060) else 'N/A'}°C")
+    print(
+        f"Current reading: {cache.get_by_idx_and_base(58, 0x0060).temperature if cache.get_by_idx_and_base(58, 0x0060) else 'N/A'}°C"
+    )
     print()
 
     # Check if we found anything close to 27.2°C
-    close_matches = [(b, i, t, n) for b, i, t, n in dhw_candidates if abs(t - 27.2) < 1.0]
+    close_matches = [
+        (b, i, t, n) for b, i, t, n in dhw_candidates if abs(t - 27.2) < 1.0
+    ]
     if close_matches:
         print("\n!!! POSSIBLE MATCHES near 27.2°C !!!")
         for base, idx, temp, name in close_matches:

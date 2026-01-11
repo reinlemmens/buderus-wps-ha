@@ -5,7 +5,8 @@ This is a simpler version that just checks the most likely candidates.
 """
 
 import sys
-sys.path.insert(0, '.')
+
+sys.path.insert(0, ".")
 
 from buderus_wps.broadcast_monitor import BroadcastMonitor
 from buderus_wps.can_adapter import USBtinAdapter
@@ -29,7 +30,7 @@ CANDIDATES = [
 print("Testing broadcast positions for DHW temperature...")
 print("Looking for value near 27.2°C\n")
 
-adapter = USBtinAdapter('/dev/ttyACM0', timeout=5.0)
+adapter = USBtinAdapter("/dev/ttyACM0", timeout=5.0)
 monitor = BroadcastMonitor(adapter)
 
 try:
@@ -53,9 +54,13 @@ try:
             elif idx == 58:
                 marker = " (currently used)"
 
-            print(f"0x{base:04X}       {idx:<6} {temp:>6.1f}°C        {description:<40}{marker}")
+            print(
+                f"0x{base:04X}       {idx:<6} {temp:>6.1f}°C        {description:<40}{marker}"
+            )
         else:
-            print(f"0x{base:04X}       {idx:<6} {'---':<15} {description:<40} (not found)")
+            print(
+                f"0x{base:04X}       {idx:<6} {'---':<15} {description:<40} (not found)"
+            )
 
     print("=" * 80)
 
@@ -63,9 +68,14 @@ try:
         print("\nNo exact match found for 27.2°C.")
         print("Showing all temperatures in 20-35°C range:")
         print()
-        for reading in sorted(cache.readings.values(), key=lambda r: r.temperature if r.is_temperature else 999):
+        for reading in sorted(
+            cache.readings.values(),
+            key=lambda r: r.temperature if r.is_temperature else 999,
+        ):
             if reading.is_temperature and 20.0 <= reading.temperature <= 35.0:
-                print(f"  Base=0x{reading.base:04X}, Idx={reading.idx:3d}: {reading.temperature:5.1f}°C")
+                print(
+                    f"  Base=0x{reading.base:04X}, Idx={reading.idx:3d}: {reading.temperature:5.1f}°C"
+                )
 
 finally:
     adapter.disconnect()
