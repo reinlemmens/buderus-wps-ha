@@ -72,7 +72,7 @@ class TestUS4Scenario1SettingDurationStartsProduction:
 
         number = entities_added[0]
         assert number._attr_native_min_value == 0
-        assert number._attr_native_max_value == 24
+        assert number._attr_native_max_value == 48  # DHW extra duration max is 48 hours
         assert number._attr_native_step == 1
         assert number._attr_mode == NumberMode.BOX
 

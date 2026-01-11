@@ -162,27 +162,18 @@ class TestDiscoveryFlowWithMock:
         assert elements[2]["min"] == -30
         assert elements[2]["max"] == 40
 
-    def test_mock_adapter_returns_correct_count(self, mock_adapter):
+    @pytest.mark.asyncio
+    async def test_mock_adapter_returns_correct_count(self, mock_adapter):
         """Verify mock adapter returns correct element count."""
-        import asyncio
-
-        async def test():
-            response = await mock_adapter.receive(ParameterDiscovery.ELEMENT_COUNT_RECV)
-            count = struct.unpack(">I", response)[0]
-            return count
-
-        count = asyncio.get_event_loop().run_until_complete(test())
+        response = await mock_adapter.receive(ParameterDiscovery.ELEMENT_COUNT_RECV)
+        count = struct.unpack(">I", response)[0]
         assert count == 3
 
-    def test_mock_adapter_tracks_sent_messages(self, mock_adapter):
+    @pytest.mark.asyncio
+    async def test_mock_adapter_tracks_sent_messages(self, mock_adapter):
         """Verify mock adapter tracks sent messages."""
-        import asyncio
-
-        async def test():
-            await mock_adapter.send(0x01FD7FE0, b"")
-            await mock_adapter.send(0x01FD3FE0, struct.pack(">II", 0, 4096))
-
-        asyncio.get_event_loop().run_until_complete(test())
+        await mock_adapter.send(0x01FD7FE0, b"")
+        await mock_adapter.send(0x01FD3FE0, struct.pack(">II", 0, 4096))
 
         assert len(mock_adapter.sent_messages) == 2
         assert mock_adapter.sent_messages[0]["can_id"] == 0x01FD7FE0
@@ -216,17 +207,13 @@ class TestDiscoveryConstants:
 class TestDiscoveryWithoutAdapter:
     """Test discovery behavior without adapter."""
 
-    def test_discover_raises_without_adapter(self):
+    @pytest.mark.asyncio
+    async def test_discover_raises_without_adapter(self):
         """Verify discover() raises RuntimeError without adapter."""
-        import asyncio
-
         discovery = ParameterDiscovery()
 
-        async def test():
-            return await discovery.discover()
-
         with pytest.raises(RuntimeError, match="No CAN adapter configured"):
-            asyncio.get_event_loop().run_until_complete(test())
+            await discovery.discover()
 
 
 class TestParseAllElementsFromChunk:

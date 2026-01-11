@@ -135,6 +135,8 @@ class TestStatusView:
             {"decoded": 21.5},  # room_temp
             {"decoded": 1},  # operating_mode
             {"decoded": 1},  # compressor_running
+            {"decoded": 1},  # heating_season_mode
+            {"decoded": 0},  # dhw_program_mode
         ]
         view = StatusView(mock_client)
 
@@ -147,6 +149,8 @@ class TestStatusView:
         assert snapshot.room_temperature == 21.5
         assert snapshot.operating_mode == OperatingMode.HEATING
         assert snapshot.compressor_running is True
+        assert snapshot.heating_season_mode == 1
+        assert snapshot.dhw_program_mode == 0  # DHWProgramMode.ALWAYS_ON
 
     def test_outdoor_temp_missing_returns_none(self, mock_client):
         """Return None when outdoor temp unavailable (RTR reads are unreliable)."""
@@ -179,16 +183,17 @@ class TestHotWaterController:
         ctrl = HotWaterController(mock_client)
 
         ctrl.temperature = 55.0
-        mock_client.write_value.assert_called_once_with("DHW_SETPOINT", 550)
+        # Value passed as human-readable °C, encoder handles conversion
+        mock_client.write_value.assert_called_once_with("DHW_SETPOINT", 55.0)
 
     def test_temperature_write_below_range(self, mock_client):
-        """Reject temperature below 20."""
+        """Reject temperature below 45."""
         ctrl = HotWaterController(mock_client)
 
         with pytest.raises(ValidationError) as exc_info:
-            ctrl.temperature = 19.0
+            ctrl.temperature = 44.0
         assert exc_info.value.field == "temperature"
-        assert exc_info.value.value == 19.0
+        assert exc_info.value.value == 44.0
 
     def test_temperature_write_above_range(self, mock_client):
         """Reject temperature above 65."""
@@ -199,10 +204,10 @@ class TestHotWaterController:
         assert exc_info.value.field == "temperature"
 
     def test_temperature_write_at_lower_bound(self, mock_client):
-        """Accept temperature at lower bound (20)."""
+        """Accept temperature at lower bound (45)."""
         ctrl = HotWaterController(mock_client)
 
-        ctrl.temperature = 20.0
+        ctrl.temperature = 45.0
         mock_client.write_value.assert_called_once()
 
     def test_temperature_write_at_upper_bound(self, mock_client):

@@ -154,8 +154,8 @@ class TestDHWIntegration:
         # Modify
         api.hot_water.temperature = 55.0
 
-        # Verify write was called with correct value (55 * 10 = 550)
-        mock_client.write_value.assert_called_with("DHW_SETPOINT", 550)
+        # Verify write was called with human-readable value (encoder handles conversion)
+        mock_client.write_value.assert_called_with("DHW_SETPOINT", 55.0)
 
     def test_dhw_program_mode_workflow(self, mock_client):
         """Switch DHW program modes."""

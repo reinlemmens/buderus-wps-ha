@@ -56,6 +56,19 @@ class ParameterRegistry:
     def get_by_index(self, idx: int) -> Optional[Parameter]:
         return self._by_idx.get(idx)
 
+    def get_parameter(self, name_or_idx) -> Optional[Parameter]:
+        """Look up parameter by name or index.
+
+        Args:
+            name_or_idx: Parameter name (str) or index (int)
+
+        Returns:
+            Parameter if found, None otherwise
+        """
+        if isinstance(name_or_idx, int):
+            return self.get_by_index(name_or_idx)
+        return self.get_by_name(str(name_or_idx))
+
     def override_with_device(self, entries: list[dict]) -> None:
         """Replace registry contents with device-provided entries."""
         self._parameters = [self._to_parameter(p) for p in entries]

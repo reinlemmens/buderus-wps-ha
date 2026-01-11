@@ -61,6 +61,8 @@ class TestUS1StatusReading:
             {"decoded": 21.5},  # room
             {"decoded": 1},  # mode
             {"decoded": 1},  # compressor
+            {"decoded": 1},  # heating_season_mode
+            {"decoded": 0},  # dhw_program_mode
         ]
 
         api = MenuAPI(mock_client)
@@ -79,6 +81,8 @@ class TestUS1StatusReading:
             {"decoded": None},
             {"decoded": 1},  # HEATING mode
             {"decoded": 1},  # compressor running
+            {"decoded": 1},  # heating_season_mode
+            {"decoded": 0},  # dhw_program_mode
         ]
 
         api = MenuAPI(mock_client)
@@ -189,15 +193,15 @@ class TestUS3HotWaterSettings:
         assert temp == 50.0
 
     def test_ac2_modify_temperature_in_range(self, mock_client):
-        """AC2: Modify temperature within 20-65 range."""
+        """AC2: Modify temperature within 45-65 range."""
         api = MenuAPI(mock_client)
 
-        # Set to valid value
+        # Set to valid value - human-readable °C passed to write_value
         api.hot_water.temperature = 55.0
-        mock_client.write_value.assert_called_with("DHW_SETPOINT", 550)
+        mock_client.write_value.assert_called_with("DHW_SETPOINT", 55.0)
 
         # Boundary values
-        api.hot_water.temperature = 20.0  # min
+        api.hot_water.temperature = 45.0  # min
         api.hot_water.temperature = 65.0  # max
 
     def test_ac3_program_mode(self, mock_client):

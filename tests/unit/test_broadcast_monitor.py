@@ -266,17 +266,17 @@ class TestParamToBroadcast:
         result = get_broadcast_for_param("GT2_TEMP")
         assert result == (None, 12)
 
-    def test_get_broadcast_for_gt3_temp(self) -> None:
-        """Test get_broadcast_for_param returns correct mapping for GT3_TEMP.
+    def test_get_broadcast_for_gt3_temp_not_in_broadcast(self) -> None:
+        """Test get_broadcast_for_param returns None for GT3_TEMP.
 
-        GT3_TEMP (DHW temperature) is at base=0x0402, idx=78.
-        This was corrected from the previous incorrect mapping (base=None, idx=58)
-        which showed ~54°C instead of actual tank temp ~27°C.
+        GT3_TEMP (DHW temperature) is NOT available via broadcast monitoring.
+        It must be read via RTR with the discovered parameter idx.
+        The broadcast at (0x0402, 78) does NOT contain actual DHW tank temperature.
         """
         from buderus_wps.broadcast_monitor import get_broadcast_for_param
 
         result = get_broadcast_for_param("GT3_TEMP")
-        assert result == (0x0402, 78)
+        assert result is None  # GT3 must be read via RTR, not broadcast
 
     def test_get_broadcast_case_insensitive(self) -> None:
         """Test get_broadcast_for_param is case-insensitive."""
