@@ -216,7 +216,7 @@ class TestIndefiniteCaching:
         coordinator._sync_fetch_data = MagicMock(side_effect=mock_timeout_error)
 
         # Simulate 10 consecutive fetch failures
-        for i in range(10):
+        for _i in range(10):
             try:
                 await coordinator._async_update_data()
                 # After implementation, this should NOT raise

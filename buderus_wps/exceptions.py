@@ -22,7 +22,7 @@ Exception Hierarchy:
     └── ConcurrencyError
 """
 
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 
 class BuderusCANException(Exception):
@@ -37,7 +37,7 @@ class BuderusCANException(Exception):
         context: Additional context information (port, timeout, etc.)
     """
 
-    def __init__(self, message: str, context: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(self, message: str, context: Optional[dict[str, Any]] = None) -> None:
         """
         Initialize exception with message and optional context.
 

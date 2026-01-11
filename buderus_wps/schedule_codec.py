@@ -19,7 +19,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import time
-from typing import List
 
 from .exceptions import ValidationError
 
@@ -79,7 +78,7 @@ class WeeklySchedule:
     saturday: ScheduleSlot
     sunday: ScheduleSlot
 
-    def _days_as_list(self) -> List[ScheduleSlot]:
+    def _days_as_list(self) -> list[ScheduleSlot]:
         """Return all days as a list (Monday=index 0, Sunday=index 6)."""
         return [
             self.monday,

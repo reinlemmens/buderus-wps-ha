@@ -16,7 +16,6 @@ import argparse
 import struct
 import sys
 import time
-from collections import defaultdict
 from dataclasses import dataclass
 from typing import Optional
 

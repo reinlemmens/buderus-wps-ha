@@ -239,7 +239,7 @@ class TestGetKnownName:
 
     def test_all_known_broadcasts_have_names(self, monitor: BroadcastMonitor) -> None:
         """Test that all entries in KNOWN_BROADCASTS have valid names."""
-        for (base, idx), (name, fmt) in KNOWN_BROADCASTS.items():
+        for (base, idx), (name, _fmt) in KNOWN_BROADCASTS.items():
             reading = BroadcastReading(
                 can_id=0x0C000000 | (idx << 14) | base,
                 base=base,

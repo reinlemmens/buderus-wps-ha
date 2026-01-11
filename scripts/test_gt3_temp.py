@@ -291,7 +291,7 @@ def main():
             if idx_681:
                 if idx_681["dlc"] == 1:
                     print(
-                        f"✓ idx=681 returns DLC=1 (status byte) - confirms it's GT3_STATUS"
+                        "✓ idx=681 returns DLC=1 (status byte) - confirms it's GT3_STATUS"
                     )
                 elif idx_681["is_temperature"]:
                     print(

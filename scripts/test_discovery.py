@@ -7,7 +7,7 @@ import time
 # Add the custom_components path to Python path
 sys.path.insert(0, "/config/custom_components/buderus_wps")
 
-from buderus_wps import USBtinAdapter, BroadcastMonitor, HeatPump, HeatPumpClient
+from buderus_wps import BroadcastMonitor, HeatPump, HeatPumpClient, USBtinAdapter
 from buderus_wps.can_message import CANMessage
 
 PORT = "/dev/ttyACM0"
@@ -29,7 +29,7 @@ def test_monitor_broadcasts(duration: float = 10.0):
 
         # Group by temperature range
         temps = []
-        for key, reading in cache.readings.items():
+        for _key, reading in cache.readings.items():
             if reading.is_temperature and 10.0 <= reading.temperature <= 80.0:
                 temps.append(reading)
 
@@ -131,7 +131,7 @@ def test_discovery_protocol():
         adapter.send_frame(data_request, timeout=0.5)
 
         # Also send RTR to trigger response (per FHEM)
-        rtr_request = CANMessage(
+        CANMessage(
             arbitration_id=ELEMENT_DATA_RESPONSE_ID,
             data=b"",
             is_extended_id=True,
@@ -167,7 +167,7 @@ def test_discovery_protocol():
                 min_val = int.from_bytes(received_data[13:17], "big", signed=True)
                 name_len = received_data[17]
 
-                print(f"\n   First element:")
+                print("\n   First element:")
                 print(f"     idx: {idx}")
                 print(f"     extid: {extid}")
                 print(f"     max: {max_val}")

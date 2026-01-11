@@ -10,7 +10,6 @@ import time
 sys.path.insert(0, "/home/rein/buderus-wps-ha")
 
 from buderus_wps.can_adapter import USBtinAdapter
-from buderus_wps.can_message import CANMessage
 
 SERIAL_PORT = "/dev/ttyACM0"
 
@@ -95,7 +94,7 @@ def main():
             print(
                 f"Results: {matches} exact, {close} close (within 5), {missing} missing"
             )
-            print(f"\nNote: Small differences expected - values change in real-time!")
+            print("\nNote: Small differences expected - values change in real-time!")
 
     except Exception as e:
         print(f"Error: {e}")

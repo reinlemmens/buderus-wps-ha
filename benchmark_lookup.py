@@ -4,10 +4,10 @@ Benchmark different dictionary approaches for parameter lookup.
 Testing with 1789 parameters (actual count from FHEM source).
 """
 
-import timeit
 import sys
+import timeit
 from collections import OrderedDict
-from typing import Dict, Any
+from typing import Any
 
 # Actual parameter count from FHEM 26_KM273v018.pm
 NUM_PARAMS = 1789
@@ -93,7 +93,7 @@ def test_case_insensitive():
 class ImmutableParameterDict:
     """Immutable parameter dictionary with case-insensitive lookup."""
 
-    def __init__(self, params: Dict[str, Any]):
+    def __init__(self, params: dict[str, Any]):
         self._params = {k.upper(): v for k, v in params.items()}
         # Freeze by removing ability to modify
 
@@ -231,7 +231,7 @@ lookup_key = f"param_{{{NUM_PARAMS-1}}}"
 
     print()
     print("=== CONCLUSION ===")
-    print(f"Target: <100ms lookup time")
+    print("Target: <100ms lookup time")
     print(f"All approaches meet target: {dict_time*1000:.4f}ms << 100ms")
     print()
     print("Performance ranking (fastest to slowest):")

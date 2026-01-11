@@ -10,7 +10,7 @@ with the static parameter database for known parameters.
 """
 
 import logging
-from typing import Dict, List, Optional, cast
+from typing import Optional, cast
 
 from .element_discovery import DiscoveredElement
 from .parameter_defaults import PARAMETER_DEFAULTS
@@ -40,7 +40,7 @@ class RuntimeParameterRegistry:
             use_static_fallback: If True (default), look up parameters in
                 static parameter_data.py when not found in discovered elements.
         """
-        self._elements: Dict[str, DiscoveredElement] = {}
+        self._elements: dict[str, DiscoveredElement] = {}
         self.use_static_fallback = use_static_fallback
 
     @property
@@ -60,7 +60,7 @@ class RuntimeParameterRegistry:
         self._elements[key] = element
         logger.debug(f"Registered element: {element.text} (idx={element.idx})")
 
-    def register_all(self, elements: List[DiscoveredElement]) -> None:
+    def register_all(self, elements: list[DiscoveredElement]) -> None:
         """Register multiple elements at once.
 
         Args:
@@ -129,7 +129,7 @@ class RuntimeParameterRegistry:
             max_value=cast(int, param.get("max", 0)),
         )
 
-    def get_all_discovered(self) -> List[DiscoveredElement]:
+    def get_all_discovered(self) -> list[DiscoveredElement]:
         """Get all discovered elements.
 
         Returns:

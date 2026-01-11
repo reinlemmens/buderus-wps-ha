@@ -13,8 +13,8 @@ from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 
 from .const import (
-    CONF_SERIAL_DEVICE,
     CONF_PARAMETER_ALLOWLIST,
+    CONF_SERIAL_DEVICE,
     DEFAULT_SCAN_INTERVAL,
     DEFAULT_TIMEOUT,
     DOMAIN,

@@ -137,7 +137,7 @@ class TestCoordinatorManualDisconnect:
         coordinator._manually_disconnected = False
 
         # Mock _sync_connect to track if it's called
-        with patch.object(coordinator, "_sync_connect") as mock_sync_connect:
+        with patch.object(coordinator, "_sync_connect"):
             # Start reconnection task
             reconnect_task = asyncio.create_task(coordinator._reconnect_with_backoff())
 

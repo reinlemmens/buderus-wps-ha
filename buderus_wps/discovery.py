@@ -25,7 +25,7 @@ Example:
 import logging
 import struct
 import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -93,7 +93,7 @@ class ParameterDiscovery:
         self._timeout = timeout
 
     @staticmethod
-    def parse_element(data: bytes, offset: int) -> Tuple[Optional[Dict], int]:
+    def parse_element(data: bytes, offset: int) -> tuple[Optional[dict], int]:
         """Parse single element from binary data.
 
         # PROTOCOL: Binary structure from fhem/26_KM273v018.pm:2135-2143
@@ -344,7 +344,7 @@ class ParameterDiscovery:
         )
         return bytes(chunk_data)
 
-    def _parse_all_elements(self, data: bytes) -> List[Dict]:
+    def _parse_all_elements(self, data: bytes) -> list[dict]:
         """Parse all elements from binary data.
 
         # PROTOCOL: Parse loop from fhem/26_KM273v018.pm:2131-2155
@@ -388,7 +388,7 @@ class ParameterDiscovery:
         logger.info("Parsed %d elements from %d bytes", len(elements), len(data))
         return elements
 
-    async def discover(self) -> List[Dict]:
+    async def discover(self) -> list[dict]:
         """Execute full discovery protocol.
 
         # PROTOCOL: Discovery sequence from fhem/26_KM273v018.pm:2052-2187
@@ -453,7 +453,7 @@ class ParameterDiscovery:
         logger.info("Discovery complete: found %d parameters", len(elements))
         return elements
 
-    def discover_sync(self) -> List[Dict]:
+    def discover_sync(self) -> list[dict]:
         """Synchronous wrapper for discover().
 
         Convenience method for use in synchronous code.

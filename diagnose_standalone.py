@@ -3,9 +3,9 @@
 Standalone diagnostic for GT10/GT11 - runs outside HA context.
 """
 
-import sys
 import json
 import os
+import sys
 
 print("=" * 70)
 print("BUDERUS WPS GT10/GT11 DIAGNOSTIC TOOL (STANDALONE)")
@@ -17,16 +17,16 @@ sys.path.insert(0, "/config/custom_components/buderus_wps/buderus_wps")
 try:
     print("\n[1/6] Importing modules...")
     from can_adapter import USBtinAdapter
-    from parameter import ParameterRegistry
-    from heat_pump import HeatPumpClient
     from element_discovery import ElementDiscovery
+    from heat_pump import HeatPumpClient
+    from parameter import ParameterRegistry
 
     print("✓ Modules imported successfully")
 
     print("\n[2/6] Checking element discovery cache...")
     cache_path = "/tmp/buderus_wps_elements.json"
     if os.path.exists(cache_path):
-        with open(cache_path, "r") as f:
+        with open(cache_path) as f:
             cache_data = json.load(f)
         print(f"✓ Cache exists: {len(cache_data.get('elements', []))} elements")
 
@@ -130,13 +130,13 @@ try:
             if error:
                 print(f"  ✗ Error: {error}")
             elif decoded is None:
-                print(f"  ⚠ DEAD sensor (0xDEAD)")
+                print("  ⚠ DEAD sensor (0xDEAD)")
             elif isinstance(decoded, (int, float)) and abs(decoded - 0.1) < 0.01:
-                print(f"  ✗ PROBLEM: Got 0.1°C (raw value = 1)")
-                print(f"     Possible causes:")
-                print(f"       - Wrong parameter idx (not GT10/GT11 on your model)")
-                print(f"       - Parameter doesn't exist")
-                print(f"       - Reading uninitialized memory")
+                print("  ✗ PROBLEM: Got 0.1°C (raw value = 1)")
+                print("     Possible causes:")
+                print("       - Wrong parameter idx (not GT10/GT11 on your model)")
+                print("       - Parameter doesn't exist")
+                print("       - Reading uninitialized memory")
             else:
                 print(f"  ✓ Success: {decoded}°C")
 

@@ -3,9 +3,9 @@
 Final standalone diagnostic - uses library from /tmp.
 """
 
-import sys
 import json
 import os
+import sys
 
 # Use the clean library from /tmp (not the HA integration wrapper)
 sys.path.insert(0, "/tmp")
@@ -17,9 +17,9 @@ print("=" * 70)
 try:
     print("\n[1/6] Importing...")
     from buderus_wps.can_adapter import USBtinAdapter
-    from buderus_wps.parameter import ParameterRegistry
-    from buderus_wps.heat_pump import HeatPumpClient
     from buderus_wps.element_discovery import ElementDiscovery
+    from buderus_wps.heat_pump import HeatPumpClient
+    from buderus_wps.parameter import ParameterRegistry
 
     print("✓ OK")
 

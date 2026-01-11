@@ -10,7 +10,6 @@ Note: This is a design document, not implementation code.
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import time
-from typing import Tuple
 
 
 @dataclass

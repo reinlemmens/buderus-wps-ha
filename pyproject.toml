@@ -128,6 +128,21 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]  # unused imports in __init__.py
+"tests/**/*.py" = ["E402", "B017", "B007", "E741"]  # sys.path manipulation, blind exception, unused loop vars, ambiguous names in tests
+"tools/**/*.py" = ["E402", "F841"]  # sys.path manipulation, unused vars in debug scripts
+"scripts/**/*.py" = ["E402"]  # sys.path manipulation before imports
+"**/diagnose*.py" = ["E402", "F841"]  # diagnostic scripts
+"**/check_*.py" = ["E402", "F841"]  # check scripts
+"**/debug_*.py" = ["E402", "F841"]  # debug scripts
+"**/monitor_*.py" = ["E402"]  # monitor scripts
+"**/find_*.py" = ["E402"]  # find scripts
+"benchmark_*.py" = ["E402"]  # benchmark scripts
+"quick_test.py" = ["E402"]  # quick test script
+"buderus_wps/can_adapter.py" = ["B904"]  # exception chaining not needed for clean error messages
+"buderus_wps/can_message.py" = ["B904"]  # exception chaining not needed for clean error messages
+"buderus_wps/element_discovery.py" = ["B904"]  # exception chaining not needed for clean error messages
+"buderus_wps/parameter_data.py" = ["E402"]  # import after large data block
+"buderus_wps_cli/main.py" = ["E402"]  # import organization
 
 [tool.mypy]
 python_version = "3.9"

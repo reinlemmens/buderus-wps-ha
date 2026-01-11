@@ -9,10 +9,9 @@ Note: This is a design document, not implementation code.
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from datetime import time, date, datetime
+from datetime import date, datetime, time
 from enum import Enum, auto
-from typing import List, Dict, Optional, Tuple, Any
-
+from typing import Any, Optional
 
 # === Enumerations ===
 
@@ -145,8 +144,8 @@ class MenuItem:
     description: str
     readable: bool
     writable: bool
-    value_range: Optional[Tuple[Any, Any]]
-    children: List["MenuItem"]
+    value_range: Optional[tuple[Any, Any]]
+    children: list["MenuItem"]
 
 
 # === Abstract Interfaces ===
@@ -380,19 +379,19 @@ class AlarmController(ABC):
 
     @property
     @abstractmethod
-    def active_alarms(self) -> List[Alarm]:
+    def active_alarms(self) -> list[Alarm]:
         """List of currently active alarms."""
         ...
 
     @property
     @abstractmethod
-    def alarm_log(self) -> List[Alarm]:
+    def alarm_log(self) -> list[Alarm]:
         """Historical alarm log entries."""
         ...
 
     @property
     @abstractmethod
-    def info_log(self) -> List[Alarm]:
+    def info_log(self) -> list[Alarm]:
         """Information/warning log entries."""
         ...
 
@@ -472,7 +471,7 @@ class MenuNavigator(ABC):
 
     @property
     @abstractmethod
-    def path(self) -> List[str]:
+    def path(self) -> list[str]:
         """Breadcrumb path to current item."""
         ...
 
@@ -498,7 +497,7 @@ class MenuNavigator(ABC):
         ...
 
     @abstractmethod
-    def items(self) -> List[MenuItem]:
+    def items(self) -> list[MenuItem]:
         """List children of current menu item."""
         ...
 

@@ -10,7 +10,7 @@ These tests cover:
 - Data source property reporting
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 from unittest.mock import AsyncMock, MagicMock, patch
 
 
@@ -28,7 +28,7 @@ class MockCANAdapter:
         self.should_succeed = should_succeed
         self.element_count = element_count
         self.connected = False
-        self._calls: List[Dict[str, Any]] = []
+        self._calls: list[dict[str, Any]] = []
 
     async def connect(self) -> None:
         """Simulate connection."""
@@ -44,7 +44,7 @@ class MockCANAdapter:
         """Record sent message."""
         self._calls.append({"method": "send", "can_id": can_id, "data": data})
 
-    async def receive_message(self, timeout: float = 5.0) -> Optional[Dict]:
+    async def receive_message(self, timeout: float = 5.0) -> Optional[dict]:
         """Simulate receiving a message."""
         if not self.should_succeed:
             return None
@@ -184,7 +184,7 @@ class TestHeatPumpDiscovery:
             MockDiscovery.return_value = mock_discovery
 
             mock_adapter = MockCANAdapter()
-            heat_pump = HeatPump(adapter=mock_adapter, cache_path=cache_path)
+            HeatPump(adapter=mock_adapter, cache_path=cache_path)
 
             # Verify cache was created
             assert cache_path.exists()

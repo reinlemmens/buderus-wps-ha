@@ -708,7 +708,6 @@ class USBtinAdapter:
             max_idle = (
                 200  # Allow 200 idle cycles (200ms) for slower devices/bus congestion
             )
-            last_data_time = start_time
 
             while len(data) < expected_bytes:
                 elapsed = time.time() - start_time
@@ -722,7 +721,7 @@ class USBtinAdapter:
                     if chunk:
                         raw_buffer.extend(chunk)
                         idle_count = 0
-                        last_data_time = time.time()
+                        time.time()
                 else:
                     # Very brief pause - 1ms for tight polling
                     time.sleep(0.001)

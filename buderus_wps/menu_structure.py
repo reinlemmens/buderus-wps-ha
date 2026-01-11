@@ -18,7 +18,7 @@ Menu Structure (from user manual Table 3):
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, List, Optional, Tuple
+from typing import Any, Optional
 
 
 @dataclass
@@ -42,8 +42,8 @@ class MenuItem:
     parameter: Optional[str] = None
     readable: bool = True
     writable: bool = False
-    value_range: Optional[Tuple[Any, Any]] = None
-    children: List[MenuItem] = field(default_factory=list)
+    value_range: Optional[tuple[Any, Any]] = None
+    children: list[MenuItem] = field(default_factory=list)
     format: Optional[str] = None
 
 

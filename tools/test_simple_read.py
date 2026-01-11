@@ -8,9 +8,9 @@ This script:
 4. Compares results
 """
 
+import logging
 import sys
 import time
-import logging
 
 sys.path.insert(0, "/home/rein/buderus-wps-ha")
 
@@ -51,7 +51,7 @@ def read_parameter(adapter: USBtinAdapter, idx: int, name: str) -> bytes:
             )
             return response.data
         else:
-            logger.warning(f"  No response")
+            logger.warning("  No response")
             return None
     except Exception as e:
         logger.error(f"  Error: {e}")
@@ -76,7 +76,7 @@ def write_parameter(adapter: USBtinAdapter, idx: int, name: str, value: int) -> 
             )
             return True
         else:
-            logger.warning(f"  No response")
+            logger.warning("  No response")
             return False
     except Exception as e:
         logger.error(f"  Error: {e}")

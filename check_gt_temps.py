@@ -6,7 +6,7 @@ import sys
 sys.path.insert(0, "/config/custom_components/buderus_wps")
 
 try:
-    from buderus_wps import USBtinAdapter, HeatPump, HeatPumpClient
+    from buderus_wps import HeatPump, HeatPumpClient, USBtinAdapter
     from buderus_wps.element_discovery import ElementDiscovery
 
     # Connect to heat pump

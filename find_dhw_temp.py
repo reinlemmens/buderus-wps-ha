@@ -6,12 +6,11 @@ Look for the value that matches 27.2°C (or current actual DHW temp on your disp
 """
 
 import sys
-import time
 
 sys.path.insert(0, ".")
 
 try:
-    from buderus_wps.broadcast_monitor import BroadcastMonitor, KNOWN_BROADCASTS
+    from buderus_wps.broadcast_monitor import KNOWN_BROADCASTS, BroadcastMonitor
     from buderus_wps.can_adapter import USBtinAdapter
 except ImportError as e:
     print(f"Import error: {e}")

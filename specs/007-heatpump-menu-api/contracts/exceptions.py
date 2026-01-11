@@ -6,7 +6,7 @@ This file defines the exception hierarchy for the Menu API.
 Note: This is a design document, not implementation code.
 """
 
-from typing import Any, Optional, Tuple
+from typing import Any, Optional
 
 
 class MenuAPIError(Exception):
@@ -31,7 +31,7 @@ class ValidationError(MenuAPIError):
         field: str,
         value: Any,
         constraint: str,
-        allowed_range: Optional[Tuple[Any, Any]] = None,
+        allowed_range: Optional[tuple[Any, Any]] = None,
     ):
         self.field = field
         self.value = value

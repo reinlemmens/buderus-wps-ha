@@ -59,8 +59,8 @@ Example:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date, datetime, time
-from typing import Any, cast, Dict, List, Optional, TYPE_CHECKING
+from datetime import date, datetime
+from typing import TYPE_CHECKING, Any, Optional, cast
 
 from .enums import (
     AlarmCategory,
@@ -73,22 +73,21 @@ from .exceptions import (
     AlarmNotClearableError,
     CircuitNotAvailableError,
     MenuNavigationError,
-    ParameterNotFoundError,
     ReadOnlyError,
     ValidationError,
 )
-from .schedule_codec import ScheduleCodec, ScheduleSlot, WeeklySchedule
 from .menu_structure import (
-    MenuItem,
+    ALARM_PARAMS,
+    CIRCUIT_PARAMS,
+    DHW_PARAMS,
+    ENERGY_PARAMS,
     MENU_ROOT,
     STATUS_PARAMS,
-    DHW_PARAMS,
-    CIRCUIT_PARAMS,
     VACATION_PARAMS,
-    ENERGY_PARAMS,
-    ALARM_PARAMS,
+    MenuItem,
     get_circuit_param,
 )
+from .schedule_codec import ScheduleCodec, WeeklySchedule
 
 if TYPE_CHECKING:
     from .heat_pump import HeatPumpClient
@@ -163,7 +162,7 @@ class Alarm:
 class StatusView:
     """Read-only access to heat pump status and temperatures."""
 
-    def __init__(self, client: "HeatPumpClient") -> None:
+    def __init__(self, client: HeatPumpClient) -> None:
         self._client = client
 
     def _read_temp(self, param_name: str) -> Optional[float]:
@@ -315,7 +314,7 @@ class StatusView:
 class HotWaterController:
     """Control DHW (hot water) settings and schedules."""
 
-    def __init__(self, client: "HeatPumpClient") -> None:
+    def __init__(self, client: HeatPumpClient) -> None:
         self._client = client
 
     @property
@@ -449,7 +448,7 @@ class HotWaterController:
 class Circuit:
     """Control settings for a heating circuit."""
 
-    def __init__(self, client: "HeatPumpClient", number: int) -> None:
+    def __init__(self, client: HeatPumpClient, number: int) -> None:
         self._client = client
         self._number = number
         self._type = CircuitType.UNMIXED if number == 1 else CircuitType.MIXED
@@ -592,7 +591,7 @@ class Circuit:
 class EnergyView:
     """Read-only access to energy statistics."""
 
-    def __init__(self, client: "HeatPumpClient") -> None:
+    def __init__(self, client: HeatPumpClient) -> None:
         self._client = client
 
     @property
@@ -611,11 +610,11 @@ class EnergyView:
 class AlarmController:
     """Manage alarms and information logs."""
 
-    def __init__(self, client: "HeatPumpClient") -> None:
+    def __init__(self, client: HeatPumpClient) -> None:
         self._client = client
 
     @property
-    def active_alarms(self) -> List[Alarm]:
+    def active_alarms(self) -> list[Alarm]:
         """List of currently active alarms."""
         alarms = []
         for i in range(1, 6):
@@ -629,7 +628,7 @@ class AlarmController:
         return alarms
 
     @property
-    def alarm_log(self) -> List[Alarm]:
+    def alarm_log(self) -> list[Alarm]:
         """Historical alarm log entries."""
         alarms = []
         for i in range(1, 6):
@@ -643,7 +642,7 @@ class AlarmController:
         return alarms
 
     @property
-    def info_log(self) -> List[Alarm]:
+    def info_log(self) -> list[Alarm]:
         """Information/warning log entries."""
         entries = []
         for i in range(1, 6):
@@ -658,7 +657,7 @@ class AlarmController:
 
     def _parse_alarm(
         self,
-        result: Dict[str, Any],
+        result: dict[str, Any],
         index: int,
         category: AlarmCategory = AlarmCategory.ALARM,
     ) -> Optional[Alarm]:
@@ -690,7 +689,7 @@ class AlarmController:
 class VacationController:
     """Manage vacation mode settings."""
 
-    def __init__(self, client: "HeatPumpClient") -> None:
+    def __init__(self, client: HeatPumpClient) -> None:
         self._client = client
 
     def get_circuit(self, circuit: int) -> VacationPeriod:
@@ -779,11 +778,11 @@ class VacationController:
 class MenuNavigator:
     """Navigate the menu hierarchy."""
 
-    def __init__(self, client: "HeatPumpClient") -> None:
+    def __init__(self, client: HeatPumpClient) -> None:
         self._client = client
         self._root = MENU_ROOT
         self._current = MENU_ROOT
-        self._path: List[str] = []
+        self._path: list[str] = []
 
     @property
     def root(self) -> MenuItem:
@@ -796,7 +795,7 @@ class MenuNavigator:
         return self._current
 
     @property
-    def path(self) -> List[str]:
+    def path(self) -> list[str]:
         """Breadcrumb path to current item."""
         return self._path.copy()
 
@@ -812,7 +811,7 @@ class MenuNavigator:
         """
         parts = path.strip("/").split("/") if path else []
         current = self._root
-        new_path: List[str] = []
+        new_path: list[str] = []
 
         for part in parts:
             found = None
@@ -847,7 +846,7 @@ class MenuNavigator:
 
         return self._current
 
-    def items(self) -> List[MenuItem]:
+    def items(self) -> list[MenuItem]:
         """List children of current menu item."""
         return self._current.children.copy()
 
@@ -902,7 +901,7 @@ class MenuAPI:
         >>> print(f"Outdoor: {api.status.outdoor_temperature}°C")
     """
 
-    def __init__(self, client: "HeatPumpClient") -> None:
+    def __init__(self, client: HeatPumpClient) -> None:
         """
         Initialize Menu API.
 
@@ -912,7 +911,7 @@ class MenuAPI:
         self._client = client
         self._status = StatusView(client)
         self._hot_water = HotWaterController(client)
-        self._circuits: Dict[int, Circuit] = {}
+        self._circuits: dict[int, Circuit] = {}
         self._energy = EnergyView(client)
         self._alarms = AlarmController(client)
         self._vacation = VacationController(client)

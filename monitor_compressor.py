@@ -11,9 +11,9 @@ Usage:
 Press Ctrl+C to stop monitoring.
 """
 
+import argparse
 import sys
 import time
-import argparse
 from datetime import datetime
 
 sys.path.insert(0, ".")

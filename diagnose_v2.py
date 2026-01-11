@@ -3,9 +3,9 @@
 Standalone diagnostic for GT10/GT11 - works with package imports.
 """
 
-import sys
 import json
 import os
+import sys
 
 print("=" * 70)
 print("BUDERUS WPS GT10/GT11 DIAGNOSTIC TOOL")
@@ -17,9 +17,9 @@ sys.path.insert(0, "/config/custom_components/buderus_wps")
 try:
     print("\n[1/6] Importing modules...")
     from buderus_wps.can_adapter import USBtinAdapter
-    from buderus_wps.parameter import ParameterRegistry
-    from buderus_wps.heat_pump import HeatPumpClient
     from buderus_wps.element_discovery import ElementDiscovery
+    from buderus_wps.heat_pump import HeatPumpClient
+    from buderus_wps.parameter import ParameterRegistry
 
     print("✓ Modules imported")
 
@@ -28,7 +28,7 @@ try:
     cache_exists = os.path.exists(cache_path)
 
     if cache_exists:
-        with open(cache_path, "r") as f:
+        with open(cache_path) as f:
             cache_data = json.load(f)
         print(f"✓ Cache: {len(cache_data.get('elements', []))} elements")
 
@@ -94,9 +94,9 @@ try:
             if err:
                 print(f"  ✗ Error: {err}")
             elif dec is None:
-                print(f"  ⚠ DEAD sensor")
+                print("  ⚠ DEAD sensor")
             elif abs(float(dec) - 0.1) < 0.01:
-                print(f"  ✗ PROBLEM: 0.1°C (raw=1)")
+                print("  ✗ PROBLEM: 0.1°C (raw=1)")
             else:
                 print(f"  ✓ OK: {dec}°C")
         except Exception as e:

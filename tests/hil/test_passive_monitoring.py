@@ -13,7 +13,6 @@ Hardware Verified: 2025-12-05 on Raspberry Pi with USBtin at /dev/ttyACM0
 
 import os
 import time
-from typing import Dict
 
 import pytest
 
@@ -106,7 +105,7 @@ class TestPassiveMonitoring:
 
     def test_collect_temperature_readings(self):
         """Collect temperature readings and verify they are in valid range."""
-        readings: Dict[int, int] = {}
+        readings: dict[int, int] = {}
 
         with USBtinAdapter(SERIAL_PORT) as adapter:
             start = time.time()
@@ -158,7 +157,7 @@ class TestFHEMComparison:
 
     def test_known_can_ids_present(self):
         """Verify known CAN IDs from FHEM are present in broadcast data."""
-        readings: Dict[int, int] = {}
+        readings: dict[int, int] = {}
 
         with USBtinAdapter(SERIAL_PORT) as adapter:
             start = time.time()
@@ -183,7 +182,7 @@ class TestFHEMComparison:
 
     def test_temperature_values_reasonable(self):
         """Verify temperature values are in physically reasonable ranges."""
-        readings: Dict[int, int] = {}
+        readings: dict[int, int] = {}
 
         with USBtinAdapter(SERIAL_PORT) as adapter:
             start = time.time()

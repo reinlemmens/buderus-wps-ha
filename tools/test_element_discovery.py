@@ -11,9 +11,9 @@ This script:
 Run on Raspberry Pi with: python3 test_element_discovery.py
 """
 
+import logging
 import sys
 import time
-import logging
 
 # Add parent directory to path for imports
 sys.path.insert(0, "/home/rein/buderus-wps-ha")
@@ -21,11 +21,10 @@ sys.path.insert(0, "/home/rein/buderus-wps-ha")
 from buderus_wps.can_adapter import USBtinAdapter
 from buderus_wps.can_message import CANMessage
 from buderus_wps.element_discovery import (
-    ElementListParser,
     ELEMENT_COUNT_REQUEST_ID,
-    ELEMENT_COUNT_RESPONSE_ID,
     ELEMENT_DATA_REQUEST_ID,
     ELEMENT_DATA_RESPONSE_ID,
+    ElementListParser,
 )
 from buderus_wps.runtime_registry import RuntimeParameterRegistry
 

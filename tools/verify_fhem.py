@@ -24,16 +24,15 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 from buderus_wps import (
-    USBtinAdapter,
+    CAN_PREFIX_COUNTER,
     CAN_PREFIX_DATA,
     CAN_PREFIX_STATUS,
-    CAN_PREFIX_COUNTER,
     ELEMENT_E21,
     ELEMENT_E22,
     ELEMENT_E31,
     ELEMENT_E32,
+    USBtinAdapter,
 )
-
 
 # FHEM reference readings (captured 2025-12-05)
 # Format: CAN_ID -> (fhem_value, description)
@@ -118,7 +117,7 @@ def main() -> int:
 
     try:
         with USBtinAdapter(args.port) as adapter:
-            print(f"\nConnected to USBtin adapter")
+            print("\nConnected to USBtin adapter")
             print(f"Listening for {args.duration} seconds...\n")
 
             start = time.time()
@@ -191,13 +190,12 @@ def main() -> int:
             # Decode a sample message to demonstrate the decode_broadcast_id method
             if readings:
                 sample_id = next(iter(readings.keys()))
-                sample_frame = adapter._last_received_frame  # May not exist
                 # Create a demo frame
                 from buderus_wps import CANMessage
 
                 demo = CANMessage(sample_id, b"\x00", is_extended_id=True)
                 prefix, param_idx, elem = demo.decode_broadcast_id()
-                print(f"\nCAN ID Decode Demo:")
+                print("\nCAN ID Decode Demo:")
                 print(
                     f"  CAN ID 0x{sample_id:08X} -> prefix={prefix_name(prefix)}, param_idx=0x{param_idx:03X}, element={element_name(elem)}"
                 )

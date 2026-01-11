@@ -15,10 +15,10 @@ Example:
     >>> decoded = raw_value * fmt['factor']  # 53.0°C
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # PROTOCOL: Exact copy of %KM273_format from fhem/26_KM273v018.pm:2011-2025
-FHEM_FORMATS: Dict[str, Dict[str, Any]] = {
+FHEM_FORMATS: dict[str, dict[str, Any]] = {
     "int": {"factor": 1, "unit": ""},
     "t15": {"factor": 1, "unit": ""},
     "hm1": {"factor": 1, "unit": "s"},
@@ -103,7 +103,7 @@ def get_format_unit(format_type: str) -> str:
     return str(fmt.get("unit", ""))
 
 
-def get_format_select(format_type: str) -> Optional[List[str]]:
+def get_format_select(format_type: str) -> Optional[list[str]]:
     """Get the select options for a format type.
 
     Args:

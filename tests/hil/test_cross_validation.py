@@ -15,7 +15,7 @@ Usage:
 import json
 import os
 import subprocess
-from typing import Optional, Tuple
+from typing import Optional
 
 import pytest
 import requests
@@ -64,7 +64,7 @@ def get_ha_sensor_value(entity_id: str) -> Optional[float]:
 
 def get_can_broadcast_temp(
     param_name: str, duration: float = 8.0
-) -> Optional[Tuple[float, str]]:
+) -> Optional[tuple[float, str]]:
     """Read temperature from CAN bus broadcast.
 
     Args:

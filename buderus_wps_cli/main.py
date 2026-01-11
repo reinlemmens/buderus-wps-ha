@@ -8,18 +8,18 @@ Defaults: /dev/ttyACM0 @ 115200, 5s timeout, read-only flag available
 from __future__ import annotations
 
 import argparse
-import sys
-from typing import Any
 import logging
 import logging.handlers
 import os
+import sys
+from typing import Any
 
 from buderus_wps import (
-    USBtinAdapter,
-    HeatPumpClient,
-    HeatPump,
     BroadcastMonitor,
     EnergyBlockingControl,
+    HeatPump,
+    HeatPumpClient,
+    USBtinAdapter,
 )
 
 
@@ -197,12 +197,12 @@ def _configure_logging(args: argparse.Namespace) -> None:
 
 # --- Broadcast Read Helpers (T015, T025) ---
 
-from typing import Optional, Tuple
+from typing import Optional
 
 
 def read_from_broadcast(
-    adapter: "USBtinAdapter", param_name: str, duration: float = 5.0
-) -> Optional[Tuple[float, bytes]]:
+    adapter: USBtinAdapter, param_name: str, duration: float = 5.0
+) -> Optional[tuple[float, bytes]]:
     """
     Read parameter value from broadcast traffic.
 
@@ -215,9 +215,9 @@ def read_from_broadcast(
         Tuple of (decoded_value, raw_bytes) or None if not found
     """
     from buderus_wps.broadcast_monitor import (
+        CIRCUIT_BASES,
         BroadcastMonitor,
         get_broadcast_for_param,
-        CIRCUIT_BASES,
     )
 
     mapping = get_broadcast_for_param(param_name)
@@ -272,7 +272,7 @@ def is_invalid_rtr_response(data: bytes, param_format: str) -> bool:
 def cmd_read(
     client: HeatPumpClient,
     args: argparse.Namespace,
-    adapter: Optional["USBtinAdapter"] = None,
+    adapter: Optional[USBtinAdapter] = None,
 ) -> int:
     """Read a parameter value.
 
@@ -462,14 +462,16 @@ def cmd_dump(client: HeatPumpClient, args: argparse.Namespace) -> int:
     return 0 if not errors else 1
 
 
-def cmd_monitor(adapter: "USBtinAdapter", args: argparse.Namespace) -> int:
+def cmd_monitor(adapter: USBtinAdapter, args: argparse.Namespace) -> int:
     """Monitor broadcast traffic and display sensor readings."""
     monitor = BroadcastMonitor(adapter)
     print(f"Monitoring CAN bus for {args.duration} seconds...", file=sys.stderr)
 
     filter_func = None
     if args.temps_only:
-        filter_func = lambda r: r.is_temperature
+
+        def filter_func(r):
+            return r.is_temperature
 
     cache = monitor.collect(duration=args.duration, filter_func=filter_func)
 

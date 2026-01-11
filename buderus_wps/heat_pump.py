@@ -13,7 +13,7 @@ from __future__ import annotations
 import logging
 import struct
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from .can_adapter import USBtinAdapter
 from .can_message import CANMessage
@@ -80,7 +80,7 @@ class HeatPumpClient:
             return self._registry
 
         # Attempt to read pages; KM273 uses 4096-byte chunks, but we don't have full protocol details.
-        entries: List[Dict[str, Any]] = []
+        entries: list[dict[str, Any]] = []
         # In absence of full parsing details, fall back immediately to defaults.
         if not entries:
             return self._registry
@@ -205,7 +205,7 @@ class HeatPumpClient:
         expected_dlc: int = 2,
         max_retries: int = 3,
         timeout: Optional[float] = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Read and decode parameter with DLC validation and retry.
 
         Returns a result dict with an 'error' key if reading failed.
@@ -279,7 +279,7 @@ class HeatPumpClient:
 
     def read_parameter(
         self, name_or_idx: Any, timeout: Optional[float] = None
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Read and decode parameter, returning metadata + raw/decoded values."""
         param = self.get(name_or_idx)
         raw = self.read_value(param.text, timeout=timeout)

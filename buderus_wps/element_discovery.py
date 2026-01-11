@@ -25,7 +25,7 @@ import os
 import struct
 import time
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, List, Optional, Tuple
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from .can_adapter import USBtinAdapter
@@ -108,7 +108,7 @@ class ElementListParser:
         count: int = struct.unpack(">I", data[:4])[0]
         return count
 
-    def parse_data_chunk(self, data: bytes) -> List[DiscoveredElement]:
+    def parse_data_chunk(self, data: bytes) -> list[DiscoveredElement]:
         """Parse element definitions from T09FDBFE0 response data.
 
         The data contains concatenated element entries. Each entry has:
@@ -121,7 +121,7 @@ class ElementListParser:
         Returns:
             List of parsed DiscoveredElement instances
         """
-        elements: List[DiscoveredElement] = []
+        elements: list[DiscoveredElement] = []
         offset = 0
 
         while offset + ELEMENT_HEADER_SIZE <= len(data):
@@ -139,7 +139,7 @@ class ElementListParser:
 
     def _parse_single_element(
         self, data: bytes, offset: int
-    ) -> Tuple[Optional[DiscoveredElement], int]:
+    ) -> tuple[Optional[DiscoveredElement], int]:
         """Parse a single element from data at given offset.
 
         Args:
@@ -430,7 +430,7 @@ class ElementDiscovery:
         self,
         timeout: float = 30.0,
         min_completion_ratio: float = 0.95,
-    ) -> List[DiscoveredElement]:
+    ) -> list[DiscoveredElement]:
         """Discover all available parameters from the heat pump.
 
         This is the main entry point for parameter discovery. It:
@@ -561,7 +561,7 @@ class ElementDiscovery:
         timeout: float = 30.0,
         max_retries: int = 3,
         min_completion_ratio: float = 0.95,
-    ) -> List[DiscoveredElement]:
+    ) -> list[DiscoveredElement]:
         """Discover elements with caching and fail-fast behavior.
 
         IMPORTANT: This method implements fail-fast on fresh install and
@@ -592,13 +592,13 @@ class ElementDiscovery:
         from .exceptions import DiscoveryIncompleteError, DiscoveryRequiredError
 
         # Track if we have a valid cache to fall back to
-        cached_elements: Optional[List[DiscoveredElement]] = None
+        cached_elements: Optional[list[DiscoveredElement]] = None
         cache_existed = False
 
         # Try loading from cache
         if os.path.exists(cache_path):
             try:
-                with open(cache_path, "r") as f:
+                with open(cache_path) as f:
                     cache_data = json.load(f)
 
                 # Log cache metadata if available (version 2)
@@ -681,7 +681,7 @@ class ElementDiscovery:
                 self._logger.warning("Failed to load cache: %s", e)
 
         # Perform discovery with retry on incomplete results
-        elements: List[DiscoveredElement] = []
+        elements: list[DiscoveredElement] = []
         last_error: Optional[Exception] = None
         discovery_succeeded = False
 

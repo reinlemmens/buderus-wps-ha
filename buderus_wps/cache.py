@@ -27,7 +27,7 @@ import hashlib
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
 class ParameterCache:
@@ -101,7 +101,7 @@ class ParameterCache:
         except (json.JSONDecodeError, OSError, KeyError):
             return False
 
-    def load(self) -> Optional[List[Dict]]:
+    def load(self) -> Optional[list[dict]]:
         """Load parameters from cache.
 
         Returns:
@@ -113,14 +113,14 @@ class ParameterCache:
         try:
             with open(self.cache_path) as f:
                 data = json.load(f)
-            result: Optional[List[Dict[Any, Any]]] = data.get("parameters")
+            result: Optional[list[dict[Any, Any]]] = data.get("parameters")
             return result
         except (json.JSONDecodeError, OSError):
             return None
 
     def save(
         self,
-        parameters: List[Dict],
+        parameters: list[dict],
         device_id: Optional[str] = None,
         firmware: Optional[str] = None,
     ) -> bool:
@@ -177,7 +177,7 @@ class ParameterCache:
             pass  # Ignore errors during invalidation
 
     @staticmethod
-    def _compute_checksum(parameters: List[Dict]) -> str:
+    def _compute_checksum(parameters: list[dict]) -> str:
         """Compute SHA256 checksum of parameters.
 
         Creates a deterministic hash of the parameter data for

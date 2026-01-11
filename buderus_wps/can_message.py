@@ -16,7 +16,7 @@ CAN ID Structure for Broadcast Data (Hardware Verified 2025-12-05):
 """
 
 from dataclasses import dataclass
-from typing import Optional, Tuple
+from typing import Optional
 
 # CAN ID Prefix Constants (Bits 31-24)
 # PROTOCOL: Prefixes identify the type of CAN message
@@ -253,7 +253,7 @@ class CANMessage:
 
         return msg
 
-    def decode_broadcast_id(self) -> Tuple[int, int, int]:
+    def decode_broadcast_id(self) -> tuple[int, int, int]:
         """Decode broadcast CAN ID into prefix, parameter index, and element type.
 
         The Buderus WPS heat pump broadcasts sensor data using a specific CAN ID

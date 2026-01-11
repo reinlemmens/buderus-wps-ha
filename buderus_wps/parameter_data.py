@@ -16132,13 +16132,13 @@ PARAMETER_DATA = [
 # metadata from the static fallback data.
 # =========================================================================
 
-from typing import Dict, Optional, cast
+from typing import Optional, cast
 
 # Build lookup dictionaries for fast access by name
-_FORMAT_BY_NAME: Dict[str, str] = {
+_FORMAT_BY_NAME: dict[str, str] = {
     str(p["text"]).upper(): str(p["format"]) for p in PARAMETER_DATA
 }
-_READ_BY_NAME: Dict[str, int] = {
+_READ_BY_NAME: dict[str, int] = {
     str(p["text"]).upper(): cast(int, p["read"]) for p in PARAMETER_DATA
 }
 _PARAM_BY_NAME = {str(p["text"]).upper(): p for p in PARAMETER_DATA}

@@ -80,7 +80,7 @@ def test_validate_entries_rejects_duplicates():
     ]
     try:
         gen.validate_entries(dup_entries, text)
-        assert False, "Expected validation to fail on duplicate idx"
+        raise AssertionError("Expected validation to fail on duplicate idx")
     except SystemExit:
         pass
 

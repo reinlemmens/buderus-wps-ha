@@ -11,7 +11,7 @@ Date: 2024-12-02
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 
 class SensorType(Enum):
@@ -53,7 +53,7 @@ class SensorMapping:
             raise ValueError(f"idx must be 0-2047, got {self.idx}")
 
     @property
-    def key(self) -> Tuple[int, int]:
+    def key(self) -> tuple[int, int]:
         """Return (base, idx) tuple for use as dictionary key."""
         return (self.base, self.idx)
 
@@ -88,7 +88,7 @@ class DHWConfig:
                    If empty/None, all apartments have access.
     """
 
-    apartments: Optional[List[str]] = None
+    apartments: Optional[list[str]] = None
 
     def has_access(self, apartment: str) -> bool:
         """Check if an apartment has DHW access.
@@ -117,12 +117,12 @@ class InstallationConfig:
     """
 
     version: str = "1.0"
-    sensor_mappings: List[SensorMapping] = field(default_factory=list)
-    circuits: List[CircuitConfig] = field(default_factory=list)
+    sensor_mappings: list[SensorMapping] = field(default_factory=list)
+    circuits: list[CircuitConfig] = field(default_factory=list)
     dhw: DHWConfig = field(default_factory=DHWConfig)
-    labels: Dict[str, str] = field(default_factory=dict)
+    labels: dict[str, str] = field(default_factory=dict)
 
-    def get_sensor_map(self) -> Dict[Tuple[int, int], str]:
+    def get_sensor_map(self) -> dict[tuple[int, int], str]:
         """Get sensor mappings as a dictionary.
 
         Returns:
@@ -144,7 +144,7 @@ class InstallationConfig:
                 return circuit
         return None
 
-    def get_circuits_by_apartment(self, apartment: str) -> List[CircuitConfig]:
+    def get_circuits_by_apartment(self, apartment: str) -> list[CircuitConfig]:
         """Get all circuits serving an apartment.
 
         Args:
@@ -215,7 +215,7 @@ def get_default_config() -> InstallationConfig:
     raise NotImplementedError("Contract only - see buderus_wps/config.py")
 
 
-def get_default_sensor_map() -> Dict[Tuple[int, int], str]:
+def get_default_sensor_map() -> dict[tuple[int, int], str]:
     """Get default sensor mappings as a dictionary.
 
     This provides the verified CAN broadcast to sensor mappings

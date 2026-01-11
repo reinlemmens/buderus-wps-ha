@@ -2,11 +2,10 @@
 """Debug DHW temperature broadcast positions."""
 
 import sys
-import time
 
 sys.path.insert(0, ".")
 
-from buderus_wps.broadcast_monitor import BroadcastMonitor, KNOWN_BROADCASTS
+from buderus_wps.broadcast_monitor import KNOWN_BROADCASTS, BroadcastMonitor
 from buderus_wps.can_adapter import USBtinAdapter
 
 print("=== DHW Temperature Broadcast Debug ===\n")

@@ -27,7 +27,7 @@ Example:
 
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -186,8 +186,8 @@ class HeatPump:
                        If provided and exists, loads from cache.
             force_discovery: If True, skip cache and try discovery (requires adapter)
         """
-        self._params_by_name: Dict[str, Parameter] = {}
-        self._params_by_idx: Dict[int, Parameter] = {}
+        self._params_by_name: dict[str, Parameter] = {}
+        self._params_by_idx: dict[int, Parameter] = {}
         self._discovered_names: set = set()  # Names with discovered/cached idx
         self._data_source = "fallback"
         self._using_fallback = True
@@ -261,7 +261,7 @@ class HeatPump:
         if self._cache_path:
             self._save_cache(elements)
 
-    def _save_cache(self, elements: List[Dict[str, Any]]) -> None:
+    def _save_cache(self, elements: list[dict[str, Any]]) -> None:
         """Save discovered elements to cache file."""
         if not self._cache_path:
             return
@@ -288,7 +288,7 @@ class HeatPump:
         self._using_fallback = True
         logger.debug("Loaded %d parameters from fallback", len(self._params_by_idx))
 
-    def _load_parameters(self, data: List[Dict[str, Any]]) -> None:
+    def _load_parameters(self, data: list[dict[str, Any]]) -> None:
         """Load parameters from list of dicts."""
         self._params_by_name.clear()
         self._params_by_idx.clear()
@@ -382,23 +382,23 @@ class HeatPump:
         return None
 
     @property
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         """Return list of all parameters sorted by index (for CLI compatibility)."""
         return sorted(self._params_by_idx.values(), key=lambda p: p.idx)
 
-    def all_parameters(self) -> List[Parameter]:
+    def all_parameters(self) -> list[Parameter]:
         """Return list of all parameters sorted by index."""
         return self.parameters
 
-    def list_all_parameters(self) -> List[Parameter]:
+    def list_all_parameters(self) -> list[Parameter]:
         """Return list of all parameters sorted by index (alias for all_parameters)."""
         return self.all_parameters()
 
-    def list_writable_parameters(self) -> List[Parameter]:
+    def list_writable_parameters(self) -> list[Parameter]:
         """Return list of writable parameters (read=0) sorted by index."""
         return [p for p in self.all_parameters() if p.read == 0]
 
-    def list_readonly_parameters(self) -> List[Parameter]:
+    def list_readonly_parameters(self) -> list[Parameter]:
         """Return list of read-only parameters (read=1) sorted by index."""
         return [p for p in self.all_parameters() if p.read == 1]
 
@@ -439,7 +439,7 @@ class HeatPump:
         """
         return name.upper() in self._discovered_names
 
-    def mark_discovered(self, names: List[str]) -> None:
+    def mark_discovered(self, names: list[str]) -> None:
         """Mark parameters as having discovered idx values.
 
         Called when loading from cache or after discovery to indicate

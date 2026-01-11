@@ -10,14 +10,13 @@ These tests verify the complete discovery flow:
 """
 
 import struct
-from typing import Dict, List
 
 import pytest
 
 from buderus_wps.discovery import ParameterDiscovery
 
 
-def create_mock_element_data(elements: List[Dict]) -> bytes:
+def create_mock_element_data(elements: list[dict]) -> bytes:
     """Create binary element data from a list of element dicts.
 
     Args:
@@ -53,7 +52,7 @@ class MockCANAdapter:
     - Element data requests (chunked)
     """
 
-    def __init__(self, element_count: int = 3, elements: List[Dict] = None):
+    def __init__(self, element_count: int = 3, elements: list[dict] = None):
         """Initialize mock adapter with test data.
 
         Args:

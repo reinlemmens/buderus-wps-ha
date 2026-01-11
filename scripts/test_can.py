@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Standalone CAN test script - no module dependencies."""
 
-import serial
-import time
 import struct
-import sys
+import time
+
+import serial
 
 PORT = "/dev/ttyACM0"
 BAUDRATE = 115200
@@ -245,7 +245,6 @@ def test_discovery():
 
     # FHEM CAN IDs
     ELEMENT_COUNT_REQUEST = 0x01FD7FE0
-    ELEMENT_COUNT_RESPONSE = 0x09FD7FE0
     ELEMENT_DATA_REQUEST = 0x01FD3FE0
     ELEMENT_DATA_RESPONSE = 0x09FDBFE0
 
@@ -304,7 +303,7 @@ def test_discovery():
                 min_val = struct.unpack(">i", all_data[13:17])[0]
                 name_len = all_data[17]
 
-                print(f"\n   First element header:")
+                print("\n   First element header:")
                 print(f"     idx: {idx}")
                 print(f"     extid: {extid}")
                 print(f"     max: {max_val}")

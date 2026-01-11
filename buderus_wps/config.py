@@ -23,7 +23,7 @@ import os
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 import yaml
 
@@ -94,7 +94,7 @@ class SensorMapping:
             raise ValueError(f"idx must be 0-2047, got {self.idx}")
 
     @property
-    def key(self) -> Tuple[int, int]:
+    def key(self) -> tuple[int, int]:
         """Return (base, idx) tuple for use as dictionary key."""
         return (self.base, self.idx)
 
@@ -130,7 +130,7 @@ class DHWConfig:
                    If empty/None, all apartments have access.
     """
 
-    apartments: Optional[List[str]] = None
+    apartments: Optional[list[str]] = None
 
     def has_access(self, apartment: str) -> bool:
         """Check if an apartment has DHW access.
@@ -159,12 +159,12 @@ class InstallationConfig:
     """
 
     version: str = "1.0"
-    sensor_mappings: List[SensorMapping] = field(default_factory=list)
-    circuits: List[CircuitConfig] = field(default_factory=list)
+    sensor_mappings: list[SensorMapping] = field(default_factory=list)
+    circuits: list[CircuitConfig] = field(default_factory=list)
     dhw: DHWConfig = field(default_factory=DHWConfig)
-    labels: Dict[str, str] = field(default_factory=dict)
+    labels: dict[str, str] = field(default_factory=dict)
 
-    def get_sensor_map(self) -> Dict[Tuple[int, int], str]:
+    def get_sensor_map(self) -> dict[tuple[int, int], str]:
         """Get sensor mappings as a dictionary.
 
         Returns:
@@ -186,7 +186,7 @@ class InstallationConfig:
                 return circuit
         return None
 
-    def get_circuits_by_apartment(self, apartment: str) -> List[CircuitConfig]:
+    def get_circuits_by_apartment(self, apartment: str) -> list[CircuitConfig]:
         """Get all circuits serving an apartment.
 
         Args:
@@ -216,7 +216,7 @@ class InstallationConfig:
 # =============================================================================
 
 # Default sensor display labels
-DEFAULT_SENSOR_LABELS: Dict[str, str] = {
+DEFAULT_SENSOR_LABELS: dict[str, str] = {
     "outdoor": "Outdoor Temperature",
     "supply": "Supply Temperature",
     "return_temp": "Return Temperature",
@@ -227,7 +227,7 @@ DEFAULT_SENSOR_LABELS: Dict[str, str] = {
 # Default sensor mappings verified against actual CAN bus traffic (2024-12-02)
 # Updated 2025-12-16: Fixed DHW temperature mapping (was idx=58, now idx=78)
 # Multiple sources for same sensor provide resilience to intermittent broadcasts
-DEFAULT_SENSOR_MAPPINGS: List[SensorMapping] = [
+DEFAULT_SENSOR_MAPPINGS: list[SensorMapping] = [
     # GT2 - Outdoor temperature
     # Updated to match broadcast_monitor.py findings (idx=12 on circuit bases)
     SensorMapping(base=0x0060, idx=12, sensor=SensorType.OUTDOOR),
@@ -302,7 +302,7 @@ def _find_config_file() -> Optional[Path]:
     return None
 
 
-def _parse_sensor_mappings(data: List[dict]) -> List[SensorMapping]:
+def _parse_sensor_mappings(data: list[dict]) -> list[SensorMapping]:
     """Parse sensor mappings from YAML data.
 
     Args:
@@ -338,7 +338,7 @@ def _parse_sensor_mappings(data: List[dict]) -> List[SensorMapping]:
     return mappings
 
 
-def _parse_circuits(data: List[dict]) -> List[CircuitConfig]:
+def _parse_circuits(data: list[dict]) -> list[CircuitConfig]:
     """Parse circuit configurations from YAML data.
 
     Args:
@@ -392,7 +392,7 @@ def _parse_dhw(data: dict) -> DHWConfig:
     return DHWConfig(apartments=apartments)
 
 
-def _parse_labels(data: dict) -> Dict[str, str]:
+def _parse_labels(data: dict) -> dict[str, str]:
     """Parse custom labels from YAML data.
 
     Args:
@@ -415,7 +415,7 @@ def _parse_labels(data: dict) -> Dict[str, str]:
 # =============================================================================
 
 
-def get_default_sensor_map() -> Dict[Tuple[int, int], str]:
+def get_default_sensor_map() -> dict[tuple[int, int], str]:
     """Get default sensor mappings as a dictionary.
 
     This provides the verified CAN broadcast to sensor mappings

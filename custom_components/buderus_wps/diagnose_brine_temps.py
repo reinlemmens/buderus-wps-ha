@@ -30,7 +30,7 @@ print("=" * 70)
 
 try:
     print("\n[1/6] Importing modules...")
-    from buderus_wps import USBtinAdapter, HeatPump, HeatPumpClient
+    from buderus_wps import HeatPump, HeatPumpClient, USBtinAdapter
     from buderus_wps.element_discovery import ElementDiscovery
 
     print("✓ Modules imported successfully")
@@ -41,7 +41,7 @@ try:
     if not os.path.exists(cache_path):
         cache_path = "/tmp/buderus_wps_elements.json"  # Legacy fallback
     if os.path.exists(cache_path):
-        with open(cache_path, "r") as f:
+        with open(cache_path) as f:
             cache_data = json.load(f)
         print(f"✓ Cache exists: {len(cache_data.get('elements', []))} elements")
 
@@ -132,13 +132,13 @@ try:
             if "error" in result:
                 print(f"  ✗ Error: {result['error']}")
             elif decoded is None:
-                print(f"  ⚠ Sensor is DEAD (0xDEAD value)")
+                print("  ⚠ Sensor is DEAD (0xDEAD value)")
             elif decoded == 0.1:
-                print(f"  ✗ PROBLEM: Decoded to 0.1°C (raw value = 1)")
-                print(f"     This suggests either:")
-                print(f"       - RTR read is getting garbage data")
-                print(f"       - Wrong parameter idx")
-                print(f"       - Sensor doesn't exist on this heat pump model")
+                print("  ✗ PROBLEM: Decoded to 0.1°C (raw value = 1)")
+                print("     This suggests either:")
+                print("       - RTR read is getting garbage data")
+                print("       - Wrong parameter idx")
+                print("       - Sensor doesn't exist on this heat pump model")
             else:
                 print(f"  ✓ Read successful: {decoded}°C")
 

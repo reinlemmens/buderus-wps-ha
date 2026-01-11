@@ -7,9 +7,9 @@ This tool scans a range of idx values and identifies:
 - Active parameters (those that respond)
 """
 
+import json
 import sys
 import time
-import json
 from datetime import datetime
 
 sys.path.insert(0, "/home/rein/buderus-wps-ha")
