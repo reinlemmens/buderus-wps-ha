@@ -134,11 +134,13 @@ class TestParameterDataFidelity:
 
         # 1788 total entries, 1784 unique (4 duplicates)
         assert len(indices) == 1788, f"Expected 1788 total entries, got {len(indices)}"
-        assert len(unique_indices) == 1784, (
-            f"Expected 1784 unique indices (4 duplicates), got {len(unique_indices)}"
-        )
+        assert (
+            len(unique_indices) == 1784
+        ), f"Expected 1784 unique indices (4 duplicates), got {len(unique_indices)}"
 
-        print(f"✓ {len(indices)} total entries, {len(unique_indices)} unique (4 known duplicates)")
+        print(
+            f"✓ {len(indices)} total entries, {len(unique_indices)} unique (4 known duplicates)"
+        )
 
     def test_no_duplicate_names(self):
         """Verify there are no duplicate text (name) values in PARAMETER_DATA."""
