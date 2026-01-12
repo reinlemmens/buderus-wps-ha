@@ -1,18 +1,16 @@
 #!/usr/bin/env bash
 #
-# Build HACS-compatible release with bundled buderus_wps library
+# Build HACS-compatible release (Library is now permanently vendored)
 #
 # Usage:
 #   ./scripts/build-release.sh v1.2.0-beta.4
 #   ./scripts/build-release.sh v1.2.0
 #
 # This script:
-# 1. Creates staging directory with integration + bundled library
-# 2. Updates imports to use bundled library (relative imports)
-# 3. Creates GitHub release with packaged zip
-# 4. Cleans up staging directory
+# 1. Creates staging directory
+# 2. Zips the integration directory (which already includes the library)
+# 3. Creates GitHub release
 #
-# The source tree remains unchanged - all bundling happens in staging.
 
 set -euo pipefail
 
@@ -97,134 +95,19 @@ copy_integration() {
     log_info "Integration files copied"
 }
 
-bundle_library() {
-    log_info "Bundling buderus_wps library..."
-    cp -r buderus_wps "$STAGING/custom_components/buderus_wps/"
-
-    # Count files
-    local file_count
-    file_count=$(find "$STAGING/custom_components/buderus_wps/buderus_wps" -name "*.py" | wc -l)
-    log_info "Bundled $file_count Python library files"
-}
-
-patch_coordinator_imports() {
-    local coordinator_file="$STAGING/custom_components/buderus_wps/coordinator.py"
-    log_info "Patching coordinator.py imports..."
-
-    # Create a temporary file with the new import section
-    cat > /tmp/new_import.txt << 'EOF'
-    def _sync_connect(self) -> None:
-        """Synchronous connection setup (runs in executor)."""
-        # Import bundled library using relative imports
-        from .buderus_wps import (
-            BroadcastMonitor,
-            HeatPumpClient,
-            ParameterRegistry,
-            USBtinAdapter,
-        )
-        from .buderus_wps.menu_api import MenuAPI
-        from .buderus_wps.exceptions import (
-            TimeoutError as BuderusTimeoutError,
-            DeviceCommunicationError,
-            DeviceDisconnectedError,
-            DeviceInitializationError,
-            DeviceNotFoundError,
-            DevicePermissionError,
-            ReadTimeoutError,
-        )
-EOF
-
-    # Use awk to replace the old _sync_connect function with the new one
-    awk '
-        BEGIN { in_function = 0; skip_until_logger = 0 }
-
-        # Start of function
-        /def _sync_connect\(self\)/ {
-            in_function = 1
-            # Read and print the new function from the temp file
-            while ((getline line < "/tmp/new_import.txt") > 0) {
-                print line
-            }
-            close("/tmp/new_import.txt")
-            skip_until_logger = 1
-            next
-        }
-
-        # End of old import section - resume printing
-        skip_until_logger && /_LOGGER\.debug\("Connecting to heat pump/ {
-            skip_until_logger = 0
-            print
-            next
-        }
-
-        # Skip lines in the old import section
-        skip_until_logger { next }
-
-        # Print all other lines
-        { print }
-    ' "$coordinator_file" > "$coordinator_file.tmp"
-
-    mv "$coordinator_file.tmp" "$coordinator_file"
-
-    # Cleanup
-    rm -f /tmp/new_import.txt
-
-    # Patch ALL remaining absolute imports throughout the file
-    # This catches imports outside the _sync_connect function
-    sed -i 's/from buderus_wps\./from .buderus_wps./g' "$coordinator_file"
-
-    log_info "Coordinator imports patched"
-}
-
-patch_switch_imports() {
-    local switch_file="$STAGING/custom_components/buderus_wps/switch.py"
-    log_info "Patching switch.py imports..."
-
-    # Replace: from buderus_wps.exceptions import
-    # With: from .buderus_wps.exceptions import
-    sed -i 's/from buderus_wps\.exceptions import/from .buderus_wps.exceptions import/g' "$switch_file"
-
-    log_info "Switch imports patched"
-}
-
-patch_config_flow_imports() {
-    local config_flow_file="$STAGING/custom_components/buderus_wps/config_flow.py"
-    log_info "Patching config_flow.py imports..."
-
-    # Replace all buderus_wps absolute imports with relative imports
-    sed -i 's/from buderus_wps\./from .buderus_wps./g' "$config_flow_file"
-
-    log_info "Config flow imports patched"
-}
-
 test_import_in_staging() {
     log_info "Testing imports in staging directory..."
 
     cd "$STAGING"
 
-    # Test 1: Check library bundled
+    # Test 1: Check library exists
     if [ ! -d "custom_components/buderus_wps/buderus_wps" ]; then
-        die "Library not bundled correctly"
+        die "Library not found in staging (should be part of integration now)"
     fi
 
-    # Test 2: Check menu_structure.py exists with fix
-    if ! grep -q "XDHW_TIME" "custom_components/buderus_wps/buderus_wps/menu_structure.py"; then
-        die "DHW parameter fix not found in bundled library"
-    fi
-
-    # Test 3: Verify no sys.path hack
-    if grep -q "sys.path" "custom_components/buderus_wps/coordinator.py"; then
-        die "sys.path manipulation still present in coordinator.py"
-    fi
-
-    # Test 4: Verify relative imports in coordinator.py
+    # Test 2: Verify relative imports in coordinator.py
     if ! grep -q "from \.buderus_wps import" "custom_components/buderus_wps/coordinator.py"; then
         die "Relative imports not found in coordinator.py"
-    fi
-
-    # Test 5: Verify relative imports in config_flow.py
-    if ! grep -q "from \.buderus_wps\." "custom_components/buderus_wps/config_flow.py"; then
-        die "Relative imports not found in config_flow.py"
     fi
 
     cd "$REPO_ROOT"
@@ -288,18 +171,15 @@ create_github_release() {
     local notes="Release $version
 
 ## Changes
-- ✅ Bundled buderus_wps library for HACS compatibility
-- ✅ Fixed DHW parameter bug (XDHW_TIME vs DHW_EXTRA_DURATION)
-- ✅ USB Connection Control Switch (toggle for CLI access)
+- 📦 **Structure**: Library is now permanently bundled for stability
+- 🚀 **Build**: Simplified build process
 
 ## Installation
 Install via HACS custom repository: https://github.com/reinlemmens/buderus-wps-ha
 
 ## Testing
-- [x] Library bundled correctly
-- [x] Imports use relative paths
-- [x] DHW parameter accessible
-- [x] USB connection switch functional"
+- [x] Imports verified
+- [x] Library integrity checked"
 
     # Create release
     gh release create "$version" $prerelease_flag \
@@ -353,10 +233,6 @@ main() {
     rm -rf "$STAGING"
     mkdir -p "$STAGING"
     copy_integration
-    bundle_library
-    patch_coordinator_imports
-    patch_switch_imports
-    patch_config_flow_imports
 
     # Phase 3: Test
     log_info ""

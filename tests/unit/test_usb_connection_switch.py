@@ -95,8 +95,8 @@ class TestUSBConnectionSwitchActions:
         a DeviceNotFoundError. The switch should catch this and raise a
         HomeAssistantError that will be shown to the user in the HA UI.
         """
-        # Import DeviceNotFoundError from main library (bundled copy not available in tests)
-        from buderus_wps.exceptions import (
+        # Import DeviceNotFoundError from the bundled library path
+        from custom_components.buderus_wps.buderus_wps.exceptions import (
             DeviceNotFoundError,
         )
 

@@ -155,18 +155,11 @@ class BuderusUSBConnectionSwitch(BuderusEntity, SwitchEntity):
         """
         # Import exception types - try bundled path first (HA deployment),
         # then fall back to main package (development/testing)
-        try:
-            from .buderus_wps.exceptions import (
-                DeviceInitializationError,
-                DeviceNotFoundError,
-                DevicePermissionError,
-            )
-        except ImportError:
-            from buderus_wps.exceptions import (
-                DeviceInitializationError,
-                DeviceNotFoundError,
-                DevicePermissionError,
-            )
+        from .buderus_wps.exceptions import (
+            DeviceInitializationError,
+            DeviceNotFoundError,
+            DevicePermissionError,
+        )
 
         try:
             await self.coordinator.async_manual_connect()

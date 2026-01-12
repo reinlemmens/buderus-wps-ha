@@ -55,7 +55,7 @@ Repository = "https://github.com/reinlemmens/buderus-wps-ha"
 Issues = "https://github.com/reinlemmens/buderus-wps-ha/issues"
 
 [tool.setuptools.packages.find]
-where = ["."]
+where = ["custom_components/buderus_wps", "."]
 include = ["buderus_wps*", "buderus_wps_cli*"]
 exclude = ["tests*", "specs*", "fhem*"]
 
@@ -63,7 +63,7 @@ exclude = ["tests*", "specs*", "fhem*"]
 minversion = "7.0"
 addopts = "-ra -q --strict-markers --cov=buderus_wps --cov-report=term-missing --cov-report=html"
 testpaths = ["tests"]
-pythonpath = ["."]
+pythonpath = [".", "custom_components/buderus_wps"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
@@ -78,7 +78,7 @@ markers = [
 ]
 
 [tool.coverage.run]
-source = ["buderus_wps", "buderus_wps_cli"]
+source = ["custom_components/buderus_wps/buderus_wps", "buderus_wps_cli"]
 omit = [
     "*/tests/*",
     "*/test_*.py",
