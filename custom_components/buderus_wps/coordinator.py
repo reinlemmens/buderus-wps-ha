@@ -33,6 +33,11 @@ from .const import (
     SENSOR_SUPPLY,
 )
 
+# Timeout for acquiring the coordinator lock
+LOCK_ACQUIRE_TIMEOUT = 5.0
+# Timeout for sync executor jobs (prevent indefinite hangs)
+EXECUTOR_JOB_TIMEOUT = 10.0
+
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -42,7 +47,10 @@ class BuderusData:
 
     temperatures: dict[str, float | None]
     compressor_running: bool
+    compressor_blocked: bool | None
     energy_blocked: bool
+    dhw_active: bool
+    g1_active: bool
     dhw_extra_duration: int  # Hours remaining (0-48), 0 = not active
     heating_season_mode: int | None  # 0=Winter, 1=Auto, 2=Off
     dhw_program_mode: int | None  # 0=Auto, 1=On, 2=Off
@@ -77,6 +85,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         self._registry: Any = None
         self._monitor: Any = None
         self._api: Any = None
+        self.energy_blocking: Any = None
         self._lock = asyncio.Lock()
         self._connected = False
         self._parameter_allowlist = [
@@ -286,6 +295,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             HeatPump,
             HeatPumpClient,
             USBtinAdapter,
+            EnergyBlockingControl,
         )
         from .buderus_wps.element_discovery import ElementDiscovery
         from .buderus_wps.menu_api import MenuAPI
@@ -368,6 +378,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         self._client = HeatPumpClient(self._adapter, self._registry)
         self._monitor = BroadcastMonitor(self._adapter)
         self._api = MenuAPI(self._client)
+        self.energy_blocking = EnergyBlockingControl(self._client)
 
         _LOGGER.info("Successfully connected to heat pump at %s", self.port)
 
@@ -382,6 +393,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             self._client = None
             self._monitor = None
             self._api = None
+            self.energy_blocking = None
 
     def _coerce_parameter_key(self, key: str | int) -> str | int:
         if isinstance(key, int):
@@ -842,8 +854,15 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         # PROTOCOL: dp2 format returns strings like "1:Always_On" - parse int prefix
         heating_season_mode: int | None = None
         try:
-            result = self._client.read_parameter("HEATING_SEASON_MODE")
-            decoded = result.get("decoded", 0)
+            result = self._client.read_parameter_with_validation(
+                "HEATING_SEASON_MODE", expected_dlc=1
+            )
+            decoded = result.get("decoded")
+            
+            if decoded is None:
+                # Read failed or invalid DLC
+                raise ValueError(f"Invalid read: {result.get('error')}")
+
             if isinstance(decoded, str) and ":" in decoded:
                 heating_season_mode = int(decoded.split(":")[0])
             else:
@@ -857,8 +876,15 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         # PROTOCOL: dp2 format returns strings like "1:Always_On" - parse int prefix
         dhw_program_mode: int | None = None
         try:
-            result = self._client.read_parameter("DHW_PROGRAM_MODE")
-            decoded = result.get("decoded", 0)
+            result = self._client.read_parameter_with_validation(
+                "DHW_PROGRAM_MODE", expected_dlc=1
+            )
+            decoded = result.get("decoded")
+            
+            if decoded is None:
+                # Read failed or invalid DLC
+                raise ValueError(f"Invalid read: {result.get('error')}")
+
             if isinstance(decoded, str) and ":" in decoded:
                 dhw_program_mode = int(decoded.split(":")[0])
             else:
@@ -914,11 +940,117 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             if self._last_known_good_data is not None:
                 dhw_setpoint = self._last_known_good_data.dhw_setpoint
 
+        # Get compressor blocked status (best-effort)
+        compressor_blocked: bool | None = None
+        # Helper to read binary status safely
+        def _get_binary(param_name_or_idx: Any) -> bool:
+            try:
+                res = self._client.read_parameter_with_validation(
+                    param_name_or_idx, expected_dlc=1, timeout=0.5
+                )
+                return bool(res.get("decoded", 0))
+            except Exception:
+                return False
+
+        # Get digital status flags
+        # Default to False if reading fails (safe fallback)
+        # compressor_running = _get_binary("COMPRESSOR_RUNNING") # REMOVED: Unreliable
+        energy_blocked = _get_binary(247)  # COMPRESSOR_BLOCKED
+        dhw_active = _get_binary("PUMP_DHW_ACTIVE")  # idx 2016
+        g1_active = _get_binary("PUMP_G1_CONTINUAL")  # idx 12796, Main/Heating pump
+        
+        # Get compressor status via RTR request (best-effort with retry)
+        # PROTOCOL: COMPRESSOR_STATE > 0 indicates compressor running (primary)
+        # COMPRESSOR_REAL_FREQUENCY is kept as a secondary debug signal.
+        compressor_running = False
+        compressor_state: int | None = None
+        compressor_frequency: int | None = None
+        state_read = False
+
+        def _parse_int(value: Any) -> int:
+            if isinstance(value, str) and ":" in value:
+                value = value.split(":")[0]
+            return int(value or 0)
+
+        for attempt in range(3):
+            try:
+                state_result = self._client.read_parameter("COMPRESSOR_STATE")
+                compressor_state = _parse_int(state_result.get("decoded", 0))
+                compressor_running = compressor_state > 0
+                state_read = True
+                _LOGGER.debug(
+                    "Compressor state: %d (running=%s)",
+                    compressor_state,
+                    compressor_running,
+                )
+                break  # Success - exit retry loop
+            except Exception as err:
+                if attempt < 2:
+                    _LOGGER.debug(
+                        "RTR attempt %d/3 for COMPRESSOR_STATE failed: %s",
+                        attempt + 1,
+                        err,
+                    )
+                    time.sleep(0.3)  # Brief delay before retry
+                else:
+                    _LOGGER.warning(
+                        "RTR FAILED for COMPRESSOR_STATE after 3 attempts: %s", err
+                    )
+                    if self._last_known_good_data is not None:
+                        compressor_running = (
+                            self._last_known_good_data.compressor_running
+                        )
+                        compressor_state = self._last_known_good_data.compressor_state
+
+        try:
+            result = self._client.read_parameter("COMPRESSOR_REAL_FREQUENCY")
+            # Handle potential None or string values safely
+            val = result.get("decoded", 0)
+            if val is None:
+                val = 0
+            compressor_frequency = _parse_int(val)
+            _LOGGER.debug(
+                "Compressor frequency: %d Hz (state_running=%s)",
+                compressor_frequency,
+                compressor_running,
+            )
+            # If state read failed but we have frequency > 0, assume running
+            if not state_read and compressor_frequency > 0:
+                compressor_running = True
+            # If state read says OFF but frequency > 20Hz, trust frequency? 
+            # (Maybe not, let's stick to simple logic for now, but freq is a good backup)
+        except Exception as err:
+            _LOGGER.debug("RTR FAILED for COMPRESSOR_REAL_FREQUENCY: %s", err)
+            if not state_read and self._last_known_good_data is not None:
+                # distinct from the COMPRESSOR_STATE fallback above
+                if compressor_frequency is None: 
+                     compressor_frequency = self._last_known_good_data.compressor_frequency
+
+        # If we failed to read anything fresh related to compressor, 
+        # checking _last_known_good_data for final fallback is wise, 
+        # but the above blocks handle it partially.
+
+
+        # Get compressor blocked status (best-effort)
+        try:
+            # Use the initialized energy_blocking helper to read status
+            # This ensures we use the correct parameter (COMPRESSOR_BLOCKED idx 247)
+            compressor_blocked = self.energy_blocking._read_compressor_status(timeout=2.0)
+        except Exception as err:
+            _LOGGER.warning("Failed to read compressor block status: %s", err)
+            if self._last_known_good_data is not None:
+                compressor_blocked = self._last_known_good_data.compressor_blocked
+            else:
+                compressor_blocked = None
+
         # Build result with mix of fresh and stale data
         result = BuderusData(
             temperatures=temperatures,
             compressor_running=compressor_running,
+            compressor_blocked=compressor_blocked,
             energy_blocked=energy_blocked,
+            dhw_active=dhw_active,
+            g1_active=g1_active,
             dhw_extra_duration=dhw_extra_duration,
             heating_season_mode=heating_season_mode,
             dhw_program_mode=dhw_program_mode,
@@ -960,10 +1092,18 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
 
     async def async_set_energy_blocking(self, blocked: bool) -> None:
         """Set energy blocking state."""
-        async with self._lock:
-            await self.hass.async_add_executor_job(
-                self._sync_set_energy_blocking, blocked
-            )
+        try:
+            async with asyncio.timeout(LOCK_ACQUIRE_TIMEOUT):
+                async with self._lock:
+                    await asyncio.wait_for(
+                        self.hass.async_add_executor_job(
+                            self._sync_set_energy_blocking, blocked
+                        ),
+                        timeout=EXECUTOR_JOB_TIMEOUT,
+                    )
+        except TimeoutError:
+            _LOGGER.error("Timeout setting energy blocking")
+            raise HomeAssistantError("Timeout communicating with heat pump") from None
 
     def _sync_set_energy_blocking(self, blocked: bool) -> None:
         """Synchronous energy blocking set (runs in executor)."""
@@ -980,14 +1120,22 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         if hours < 0:
             raise ValueError(f"DHW extra duration must be >= 0, got {hours}")
 
-        async with self._lock:
-            if hours == 0:
-                await self._async_stop_dhw_boost_locked()
-                return
+        try:
+            async with asyncio.timeout(LOCK_ACQUIRE_TIMEOUT):
+                async with self._lock:
+                    if hours == 0:
+                        await self._async_stop_dhw_boost_locked()
+                        return
 
-            result: dict[str, Any] = await self.hass.async_add_executor_job(
-                self._sync_start_dhw_extra_duration, hours
-            )
+                    result: dict[str, Any] = await asyncio.wait_for(
+                        self.hass.async_add_executor_job(
+                            self._sync_start_dhw_extra_duration, hours
+                        ),
+                        timeout=EXECUTOR_JOB_TIMEOUT,
+                    )
+        except TimeoutError:
+            _LOGGER.error("Timeout setting DHW extra duration")
+            raise HomeAssistantError("Timeout communicating with heat pump") from None
 
             if result.get("strategy") == "program_mode_override":
                 end_time = time.time() + hours * 3600
@@ -1020,7 +1168,13 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             self._dhw_boost_task = None
 
         # Always attempt to stop XDHW_TIME-based boost if the device supports it.
-        await self.hass.async_add_executor_job(self._sync_write_xdhw_time, 0)
+        try:
+            await asyncio.wait_for(
+                self.hass.async_add_executor_job(self._sync_write_xdhw_time, 0),
+                timeout=EXECUTOR_JOB_TIMEOUT,
+            )
+        except TimeoutError:
+            _LOGGER.warning("Timeout stopping DHW boost (XDHW_TIME write)")
 
         original_mode = self._dhw_boost_original_program_mode
         self._dhw_boost_end_time = None
@@ -1028,9 +1182,15 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
 
         # If we used program-mode override, restore previous mode.
         if original_mode is not None and self._client is not None:
-            await self.hass.async_add_executor_job(
-                self._sync_set_dhw_program_mode, original_mode
-            )
+            try:
+                await asyncio.wait_for(
+                    self.hass.async_add_executor_job(
+                        self._sync_set_dhw_program_mode, original_mode
+                    ),
+                    timeout=EXECUTOR_JOB_TIMEOUT,
+                )
+            except TimeoutError:
+                _LOGGER.warning("Timeout restoring DHW program mode")
         _LOGGER.info("Stopped DHW extra production")
 
     async def _async_dhw_boost_timer(self, end_time: float) -> None:
@@ -1038,11 +1198,16 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         try:
             delay = max(end_time - time.time(), 0)
             await asyncio.sleep(delay)
-            async with self._lock:
-                # If the timer was extended/replaced, ignore this run.
-                if self._dhw_boost_end_time != end_time:
-                    return
-                await self._async_stop_dhw_boost_locked()
+            # Use timeout for lock acquisition in background task
+            try:
+                async with asyncio.timeout(LOCK_ACQUIRE_TIMEOUT):
+                    async with self._lock:
+                        # If the timer was extended/replaced, ignore this run.
+                        if self._dhw_boost_end_time != end_time:
+                            return
+                        await self._async_stop_dhw_boost_locked()
+            except TimeoutError:
+                 _LOGGER.error("Timeout acquiring lock for DHW boost timer completion")
             await self.async_request_refresh()
         except asyncio.CancelledError:
             return
@@ -1115,10 +1280,19 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         Args:
             mode: 0=Winter (forced), 1=Auto, 2=Off (summer/blocked)
         """
-        async with self._lock:
-            await self.hass.async_add_executor_job(
-                self._sync_set_heating_season_mode, mode
-            )
+
+        try:
+            async with asyncio.timeout(LOCK_ACQUIRE_TIMEOUT):
+                async with self._lock:
+                    await asyncio.wait_for(
+                        self.hass.async_add_executor_job(
+                            self._sync_set_heating_season_mode, mode
+                        ),
+                        timeout=EXECUTOR_JOB_TIMEOUT,
+                    )
+        except TimeoutError:
+            _LOGGER.error("Timeout setting heating season mode")
+            raise HomeAssistantError("Timeout communicating with heat pump") from None
 
     def _sync_set_heating_season_mode(self, mode: int) -> None:
         """Synchronous heating season mode set (runs in executor)."""
@@ -1134,10 +1308,20 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         Args:
             mode: 0=Auto, 1=Always On, 2=Always Off (blocked)
         """
-        async with self._lock:
-            await self.hass.async_add_executor_job(
-                self._sync_set_dhw_program_mode, mode
-            )
+
+
+        try:
+            async with asyncio.timeout(LOCK_ACQUIRE_TIMEOUT):
+                async with self._lock:
+                    await asyncio.wait_for(
+                        self.hass.async_add_executor_job(
+                            self._sync_set_dhw_program_mode, mode
+                        ),
+                        timeout=EXECUTOR_JOB_TIMEOUT,
+                    )
+        except TimeoutError:
+            _LOGGER.error("Timeout setting DHW program mode")
+            raise HomeAssistantError("Timeout communicating with heat pump") from None
 
     def _sync_set_dhw_program_mode(self, mode: int) -> None:
         """Synchronous DHW program mode set (runs in executor)."""
@@ -1161,12 +1345,20 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                 f"Heating curve offset must be between -10.0 and +10.0°C, got {offset}"
             )
         _LOGGER.debug("async_set_heating_curve_offset called with offset=%.1f", offset)
+        _LOGGER.debug("async_set_heating_curve_offset called with offset=%.1f", offset)
         try:
-            async with self._lock:
-                await self.hass.async_add_executor_job(
-                    self._sync_set_heating_curve_offset, offset
-                )
+            async with asyncio.timeout(LOCK_ACQUIRE_TIMEOUT):
+                async with self._lock:
+                    await asyncio.wait_for(
+                        self.hass.async_add_executor_job(
+                            self._sync_set_heating_curve_offset, offset
+                        ),
+                        timeout=EXECUTOR_JOB_TIMEOUT,
+                    )
             _LOGGER.debug("async_set_heating_curve_offset completed successfully")
+        except TimeoutError:
+            _LOGGER.error("Timeout setting heating curve offset")
+            raise HomeAssistantError("Timeout communicating with heat pump") from None
         except Exception as err:
             _LOGGER.error("async_set_heating_curve_offset FAILED: %s", err)
             raise
@@ -1196,12 +1388,20 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                 f"DHW stop temperature must be between 50.0 and 65.0°C, got {temp}"
             )
         _LOGGER.debug("async_set_dhw_stop_temp called with temp=%.1f", temp)
+        _LOGGER.debug("async_set_dhw_stop_temp called with temp=%.1f", temp)
         try:
-            async with self._lock:
-                await self.hass.async_add_executor_job(
-                    self._sync_set_dhw_stop_temp, temp
-                )
+            async with asyncio.timeout(LOCK_ACQUIRE_TIMEOUT):
+                async with self._lock:
+                    await asyncio.wait_for(
+                        self.hass.async_add_executor_job(
+                            self._sync_set_dhw_stop_temp, temp
+                        ),
+                        timeout=EXECUTOR_JOB_TIMEOUT,
+                    )
             _LOGGER.debug("async_set_dhw_stop_temp completed successfully")
+        except TimeoutError:
+            _LOGGER.error("Timeout setting DHW stop temperature")
+            raise HomeAssistantError("Timeout communicating with heat pump") from None
         except Exception as err:
             _LOGGER.error("async_set_dhw_stop_temp FAILED: %s", err)
             raise
@@ -1231,12 +1431,20 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                 f"DHW setpoint must be between 40.0 and 70.0°C, got {temp}"
             )
         _LOGGER.debug("async_set_dhw_setpoint called with temp=%.1f", temp)
+        _LOGGER.debug("async_set_dhw_setpoint called with temp=%.1f", temp)
         try:
-            async with self._lock:
-                await self.hass.async_add_executor_job(
-                    self._sync_set_dhw_setpoint, temp
-                )
+            async with asyncio.timeout(LOCK_ACQUIRE_TIMEOUT):
+                async with self._lock:
+                    await asyncio.wait_for(
+                        self.hass.async_add_executor_job(
+                            self._sync_set_dhw_setpoint, temp
+                        ),
+                        timeout=EXECUTOR_JOB_TIMEOUT,
+                    )
             _LOGGER.debug("async_set_dhw_setpoint completed successfully")
+        except TimeoutError:
+            _LOGGER.error("Timeout setting DHW setpoint")
+            raise HomeAssistantError("Timeout communicating with heat pump") from None
         except Exception as err:
             _LOGGER.error("async_set_dhw_setpoint FAILED: %s", err)
             raise
