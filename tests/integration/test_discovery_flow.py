@@ -12,7 +12,6 @@ These tests verify the complete discovery flow:
 import struct
 
 import pytest
-
 from buderus_wps.discovery import ParameterDiscovery
 
 

@@ -104,6 +104,8 @@ class TestEnergyBlockSwitchDataFlow:
             },
             compressor_running=True,
             energy_blocked=True,
+            dhw_active=False,
+            g1_active=False,
             dhw_extra_duration=0,
             heating_season_mode=2,  # Off (summer)
             dhw_program_mode=2,  # Always Off

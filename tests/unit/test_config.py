@@ -16,7 +16,6 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-
 from buderus_wps.config import (
     DEFAULT_SENSOR_MAPPINGS,
     CircuitConfig,

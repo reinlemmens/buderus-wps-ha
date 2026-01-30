@@ -1,4 +1,8 @@
 """Parameter data extracted from FHEM KM273_elements_default array.
+"""
+
+from __future__ import annotations
+from typing import Optional, cast
 
 # PROTOCOL: This data MUST match the FHEM reference implementation exactly.
 # Source: fhem/26_KM273v018.pm @KM273_elements_default array (lines 218-2009)
@@ -16131,8 +16135,6 @@ PARAMETER_DATA = [
 # These allow discovery.py to enrich discovered parameters with format/read
 # metadata from the static fallback data.
 # =========================================================================
-
-from typing import Optional, cast
 
 # Build lookup dictionaries for fast access by name
 _FORMAT_BY_NAME: dict[str, str] = {

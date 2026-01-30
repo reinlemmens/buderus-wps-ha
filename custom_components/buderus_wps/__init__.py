@@ -19,7 +19,7 @@ import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_SCAN_INTERVAL, Platform
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import discovery
 
@@ -164,7 +164,7 @@ async def _async_register_services(hass: HomeAssistant) -> None:
         }
     )
 
-    async def _handle_read_parameter(call):
+    async def _handle_read_parameter(call: ServiceCall) -> None:
         coord_id, coordinator = _resolve_coordinator(hass, call.data.get(ATTR_ENTRY_ID))
         name_or_idx = call.data[ATTR_NAME_OR_IDX]
         expected_dlc = call.data.get(ATTR_EXPECTED_DLC)
@@ -182,7 +182,7 @@ async def _async_register_services(hass: HomeAssistant) -> None:
             return result
         hass.bus.async_fire(f"{DOMAIN}_parameter_read", result)
 
-    async def _handle_list_parameters(call):
+    async def _handle_list_parameters(call: ServiceCall) -> None:
         coord_id, coordinator = _resolve_coordinator(hass, call.data.get(ATTR_ENTRY_ID))
         name_contains = call.data.get(ATTR_NAME_CONTAINS)
         limit = call.data.get(ATTR_LIMIT)

@@ -104,6 +104,8 @@ class TestCompressorSensorDataFlow:
             },
             compressor_running=False,
             energy_blocked=False,
+            dhw_active=False,
+            g1_active=False,
             dhw_extra_duration=0,
         )
 

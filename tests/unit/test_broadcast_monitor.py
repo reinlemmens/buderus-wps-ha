@@ -3,7 +3,6 @@
 from unittest.mock import MagicMock
 
 import pytest
-
 from buderus_wps.broadcast_monitor import (
     KNOWN_BROADCASTS,
     BroadcastMonitor,

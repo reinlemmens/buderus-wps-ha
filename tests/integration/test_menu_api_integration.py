@@ -8,7 +8,6 @@ from datetime import time
 from unittest.mock import MagicMock
 
 import pytest
-
 from buderus_wps.enums import DHWProgramMode, OperatingMode, RoomProgramMode
 from buderus_wps.exceptions import ValidationError
 from buderus_wps.menu_api import MenuAPI

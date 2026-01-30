@@ -292,10 +292,10 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         # Import bundled library using relative imports
         from .buderus_wps import (
             BroadcastMonitor,
+            EnergyBlockingControl,
             HeatPump,
             HeatPumpClient,
             USBtinAdapter,
-            EnergyBlockingControl,
         )
         from .buderus_wps.element_discovery import ElementDiscovery
         from .buderus_wps.menu_api import MenuAPI
@@ -858,7 +858,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                 "HEATING_SEASON_MODE", expected_dlc=1
             )
             decoded = result.get("decoded")
-            
+
             if decoded is None:
                 # Read failed or invalid DLC
                 raise ValueError(f"Invalid read: {result.get('error')}")
@@ -880,7 +880,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                 "DHW_PROGRAM_MODE", expected_dlc=1
             )
             decoded = result.get("decoded")
-            
+
             if decoded is None:
                 # Read failed or invalid DLC
                 raise ValueError(f"Invalid read: {result.get('error')}")
@@ -958,7 +958,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         energy_blocked = _get_binary(247)  # COMPRESSOR_BLOCKED
         dhw_active = _get_binary("PUMP_DHW_ACTIVE")  # idx 2016
         g1_active = _get_binary("PUMP_G1_CONTINUAL")  # idx 12796, Main/Heating pump
-        
+
         # Get compressor status via RTR request (best-effort with retry)
         # PROTOCOL: COMPRESSOR_STATE > 0 indicates compressor running (primary)
         # COMPRESSOR_REAL_FREQUENCY is kept as a secondary debug signal.
@@ -1017,17 +1017,17 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             # If state read failed but we have frequency > 0, assume running
             if not state_read and compressor_frequency > 0:
                 compressor_running = True
-            # If state read says OFF but frequency > 20Hz, trust frequency? 
+            # If state read says OFF but frequency > 20Hz, trust frequency?
             # (Maybe not, let's stick to simple logic for now, but freq is a good backup)
         except Exception as err:
             _LOGGER.debug("RTR FAILED for COMPRESSOR_REAL_FREQUENCY: %s", err)
             if not state_read and self._last_known_good_data is not None:
                 # distinct from the COMPRESSOR_STATE fallback above
-                if compressor_frequency is None: 
+                if compressor_frequency is None:
                      compressor_frequency = self._last_known_good_data.compressor_frequency
 
-        # If we failed to read anything fresh related to compressor, 
-        # checking _last_known_good_data for final fallback is wise, 
+        # If we failed to read anything fresh related to compressor,
+        # checking _last_known_good_data for final fallback is wise,
         # but the above blocks handle it partially.
 
 

@@ -8,7 +8,6 @@ from datetime import date, time
 from unittest.mock import MagicMock
 
 import pytest
-
 from buderus_wps.enums import (
     AlarmCategory,
     CircuitType,

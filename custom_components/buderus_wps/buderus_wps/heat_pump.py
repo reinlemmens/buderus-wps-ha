@@ -115,11 +115,30 @@ class HeatPumpClient:
             return frame.data
 
         # If the first frame is unrelated traffic, keep listening until timeout for the expected id.
-        while time.time() - start < effective_timeout:
-            remaining = max(effective_timeout - (time.time() - start), 0.01)
-            next_frame = self._adapter.receive_frame(timeout=remaining)
-            if next_frame is None:
+        # If the first frame is unrelated traffic, keep listening until timeout for the expected id.
+        while True:
+            elapsed = time.time() - start
+            if elapsed >= effective_timeout:
                 break
+
+            remaining = effective_timeout - elapsed
+            # Ensure we give at least a reasonable minimum time for the read to complete
+            # but don't exceed the total deadline too much.
+            # 0.01 is too small for serial latency. Use at least 0.1s or remaining.
+            # But the adapter.receive_frame uses polling, so 0.01 is actually fine...
+            # WAIT. The error says "No frame received within timeout ... timeout=0.01".
+            # This means receive_frame(timeout=0.01) failed.
+            # This happens if we are very close to the deadline.
+            # Let's ensure we don't call receive_frame with < 0.1 unless we really have to.
+
+            call_timeout = max(remaining, 0.1)
+            next_frame = self._adapter.receive_frame(timeout=call_timeout)
+            if next_frame is None:
+                # If we timed out on the receive call, we check total time
+                if time.time() - start >= effective_timeout:
+                    break
+                continue
+
             if next_frame.arbitration_id == response_id:
                 return next_frame.data
 

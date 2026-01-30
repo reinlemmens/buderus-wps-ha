@@ -154,6 +154,8 @@ class TestTemperatureSensorDataFlow:
             },
             compressor_running=True,
             energy_blocked=False,
+            dhw_active=False,
+            g1_active=False,
             dhw_extra_duration=0,
             heating_curve_offset=0.0,
             dhw_stop_temp=55.0,

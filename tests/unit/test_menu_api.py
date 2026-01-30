@@ -8,7 +8,6 @@ from datetime import date, datetime, time
 from unittest.mock import MagicMock
 
 import pytest
-
 from buderus_wps.enums import (
     AlarmCategory,
     CircuitType,
@@ -492,7 +491,7 @@ class TestAlarmController:
 
         alarms = ctrl.active_alarms
         assert len(alarms) == 1
-        assert alarms[0].code == 1
+        assert alarms[0].code == 101
 
     def test_alarm_log(self, mock_client):
         """Read alarm log."""

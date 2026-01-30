@@ -30,6 +30,7 @@ async def async_setup_entry(
     async_add_entities(
         [
             BuderusEnergyBlockSwitch(coordinator, entry),
+            BuderusCompressorBlockSwitch(coordinator, entry),
             BuderusUSBConnectionSwitch(coordinator, entry),
         ]
     )
@@ -170,3 +171,68 @@ class BuderusUSBConnectionSwitch(BuderusEntity, SwitchEntity):
         ) as err:
             _LOGGER.warning("Cannot connect - port may be in use by CLI: %s", err)
             raise HomeAssistantError(f"USB port in use: {err}") from err
+
+
+class BuderusCompressorBlockSwitch(BuderusEntity, SwitchEntity):
+    """Switch for direct compressor blocking (without stopping pumps).
+
+    This switch uses the energy blocking control to block the compressor specifically
+    via the discovered `COMPRESSOR_E21_EXTERN_BLOCK_BY_E21_EXT_1` parameter.
+    This is distinct from "Energy Block" (Summer Mode) because it does NOT stop
+    the circulation pumps, allowing the buffer to be used efficiently.
+    """
+
+    _attr_name = "Compressor Block"
+    _attr_icon = ICON_ENERGY_BLOCK
+
+    def __init__(
+        self,
+        coordinator: BuderusCoordinator,
+        entry: ConfigEntry,
+    ) -> None:
+        """Initialize the compressor block switch."""
+        super().__init__(coordinator, "compressor_block", entry)
+
+    @property
+    def is_on(self) -> bool | None:
+        """Return true if compressor is blocking is active."""
+        if (
+            self.coordinator.data is None
+            or self.coordinator.data.compressor_blocked is None
+        ):
+            return None
+        return self.coordinator.data.compressor_blocked
+
+    async def async_turn_on(self, **kwargs: Any) -> None:
+        """Enable compressor blocking."""
+        if not self.coordinator.energy_blocking:
+            raise HomeAssistantError("Energy blocking control not initialized")
+
+        # Block compressor via executor (synchronous call)
+        result = await self.hass.async_add_executor_job(
+            self.coordinator.energy_blocking.block_compressor
+        )
+
+        if not result.success:
+            raise HomeAssistantError(
+                f"Failed to block compressor: {result.message} (Error: {result.error})"
+            )
+
+        await self.coordinator.async_request_refresh()
+
+    async def async_turn_off(self, **kwargs: Any) -> None:
+        """Disable compressor blocking."""
+        if not self.coordinator.energy_blocking:
+            raise HomeAssistantError("Energy blocking control not initialized")
+
+        # Unblock compressor via executor (synchronous call)
+        result = await self.hass.async_add_executor_job(
+            self.coordinator.energy_blocking.unblock_compressor
+        )
+
+        if not result.success:
+            raise HomeAssistantError(
+                f"Failed to unblock compressor: {result.message} (Error: {result.error})"
+            )
+
+        await self.coordinator.async_request_refresh()

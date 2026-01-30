@@ -165,6 +165,8 @@ class TestUS4Scenario3SliderShowsRemainingDuration:
             },
             compressor_running=True,
             energy_blocked=False,
+            dhw_active=False,
+            g1_active=False,
             dhw_extra_duration=4,  # Decreased by 1 hour
         )
 

@@ -192,7 +192,10 @@ class MockBuderusData:
     temperatures: dict[str, Optional[float]]
     compressor_running: bool
     energy_blocked: bool
+    dhw_active: bool
+    g1_active: bool
     dhw_extra_duration: int
+    compressor_blocked: Optional[bool] = None
     heating_season_mode: Optional[int] = None
     dhw_program_mode: Optional[int] = None
     heating_curve_offset: Optional[float] = None
@@ -231,7 +234,10 @@ def mock_buderus_data(mock_temperatures: dict[str, float]) -> MockBuderusData:
         temperatures=mock_temperatures,
         compressor_running=True,
         energy_blocked=False,
+        dhw_active=False,
+        g1_active=False,
         dhw_extra_duration=0,
+        compressor_blocked=None,
         heating_season_mode=1,
         dhw_program_mode=0,
         heating_curve_offset=0.0,

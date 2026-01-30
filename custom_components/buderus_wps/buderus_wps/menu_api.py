@@ -666,12 +666,15 @@ class AlarmController:
         if decoded is None or decoded == 0:
             return None
 
+        # The decoded value is the alarm code itself (e.g., 5283)
+        error_code = int(decoded)
+
         return Alarm(
-            code=index,
+            code=error_code,
             category=category,
-            description=f"Alarm {index}",  # TODO: Map codes to descriptions
-            timestamp=datetime.now(),  # TODO: Parse actual timestamp
-            acknowledged=False,  # TODO: Parse actual status
+            description=f"Error {error_code}",  # TODO: Map codes to text descriptions
+            timestamp=datetime.now(),  # We don't get a timestamp from these params
+            acknowledged=False,  # Status not available in this simple integer
             clearable=True,
         )
 

@@ -134,16 +134,16 @@ ENERGY_PARAMS = {
 
 # Alarm Parameters
 ALARM_PARAMS = {
-    "alarm_log_1": "ALARM_LOG_1",
-    "alarm_log_2": "ALARM_LOG_2",
-    "alarm_log_3": "ALARM_LOG_3",
-    "alarm_log_4": "ALARM_LOG_4",
-    "alarm_log_5": "ALARM_LOG_5",
+    "alarm_log_1": "ADDITIONAL_ALARM",
+    "alarm_log_2": "ADDITIONAL_ALARM_2",
+    "alarm_log_3": "ADDITIONAL_ALARM_3",
+    "alarm_log_4": "ADDITIONAL_ALARM_4",
     "info_log_1": "INFO_LOG_1",
     "info_log_2": "INFO_LOG_2",
     "info_log_3": "INFO_LOG_3",
     "info_log_4": "INFO_LOG_4",
     "info_log_5": "INFO_LOG_5",
+    "compressor_alarm": "COMPRESSOR_ALARM",
     "alarm_acknowledge": "ALARM_ACKNOWLEDGE",
     "alarm_clear": "ALARM_CLEAR",
 }

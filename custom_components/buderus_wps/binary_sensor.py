@@ -26,7 +26,13 @@ async def async_setup_entry(
     data = hass.data[DOMAIN][entry.entry_id]
     coordinator: BuderusCoordinator = data["coordinator"]
 
-    async_add_entities([BuderusCompressorSensor(coordinator, entry)])
+    async_add_entities(
+        [
+            BuderusCompressorSensor(coordinator, entry),
+            BuderusDHWActiveSensor(coordinator, entry),
+            BuderusHeatingActiveSensor(coordinator, entry),
+        ]
+    )
 
 
 async def async_setup_platform(
@@ -75,3 +81,69 @@ class BuderusCompressorSensor(BuderusEntity, BinarySensorEntity):
         if self.coordinator.data is None:
             return None
         return self.coordinator.data.compressor_running
+
+
+class BuderusDHWActiveSensor(BuderusEntity, BinarySensorEntity):
+    """Binary sensor for DHW generation status (Pump DHW)."""
+
+    _attr_device_class = BinarySensorDeviceClass.RUNNING
+    _attr_name = "DHW Active"
+    _attr_icon = "mdi:water-boiler"
+
+    def __init__(
+        self,
+        coordinator: BuderusCoordinator,
+        entry: ConfigEntry | None = None,
+    ) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator, "dhw_active", entry)
+
+    @property
+    def is_on(self) -> bool | None:
+        """Return true if DHW pump is running."""
+        if (
+            self.coordinator.data is None
+            or not hasattr(self.coordinator.data, "dhw_active")
+        ):
+            return None
+        return self.coordinator.data.dhw_active
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return extra attributes."""
+        return {
+            "description": "Indicates if the DHW charging pump is active (heating hot water)."
+        }
+
+
+class BuderusHeatingActiveSensor(BuderusEntity, BinarySensorEntity):
+    """Binary sensor for Heating Circuit 1 status (Pump G1)."""
+
+    _attr_device_class = BinarySensorDeviceClass.RUNNING
+    _attr_name = "Heating Active"
+    _attr_icon = "mdi:radiator"
+
+    def __init__(
+        self,
+        coordinator: BuderusCoordinator,
+        entry: ConfigEntry | None = None,
+    ) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator, "heating_active", entry)
+
+    @property
+    def is_on(self) -> bool | None:
+        """Return true if G1 pump is running (heating)."""
+        if (
+            self.coordinator.data is None
+            or not hasattr(self.coordinator.data, "g1_active")
+        ):
+            return None
+        return self.coordinator.data.g1_active
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return extra attributes."""
+        return {
+            "description": "Indicates if the main heating pump (G1) is active."
+        }
