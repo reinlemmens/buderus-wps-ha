@@ -1,5 +1,4 @@
-"""Parameter data extracted from FHEM KM273_elements_default array.
-"""
+"""Parameter data extracted from FHEM KM273_elements_default array."""
 
 from __future__ import annotations
 from typing import Optional, cast
@@ -8,19 +7,19 @@ from typing import Optional, cast
 # Source: fhem/26_KM273v018.pm @KM273_elements_default array (lines 218-2009)
 # Extraction date: 2025-10-25
 # Total parameters: 1789
+#
+# This module contains the static parameter definitions for the Buderus WPS heat pump.
+# The data is extracted from the FHEM Perl module and converted to Python format.
+#
+# Each parameter is represented as a dictionary with the following keys:
+#     idx: int - Sequential parameter index (may have gaps)
+#     extid: str - External ID (14-character hex string for CAN addressing)
+#     min: int - Minimum allowed value (can be negative)
+#     max: int - Maximum allowed value
+#     format: str - Data format type ("int", "temp", etc.)
+#     read: int - Read-only flag (0=writable, 1=read-only)
+#     text: str - Human-readable parameter name (ALL_CAPS_WITH_UNDERSCORES)
 
-This module contains the static parameter definitions for the Buderus WPS heat pump.
-The data is extracted from the FHEM Perl module and converted to Python format.
-
-Each parameter is represented as a dictionary with the following keys:
-    idx: int - Sequential parameter index (may have gaps)
-    extid: str - External ID (14-character hex string for CAN addressing)
-    min: int - Minimum allowed value (can be negative)
-    max: int - Maximum allowed value
-    format: str - Data format type ("int", "temp", etc.)
-    read: int - Read-only flag (0=writable, 1=read-only)
-    text: str - Human-readable parameter name (ALL_CAPS_WITH_UNDERSCORES)
-"""
 
 PARAMETER_DATA = [
     {
@@ -16220,3 +16219,4 @@ def get_parameter_by_idx(idx: int) -> Optional[dict]:
         'ACCESS_LEVEL'
     """
     return _PARAM_BY_IDX.get(idx)
+

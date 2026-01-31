@@ -1,12 +1,16 @@
 {
   "domain": "buderus_wps",
   "name": "Buderus WPS Heat Pump",
-  "codeowners": ["@reinlemmens"],
+  "codeowners": [
+    "@reinlemmens"
+  ],
   "config_flow": true,
   "documentation": "https://github.com/reinlemmens/buderus-wps-ha",
   "issue_tracker": "https://github.com/reinlemmens/buderus-wps-ha/issues",
-  "requirements": ["pyserial>=3.5"],
-  "version": "1.5.1",
+  "requirements": [
+    "pyserial>=3.5"
+  ],
+  "version": "1.5.2",
   "iot_class": "local_polling",
   "integration_type": "device"
 }
