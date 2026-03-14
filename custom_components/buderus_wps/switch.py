@@ -98,12 +98,12 @@ class BuderusEnergyBlockSwitch(BuderusEntity, SwitchEntity):
         """Disable energy blocking.
 
         Restores normal operation:
-        - HEATING_SEASON_MODE to 1 (Automatic)
-        - DHW_PROGRAM_MODE to 0 (Automatic)
+        - HEATING_SEASON_MODE to 0 (Winter)
+        - DHW_PROGRAM_MODE to 1 (Always On)
         """
-        # Restore automatic operation
-        await self.coordinator.async_set_heating_season_mode(1)  # Automatic
-        await self.coordinator.async_set_dhw_program_mode(0)  # Automatic
+        # Restore normal operation
+        await self.coordinator.async_set_heating_season_mode(0)  # Winter
+        await self.coordinator.async_set_dhw_program_mode(1)  # Always On
         await self.coordinator.async_request_refresh()
 
 
