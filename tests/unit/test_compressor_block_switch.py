@@ -3,10 +3,12 @@
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
-from homeassistant.exceptions import HomeAssistantError
 
 from custom_components.buderus_wps.buderus_wps.energy_blocking import BlockingResult
-from custom_components.buderus_wps.switch import BuderusCompressorBlockSwitch
+from custom_components.buderus_wps.switch import (
+    BuderusCompressorBlockSwitch,
+    HomeAssistantError,
+)
 
 
 class TestCompressorBlockSwitch:
