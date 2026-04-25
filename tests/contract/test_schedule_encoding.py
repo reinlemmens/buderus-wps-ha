@@ -8,7 +8,6 @@ as discovered through hardware testing.
 from datetime import time
 
 import pytest
-
 from buderus_wps.schedule_codec import ScheduleCodec, ScheduleSlot
 
 

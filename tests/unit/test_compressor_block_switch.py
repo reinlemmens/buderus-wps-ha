@@ -39,7 +39,9 @@ class TestCompressorBlockSwitch:
         switch = BuderusCompressorBlockSwitch(mock_coordinator, mock_entry)
         assert switch.is_on is False
 
-    def test_switch_state_is_none_when_data_missing(self, mock_coordinator: MagicMock) -> None:
+    def test_switch_state_is_none_when_data_missing(
+        self, mock_coordinator: MagicMock
+    ) -> None:
         """Test is_on returns None when data is unavailable."""
         mock_entry = MagicMock()
         mock_coordinator.data = None
@@ -84,8 +86,13 @@ class TestCompressorBlockSwitchActions:
         switch.hass = AsyncMock()
 
         mock_coordinator.energy_blocking = MagicMock()
-        mock_coordinator.energy_blocking.unblock_compressor.return_value = BlockingResult(
-            success=True, component="compressor", action="unblock", message="Success"
+        mock_coordinator.energy_blocking.unblock_compressor.return_value = (
+            BlockingResult(
+                success=True,
+                component="compressor",
+                action="unblock",
+                message="Success",
+            )
         )
 
         switch.hass.async_add_executor_job.side_effect = lambda f, *args: f(*args)
@@ -107,12 +114,15 @@ class TestCompressorBlockSwitchActions:
             component="compressor",
             action="block",
             message="Failed",
-            error="CAN Error"
+            error="CAN Error",
         )
 
         switch.hass.async_add_executor_job.side_effect = lambda f, *args: f(*args)
 
-        with pytest.raises(HomeAssistantError, match=r"Failed to block compressor: Failed \(Error: CAN Error\)"):
+        with pytest.raises(
+            HomeAssistantError,
+            match=r"Failed to block compressor: Failed \(Error: CAN Error\)",
+        ):
             await switch.async_turn_on()
 
     @pytest.mark.asyncio
@@ -123,21 +133,28 @@ class TestCompressorBlockSwitchActions:
         switch.hass = AsyncMock()
 
         mock_coordinator.energy_blocking = MagicMock()
-        mock_coordinator.energy_blocking.unblock_compressor.return_value = BlockingResult(
-            success=False,
-            component="compressor",
-            action="unblock",
-            message="Failed",
-            error="Timeout"
+        mock_coordinator.energy_blocking.unblock_compressor.return_value = (
+            BlockingResult(
+                success=False,
+                component="compressor",
+                action="unblock",
+                message="Failed",
+                error="Timeout",
+            )
         )
 
         switch.hass.async_add_executor_job.side_effect = lambda f, *args: f(*args)
 
-        with pytest.raises(HomeAssistantError, match=r"Failed to unblock compressor: Failed \(Error: Timeout\)"):
+        with pytest.raises(
+            HomeAssistantError,
+            match=r"Failed to unblock compressor: Failed \(Error: Timeout\)",
+        ):
             await switch.async_turn_off()
 
     @pytest.mark.asyncio
-    async def test_action_raises_if_not_initialized(self, mock_coordinator: MagicMock) -> None:
+    async def test_action_raises_if_not_initialized(
+        self, mock_coordinator: MagicMock
+    ) -> None:
         """Test actions raise if energy blocking not initialized."""
         mock_entry = MagicMock()
         switch = BuderusCompressorBlockSwitch(mock_coordinator, mock_entry)
@@ -145,5 +162,7 @@ class TestCompressorBlockSwitchActions:
 
         mock_coordinator.energy_blocking = None
 
-        with pytest.raises(HomeAssistantError, match="Energy blocking control not initialized"):
+        with pytest.raises(
+            HomeAssistantError, match="Energy blocking control not initialized"
+        ):
             await switch.async_turn_on()

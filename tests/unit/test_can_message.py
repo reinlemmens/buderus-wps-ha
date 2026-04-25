@@ -6,7 +6,6 @@ Tests cover:
 """
 
 import pytest
-
 from buderus_wps.can_message import CANMessage
 
 

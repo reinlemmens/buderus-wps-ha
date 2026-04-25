@@ -12,7 +12,6 @@ Principle II (Protocol Fidelity).
 import re
 
 import pytest
-
 from buderus_wps.parameter import Parameter
 from buderus_wps.parameter_data import PARAMETER_DATA
 

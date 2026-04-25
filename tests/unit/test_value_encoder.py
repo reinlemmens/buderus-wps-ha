@@ -3,7 +3,6 @@
 import struct
 
 import pytest
-
 from buderus_wps.value_encoder import ValueEncoder
 
 

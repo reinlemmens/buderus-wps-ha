@@ -12,7 +12,6 @@ without requiring physical hardware.
 from unittest.mock import MagicMock, PropertyMock, patch
 
 import pytest
-
 from buderus_wps.can_adapter import USBtinAdapter
 from buderus_wps.exceptions import DeviceNotFoundError, DevicePermissionError
 

@@ -10,7 +10,6 @@ Tests cover:
 from unittest.mock import Mock, patch
 
 import pytest
-
 from buderus_wps.can_adapter import USBtinAdapter
 from buderus_wps.can_message import CANMessage
 from buderus_wps.exceptions import DeviceCommunicationError, TimeoutError

@@ -14,21 +14,24 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 
 
+class HomeAssistantError(Exception):
+    """Base Home Assistant exception (test stand-in)."""
+
+    pass
+
+
 def setup_ha_mocks():
     """Set up all required Home Assistant module mocks.
 
     This must be called before any imports from custom_components.
+    Idempotent: re-using the module-level HomeAssistantError keeps a stable
+    identity across re-invocations so isinstance/pytest.raises checks work
+    regardless of conftest load order.
     """
     # Core HA modules
     sys.modules["homeassistant"] = MagicMock()
     sys.modules["homeassistant.core"] = MagicMock()
     sys.modules["homeassistant.config_entries"] = MagicMock()
-
-    # Exceptions module with real exception classes
-    class HomeAssistantError(Exception):
-        """Base Home Assistant exception."""
-
-        pass
 
     exceptions_mock = MagicMock()
     exceptions_mock.HomeAssistantError = HomeAssistantError

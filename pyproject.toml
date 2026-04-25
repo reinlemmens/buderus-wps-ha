@@ -142,10 +142,10 @@ ignore = [
 "**/find_*.py" = ["E402"]  # find scripts
 "benchmark_*.py" = ["E402"]  # benchmark scripts
 "quick_test.py" = ["E402"]  # quick test script
-"buderus_wps/can_adapter.py" = ["B904"]  # exception chaining not needed for clean error messages
-"buderus_wps/can_message.py" = ["B904"]  # exception chaining not needed for clean error messages
-"buderus_wps/element_discovery.py" = ["B904"]  # exception chaining not needed for clean error messages
-"buderus_wps/parameter_data.py" = ["E402"]  # import after large data block
+"**/can_adapter.py" = ["B904"]  # exception chaining not needed for clean error messages
+"**/can_message.py" = ["B904"]  # exception chaining not needed for clean error messages
+"**/element_discovery.py" = ["B904"]  # exception chaining not needed for clean error messages
+"**/parameter_data.py" = ["E402"]  # import after large data block
 "buderus_wps_cli/main.py" = ["E402"]  # import organization
 
 [tool.mypy]

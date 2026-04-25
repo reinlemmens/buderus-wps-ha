@@ -38,10 +38,10 @@ jobs:
           pip install black ruff
 
       - name: Check formatting with Black
-        run: black --check --diff --config pyproject.toml buderus_wps/ custom_components/buderus_wps/ tests/
+        run: black --check --diff --config pyproject.toml custom_components/buderus_wps/ buderus_wps_cli/ tests/
 
       - name: Lint with Ruff
-        run: ruff check --config pyproject.toml buderus_wps/ custom_components/buderus_wps/ tests/
+        run: ruff check --config pyproject.toml custom_components/buderus_wps/ buderus_wps_cli/ tests/
 
   type-check:
     name: Type Check
@@ -62,9 +62,9 @@ jobs:
           pip install mypy types-PyYAML pyserial
 
       - name: Type check library (buderus_wps)
-        run: mypy buderus_wps/ --config-file pyproject.toml
-        # Note: custom_components/buderus_wps/buderus_wps/ is bundled at deploy time
-        # so we only type-check the source library here
+        env:
+          MYPYPATH: custom_components/buderus_wps
+        run: mypy --explicit-package-bases -p buderus_wps --config-file pyproject.toml
 
   test:
     name: Tests
@@ -89,7 +89,7 @@ jobs:
           pip install -e ".[dev]"
 
       - name: Run tests
-        run: pytest tests/ --ignore=tests/hil/ -v --cov=buderus_wps --cov-fail-under=0
+        run: pytest tests/ --ignore=tests/hil/ -v --cov=custom_components.buderus_wps.buderus_wps --cov-fail-under=0
 
   all-checks-pass:
     name: All Checks Pass

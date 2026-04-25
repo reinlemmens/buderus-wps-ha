@@ -5,7 +5,6 @@ and validate_value() method with various edge cases.
 """
 
 import pytest
-
 from buderus_wps.parameter import Parameter
 
 

@@ -1,5 +1,4 @@
 import pytest
-
 from buderus_wps.program_switching import (
     ProgramSwitchConfig,
     ProgramSwitchingController,

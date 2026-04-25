@@ -101,9 +101,8 @@ class BuderusDHWActiveSensor(BuderusEntity, BinarySensorEntity):
     @property
     def is_on(self) -> bool | None:
         """Return true if DHW pump is running."""
-        if (
-            self.coordinator.data is None
-            or not hasattr(self.coordinator.data, "dhw_active")
+        if self.coordinator.data is None or not hasattr(
+            self.coordinator.data, "dhw_active"
         ):
             return None
         return self.coordinator.data.dhw_active
@@ -134,9 +133,8 @@ class BuderusHeatingActiveSensor(BuderusEntity, BinarySensorEntity):
     @property
     def is_on(self) -> bool | None:
         """Return true if G1 pump is running (heating)."""
-        if (
-            self.coordinator.data is None
-            or not hasattr(self.coordinator.data, "g1_active")
+        if self.coordinator.data is None or not hasattr(
+            self.coordinator.data, "g1_active"
         ):
             return None
         return self.coordinator.data.g1_active
@@ -144,6 +142,4 @@ class BuderusHeatingActiveSensor(BuderusEntity, BinarySensorEntity):
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return extra attributes."""
-        return {
-            "description": "Indicates if the main heating pump (G1) is active."
-        }
+        return {"description": "Indicates if the main heating pump (G1) is active."}

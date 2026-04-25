@@ -942,6 +942,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
 
         # Get compressor blocked status (best-effort)
         compressor_blocked: bool | None = None
+
         # Helper to read binary status safely
         def _get_binary(param_name_or_idx: Any) -> bool:
             try:
@@ -1024,18 +1025,21 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             if not state_read and self._last_known_good_data is not None:
                 # distinct from the COMPRESSOR_STATE fallback above
                 if compressor_frequency is None:
-                     compressor_frequency = self._last_known_good_data.compressor_frequency
+                    compressor_frequency = (
+                        self._last_known_good_data.compressor_frequency
+                    )
 
         # If we failed to read anything fresh related to compressor,
         # checking _last_known_good_data for final fallback is wise,
         # but the above blocks handle it partially.
 
-
         # Get compressor blocked status (best-effort)
         try:
             # Use the initialized energy_blocking helper to read status
             # This ensures we use the correct parameter (COMPRESSOR_BLOCKED idx 247)
-            compressor_blocked = self.energy_blocking._read_compressor_status(timeout=2.0)
+            compressor_blocked = self.energy_blocking._read_compressor_status(
+                timeout=2.0
+            )
         except Exception as err:
             _LOGGER.warning("Failed to read compressor block status: %s", err)
             if self._last_known_good_data is not None:
@@ -1207,7 +1211,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                             return
                         await self._async_stop_dhw_boost_locked()
             except TimeoutError:
-                 _LOGGER.error("Timeout acquiring lock for DHW boost timer completion")
+                _LOGGER.error("Timeout acquiring lock for DHW boost timer completion")
             await self.async_request_refresh()
         except asyncio.CancelledError:
             return
@@ -1308,7 +1312,6 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         Args:
             mode: 0=Auto, 1=Always On, 2=Always Off (blocked)
         """
-
 
         try:
             async with asyncio.timeout(LOCK_ACQUIRE_TIMEOUT):

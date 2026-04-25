@@ -83,9 +83,9 @@ class TestUS3Scenario2TurnOffDisablesBlocking:
 
         await switch.async_turn_off()
 
-        # Coordinator methods should be called to restore automatic operation
-        mock_coordinator.async_set_heating_season_mode.assert_called_with(1)
-        mock_coordinator.async_set_dhw_program_mode.assert_called_with(0)
+        # Should restore Winter / Always On (not Automatic) so heating runs again
+        mock_coordinator.async_set_heating_season_mode.assert_called_with(0)
+        mock_coordinator.async_set_dhw_program_mode.assert_called_with(1)
         mock_coordinator.async_request_refresh.assert_called()
 
 

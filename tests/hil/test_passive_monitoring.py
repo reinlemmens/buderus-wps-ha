@@ -15,7 +15,6 @@ import os
 import time
 
 import pytest
-
 from buderus_wps.can_adapter import USBtinAdapter
 from buderus_wps.can_message import (
     CAN_PREFIX_DATA,

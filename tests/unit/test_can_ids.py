@@ -9,7 +9,6 @@ correctly implement the FHEM CAN ID construction formulas.
 """
 
 import pytest
-
 from buderus_wps.parameter import Parameter
 
 

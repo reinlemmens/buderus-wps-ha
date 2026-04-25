@@ -14,7 +14,6 @@ Acceptance Scenarios:
 import json
 
 import pytest
-
 from buderus_wps.cache import ParameterCache
 from buderus_wps.parameter_data import PARAMETER_DATA
 

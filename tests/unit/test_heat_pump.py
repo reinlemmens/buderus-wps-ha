@@ -1,5 +1,4 @@
 import pytest
-
 from buderus_wps.can_message import CANMessage
 from buderus_wps.heat_pump import HeatPumpClient
 from buderus_wps.parameter_registry import ParameterRegistry

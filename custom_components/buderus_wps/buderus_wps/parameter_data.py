@@ -1,6 +1,7 @@
 """Parameter data extracted from FHEM KM273_elements_default array."""
 
 from __future__ import annotations
+
 from typing import Optional, cast
 
 # PROTOCOL: This data MUST match the FHEM reference implementation exactly.
@@ -16219,4 +16220,3 @@ def get_parameter_by_idx(idx: int) -> Optional[dict]:
         'ACCESS_LEVEL'
     """
     return _PARAM_BY_IDX.get(idx)
-

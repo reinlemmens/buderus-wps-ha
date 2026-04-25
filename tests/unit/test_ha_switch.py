@@ -60,13 +60,12 @@ class TestEnergyBlockSwitch:
 
     @pytest.mark.asyncio
     async def test_turn_off_calls_coordinator(self, mock_coordinator):
-        """Turning off switch should restore automatic operation."""
+        """Turning off switch should restore Winter / Always On (not Automatic)."""
         switch = BuderusEnergyBlockSwitch(mock_coordinator)
         await switch.async_turn_off()
 
-        # Should restore both modes to automatic operation
-        mock_coordinator.async_set_heating_season_mode.assert_called_once_with(1)
-        mock_coordinator.async_set_dhw_program_mode.assert_called_once_with(0)
+        mock_coordinator.async_set_heating_season_mode.assert_called_once_with(0)
+        mock_coordinator.async_set_dhw_program_mode.assert_called_once_with(1)
         mock_coordinator.async_request_refresh.assert_called_once()
 
 

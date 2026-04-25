@@ -7,7 +7,6 @@ Protocol Reference: FHEM 26_KM273v018.pm lines 2052-2164
 """
 
 import pytest
-
 from buderus_wps.element_discovery import DiscoveredElement, ElementListParser
 
 

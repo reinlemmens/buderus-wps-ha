@@ -19,7 +19,6 @@ Acceptance Scenarios:
 from unittest.mock import MagicMock, PropertyMock, patch
 
 import pytest
-
 from buderus_wps.can_adapter import USBtinAdapter
 from buderus_wps.can_message import CANMessage
 from buderus_wps.exceptions import TimeoutError
@@ -406,6 +405,7 @@ class TestAcceptanceScenario4HumanReadableLabels:
         from unittest.mock import MagicMock, patch
 
         from buderus_wps.broadcast_monitor import BroadcastCache, BroadcastReading
+
         from buderus_wps_cli.main import cmd_monitor
 
         # Setup: Mock adapter and broadcast monitor
@@ -470,6 +470,7 @@ class TestAcceptanceScenario4HumanReadableLabels:
         from unittest.mock import MagicMock, patch
 
         from buderus_wps.broadcast_monitor import BroadcastCache, BroadcastReading
+
         from buderus_wps_cli.main import cmd_monitor
 
         # Setup
@@ -520,6 +521,7 @@ class TestAcceptanceScenario4HumanReadableLabels:
         from unittest.mock import MagicMock, patch
 
         from buderus_wps.broadcast_monitor import BroadcastCache, BroadcastReading
+
         from buderus_wps_cli.main import cmd_monitor
 
         # Setup
