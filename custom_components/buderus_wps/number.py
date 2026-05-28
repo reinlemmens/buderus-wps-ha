@@ -28,6 +28,10 @@ async def async_setup_entry(
             BuderusHeatingCurveOffsetNumber(coordinator, entry),
             BuderusDHWStopTempNumber(coordinator, entry),
             BuderusDHWSetpointNumber(coordinator, entry),
+            BuderusDHWStartTempComfortNumber(coordinator, entry),
+            BuderusDHWStartTempEconomyNumber(coordinator, entry),
+            BuderusDHWStopTempComfortNumber(coordinator, entry),
+            BuderusDHWStopTempEconomyNumber(coordinator, entry),
         ]
     )
 
@@ -261,3 +265,101 @@ class BuderusDHWSetpointNumber(BuderusEntity, NumberEntity):
         except Exception as err:
             _LOGGER.error("DHWSetpoint.async_set_native_value FAILED: %s", err)
             raise
+
+
+class _BuderusDHWModeTempNumberBase(BuderusEntity, NumberEntity):
+    """Base for DHW Comfort/Economy start/stop temperature number entities.
+
+    Subclasses set: _attr_name, entity_key, _data_attr, _setter_name,
+    _attr_native_min_value, _attr_native_max_value.
+    """
+
+    _attr_icon = ICON_WATER_THERMOMETER
+    _attr_native_step = 0.5
+    _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+    _attr_mode = NumberMode.BOX
+
+    # Subclasses must override:
+    _entity_key: str = ""
+    _data_attr: str = ""
+    _setter_name: str = ""
+
+    def __init__(
+        self,
+        coordinator: BuderusCoordinator,
+        entry: ConfigEntry | None = None,
+    ) -> None:
+        super().__init__(coordinator, self._entity_key, entry)
+
+    @property
+    def native_value(self) -> float | None:
+        if self.coordinator.data is None:
+            return None
+        return getattr(self.coordinator.data, self._data_attr, None)
+
+    async def async_set_native_value(self, value: float) -> None:
+        setter = getattr(self.coordinator, self._setter_name)
+        await setter(value)
+        # Optimistic update for immediate UI feedback
+        if self.coordinator.data is not None:
+            from dataclasses import replace
+
+            self.coordinator.async_set_updated_data(
+                replace(self.coordinator.data, **{self._data_attr: value})
+            )
+
+
+class BuderusDHWStartTempComfortNumber(_BuderusDHWModeTempNumberBase):
+    """DHW start temperature (GT3) used in Comfort mode (20.0-56.0°C).
+
+    Hot water heating begins when GT3 drops below this value while the DHW
+    schedule is in its Comfort window.
+    """
+
+    _attr_name = "DHW Start Temperature (Comfort)"
+    _attr_native_min_value = 20.0
+    _attr_native_max_value = 56.0
+    _entity_key = "dhw_start_temp_comfort"
+    _data_attr = "dhw_start_temp_comfort"
+    _setter_name = "async_set_dhw_start_temp_comfort"
+
+
+class BuderusDHWStartTempEconomyNumber(_BuderusDHWModeTempNumberBase):
+    """DHW start temperature (GT3) used in Economy mode (20.0-56.0°C).
+
+    Lower value than Comfort means the tank is allowed to cool further before
+    a new heating cycle, reducing energy use.
+    """
+
+    _attr_name = "DHW Start Temperature (Economy)"
+    _attr_native_min_value = 20.0
+    _attr_native_max_value = 56.0
+    _entity_key = "dhw_start_temp_economy"
+    _data_attr = "dhw_start_temp_economy"
+    _setter_name = "async_set_dhw_start_temp_economy"
+
+
+class BuderusDHWStopTempComfortNumber(_BuderusDHWModeTempNumberBase):
+    """DHW stop temperature (GT8) used in Comfort mode (21.0-64.0°C).
+
+    Hot water heating stops when GT8 reaches this value during the
+    Comfort window. Higher value = hotter water but more energy.
+    """
+
+    _attr_name = "DHW Stop Temperature (Comfort)"
+    _attr_native_min_value = 21.0
+    _attr_native_max_value = 64.0
+    _entity_key = "dhw_stop_temp_comfort"
+    _data_attr = "dhw_stop_temp_comfort"
+    _setter_name = "async_set_dhw_stop_temp_comfort"
+
+
+class BuderusDHWStopTempEconomyNumber(_BuderusDHWModeTempNumberBase):
+    """DHW stop temperature (GT8) used in Economy mode (21.0-64.0°C)."""
+
+    _attr_name = "DHW Stop Temperature (Economy)"
+    _attr_native_min_value = 21.0
+    _attr_native_max_value = 64.0
+    _entity_key = "dhw_stop_temp_economy"
+    _data_attr = "dhw_stop_temp_economy"
+    _setter_name = "async_set_dhw_stop_temp_economy"

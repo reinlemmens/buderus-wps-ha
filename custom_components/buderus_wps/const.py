@@ -105,3 +105,19 @@ DHW_PROGRAM_OPTIONS: Final = {
     DHW_PROGRAM_MODE_ON: "Always On",
     DHW_PROGRAM_MODE_OFF: "Always Off",
 }
+
+# DHW Time Program (idx=494, format dp1)
+# Selects how DHW operating temperatures are scheduled. FHEM exposes this as
+# Always_On / Program_1 / Program_2. On the Buderus UI Always_On corresponds
+# to "Comfort" (always heat to DHW_GT3_START_TEMP_COMFORT / DHW_GT8_STOP_TEMP_COMFORT);
+# Program_1 / Program_2 follow the configured schedules that switch between
+# the COMFORT and ECONOMY setpoint pairs.
+DHW_TIMEPROGRAM_ALWAYS_ON: Final = 0  # Comfort: always use COMFORT start/stop temps
+DHW_TIMEPROGRAM_PROGRAM_1: Final = 1
+DHW_TIMEPROGRAM_PROGRAM_2: Final = 2
+
+DHW_TIMEPROGRAM_OPTIONS: Final = {
+    DHW_TIMEPROGRAM_ALWAYS_ON: "Always On (Comfort)",
+    DHW_TIMEPROGRAM_PROGRAM_1: "Program 1",
+    DHW_TIMEPROGRAM_PROGRAM_2: "Program 2",
+}

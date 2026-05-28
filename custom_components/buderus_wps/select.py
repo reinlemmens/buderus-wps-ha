@@ -13,6 +13,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
     DHW_PROGRAM_OPTIONS,
+    DHW_TIMEPROGRAM_OPTIONS,
     DOMAIN,
     HEATING_SEASON_OPTIONS,
 )
@@ -33,6 +34,7 @@ async def async_setup_entry(
         [
             BuderusHeatingSeasonModeSelect(coordinator, entry),
             BuderusDHWProgramModeSelect(coordinator, entry),
+            BuderusDHWTimeprogramSelect(coordinator, entry),
         ]
     )
 
@@ -53,6 +55,7 @@ async def async_setup_platform(
         [
             BuderusHeatingSeasonModeSelect(coordinator),
             BuderusDHWProgramModeSelect(coordinator),
+            BuderusDHWTimeprogramSelect(coordinator),
         ]
     )
 
@@ -140,4 +143,48 @@ class BuderusDHWProgramModeSelect(BuderusEntity, SelectEntity):
         value = self._option_to_value.get(option)
         if value is not None:
             await self.coordinator.async_set_dhw_program_mode(value)
+            await self.coordinator.async_request_refresh()
+
+
+class BuderusDHWTimeprogramSelect(BuderusEntity, SelectEntity):
+    """Select entity for DHW time program (Comfort / Program 1 / Program 2).
+
+    Controls which DHW operating temperature schedule is active:
+    - "Always On (Comfort)": device always uses DHW_GT3_START_TEMP_COMFORT /
+      DHW_GT8_STOP_TEMP_COMFORT setpoints (higher energy use).
+    - "Program 1" / "Program 2": follow configured schedule that switches
+      between COMFORT and ECONOMY setpoints over the day.
+
+    Parameter: DHW_TIMEPROGRAM (idx=494, dp1)
+    """
+
+    _attr_name = "DHW Time Program"
+    _attr_icon = "mdi:water-boiler-alert"
+
+    def __init__(
+        self,
+        coordinator: BuderusCoordinator,
+        entry: ConfigEntry | None = None,
+    ) -> None:
+        """Initialize the DHW time program select."""
+        super().__init__(coordinator, "dhw_timeprogram", entry)
+        self._attr_options = list(DHW_TIMEPROGRAM_OPTIONS.values())
+        self._value_to_option = DHW_TIMEPROGRAM_OPTIONS
+        self._option_to_value = {v: k for k, v in DHW_TIMEPROGRAM_OPTIONS.items()}
+
+    @property
+    def current_option(self) -> str | None:
+        """Return the current selected option."""
+        if self.coordinator.data is None:
+            return None
+        mode = self.coordinator.data.dhw_timeprogram
+        if mode is None:
+            return None
+        return self._value_to_option.get(mode)
+
+    async def async_select_option(self, option: str) -> None:
+        """Change the selected option."""
+        value = self._option_to_value.get(option)
+        if value is not None:
+            await self.coordinator.async_set_dhw_timeprogram(value)
             await self.coordinator.async_request_refresh()

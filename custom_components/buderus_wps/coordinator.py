@@ -59,6 +59,11 @@ class BuderusData:
     dhw_setpoint: float | None  # DHW setpoint temperature (40.0-70.0°C)
     compressor_state: int | None = None  # Raw compressor state (debug)
     compressor_frequency: int | None = None  # Hz (debug)
+    dhw_timeprogram: int | None = None  # 0=Always_On (Comfort), 1=Program_1, 2=Program_2
+    dhw_start_temp_comfort: float | None = None  # GT3 start temp, Comfort mode (20.0-56.0°C)
+    dhw_start_temp_economy: float | None = None  # GT3 start temp, Economy mode (20.0-56.0°C)
+    dhw_stop_temp_comfort: float | None = None  # GT8 stop temp, Comfort mode (21.0-64.0°C)
+    dhw_stop_temp_economy: float | None = None  # GT8 stop temp, Economy mode (21.0-64.0°C)
     parameter_results: dict[str, dict[str, Any]] = field(default_factory=dict)
 
 
@@ -894,6 +899,57 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             if self._last_known_good_data is not None:
                 dhw_program_mode = self._last_known_good_data.dhw_program_mode
 
+        # Get DHW time program (best-effort)
+        # PROTOCOL: dp1 format returns strings like "0:Always_On" - parse int prefix
+        # Values: 0=Always_On (Comfort temps always), 1=Program_1, 2=Program_2
+        dhw_timeprogram: int | None = None
+        try:
+            result = self._client.read_parameter_with_validation(
+                "DHW_TIMEPROGRAM", expected_dlc=1
+            )
+            decoded = result.get("decoded")
+
+            if decoded is None:
+                raise ValueError(f"Invalid read: {result.get('error')}")
+
+            if isinstance(decoded, str) and ":" in decoded:
+                dhw_timeprogram = int(decoded.split(":")[0])
+            else:
+                dhw_timeprogram = int(decoded)
+        except Exception as err:
+            _LOGGER.warning("RTR FAILED for DHW_TIMEPROGRAM: %s", err)
+            if self._last_known_good_data is not None:
+                dhw_timeprogram = self._last_known_good_data.dhw_timeprogram
+
+        # Get DHW Comfort/Economy start & stop setpoints (best-effort)
+        # PROTOCOL: 'tem' format -> decoded is a float in °C.
+        # GT3 start temps (20.0-56.0°C), GT8 stop temps (21.0-64.0°C).
+        def _read_tem(name: str, fallback_attr: str) -> float | None:
+            try:
+                res = self._client.read_parameter(name)
+                decoded = res.get("decoded")
+                if decoded is None:
+                    raise ValueError(f"Invalid read: {res.get('error')}")
+                return float(decoded)
+            except Exception as err:
+                _LOGGER.warning("RTR FAILED for %s: %s", name, err)
+                if self._last_known_good_data is not None:
+                    return getattr(self._last_known_good_data, fallback_attr, None)
+                return None
+
+        dhw_start_temp_comfort = _read_tem(
+            "DHW_GT3_START_TEMP_COMFORT", "dhw_start_temp_comfort"
+        )
+        dhw_start_temp_economy = _read_tem(
+            "DHW_GT3_START_TEMP_ECONOMY", "dhw_start_temp_economy"
+        )
+        dhw_stop_temp_comfort = _read_tem(
+            "DHW_GT8_STOP_TEMP_COMFORT", "dhw_stop_temp_comfort"
+        )
+        dhw_stop_temp_economy = _read_tem(
+            "DHW_GT8_STOP_TEMP_ECONOMY", "dhw_stop_temp_economy"
+        )
+
         # Get heating curve parallel offset (best-effort)
         # PROTOCOL: Use GLOBAL parameter (idx=804) which is the user-adjustable setting
         # visible in the heat pump menu as "Parallel offset" / "Parallelle verschuiving"
@@ -1063,6 +1119,11 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             dhw_setpoint=dhw_setpoint,
             compressor_state=compressor_state,
             compressor_frequency=compressor_frequency,
+            dhw_timeprogram=dhw_timeprogram,
+            dhw_start_temp_comfort=dhw_start_temp_comfort,
+            dhw_start_temp_economy=dhw_start_temp_economy,
+            dhw_stop_temp_comfort=dhw_stop_temp_comfort,
+            dhw_stop_temp_economy=dhw_stop_temp_economy,
             parameter_results=parameter_results,
         )
 
@@ -1334,6 +1395,36 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             "Set DHW program mode to %s (%d)", mode_names.get(mode, "Unknown"), mode
         )
 
+    async def async_set_dhw_timeprogram(self, mode: int) -> None:
+        """Set DHW time program (Comfort / Program 1 / Program 2).
+
+        Args:
+            mode: 0=Always_On (Comfort), 1=Program_1, 2=Program_2
+        """
+        if mode not in (0, 1, 2):
+            raise ValueError(f"DHW time program must be 0, 1, or 2, got {mode}")
+
+        try:
+            async with asyncio.timeout(LOCK_ACQUIRE_TIMEOUT):
+                async with self._lock:
+                    await asyncio.wait_for(
+                        self.hass.async_add_executor_job(
+                            self._sync_set_dhw_timeprogram, mode
+                        ),
+                        timeout=EXECUTOR_JOB_TIMEOUT,
+                    )
+        except TimeoutError:
+            _LOGGER.error("Timeout setting DHW time program")
+            raise HomeAssistantError("Timeout communicating with heat pump") from None
+
+    def _sync_set_dhw_timeprogram(self, mode: int) -> None:
+        """Synchronous DHW time program set (runs in executor)."""
+        self._client.write_value("DHW_TIMEPROGRAM", mode)
+        mode_names = {0: "Always On (Comfort)", 1: "Program 1", 2: "Program 2"}
+        _LOGGER.info(
+            "Set DHW time program to %s (%d)", mode_names.get(mode, "Unknown"), mode
+        )
+
     async def async_set_heating_curve_offset(self, offset: float) -> None:
         """Set heating curve parallel offset.
 
@@ -1462,3 +1553,55 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         except Exception as err:
             _LOGGER.error("_sync_set_dhw_setpoint FAILED: %s", err)
             raise
+
+    async def _async_set_dhw_mode_temp(
+        self, param_name: str, temp: float, lo: float, hi: float, label: str
+    ) -> None:
+        """Generic writer for DHW Comfort/Economy start/stop setpoints."""
+        if not lo <= temp <= hi:
+            raise ValueError(
+                f"{label} must be between {lo:.1f} and {hi:.1f}°C, got {temp}"
+            )
+        try:
+            async with asyncio.timeout(LOCK_ACQUIRE_TIMEOUT):
+                async with self._lock:
+                    await asyncio.wait_for(
+                        self.hass.async_add_executor_job(
+                            self._sync_write_param_value, param_name, temp, label
+                        ),
+                        timeout=EXECUTOR_JOB_TIMEOUT,
+                    )
+        except TimeoutError:
+            _LOGGER.error("Timeout setting %s", label)
+            raise HomeAssistantError("Timeout communicating with heat pump") from None
+
+    def _sync_write_param_value(
+        self, param_name: str, value: float, label: str
+    ) -> None:
+        """Synchronous parameter write helper for DHW Comfort/Economy setpoints."""
+        self._client.write_value(param_name, value)
+        _LOGGER.info("Set %s to %.1f°C", label, value)
+
+    async def async_set_dhw_start_temp_comfort(self, temp: float) -> None:
+        """Set DHW start temperature (GT3) in Comfort mode (20.0-56.0°C)."""
+        await self._async_set_dhw_mode_temp(
+            "DHW_GT3_START_TEMP_COMFORT", temp, 20.0, 56.0, "DHW start temp (Comfort)"
+        )
+
+    async def async_set_dhw_start_temp_economy(self, temp: float) -> None:
+        """Set DHW start temperature (GT3) in Economy mode (20.0-56.0°C)."""
+        await self._async_set_dhw_mode_temp(
+            "DHW_GT3_START_TEMP_ECONOMY", temp, 20.0, 56.0, "DHW start temp (Economy)"
+        )
+
+    async def async_set_dhw_stop_temp_comfort(self, temp: float) -> None:
+        """Set DHW stop temperature (GT8) in Comfort mode (21.0-64.0°C)."""
+        await self._async_set_dhw_mode_temp(
+            "DHW_GT8_STOP_TEMP_COMFORT", temp, 21.0, 64.0, "DHW stop temp (Comfort)"
+        )
+
+    async def async_set_dhw_stop_temp_economy(self, temp: float) -> None:
+        """Set DHW stop temperature (GT8) in Economy mode (21.0-64.0°C)."""
+        await self._async_set_dhw_mode_temp(
+            "DHW_GT8_STOP_TEMP_ECONOMY", temp, 21.0, 64.0, "DHW stop temp (Economy)"
+        )
