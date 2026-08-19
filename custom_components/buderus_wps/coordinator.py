@@ -59,11 +59,21 @@ class BuderusData:
     dhw_setpoint: float | None  # DHW setpoint temperature (40.0-70.0°C)
     compressor_state: int | None = None  # Raw compressor state (debug)
     compressor_frequency: int | None = None  # Hz (debug)
-    dhw_timeprogram: int | None = None  # 0=Always_On (Comfort), 1=Program_1, 2=Program_2
-    dhw_start_temp_comfort: float | None = None  # GT3 start temp, Comfort mode (20.0-56.0°C)
-    dhw_start_temp_economy: float | None = None  # GT3 start temp, Economy mode (20.0-56.0°C)
-    dhw_stop_temp_comfort: float | None = None  # GT8 stop temp, Comfort mode (21.0-64.0°C)
-    dhw_stop_temp_economy: float | None = None  # GT8 stop temp, Economy mode (21.0-64.0°C)
+    dhw_timeprogram: int | None = (
+        None  # 0=Always_On (Comfort), 1=Program_1, 2=Program_2
+    )
+    dhw_start_temp_comfort: float | None = (
+        None  # GT3 start temp, Comfort mode (20.0-56.0°C)
+    )
+    dhw_start_temp_economy: float | None = (
+        None  # GT3 start temp, Economy mode (20.0-56.0°C)
+    )
+    dhw_stop_temp_comfort: float | None = (
+        None  # GT8 stop temp, Comfort mode (21.0-64.0°C)
+    )
+    dhw_stop_temp_economy: float | None = (
+        None  # GT8 stop temp, Economy mode (21.0-64.0°C)
+    )
     parameter_results: dict[str, dict[str, Any]] = field(default_factory=dict)
 
 

@@ -228,7 +228,9 @@ class TestHeatPumpFallback:
 
             assert heat_pump.data_source == "fallback"
             assert heat_pump.using_fallback
-            assert heat_pump.parameter_count() == 1792  # device element list, no duplicates
+            assert (
+                heat_pump.parameter_count() == 1792
+            )  # device element list, no duplicates
 
     def test_uses_fallback_when_cache_invalid(self, tmp_path):
         """Verify HeatPump falls back when cache is corrupted."""
@@ -492,7 +494,9 @@ class TestHeatPumpBackwardsCompatibility:
         assert heat_pump.get_parameter_by_name("ACCESS_LEVEL").idx == 1
         assert heat_pump.has_parameter_index(1) is True
         assert heat_pump.has_parameter_name("ACCESS_LEVEL") is True
-        assert len(heat_pump.list_all_parameters()) == 1792  # device element list, no duplicates
+        assert (
+            len(heat_pump.list_all_parameters()) == 1792
+        )  # device element list, no duplicates
         assert len(heat_pump.list_writable_parameters()) > 0
         assert len(heat_pump.list_readonly_parameters()) > 0
 

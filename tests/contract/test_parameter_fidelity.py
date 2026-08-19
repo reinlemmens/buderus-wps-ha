@@ -155,9 +155,9 @@ class TestParameterDataFidelity:
         assert param is not None, f"Parameter with idx={idx} not found"
 
         # Verify all fields match
-        assert param == expected, (
-            f"Parameter idx={idx} doesn't match. Got: {param}, Expected: {expected}"
-        )
+        assert (
+            param == expected
+        ), f"Parameter idx={idx} doesn't match. Got: {param}, Expected: {expected}"
 
         print(f"✓ Parameter {expected['text']} (idx={idx}) verified")
 
@@ -179,9 +179,9 @@ class TestParameterDataFidelity:
         names = [p["text"] for p in PARAMETER_DATA]
         unique_names = set(names)
 
-        assert len(names) == len(unique_names), (
-            f"Found duplicate names: {len(names)} total, {len(unique_names)} unique"
-        )
+        assert len(names) == len(
+            unique_names
+        ), f"Found duplicate names: {len(names)} total, {len(unique_names)} unique"
 
         print(f"✓ No duplicate names: {len(names)} unique parameter names")
 
@@ -190,9 +190,9 @@ class TestParameterDataFidelity:
         extids = [p["extid"] for p in PARAMETER_DATA]
         unique_extids = set(extids)
 
-        assert len(extids) == len(unique_extids), (
-            f"Found duplicate extids: {len(extids)} total, {len(unique_extids)} unique"
-        )
+        assert len(extids) == len(
+            unique_extids
+        ), f"Found duplicate extids: {len(extids)} total, {len(unique_extids)} unique"
 
         print(f"✓ No duplicate extids: {len(extids)} unique external IDs")
 
@@ -202,9 +202,9 @@ class TestParameterDataFidelity:
 
         for i, param in enumerate(PARAMETER_DATA):
             # Check all required keys present
-            assert set(param.keys()) == required_keys, (
-                f"Parameter at index {i} (idx={param.get('idx', 'MISSING')}) has incorrect keys: {param.keys()}"
-            )
+            assert (
+                set(param.keys()) == required_keys
+            ), f"Parameter at index {i} (idx={param.get('idx', 'MISSING')}) has incorrect keys: {param.keys()}"
 
             # Check types
             assert isinstance(param["idx"], int), f"idx must be int at index {i}"
@@ -217,12 +217,12 @@ class TestParameterDataFidelity:
 
             # Check constraints
             # Note: FHEM uses various read values (0, 1, 2, 5, etc.) - preserved for protocol fidelity
-            assert isinstance(param["read"], int) and param["read"] >= 0, (
-                f"read must be non-negative int at index {i}, got {param['read']}"
-            )
-            assert len(param["extid"]) == 14, (
-                f"extid must be 14 chars at index {i}, got {len(param['extid'])}"
-            )
+            assert (
+                isinstance(param["read"], int) and param["read"] >= 0
+            ), f"read must be non-negative int at index {i}, got {param['read']}"
+            assert (
+                len(param["extid"]) == 14
+            ), f"extid must be 14 chars at index {i}, got {len(param['extid'])}"
 
             # Note: Some parameters have max < min (preserved from device/FHEM data)
             if param["max"] < param["min"]:
