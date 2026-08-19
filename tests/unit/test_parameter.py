@@ -340,3 +340,81 @@ class TestHeatPumpDiscoveredNames:
 
         # Params NOT in discovery should NOT be marked
         assert hp.is_discovered("GT10_TEMP") is False
+
+
+class TestUpdateFromDiscoveryIdxCollisions:
+    """Regression tests for issue #11: idx relocations during discovery merge.
+
+    Device firmware shifts parameter indices relative to the static fallback
+    table (e.g. +1 in the compressor region, +5 in the XDHW region). The merge
+    must survive parameters moving into slots occupied by other parameters,
+    including swaps and chains, without KeyErrors or orphaned idx mappings.
+    """
+
+    @staticmethod
+    def _elem(param, idx):
+        from buderus_wps.element_discovery import DiscoveredElement
+
+        return DiscoveredElement(
+            idx=idx,
+            extid=param.extid,
+            text=param.text,
+            min_value=param.min,
+            max_value=param.max,
+        )
+
+    def test_swapped_indices_do_not_orphan_lookups(self):
+        """Two parameters exchanging idx values must both stay resolvable."""
+        from buderus_wps.parameter import HeatPump
+
+        hp = HeatPump()
+        p1 = hp.get_parameter_by_name("ACCESS_LEVEL")
+        p2 = hp.get_parameter_by_name("ACCESS_LEVEL_TIMEOUT_DELAY_TIME")
+
+        hp.update_from_discovery([self._elem(p1, p2.idx), self._elem(p2, p1.idx)])
+
+        assert hp.get_parameter_by_index(p2.idx).text == "ACCESS_LEVEL"
+        assert (
+            hp.get_parameter_by_index(p1.idx).text == "ACCESS_LEVEL_TIMEOUT_DELAY_TIME"
+        )
+
+    def test_chain_shift_keeps_all_parameters_resolvable(self):
+        """A +1 region shift (like the device's compressor region) must merge cleanly."""
+        from buderus_wps.parameter import HeatPump
+
+        hp = HeatPump()
+        names = [
+            "COMPRESSOR_QUICKSTART",
+            "COMPRESSOR_REAL_FREQUENCY",
+            "COMPRESSOR_RESTART_TIME",
+        ]
+        params = [hp.get_parameter_by_name(n) for n in names]
+
+        # Shift each parameter up by one; last one moves to a free slot.
+        free_idx = params[-1].idx + 1
+        while hp.has_parameter_index(free_idx):
+            free_idx += 1
+        targets = [params[1].idx, params[2].idx, free_idx]
+
+        hp.update_from_discovery([self._elem(p, t) for p, t in zip(params, targets)])
+
+        for name, target in zip(names, targets):
+            assert hp.get_parameter_by_name(name).idx == target
+            assert hp.get_parameter_by_index(target).text == name
+
+    def test_discovered_parameter_wins_idx_over_stale_entry(self):
+        """A discovered idx displaces a stale fallback entry from idx lookup only."""
+        from buderus_wps.parameter import HeatPump
+
+        hp = HeatPump()
+        moving = hp.get_parameter_by_name("ACCESS_LEVEL")
+        stale = hp.get_parameter_by_name("ADDITIONAL_ALARM")
+
+        hp.update_from_discovery([self._elem(moving, stale.idx)])
+
+        # Discovered parameter owns the idx slot
+        assert hp.get_parameter_by_index(stale.idx).text == "ACCESS_LEVEL"
+        # Stale parameter remains reachable by name
+        assert hp.get_parameter_by_name("ADDITIONAL_ALARM").idx == stale.idx
+        # Vacated slot no longer resolves
+        assert not hp.has_parameter_index(moving.idx)

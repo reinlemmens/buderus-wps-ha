@@ -498,10 +498,13 @@ class HeatPump:
                         text=old_param.text,
                     )
 
-                    # Update lookups
+                    # Only update the name map here; the idx map is rebuilt
+                    # atomically after the merge. Mutating it per-element is
+                    # order-dependent when idx values are shared or swapped
+                    # between parameters (see issue #11) and could delete
+                    # another parameter's mapping or crash mid-merge, leaving
+                    # a half-updated registry.
                     if idx_changed:
-                        # Remove old idx mapping if idx changed
-                        del self._params_by_idx[old_param.idx]
                         logger.info(
                             "Updated %s: idx %d -> %d (CAN ID 0x%08X -> 0x%08X)",
                             old_param.text,
@@ -526,7 +529,6 @@ class HeatPump:
                         )
 
                     self._params_by_name[name] = new_param
-                    self._params_by_idx[elem.idx] = new_param
                     updated += 1
             else:
                 # New parameter not in static defaults - add it
@@ -540,7 +542,6 @@ class HeatPump:
                     text=elem.text,
                 )
                 self._params_by_name[name] = new_param
-                self._params_by_idx[elem.idx] = new_param
                 logger.debug(
                     "Added discovered parameter: %s (idx=%d)", elem.text, elem.idx
                 )
@@ -548,6 +549,9 @@ class HeatPump:
         # Mark ALL discovered elements as having reliable idx values
         for elem in discovered_elements:
             self._discovered_names.add(elem.text.upper())
+
+        # Rebuild the idx map from the (authoritative) name map in one pass.
+        self._rebuild_idx_map()
 
         if updated > 0:
             self._data_source = "discovery"
@@ -562,3 +566,33 @@ class HeatPump:
         )
 
         return updated
+
+    def _rebuild_idx_map(self) -> None:
+        """Rebuild _params_by_idx from _params_by_name.
+
+        The name map is authoritative. If two names claim the same idx (a
+        stale fallback entry vs. a discovered one), the parameter with a
+        discovered idx wins; the loser stays reachable by name only.
+        """
+        self._params_by_idx.clear()
+        for name, param in self._params_by_name.items():
+            existing = self._params_by_idx.get(param.idx)
+            if existing is None:
+                self._params_by_idx[param.idx] = param
+                continue
+            existing_discovered = existing.text.upper() in self._discovered_names
+            param_discovered = name in self._discovered_names
+            if param_discovered and not existing_discovered:
+                self._params_by_idx[param.idx] = param
+                loser, winner = existing, param
+            else:
+                loser, winner = param, existing
+            logger.warning(
+                "idx %d claimed by both %s and %s; %s wins idx lookup, "
+                "%s remains accessible by name only",
+                param.idx,
+                existing.text,
+                param.text,
+                winner.text,
+                loser.text,
+            )
