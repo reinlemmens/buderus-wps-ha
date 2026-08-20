@@ -5,6 +5,48 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0-beta.2] - 2026-08-20
+
+### Fixed
+- **Duplicate parameter indices (#11).** Four `idx` values were shared by two
+  parameters each: 279 (`COMPRESSOR_REAL_FREQUENCY` / `COMPRESSOR_RESTART_TIME`),
+  296 (`COMPRESSOR_STATE_2` / `COMPRESSOR_TYPE`), 2478 (`XDHW_STOP_TEMP` /
+  `XDHW_WEEKPROGRAM_FAILED`) and 2480 (`XDHW_TIME` / `XDHW_WEEKPROGRAM_HOUR`).
+  Since `idx` maps 1:1 to CAN IDs (`0x04003FE0 | idx << 14`), each pair shared a
+  CAN ID and shadowed the other in index lookups. The visible symptom was
+  `XDHW_STOP_TEMP` reading a bogus 3.8 °C.
+- **`update_from_discovery()` could corrupt the registry.** It mutated
+  `_params_by_idx` per element with an unguarded `del`, so swapped or shared
+  indices could delete another parameter's mapping or raise `KeyError` mid-merge
+  — swallowed by the coordinator's broad `except`, leaving the registry
+  half-updated. The index map is now rebuilt atomically after the merge;
+  discovered parameters win collisions and losers stay reachable by name.
+
+### Changed
+- **`parameter_data.py` regenerated from the device element list** — 1792
+  entries (was 1788), zero duplicate idx/extid/text. The previous table came
+  from FHEM's static list, which differs from this device in whole regions:
+  1556 of 1788 entries carried a wrong idx and were corrected by runtime
+  discovery on every startup. Startup now reports `0 indices updated`.
+  Format and read metadata are merged from `parameter_defaults.py`, with
+  day-program name mapping so `sw1`/`sw2` schedule formats survive.
+- Release archives no longer contain `__pycache__/*.pyc` files, which earlier
+  releases shipped by mistake (246 KB vs 884 KB).
+
+### Added
+- `tools/generate_parameter_data.py` regenerates `parameter_data.py` from a
+  device capture. `parameter_data.py` must never be hand-patched again — seven
+  hand-patched entries are what caused #11.
+- Regression tests for index collisions (swap, chain-shift, stale collision).
+  `test_no_duplicate_indices` now forbids duplicates; it previously *asserted*
+  them.
+
+### Verified on hardware
+`XDHW_STOP_TEMP` reads 60.0 °C at idx 2478 (CAN `0x066BBFE0`), `XDHW_TIME` at
+idx 2480; write round-trips confirmed. Startup log: `Loaded 1792 parameters`,
+`Element discovery: 1792 elements, 0 indices updated`, no duplicate warnings,
+no errors.
+
 ## [1.6.0-beta.1] - 2026-05-28
 
 ### Added
