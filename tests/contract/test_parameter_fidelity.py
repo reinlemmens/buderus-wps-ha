@@ -1,11 +1,15 @@
-"""Contract tests verifying Python parameter data matches FHEM source.
+"""Contract tests verifying parameter data matches the device element list.
 
-# PROTOCOL: These tests ensure 100% fidelity with the FHEM reference implementation.
-# Source: fhem/26_KM273v018.pm @KM273_elements_default array
+# PROTOCOL: idx values are device-specific and come from element discovery.
+# PARAMETER_DATA is generated from a real device capture (the authoritative
+# source for CAN addressing on this heat pump) with format/read metadata
+# merged from the FHEM reference implementation (fhem/26_KM273v018.pm).
+# Regenerate with: python3 tools/generate_parameter_data.py
 
-These tests parse the FHEM Perl file and verify that the Python parameter data
-extracted in parameter_data.py matches exactly. This ensures compliance with
-Constitution Principle II (Protocol Fidelity).
+These tests parse the device capture and verify that PARAMETER_DATA matches
+it exactly. Duplicate idx values are forbidden: idx maps 1:1 to a CAN ID
+(0x04003FE0 | idx << 14), so a duplicate would make two parameters share a
+CAN ID and shadow each other in idx-based lookups (GitHub issue #11).
 """
 
 import re
@@ -13,43 +17,55 @@ import re
 import pytest
 from buderus_wps.parameter_data import PARAMETER_DATA
 
+CAPTURE_PATH = "fhem/fhem-capture/capture-20251224-174533.hex"
+ELEMENT_RE = re.compile(
+    r"KM273_ReadElementList done, "
+    r"idx=(\d+) extid=([0-9a-f]+) max=(-?\d+) min=(-?\d+) element=([A-Za-z0-9_]+)"
+)
+
+
+def parse_capture():
+    elements = {}
+    with open(CAPTURE_PATH, errors="replace") as fh:
+        for line in fh:
+            m = ELEMENT_RE.search(line)
+            if m:
+                elements[m.group(5)] = {
+                    "idx": int(m.group(1)),
+                    "extid": m.group(2).upper(),
+                    "max": int(m.group(3)),
+                    "min": int(m.group(4)),
+                }
+    return elements
+
 
 class TestParameterDataFidelity:
-    """Verify PARAMETER_DATA matches FHEM source exactly."""
+    """Verify PARAMETER_DATA matches the device element list exactly."""
 
-    def test_parameter_count_matches_fhem(self):
-        """T008: Verify total parameter count matches FHEM source."""
-        # Parse FHEM file to count parameters
-        with open("fhem/26_KM273v018.pm") as f:
-            content = f.read()
-
-        # Extract the @KM273_elements_default array
-        start_marker = "my @KM273_elements_default ="
-        end_marker = ");"
-
-        start_idx = content.find(start_marker)
-        assert (
-            start_idx != -1
-        ), "Could not find KM273_elements_default array in FHEM file"
-
-        search_start = start_idx + len(start_marker)
-        end_idx = content.find(end_marker, search_start)
-        assert end_idx != -1, "Could not find end of KM273_elements_default array"
-
-        array_content = content[start_idx : end_idx + len(end_marker)]
-
-        # Count parameter entries by counting opening braces
-        # Pattern: { 'idx' => ...
-        param_pattern = r"\{\s*'idx'\s*=>"
-        fhem_param_count = len(re.findall(param_pattern, array_content))
-
-        # Verify counts match (allow for 1 parameter difference due to known gap/duplicate)
-        # The FHEM source has 1789 entries but Python data has 1788 (one intentional removal)
-        assert (
-            abs(len(PARAMETER_DATA) - fhem_param_count) <= 1
-        ), f"Parameter count mismatch: Python has {len(PARAMETER_DATA)}, FHEM has {fhem_param_count}"
+    def test_parameter_count_matches_device(self):
+        """T008: Verify total parameter count matches the device capture."""
+        device = parse_capture()
+        assert len(device) > 0, f"No elements parsed from {CAPTURE_PATH}"
+        assert len(PARAMETER_DATA) == len(device), (
+            f"Parameter count mismatch: Python has {len(PARAMETER_DATA)}, "
+            f"device capture has {len(device)}"
+        )
 
         print(f"✓ Parameter count verified: {len(PARAMETER_DATA)} parameters")
+
+    def test_all_parameters_match_device(self):
+        """Every entry's idx/extid/min/max must match the device capture."""
+        device = parse_capture()
+        for param in PARAMETER_DATA:
+            elem = device.get(param["text"])
+            assert elem is not None, f"{param['text']} not in device capture"
+            for key in ("idx", "extid", "max", "min"):
+                assert param[key] == elem[key], (
+                    f"{param['text']}.{key}: Python has {param[key]!r}, "
+                    f"device has {elem[key]!r}"
+                )
+
+        print(f"✓ All {len(PARAMETER_DATA)} parameters match the device capture")
 
     @pytest.mark.parametrize(
         "idx, expected",
@@ -90,10 +106,12 @@ class TestParameterDataFidelity:
                     "text": "ADDITIONAL_BLOCK_HIGH_T2_TEMP",
                 },
             ),
+            # Device idx 2605 (FHEM static table had 2600); regression check
+            # that the device value wins.
             (
-                2600,
+                2605,
                 {
-                    "idx": 2600,
+                    "idx": 2605,
                     "extid": "03B11E70550000",
                     "max": 0,
                     "min": 0,
@@ -102,10 +120,36 @@ class TestParameterDataFidelity:
                     "text": "TIMER_COMPRESSOR_START_DELAY_AT_CASCADE",
                 },
             ),
+            # The two parameters from issue #11: device-true indices, no
+            # longer colliding with XDHW_WEEKPROGRAM_FAILED/_HOUR.
+            (
+                2478,
+                {
+                    "idx": 2478,
+                    "extid": "EE1597E1AD010E",
+                    "max": 650,
+                    "min": 500,
+                    "format": "tem",
+                    "read": 1,
+                    "text": "XDHW_STOP_TEMP",
+                },
+            ),
+            (
+                2480,
+                {
+                    "idx": 2480,
+                    "extid": "E1263DCA71010F",
+                    "max": 48,
+                    "min": 0,
+                    "format": "int",
+                    "read": 1,
+                    "text": "XDHW_TIME",
+                },
+            ),
         ],
     )
-    def test_specific_parameters_match_fhem(self, idx, expected):
-        """T009: Spot-check specific parameters match FHEM exactly."""
+    def test_specific_parameters(self, idx, expected):
+        """T009: Spot-check specific parameters."""
         # Find parameter with idx
         param = next((p for p in PARAMETER_DATA if p["idx"] == idx), None)
         assert param is not None, f"Parameter with idx={idx} not found"
@@ -113,33 +157,22 @@ class TestParameterDataFidelity:
         # Verify all fields match
         assert (
             param == expected
-        ), f"Parameter idx={idx} doesn't match FHEM. Got: {param}, Expected: {expected}"
+        ), f"Parameter idx={idx} doesn't match. Got: {param}, Expected: {expected}"
 
         print(f"✓ Parameter {expected['text']} (idx={idx}) verified")
 
-    def test_known_duplicate_indices(self):
-        """Verify known duplicate idx values in PARAMETER_DATA.
+    def test_no_duplicate_indices(self):
+        """Duplicate idx values are forbidden (regression test for issue #11).
 
-        PARAMETER_DATA has 4 known duplicate indices:
-        - idx 279: COMPRESSOR_RESTART_TIME / COMPRESSOR_REAL_FREQUENCY
-        - idx 296: COMPRESSOR_TYPE / COMPRESSOR_STATE_2
-        - idx 2478: XDHW_WEEKPROGRAM_FAILED / XDHW_STOP_TEMP
-        - idx 2480: XDHW_WEEKPROGRAM_HOUR / XDHW_TIME
-
-        HeatPump filters these duplicates (1788 -> 1784), keeping the last one.
+        idx maps 1:1 to a CAN ID, so duplicates make parameters shadow each
+        other in idx lookups and can corrupt the discovery merge.
         """
         indices = [p["idx"] for p in PARAMETER_DATA]
-        unique_indices = set(indices)
+        duplicates = sorted({i for i in indices if indices.count(i) > 1})
 
-        # 1788 total entries, 1784 unique (4 duplicates)
-        assert len(indices) == 1788, f"Expected 1788 total entries, got {len(indices)}"
-        assert (
-            len(unique_indices) == 1784
-        ), f"Expected 1784 unique indices (4 duplicates), got {len(unique_indices)}"
+        assert not duplicates, f"Duplicate idx values found: {duplicates}"
 
-        print(
-            f"✓ {len(indices)} total entries, {len(unique_indices)} unique (4 known duplicates)"
-        )
+        print(f"✓ {len(indices)} entries, all idx values unique")
 
     def test_no_duplicate_names(self):
         """Verify there are no duplicate text (name) values in PARAMETER_DATA."""
@@ -191,13 +224,10 @@ class TestParameterDataFidelity:
                 len(param["extid"]) == 14
             ), f"extid must be 14 chars at index {i}, got {len(param['extid'])}"
 
-            # Note: We preserve FHEM data exactly (Protocol Fidelity - Constitution Principle II)
-            # Some parameters in FHEM source have max < min (likely bugs in FHEM data)
-            # Example: idx=261 (COMPRESSOR_DHW_REQUEST) has max=230, min=400
-            # We preserve this to maintain 100% fidelity with the reference implementation
+            # Note: Some parameters have max < min (preserved from device/FHEM data)
             if param["max"] < param["min"]:
                 print(
-                    f"  Warning: idx={param['idx']} ({param['text']}) has max < min (preserved from FHEM)"
+                    f"  Warning: idx={param['idx']} ({param['text']}) has max < min (preserved)"
                 )
 
         print(f"✓ All {len(PARAMETER_DATA)} parameters have valid structure")

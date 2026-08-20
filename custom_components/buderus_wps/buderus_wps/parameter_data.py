@@ -1,26 +1,27 @@
-"""Parameter data extracted from FHEM KM273_elements_default array."""
+"""Parameter data discovered from the heat pump's element list.
+
+# PROTOCOL: idx values are device-specific and MUST come from element discovery.
+# This table was generated from a real device capture and serves as the fallback
+# when live discovery is unavailable. Regenerate with:
+#     python3 tools/generate_parameter_data.py
+#
+# Source capture: capture-20251224-174533.hex
+# Elements: 1792 (unique idx, unique extid, unique text)
+# format/read metadata merged from parameter_defaults.py (FHEM static table).
+#
+# Each parameter is represented as a dictionary with the following keys:
+#     idx: int - Device parameter index (used to build CAN IDs: 0x04003FE0 | idx << 14)
+#     extid: str - External ID (14-character hex string, globally unique)
+#     min: int - Minimum allowed value (can be negative)
+#     max: int - Maximum allowed value
+#     format: str - Data format type ("int", "tem", "sw1", "sw2", etc.)
+#     read: int - FHEM cyclic-poll flag (1=include in polling list)
+#     text: str - Human-readable parameter name (ALL_CAPS_WITH_UNDERSCORES)
+"""
 
 from __future__ import annotations
 
 from typing import Optional, cast
-
-# PROTOCOL: This data MUST match the FHEM reference implementation exactly.
-# Source: fhem/26_KM273v018.pm @KM273_elements_default array (lines 218-2009)
-# Extraction date: 2025-10-25
-# Total parameters: 1789
-#
-# This module contains the static parameter definitions for the Buderus WPS heat pump.
-# The data is extracted from the FHEM Perl module and converted to Python format.
-#
-# Each parameter is represented as a dictionary with the following keys:
-#     idx: int - Sequential parameter index (may have gaps)
-#     extid: str - External ID (14-character hex string for CAN addressing)
-#     min: int - Minimum allowed value (can be negative)
-#     max: int - Maximum allowed value
-#     format: str - Data format type ("int", "temp", etc.)
-#     read: int - Read-only flag (0=writable, 1=read-only)
-#     text: str - Human-readable parameter name (ALL_CAPS_WITH_UNDERSCORES)
-
 
 PARAMETER_DATA = [
     {
@@ -1591,6 +1592,15 @@ PARAMETER_DATA = [
     },
     {
         "idx": 238,
+        "extid": "A1D7C1626F0D7C",
+        "max": 1,
+        "min": 0,
+        "format": "int",
+        "read": 0,
+        "text": "CIRCULATION_G2_TYPE",
+    },
+    {
+        "idx": 239,
         "extid": "A96F5A7BEB0BB2",
         "max": 100,
         "min": 0,
@@ -1599,7 +1609,7 @@ PARAMETER_DATA = [
         "text": "CIRCULATION_G2_VOLTAGE_AT_0",
     },
     {
-        "idx": 239,
+        "idx": 240,
         "extid": "A9C3D9935E0BB0",
         "max": 100,
         "min": 0,
@@ -1608,7 +1618,7 @@ PARAMETER_DATA = [
         "text": "CIRCULATION_G2_VOLTAGE_AT_100",
     },
     {
-        "idx": 240,
+        "idx": 241,
         "extid": "008A02C3120B8F",
         "max": 0,
         "min": 0,
@@ -1617,7 +1627,7 @@ PARAMETER_DATA = [
         "text": "COMMUNICATION_BASECARD_E21_RESTART_DETECTED",
     },
     {
-        "idx": 241,
+        "idx": 242,
         "extid": "0060841E700B90",
         "max": 0,
         "min": 0,
@@ -1626,7 +1636,7 @@ PARAMETER_DATA = [
         "text": "COMMUNICATION_BASECARD_E22_RESTART_DETECTED",
     },
     {
-        "idx": 242,
+        "idx": 243,
         "extid": "014C6EDFE60B72",
         "max": 0,
         "min": 0,
@@ -1635,7 +1645,7 @@ PARAMETER_DATA = [
         "text": "COMMUNICATION_FAILED_SENDINGS",
     },
     {
-        "idx": 243,
+        "idx": 244,
         "extid": "01F7194E700D57",
         "max": 0,
         "min": 0,
@@ -1644,7 +1654,7 @@ PARAMETER_DATA = [
         "text": "COMMUNICATION_SEND_SEC_ROOMSENSOR_STATUS",
     },
     {
-        "idx": 244,
+        "idx": 245,
         "extid": "01F31C60B8046B",
         "max": 0,
         "min": 0,
@@ -1653,7 +1663,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSORS_CONNECTED_COUNT",
     },
     {
-        "idx": 245,
+        "idx": 246,
         "extid": "0018D2D12D00B3",
         "max": 0,
         "min": 0,
@@ -1662,7 +1672,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_ALARM",
     },
     {
-        "idx": 246,
+        "idx": 247,
         "extid": "0065D3A29B0484",
         "max": 0,
         "min": 0,
@@ -1671,7 +1681,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_ALARM_2",
     },
     {
-        "idx": 247,
+        "idx": 248,
         "extid": "000E6864FD0476",
         "max": 0,
         "min": 0,
@@ -1680,7 +1690,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_BLOCKED",
     },
     {
-        "idx": 248,
+        "idx": 249,
         "extid": "005FE0363D0A2A",
         "max": 0,
         "min": 0,
@@ -1689,7 +1699,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_BLOCKED_2",
     },
     {
-        "idx": 249,
+        "idx": 250,
         "extid": "162F92312F0A7A",
         "max": 0,
         "min": 0,
@@ -1698,7 +1708,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_CALC_HOTGAS",
     },
     {
-        "idx": 251,
+        "idx": 252,
         "extid": "16F7EF15210A7B",
         "max": 0,
         "min": 0,
@@ -1707,7 +1717,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_CALC_HOTGAS_2",
     },
     {
-        "idx": 253,
+        "idx": 254,
         "extid": "16654560AA0A7C",
         "max": 0,
         "min": 0,
@@ -1716,7 +1726,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_CALC_HOTGAS_FILTERED",
     },
     {
-        "idx": 255,
+        "idx": 256,
         "extid": "16AD77529A0A7D",
         "max": 0,
         "min": 0,
@@ -1725,7 +1735,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_CALC_HOTGAS_FILTERED_2",
     },
     {
-        "idx": 257,
+        "idx": 258,
         "extid": "C1980C123400B0",
         "max": 0,
         "min": 0,
@@ -1734,7 +1744,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_COP_FREQUENCY_MAX",
     },
     {
-        "idx": 258,
+        "idx": 259,
         "extid": "C1A4012D6D00B1",
         "max": 0,
         "min": 0,
@@ -1743,7 +1753,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_COP_FREQUENCY_MIN",
     },
     {
-        "idx": 259,
+        "idx": 260,
         "extid": "C1C61B2E0400AE",
         "max": 0,
         "min": 0,
@@ -1752,7 +1762,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_COP_T1_SETPOINT_MAX",
     },
     {
-        "idx": 260,
+        "idx": 261,
         "extid": "C1FA16115D00AF",
         "max": 0,
         "min": 0,
@@ -1761,7 +1771,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_COP_T1_SETPOINT_MIN",
     },
     {
-        "idx": 261,
+        "idx": 262,
         "extid": "01A00CFA280252",
         "max": 230,
         "min": 400,
@@ -1770,7 +1780,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_DHW_REQUEST",
     },
     {
-        "idx": 262,
+        "idx": 263,
         "extid": "00F55C2F800303",
         "max": 0,
         "min": 0,
@@ -1779,7 +1789,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_E21_EXTERN_BLOCKED",
     },
     {
-        "idx": 263,
+        "idx": 264,
         "extid": "C092971E2F0309",
         "max": 16777216,
         "min": 0,
@@ -1788,7 +1798,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_E21_EXTERN_BLOCK_BY_E21_EXT_1",
     },
     {
-        "idx": 264,
+        "idx": 265,
         "extid": "C00B9E4F95048B",
         "max": 16777216,
         "min": 0,
@@ -1797,7 +1807,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_E21_EXTERN_BLOCK_BY_E21_EXT_2",
     },
     {
-        "idx": 265,
+        "idx": 266,
         "extid": "C0A37F04B20B4B",
         "max": 16777216,
         "min": 0,
@@ -1806,7 +1816,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_E21_EXTERN_BLOCK_BY_E22_EXT_1",
     },
     {
-        "idx": 266,
+        "idx": 267,
         "extid": "C03A7655080B4C",
         "max": 16777216,
         "min": 0,
@@ -1815,7 +1825,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_E21_EXTERN_BLOCK_BY_E22_EXT_2",
     },
     {
-        "idx": 267,
+        "idx": 268,
         "extid": "00DC949B720B29",
         "max": 0,
         "min": 0,
@@ -1824,7 +1834,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_E22_EXTERN_BLOCKED",
     },
     {
-        "idx": 268,
+        "idx": 269,
         "extid": "C0210333EC0B75",
         "max": 16777216,
         "min": 0,
@@ -1833,7 +1843,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_E22_EXTERN_BLOCK_BY_E21_EXT_1",
     },
     {
-        "idx": 269,
+        "idx": 270,
         "extid": "C0B80A62560B76",
         "max": 16777216,
         "min": 0,
@@ -1842,7 +1852,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_E22_EXTERN_BLOCK_BY_E21_EXT_2",
     },
     {
-        "idx": 270,
+        "idx": 271,
         "extid": "C010EB29710B77",
         "max": 16777216,
         "min": 0,
@@ -1851,7 +1861,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_E22_EXTERN_BLOCK_BY_E22_EXT_1",
     },
     {
-        "idx": 271,
+        "idx": 272,
         "extid": "C089E278CB0B78",
         "max": 16777216,
         "min": 0,
@@ -1860,7 +1870,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_E22_EXTERN_BLOCK_BY_E22_EXT_2",
     },
     {
-        "idx": 272,
+        "idx": 273,
         "extid": "00BA167A090B8E",
         "max": 0,
         "min": 0,
@@ -1869,7 +1879,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_E22_RESTART_HANDLING_TRIGGED",
     },
     {
-        "idx": 273,
+        "idx": 274,
         "extid": "01E2A43EA50251",
         "max": 0,
         "min": 0,
@@ -1878,7 +1888,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_HEATING_REQUEST",
     },
     {
-        "idx": 274,
+        "idx": 275,
         "extid": "E18ABA5E9100B4",
         "max": 90,
         "min": 24,
@@ -1887,7 +1897,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_MAX_FREQUENCY",
     },
     {
-        "idx": 275,
+        "idx": 276,
         "extid": "E1BA260302017A",
         "max": 120,
         "min": 24,
@@ -1896,7 +1906,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_MAX_FREQUENCY_DEV",
     },
     {
-        "idx": 276,
+        "idx": 277,
         "extid": "E1CAF526E700B5",
         "max": 86,
         "min": 20,
@@ -1905,7 +1915,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_MIN_FREQUENCY",
     },
     {
-        "idx": 277,
+        "idx": 278,
         "extid": "00205AC16100B6",
         "max": 16777216,
         "min": 0,
@@ -1923,7 +1933,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_REAL_FREQUENCY",
     },
     {
-        "idx": 279,
+        "idx": 280,
         "extid": "E16A8A67F000AD",
         "max": 60,
         "min": 0,
@@ -1932,7 +1942,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_RESTART_TIME",
     },
     {
-        "idx": 280,
+        "idx": 281,
         "extid": "C1BCC2391E0A63",
         "max": 13,
         "min": 7,
@@ -1941,7 +1951,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_SIZE",
     },
     {
-        "idx": 281,
+        "idx": 282,
         "extid": "C13F6909F10A64",
         "max": 13,
         "min": 7,
@@ -1950,7 +1960,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_SIZE_2",
     },
     {
-        "idx": 282,
+        "idx": 283,
         "extid": "C1EF785A580B15",
         "max": 13,
         "min": 7,
@@ -1959,7 +1969,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_SIZE_2_DISPLAY_VALUE",
     },
     {
-        "idx": 283,
+        "idx": 284,
         "extid": "C1565C20C20B14",
         "max": 13,
         "min": 7,
@@ -1968,7 +1978,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_SIZE_DISPLAY_VALUE",
     },
     {
-        "idx": 284,
+        "idx": 285,
         "extid": "8178F2D1C80A78",
         "max": 0,
         "min": 0,
@@ -1977,7 +1987,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_SIZE_INDEX",
     },
     {
-        "idx": 285,
+        "idx": 286,
         "extid": "8146DAC5120A79",
         "max": 0,
         "min": 0,
@@ -1986,7 +1996,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_SIZE_INDEX_2",
     },
     {
-        "idx": 286,
+        "idx": 287,
         "extid": "E95C34D4210A75",
         "max": 170,
         "min": 60,
@@ -1995,7 +2005,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_SIZE_LW",
     },
     {
-        "idx": 287,
+        "idx": 288,
         "extid": "E9B90C5DFE0A76",
         "max": 170,
         "min": 60,
@@ -2004,7 +2014,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_SIZE_LW_2",
     },
     {
-        "idx": 288,
+        "idx": 289,
         "extid": "00F334C27F00B7",
         "max": 0,
         "min": 0,
@@ -2013,7 +2023,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_START",
     },
     {
-        "idx": 289,
+        "idx": 290,
         "extid": "E10A600FE900B9",
         "max": 80,
         "min": 20,
@@ -2022,7 +2032,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_STARTUP_FREQUENCY",
     },
     {
-        "idx": 290,
+        "idx": 291,
         "extid": "E1A47B5B1C00B8",
         "max": 10,
         "min": 2,
@@ -2031,7 +2041,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_STARTUP_TIME",
     },
     {
-        "idx": 291,
+        "idx": 292,
         "extid": "0069E037750692",
         "max": 0,
         "min": 0,
@@ -2040,7 +2050,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_START_2",
     },
     {
-        "idx": 292,
+        "idx": 293,
         "extid": "E2E5F581E50346",
         "max": 600,
         "min": 0,
@@ -2067,7 +2077,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_STATE_2",
     },
     {
-        "idx": 296,
+        "idx": 297,
         "extid": "E1C7DC4A5D0857",
         "max": 2,
         "min": 1,
@@ -2076,7 +2086,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_TYPE",
     },
     {
-        "idx": 297,
+        "idx": 298,
         "extid": "E12D314EAF0858",
         "max": 2,
         "min": 1,
@@ -2085,7 +2095,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_TYPE_2",
     },
     {
-        "idx": 298,
+        "idx": 299,
         "extid": "C06BA159820867",
         "max": 16777216,
         "min": 0,
@@ -2094,7 +2104,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_USE_START_DELAY_TIME",
     },
     {
-        "idx": 299,
+        "idx": 300,
         "extid": "C183AEA732025B",
         "max": 0,
         "min": 0,
@@ -2103,7 +2113,7 @@ PARAMETER_DATA = [
         "text": "CONFIGURATION",
     },
     {
-        "idx": 300,
+        "idx": 301,
         "extid": "E1AD68C52C0672",
         "max": 3,
         "min": 0,
@@ -2112,7 +2122,7 @@ PARAMETER_DATA = [
         "text": "CONFIGURATION_BUDERUS",
     },
     {
-        "idx": 301,
+        "idx": 302,
         "extid": "E168431B5E00BA",
         "max": 30,
         "min": 0,
@@ -2121,7 +2131,7 @@ PARAMETER_DATA = [
         "text": "COOLING_FAN_STOP_DELAY_TIME",
     },
     {
-        "idx": 302,
+        "idx": 303,
         "extid": "826C36377C0B7F",
         "max": 0,
         "min": 0,
@@ -2130,7 +2140,7 @@ PARAMETER_DATA = [
         "text": "COUNTRY",
     },
     {
-        "idx": 304,
+        "idx": 305,
         "extid": "82DE2C76BC0B0A",
         "max": 0,
         "min": 0,
@@ -2139,7 +2149,7 @@ PARAMETER_DATA = [
         "text": "CPU_BOOT_COUNTER",
     },
     {
-        "idx": 306,
+        "idx": 307,
         "extid": "E5778117E50240",
         "max": 20,
         "min": 5,
@@ -2148,7 +2158,7 @@ PARAMETER_DATA = [
         "text": "CRANKCASE_HEATER_BLOCK_TEMP",
     },
     {
-        "idx": 307,
+        "idx": 308,
         "extid": "214D9712D5035B",
         "max": 7,
         "min": 0,
@@ -2157,7 +2167,7 @@ PARAMETER_DATA = [
         "text": "CURRENT_M_VALVE",
     },
     {
-        "idx": 308,
+        "idx": 309,
         "extid": "0132AD5D97002B",
         "max": 0,
         "min": 0,
@@ -2166,7 +2176,7 @@ PARAMETER_DATA = [
         "text": "DATE_DAY",
     },
     {
-        "idx": 309,
+        "idx": 310,
         "extid": "016D8A0DD9002C",
         "max": 0,
         "min": 0,
@@ -2175,7 +2185,7 @@ PARAMETER_DATA = [
         "text": "DATE_DAY_OF_WEEK",
     },
     {
-        "idx": 310,
+        "idx": 311,
         "extid": "01D5C3A951002D",
         "max": 0,
         "min": 0,
@@ -2184,7 +2194,7 @@ PARAMETER_DATA = [
         "text": "DATE_HOUR",
     },
     {
-        "idx": 311,
+        "idx": 312,
         "extid": "01767669D7002E",
         "max": 0,
         "min": 0,
@@ -2193,7 +2203,7 @@ PARAMETER_DATA = [
         "text": "DATE_MIN",
     },
     {
-        "idx": 312,
+        "idx": 313,
         "extid": "013875E083002F",
         "max": 0,
         "min": 0,
@@ -2202,7 +2212,7 @@ PARAMETER_DATA = [
         "text": "DATE_MONTH",
     },
     {
-        "idx": 313,
+        "idx": 314,
         "extid": "01B2CAD41C0030",
         "max": 0,
         "min": 0,
@@ -2211,7 +2221,7 @@ PARAMETER_DATA = [
         "text": "DATE_SEC",
     },
     {
-        "idx": 314,
+        "idx": 315,
         "extid": "011E5FCB280031",
         "max": 0,
         "min": 0,
@@ -2220,7 +2230,7 @@ PARAMETER_DATA = [
         "text": "DATE_YEAR",
     },
     {
-        "idx": 315,
+        "idx": 316,
         "extid": "E1478EE36601EB",
         "max": 20,
         "min": 1,
@@ -2229,7 +2239,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_0_DELTA_TEMPERATURE",
     },
     {
-        "idx": 316,
+        "idx": 317,
         "extid": "E1BE893A89067B",
         "max": 20,
         "min": 1,
@@ -2238,7 +2248,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_0_DELTA_TEMPERATURE_2",
     },
     {
-        "idx": 317,
+        "idx": 318,
         "extid": "00594AFA3802D1",
         "max": 0,
         "min": 0,
@@ -2247,7 +2257,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_BATTERY",
     },
     {
-        "idx": 318,
+        "idx": 319,
         "extid": "00FEDAFC570671",
         "max": 0,
         "min": 0,
@@ -2256,7 +2266,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_BATTERY_2",
     },
     {
-        "idx": 319,
+        "idx": 320,
         "extid": "E1DB78084F01F6",
         "max": 120,
         "min": 0,
@@ -2265,7 +2275,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_BLOCK_DELAY_TIME",
     },
     {
-        "idx": 320,
+        "idx": 321,
         "extid": "E1CD1702640686",
         "max": 120,
         "min": 0,
@@ -2274,7 +2284,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_BLOCK_DELAY_TIME_2",
     },
     {
-        "idx": 321,
+        "idx": 322,
         "extid": "0028AC53CD02D2",
         "max": 0,
         "min": 0,
@@ -2283,7 +2293,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_CYCLE",
     },
     {
-        "idx": 322,
+        "idx": 323,
         "extid": "00381B83050678",
         "max": 0,
         "min": 0,
@@ -2292,7 +2302,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_CYCLE_2",
     },
     {
-        "idx": 323,
+        "idx": 324,
         "extid": "00E31CF38F0A84",
         "max": 0,
         "min": 0,
@@ -2301,7 +2311,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_CYCLE_2_CLOSING_DOWN",
     },
     {
-        "idx": 324,
+        "idx": 325,
         "extid": "00A95A4B5A0A83",
         "max": 0,
         "min": 0,
@@ -2310,7 +2320,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_CYCLE_CLOSING_DOWN",
     },
     {
-        "idx": 325,
+        "idx": 326,
         "extid": "E2E90063A40A86",
         "max": 900,
         "min": 0,
@@ -2319,7 +2329,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_DELAY_4_WAY_VALVE_2_SWITCH",
     },
     {
-        "idx": 327,
+        "idx": 328,
         "extid": "E285CADF680A7F",
         "max": 900,
         "min": 0,
@@ -2328,7 +2338,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_DELAY_4_WAY_VALVE_SWITCH",
     },
     {
-        "idx": 329,
+        "idx": 330,
         "extid": "E2364CF4D30A85",
         "max": 900,
         "min": 0,
@@ -2337,7 +2347,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_DELAY_COMPRESSOR_2_START",
     },
     {
-        "idx": 331,
+        "idx": 332,
         "extid": "E2534223110A80",
         "max": 900,
         "min": 0,
@@ -2346,7 +2356,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_DELAY_COMPRESSOR_START",
     },
     {
-        "idx": 333,
+        "idx": 334,
         "extid": "0EA7DC84360254",
         "max": 0,
         "min": 0,
@@ -2355,7 +2365,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_DELTA_T12_T11",
     },
     {
-        "idx": 335,
+        "idx": 336,
         "extid": "0ED7E473740687",
         "max": 0,
         "min": 0,
@@ -2364,7 +2374,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_DELTA_T12_T11_2",
     },
     {
-        "idx": 337,
+        "idx": 338,
         "extid": "EE68A7B8090255",
         "max": 300,
         "min": 10,
@@ -2373,7 +2383,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_DELTA_TEMPERATURE",
     },
     {
-        "idx": 339,
+        "idx": 340,
         "extid": "EEA055EAB4067C",
         "max": 300,
         "min": 10,
@@ -2382,7 +2392,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_DELTA_TEMPERATURE_2",
     },
     {
-        "idx": 341,
+        "idx": 342,
         "extid": "E2FF8EAB6D01E5",
         "max": 600,
         "min": 0,
@@ -2391,7 +2401,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_DELTA_TIME",
     },
     {
-        "idx": 343,
+        "idx": 344,
         "extid": "E2257A92E00688",
         "max": 600,
         "min": 0,
@@ -2400,7 +2410,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_DELTA_TIME_2",
     },
     {
-        "idx": 345,
+        "idx": 346,
         "extid": "00A5BB73C4027E",
         "max": 0,
         "min": 0,
@@ -2409,7 +2419,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_FAN",
     },
     {
-        "idx": 346,
+        "idx": 347,
         "extid": "00D2B795930670",
         "max": 0,
         "min": 0,
@@ -2418,7 +2428,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_FAN_2",
     },
     {
-        "idx": 347,
+        "idx": 348,
         "extid": "016189FB34027F",
         "max": 0,
         "min": 0,
@@ -2427,7 +2437,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_FAN_COUNTER",
     },
     {
-        "idx": 348,
+        "idx": 349,
         "extid": "012568BB0E0680",
         "max": 0,
         "min": 0,
@@ -2436,7 +2446,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_FAN_COUNTER_2",
     },
     {
-        "idx": 349,
+        "idx": 350,
         "extid": "E11D66580701FC",
         "max": 8,
         "min": 1,
@@ -2445,7 +2455,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_FAN_INTERVAL_COUNTER",
     },
     {
-        "idx": 350,
+        "idx": 351,
         "extid": "E19EDC50830682",
         "max": 8,
         "min": 1,
@@ -2454,7 +2464,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_FAN_INTERVAL_COUNTER_2",
     },
     {
-        "idx": 351,
+        "idx": 352,
         "extid": "E50E01998A01FF",
         "max": 0,
         "min": -40,
@@ -2463,7 +2473,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_FAN_TEMPERATURE_LIMIT",
     },
     {
-        "idx": 352,
+        "idx": 353,
         "extid": "E5FC9257C40683",
         "max": 0,
         "min": -40,
@@ -2472,7 +2482,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_FAN_TEMPERATURE_LIMIT_2",
     },
     {
-        "idx": 353,
+        "idx": 354,
         "extid": "E17B401DDE01FE",
         "max": 15,
         "min": 0,
@@ -2481,7 +2491,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_FAN_TIME",
     },
     {
-        "idx": 354,
+        "idx": 355,
         "extid": "E1C890FDEC0681",
         "max": 15,
         "min": 0,
@@ -2490,7 +2500,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_FAN_TIME_2",
     },
     {
-        "idx": 355,
+        "idx": 356,
         "extid": "EE72EB12CC01F0",
         "max": 400,
         "min": 0,
@@ -2499,7 +2509,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_GT11_STOP",
     },
     {
-        "idx": 357,
+        "idx": 358,
         "extid": "EE20DB99050685",
         "max": 400,
         "min": 0,
@@ -2508,7 +2518,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_GT11_STOP_2",
     },
     {
-        "idx": 359,
+        "idx": 360,
         "extid": "203642ECD7027D",
         "max": 16777216,
         "min": 0,
@@ -2517,7 +2527,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_MANUAL_START",
     },
     {
-        "idx": 360,
+        "idx": 361,
         "extid": "20D3E8C92D0689",
         "max": 16777216,
         "min": 0,
@@ -2526,7 +2536,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_MANUAL_START_2",
     },
     {
-        "idx": 361,
+        "idx": 362,
         "extid": "A14A30D6610C77",
         "max": 48,
         "min": 1,
@@ -2535,7 +2545,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_MAX_RUNNING_TIME_BETWEEN_DEFROSTS",
     },
     {
-        "idx": 362,
+        "idx": 363,
         "extid": "A1A77B65D30C78",
         "max": 48,
         "min": 1,
@@ -2544,7 +2554,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_MAX_RUNNING_TIME_BETWEEN_DEFROSTS_2",
     },
     {
-        "idx": 363,
+        "idx": 364,
         "extid": "E1F3A5E00E01F1",
         "max": 60,
         "min": 0,
@@ -2553,7 +2563,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_MAX_TIME",
     },
     {
-        "idx": 364,
+        "idx": 365,
         "extid": "E18AA43EB70684",
         "max": 60,
         "min": 0,
@@ -2562,7 +2572,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_MAX_TIME_2",
     },
     {
-        "idx": 365,
+        "idx": 366,
         "extid": "E151AA9F3D01ED",
         "max": 20,
         "min": 1,
@@ -2571,7 +2581,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_MINUS10_DELTA_TEMPERATURE",
     },
     {
-        "idx": 366,
+        "idx": 367,
         "extid": "E1BE759525067E",
         "max": 20,
         "min": 1,
@@ -2580,7 +2590,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_MINUS10_DELTA_TEMPERATURE_2",
     },
     {
-        "idx": 367,
+        "idx": 368,
         "extid": "E1FE03D2F702CF",
         "max": 20,
         "min": 1,
@@ -2589,7 +2599,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_MINUS20_DELTA_TEMPERATURE",
     },
     {
-        "idx": 368,
+        "idx": 369,
         "extid": "E1870D3865067F",
         "max": 20,
         "min": 1,
@@ -2598,7 +2608,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_MINUS20_DELTA_TEMPERATURE_2",
     },
     {
-        "idx": 369,
+        "idx": 370,
         "extid": "E53A13971A027C",
         "max": 35,
         "min": 0,
@@ -2607,7 +2617,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_OUT_START_TEMPERATURE",
     },
     {
-        "idx": 370,
+        "idx": 371,
         "extid": "E56A6BC4CB068A",
         "max": 35,
         "min": 0,
@@ -2616,7 +2626,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_OUT_START_TEMPERATURE_2",
     },
     {
-        "idx": 371,
+        "idx": 372,
         "extid": "E12B1071C201E9",
         "max": 20,
         "min": 1,
@@ -2625,7 +2635,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_PLUS10_DELTA_TEMPERATURE",
     },
     {
-        "idx": 372,
+        "idx": 373,
         "extid": "E16AE3DD92067D",
         "max": 20,
         "min": 1,
@@ -2634,7 +2644,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_PLUS10_DELTA_TEMPERATURE_2",
     },
     {
-        "idx": 373,
+        "idx": 374,
         "extid": "E2E83A284101F5",
         "max": 600,
         "min": 0,
@@ -2643,7 +2653,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_QUIT_DELAY_TIME",
     },
     {
-        "idx": 375,
+        "idx": 376,
         "extid": "E268FA3C60068B",
         "max": 600,
         "min": 0,
@@ -2652,7 +2662,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_QUIT_DELAY_TIME_2",
     },
     {
-        "idx": 377,
+        "idx": 378,
         "extid": "01B2F3810902D0",
         "max": 0,
         "min": 0,
@@ -2661,7 +2671,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_REQUEST",
     },
     {
-        "idx": 378,
+        "idx": 379,
         "extid": "01FF50B8E8068C",
         "max": 0,
         "min": 0,
@@ -2670,7 +2680,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_REQUEST_2",
     },
     {
-        "idx": 379,
+        "idx": 380,
         "extid": "0062329BE402B4",
         "max": 0,
         "min": 0,
@@ -2679,7 +2689,7 @@ PARAMETER_DATA = [
         "text": "DHW_BLOCKED",
     },
     {
-        "idx": 380,
+        "idx": 381,
         "extid": "C0016372BE05C1",
         "max": 16777216,
         "min": 0,
@@ -2688,7 +2698,7 @@ PARAMETER_DATA = [
         "text": "DHW_BLOCK_SWITCH_TO_HEATING",
     },
     {
-        "idx": 381,
+        "idx": 382,
         "extid": "020E51A0000CA7",
         "max": 0,
         "min": 0,
@@ -2697,7 +2707,7 @@ PARAMETER_DATA = [
         "text": "DHW_CALCULATED_E21_T3_START_TEMP_SEC_PER_TENTH_ADJ",
     },
     {
-        "idx": 383,
+        "idx": 384,
         "extid": "02554611150CA8",
         "max": 0,
         "min": 0,
@@ -2706,8 +2716,6 @@ PARAMETER_DATA = [
         "text": "DHW_CALCULATED_E22_T3_START_TEMP_SEC_PER_TENTH_ADJ",
     },
     {
-        # Note: FHEM runtime discovery found idx=386, not 385 as in original docs
-        # Verified via CAN capture: request 0x460BFE0 (idx 386) returns 53.0°C
         "idx": 386,
         "extid": "EE5991A93A02B8",
         "max": 700,
@@ -2717,7 +2725,7 @@ PARAMETER_DATA = [
         "text": "DHW_CALCULATED_SETPOINT_TEMP",
     },
     {
-        "idx": 387,
+        "idx": 388,
         "extid": "EE38A21E6702B9",
         "max": 100,
         "min": -100,
@@ -2726,7 +2734,7 @@ PARAMETER_DATA = [
         "text": "DHW_CALCULATED_SETPOINT_TEMP_OFFSET",
     },
     {
-        "idx": 389,
+        "idx": 390,
         "extid": "A109D86C650CA6",
         "max": 24,
         "min": 0,
@@ -2735,7 +2743,7 @@ PARAMETER_DATA = [
         "text": "DHW_CALCULATED_T3_DHW_LOADING_INTERVAL",
     },
     {
-        "idx": 390,
+        "idx": 391,
         "extid": "8E27406FC50CA4",
         "max": 0,
         "min": 0,
@@ -2744,7 +2752,7 @@ PARAMETER_DATA = [
         "text": "DHW_CALCULATED_T3_START_TEMP_MIN_VALUE",
     },
     {
-        "idx": 392,
+        "idx": 393,
         "extid": "C1EE64B5700106",
         "max": 0,
         "min": 0,
@@ -2753,7 +2761,7 @@ PARAMETER_DATA = [
         "text": "DHW_COMPRESSOR_GT8DIFF_FREQUENCY_MAX",
     },
     {
-        "idx": 393,
+        "idx": 394,
         "extid": "C1D2698A290107",
         "max": 0,
         "min": 0,
@@ -2762,7 +2770,7 @@ PARAMETER_DATA = [
         "text": "DHW_COMPRESSOR_GT8DIFF_FREQUENCY_MIN",
     },
     {
-        "idx": 394,
+        "idx": 395,
         "extid": "C50188E15E0104",
         "max": 0,
         "min": 0,
@@ -2771,7 +2779,7 @@ PARAMETER_DATA = [
         "text": "DHW_COMPRESSOR_GT8DIFF_GT8_MAX",
     },
     {
-        "idx": 395,
+        "idx": 396,
         "extid": "C53D85DE070105",
         "max": 0,
         "min": 0,
@@ -2780,7 +2788,7 @@ PARAMETER_DATA = [
         "text": "DHW_COMPRESSOR_GT8DIFF_GT8_MIN",
     },
     {
-        "idx": 396,
+        "idx": 397,
         "extid": "C165168E69010A",
         "max": 0,
         "min": 0,
@@ -2789,7 +2797,7 @@ PARAMETER_DATA = [
         "text": "DHW_COMPRESSOR_HEATING_FREQUENCY_MAX",
     },
     {
-        "idx": 397,
+        "idx": 398,
         "extid": "C1591BB130010B",
         "max": 0,
         "min": 0,
@@ -2798,7 +2806,7 @@ PARAMETER_DATA = [
         "text": "DHW_COMPRESSOR_HEATING_FREQUENCY_MIN",
     },
     {
-        "idx": 398,
+        "idx": 399,
         "extid": "C5D1D8285F0108",
         "max": 0,
         "min": 0,
@@ -2807,7 +2815,7 @@ PARAMETER_DATA = [
         "text": "DHW_COMPRESSOR_HEATING_GT2_MAX",
     },
     {
-        "idx": 399,
+        "idx": 400,
         "extid": "C5EDD517060109",
         "max": 0,
         "min": 0,
@@ -2816,7 +2824,7 @@ PARAMETER_DATA = [
         "text": "DHW_COMPRESSOR_HEATING_GT2_MIN",
     },
     {
-        "idx": 400,
+        "idx": 401,
         "extid": "40A21CB6040B17",
         "max": 0,
         "min": 0,
@@ -2825,7 +2833,7 @@ PARAMETER_DATA = [
         "text": "DHW_E21_COMPRESSOR_TEMPORARY_STOP",
     },
     {
-        "idx": 401,
+        "idx": 402,
         "extid": "E10BD3703C0B1B",
         "max": 10,
         "min": 1,
@@ -2834,7 +2842,7 @@ PARAMETER_DATA = [
         "text": "DHW_E21_COMPRESSOR_TEMPORARY_STOP_DELAY",
     },
     {
-        "idx": 402,
+        "idx": 403,
         "extid": "E96A54E9FD0B1A",
         "max": 100,
         "min": 5,
@@ -2843,7 +2851,7 @@ PARAMETER_DATA = [
         "text": "DHW_E21_COMPRESSOR_TEMPORARY_STOP_DIFF",
     },
     {
-        "idx": 403,
+        "idx": 404,
         "extid": "56F99731110B21",
         "max": 0,
         "min": 0,
@@ -2852,7 +2860,7 @@ PARAMETER_DATA = [
         "text": "DHW_E21_COMPRESSOR_TEMPORARY_STOP_SAVED_GT3",
     },
     {
-        "idx": 405,
+        "idx": 406,
         "extid": "4011889BC70B18",
         "max": 0,
         "min": 0,
@@ -2861,7 +2869,7 @@ PARAMETER_DATA = [
         "text": "DHW_E22_COMPRESSOR_TEMPORARY_STOP",
     },
     {
-        "idx": 406,
+        "idx": 407,
         "extid": "E150C4C1290B1C",
         "max": 10,
         "min": 1,
@@ -2870,7 +2878,7 @@ PARAMETER_DATA = [
         "text": "DHW_E22_COMPRESSOR_TEMPORARY_STOP_DELAY",
     },
     {
-        "idx": 407,
+        "idx": 408,
         "extid": "E9A34BE1420B19",
         "max": 100,
         "min": 5,
@@ -2879,7 +2887,7 @@ PARAMETER_DATA = [
         "text": "DHW_E22_COMPRESSOR_TEMPORARY_STOP_DIFF",
     },
     {
-        "idx": 408,
+        "idx": 409,
         "extid": "56A3F60E710B22",
         "max": 0,
         "min": 0,
@@ -2888,7 +2896,7 @@ PARAMETER_DATA = [
         "text": "DHW_E22_COMPRESSOR_TEMPORARY_STOP_SAVED_GT3",
     },
     {
-        "idx": 410,
+        "idx": 411,
         "extid": "00D3E359CF030B",
         "max": 16777216,
         "min": 0,
@@ -2897,7 +2905,7 @@ PARAMETER_DATA = [
         "text": "DHW_EXTERN_BLOCKED",
     },
     {
-        "idx": 411,
+        "idx": 412,
         "extid": "C084B462440305",
         "max": 16777216,
         "min": 0,
@@ -2906,7 +2914,7 @@ PARAMETER_DATA = [
         "text": "DHW_EXTERN_BLOCK_BY_E21_EXT_1",
     },
     {
-        "idx": 412,
+        "idx": 413,
         "extid": "C01DBD33FE0B56",
         "max": 16777216,
         "min": 0,
@@ -2915,7 +2923,7 @@ PARAMETER_DATA = [
         "text": "DHW_EXTERN_BLOCK_BY_E21_EXT_2",
     },
     {
-        "idx": 413,
+        "idx": 414,
         "extid": "C0B55C78D9048D",
         "max": 16777216,
         "min": 0,
@@ -2924,7 +2932,7 @@ PARAMETER_DATA = [
         "text": "DHW_EXTERN_BLOCK_BY_E22_EXT_1",
     },
     {
-        "idx": 414,
+        "idx": 415,
         "extid": "C02C5529630B55",
         "max": 16777216,
         "min": 0,
@@ -2933,7 +2941,7 @@ PARAMETER_DATA = [
         "text": "DHW_EXTERN_BLOCK_BY_E22_EXT_2",
     },
     {
-        "idx": 415,
+        "idx": 416,
         "extid": "EEB4A6964D02B6",
         "max": 560,
         "min": 200,
@@ -2942,7 +2950,7 @@ PARAMETER_DATA = [
         "text": "DHW_GT3_START_MAX_TEMP",
     },
     {
-        "idx": 417,
+        "idx": 418,
         "extid": "EEE896B17B0654",
         "max": 560,
         "min": 200,
@@ -2951,7 +2959,7 @@ PARAMETER_DATA = [
         "text": "DHW_GT3_START_MAX_TEMP_2",
     },
     {
-        "idx": 419,
+        "idx": 420,
         "extid": "0EFA512A7A00FD",
         "max": 790,
         "min": 200,
@@ -2960,7 +2968,7 @@ PARAMETER_DATA = [
         "text": "DHW_GT3_START_TEMP",
     },
     {
-        "idx": 421,
+        "idx": 422,
         "extid": "0EBA46A01F066C",
         "max": 790,
         "min": 200,
@@ -2969,7 +2977,7 @@ PARAMETER_DATA = [
         "text": "DHW_GT3_START_TEMP_2",
     },
     {
-        "idx": 423,
+        "idx": 424,
         "extid": "EE70936AA500FF",
         "max": 560,
         "min": 200,
@@ -2978,7 +2986,7 @@ PARAMETER_DATA = [
         "text": "DHW_GT3_START_TEMP_COMFORT",
     },
     {
-        "idx": 425,
+        "idx": 426,
         "extid": "EECA3AB29D0658",
         "max": 560,
         "min": 200,
@@ -2987,7 +2995,7 @@ PARAMETER_DATA = [
         "text": "DHW_GT3_START_TEMP_COMFORT_2",
     },
     {
-        "idx": 427,
+        "idx": 428,
         "extid": "EE681E964800FE",
         "max": 560,
         "min": 200,
@@ -2996,7 +3004,7 @@ PARAMETER_DATA = [
         "text": "DHW_GT3_START_TEMP_ECONOMY",
     },
     {
-        "idx": 429,
+        "idx": 430,
         "extid": "EE95E199860659",
         "max": 560,
         "min": 200,
@@ -3005,7 +3013,7 @@ PARAMETER_DATA = [
         "text": "DHW_GT3_START_TEMP_ECONOMY_2",
     },
     {
-        "idx": 431,
+        "idx": 432,
         "extid": "0E9E09BB7B0CD8",
         "max": 0,
         "min": 0,
@@ -3014,7 +3022,7 @@ PARAMETER_DATA = [
         "text": "DHW_GT3_STOP_MIN_TEMP",
     },
     {
-        "idx": 433,
+        "idx": 434,
         "extid": "0E245556D40CD9",
         "max": 0,
         "min": 0,
@@ -3023,7 +3031,7 @@ PARAMETER_DATA = [
         "text": "DHW_GT3_STOP_MIN_TEMP_2",
     },
     {
-        "idx": 435,
+        "idx": 436,
         "extid": "0E5A602AB80100",
         "max": 0,
         "min": 0,
@@ -3032,7 +3040,7 @@ PARAMETER_DATA = [
         "text": "DHW_GT3_STOP_TEMP",
     },
     {
-        "idx": 437,
+        "idx": 438,
         "extid": "0E438AB5E2066E",
         "max": 0,
         "min": 0,
@@ -3041,7 +3049,7 @@ PARAMETER_DATA = [
         "text": "DHW_GT3_STOP_TEMP_2",
     },
     {
-        "idx": 439,
+        "idx": 440,
         "extid": "EEA69DB26402B7",
         "max": 640,
         "min": 200,
@@ -3050,7 +3058,7 @@ PARAMETER_DATA = [
         "text": "DHW_GT8_STOP_MAX_TEMP",
     },
     {
-        "idx": 441,
+        "idx": 442,
         "extid": "EE90D3D87A0655",
         "max": 640,
         "min": 200,
@@ -3059,7 +3067,7 @@ PARAMETER_DATA = [
         "text": "DHW_GT8_STOP_MAX_TEMP_2",
     },
     {
-        "idx": 443,
+        "idx": 444,
         "extid": "0E7941ADFC0101",
         "max": 0,
         "min": 0,
@@ -3068,7 +3076,7 @@ PARAMETER_DATA = [
         "text": "DHW_GT8_STOP_TEMP",
     },
     {
-        "idx": 445,
+        "idx": 446,
         "extid": "0EA4430A41066D",
         "max": 0,
         "min": 0,
@@ -3077,7 +3085,7 @@ PARAMETER_DATA = [
         "text": "DHW_GT8_STOP_TEMP_2",
     },
     {
-        "idx": 447,
+        "idx": 448,
         "extid": "EE5DE6FA5D0103",
         "max": 640,
         "min": 210,
@@ -3086,7 +3094,7 @@ PARAMETER_DATA = [
         "text": "DHW_GT8_STOP_TEMP_COMFORT",
     },
     {
-        "idx": 449,
+        "idx": 450,
         "extid": "EEE6506719065A",
         "max": 640,
         "min": 210,
@@ -3095,7 +3103,7 @@ PARAMETER_DATA = [
         "text": "DHW_GT8_STOP_TEMP_COMFORT_2",
     },
     {
-        "idx": 451,
+        "idx": 452,
         "extid": "EE456B06B00102",
         "max": 640,
         "min": 210,
@@ -3104,7 +3112,7 @@ PARAMETER_DATA = [
         "text": "DHW_GT8_STOP_TEMP_ECONOMY",
     },
     {
-        "idx": 453,
+        "idx": 454,
         "extid": "EEB98B4C02065B",
         "max": 640,
         "min": 210,
@@ -3113,7 +3121,7 @@ PARAMETER_DATA = [
         "text": "DHW_GT8_STOP_TEMP_ECONOMY_2",
     },
     {
-        "idx": 455,
+        "idx": 456,
         "extid": "EEB8CF723C0A60",
         "max": 800,
         "min": 200,
@@ -3122,7 +3130,7 @@ PARAMETER_DATA = [
         "text": "DHW_GT9_STOP_TEMP",
     },
     {
-        "idx": 457,
+        "idx": 458,
         "extid": "EE79D5D3C40A5F",
         "max": 800,
         "min": 200,
@@ -3131,7 +3139,7 @@ PARAMETER_DATA = [
         "text": "DHW_GT9_STOP_TEMP_2",
     },
     {
-        "idx": 459,
+        "idx": 460,
         "extid": "E1A0277040010D",
         "max": 60,
         "min": 5,
@@ -3140,138 +3148,131 @@ PARAMETER_DATA = [
         "text": "DHW_MAX_TIME",
     },
     {
-        "idx": 460,
+        "idx": 461,
         "extid": "C2A3F5F02802C3",
         "max": 0,
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_1_5FRI",
+        "text": "DHW_PROGRAM_1_FRI",
     },
     {
-        "idx": 462,
+        "idx": 463,
         "extid": "C2CEA8E67602BF",
         "max": 0,
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_1_1MON",
+        "text": "DHW_PROGRAM_1_MON",
     },
     {
-        "idx": 464,
+        "idx": 465,
         "extid": "C2BBF1BCF802C4",
         "max": 0,
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_1_6SAT",
+        "text": "DHW_PROGRAM_1_SAT",
     },
     {
-        "idx": 466,
+        "idx": 467,
         "extid": "C2683D92D702C5",
         "max": 0,
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_1_7SUN",
+        "text": "DHW_PROGRAM_1_SUN",
     },
     {
-        "idx": 468,
+        "idx": 469,
         "extid": "C2187B21A202C2",
         "max": 0,
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_1_4THU",
+        "text": "DHW_PROGRAM_1_THU",
     },
     {
-        "idx": 470,
+        "idx": 471,
         "extid": "C2FAA05DDA02C0",
         "max": 0,
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_1_2TUE",
+        "text": "DHW_PROGRAM_1_TUE",
     },
     {
-        "idx": 472,
+        "idx": 473,
         "extid": "C2C523C14402C1",
         "max": 0,
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_1_3WED",
+        "text": "DHW_PROGRAM_1_WED",
     },
     {
-        "idx": 474,
+        "idx": 475,
         "extid": "C2E4558AF802CA",
         "max": 0,
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_2_5FRI",
+        "text": "DHW_PROGRAM_2_FRI",
     },
     {
-        "idx": 476,
+        "idx": 477,
         "extid": "C289089CA602C6",
         "max": 0,
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_2_1MON",
+        "text": "DHW_PROGRAM_2_MON",
     },
     {
-        "idx": 478,
+        "idx": 479,
         "extid": "C2FC51C62802CC",
         "max": 0,
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_2_6SAT",
+        "text": "DHW_PROGRAM_2_SAT",
     },
     {
-        "idx": 480,
+        "idx": 481,
         "extid": "C22F9DE80702CB",
         "max": 0,
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_2_7SUN",
+        "text": "DHW_PROGRAM_2_SUN",
     },
     {
-        "idx": 482,
+        "idx": 483,
         "extid": "C25FDB5B7202C9",
         "max": 0,
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_2_4THU",
+        "text": "DHW_PROGRAM_2_THU",
     },
     {
-        "idx": 484,
+        "idx": 485,
         "extid": "C2BD00270A02C7",
         "max": 0,
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_2_2TUE",
+        "text": "DHW_PROGRAM_2_TUE",
     },
     {
-        "idx": 486,
+        "idx": 487,
         "extid": "C28283BB9402C8",
         "max": 0,
         "min": 0,
         "format": "sw2",
         "read": 1,
-        "text": "DHW_PROGRAM_2_3WED",
+        "text": "DHW_PROGRAM_2_WED",
     },
-    # PROTOCOL: Hardware-verified divergence from FHEM reference
-    # FHEM: fhem/26_KM273v018.pm:580 defines DHW_PROGRAM_MODE at idx=488
-    # HARDWARE: Actual device reports DHW_PROGRAM_MODE at idx=489 (verified 2024-12-02)
-    # CONFLICT: FHEM idx=489 is DHW_PROTECTIVE_ANODE_INSTALLED (line 581)
-    # RESOLUTION: Hardware verification takes precedence; PROTECTIVE_ANODE parameter
-    #             removed to resolve duplicate. Device variant may not have this feature.
-    # CRITICAL: This parameter controls DHW heating mode (see const.py:60-70)
     {
         "idx": 489,
         "extid": "E1CAB0771C0952",
@@ -3283,6 +3284,15 @@ PARAMETER_DATA = [
     },
     {
         "idx": 490,
+        "extid": "E14502BDB103E4",
+        "max": 1,
+        "min": 0,
+        "format": "int",
+        "read": 0,
+        "text": "DHW_PROTECTIVE_ANODE_INSTALLED",
+    },
+    {
+        "idx": 491,
         "extid": "0083F0FFFB00FC",
         "max": 0,
         "min": 0,
@@ -3291,7 +3301,7 @@ PARAMETER_DATA = [
         "text": "DHW_REQUEST",
     },
     {
-        "idx": 491,
+        "idx": 492,
         "extid": "006E6756EF0663",
         "max": 0,
         "min": 0,
@@ -3300,7 +3310,7 @@ PARAMETER_DATA = [
         "text": "DHW_REQUEST_2",
     },
     {
-        "idx": 492,
+        "idx": 493,
         "extid": "C0F8FDE3EC010C",
         "max": 83886080,
         "min": 0,
@@ -3309,7 +3319,7 @@ PARAMETER_DATA = [
         "text": "DHW_STATE_ECONOMY",
     },
     {
-        "idx": 493,
+        "idx": 494,
         "extid": "00DF862F0B02B5",
         "max": 0,
         "min": 0,
@@ -3318,7 +3328,7 @@ PARAMETER_DATA = [
         "text": "DHW_TIMECONTROLLED",
     },
     {
-        "idx": 494,
+        "idx": 495,
         "extid": "E10B0EFC9F0780",
         "max": 2,
         "min": 0,
@@ -3327,7 +3337,7 @@ PARAMETER_DATA = [
         "text": "DHW_TIMEPROGRAM",
     },
     {
-        "idx": 495,
+        "idx": 496,
         "extid": "C060DF8D6C0656",
         "max": 16777216,
         "min": 0,
@@ -3336,7 +3346,7 @@ PARAMETER_DATA = [
         "text": "DHW_USER_ENABLED",
     },
     {
-        "idx": 496,
+        "idx": 497,
         "extid": "C0EE6CB90D0657",
         "max": 16777216,
         "min": 0,
@@ -3345,7 +3355,7 @@ PARAMETER_DATA = [
         "text": "DHW_USER_ENABLED_2",
     },
     {
-        "idx": 497,
+        "idx": 498,
         "extid": "066BDDE50F0CEC",
         "max": 790,
         "min": 200,
@@ -3354,7 +3364,7 @@ PARAMETER_DATA = [
         "text": "DHW_USER_SET_START_TEMP",
     },
     {
-        "idx": 499,
+        "idx": 500,
         "extid": "06E3D563010CED",
         "max": 790,
         "min": 200,
@@ -3363,7 +3373,7 @@ PARAMETER_DATA = [
         "text": "DHW_USER_SET_START_TEMP_2",
     },
     {
-        "idx": 501,
+        "idx": 502,
         "extid": "E11FB861C80032",
         "max": 100,
         "min": 20,
@@ -3372,7 +3382,7 @@ PARAMETER_DATA = [
         "text": "DISPLAY_BACKLIGHT_INTENSITY",
     },
     {
-        "idx": 502,
+        "idx": 503,
         "extid": "213284225B0BD5",
         "max": 100,
         "min": 0,
@@ -3381,7 +3391,7 @@ PARAMETER_DATA = [
         "text": "DISPLAY_CONTRAST",
     },
     {
-        "idx": 503,
+        "idx": 504,
         "extid": "801BC8CB5E0184",
         "max": 0,
         "min": 0,
@@ -3390,7 +3400,7 @@ PARAMETER_DATA = [
         "text": "DISPLAY_TESTED",
     },
     {
-        "idx": 504,
+        "idx": 505,
         "extid": "017422CA550038",
         "max": 0,
         "min": 0,
@@ -3399,7 +3409,7 @@ PARAMETER_DATA = [
         "text": "DRIFTTILLSTAND",
     },
     {
-        "idx": 505,
+        "idx": 506,
         "extid": "0E114D85F103DD",
         "max": 0,
         "min": 0,
@@ -3408,7 +3418,7 @@ PARAMETER_DATA = [
         "text": "DRYOUT_SETPOINT_TEMP",
     },
     {
-        "idx": 507,
+        "idx": 508,
         "extid": "C00E5D8D3A0439",
         "max": 117440512,
         "min": 0,
@@ -3417,7 +3427,7 @@ PARAMETER_DATA = [
         "text": "DST_ENABLED",
     },
     {
-        "idx": 508,
+        "idx": 509,
         "extid": "8123C57A880039",
         "max": 0,
         "min": 0,
@@ -3426,7 +3436,7 @@ PARAMETER_DATA = [
         "text": "DST_OFFSET",
     },
     {
-        "idx": 509,
+        "idx": 510,
         "extid": "80C27DB0080A10",
         "max": 0,
         "min": 0,
@@ -3435,7 +3445,7 @@ PARAMETER_DATA = [
         "text": "E31_T2_CONNECTED",
     },
     {
-        "idx": 510,
+        "idx": 511,
         "extid": "6D853E880D0882",
         "max": 50,
         "min": -50,
@@ -3444,7 +3454,7 @@ PARAMETER_DATA = [
         "text": "E31_T32_KORRIGERING_GLOBAL",
     },
     {
-        "idx": 511,
+        "idx": 512,
         "extid": "C0DAAC0DE90753",
         "max": 16777216,
         "min": 0,
@@ -3453,7 +3463,7 @@ PARAMETER_DATA = [
         "text": "E71_T71_ACKNOWLEDGED",
     },
     {
-        "idx": 512,
+        "idx": 513,
         "extid": "80D820198007EF",
         "max": 16777216,
         "min": 0,
@@ -3462,7 +3472,7 @@ PARAMETER_DATA = [
         "text": "E71_T71_CONNECTED",
     },
     {
-        "idx": 513,
+        "idx": 514,
         "extid": "ED87F7528D04B0",
         "max": 50,
         "min": -50,
@@ -3471,7 +3481,7 @@ PARAMETER_DATA = [
         "text": "E71_T71_KORRIGERING",
     },
     {
-        "idx": 514,
+        "idx": 515,
         "extid": "00560E1A0804B1",
         "max": 0,
         "min": 0,
@@ -3480,7 +3490,7 @@ PARAMETER_DATA = [
         "text": "E71_T71_STATUS",
     },
     {
-        "idx": 515,
+        "idx": 516,
         "extid": "0E2DD1622104B2",
         "max": 0,
         "min": 0,
@@ -3489,7 +3499,7 @@ PARAMETER_DATA = [
         "text": "E71_T71_TEMP",
     },
     {
-        "idx": 517,
+        "idx": 518,
         "extid": "ED3A3D3E4304B8",
         "max": 50,
         "min": -50,
@@ -3498,7 +3508,7 @@ PARAMETER_DATA = [
         "text": "E71_T72_KORRIGERING",
     },
     {
-        "idx": 518,
+        "idx": 519,
         "extid": "00D8811DEB04B9",
         "max": 0,
         "min": 0,
@@ -3507,7 +3517,7 @@ PARAMETER_DATA = [
         "text": "E71_T72_STATUS",
     },
     {
-        "idx": 519,
+        "idx": 520,
         "extid": "0EAB45108F04BA",
         "max": 0,
         "min": 0,
@@ -3516,7 +3526,7 @@ PARAMETER_DATA = [
         "text": "E71_T72_TEMP",
     },
     {
-        "idx": 521,
+        "idx": 522,
         "extid": "C0302AD08B07D4",
         "max": 16777216,
         "min": 0,
@@ -3525,7 +3535,7 @@ PARAMETER_DATA = [
         "text": "E72_T71_ACKNOWLEDGED",
     },
     {
-        "idx": 522,
+        "idx": 523,
         "extid": "80C95D73F907F0",
         "max": 16777216,
         "min": 0,
@@ -3534,7 +3544,7 @@ PARAMETER_DATA = [
         "text": "E72_T71_CONNECTED",
     },
     {
-        "idx": 523,
+        "idx": 524,
         "extid": "EDD46D090907D5",
         "max": 50,
         "min": -50,
@@ -3543,7 +3553,7 @@ PARAMETER_DATA = [
         "text": "E72_T71_KORRIGERING",
     },
     {
-        "idx": 524,
+        "idx": 525,
         "extid": "002190C8F807D6",
         "max": 0,
         "min": 0,
@@ -3552,7 +3562,7 @@ PARAMETER_DATA = [
         "text": "E72_T71_STATUS",
     },
     {
-        "idx": 525,
+        "idx": 526,
         "extid": "0EC6E6D92207D7",
         "max": 0,
         "min": 0,
@@ -3561,7 +3571,7 @@ PARAMETER_DATA = [
         "text": "E72_T71_TEMP",
     },
     {
-        "idx": 527,
+        "idx": 528,
         "extid": "ED69A765C707D8",
         "max": 50,
         "min": -50,
@@ -3570,7 +3580,7 @@ PARAMETER_DATA = [
         "text": "E72_T72_KORRIGERING",
     },
     {
-        "idx": 528,
+        "idx": 529,
         "extid": "00AF1FCF1B07D9",
         "max": 0,
         "min": 0,
@@ -3579,7 +3589,7 @@ PARAMETER_DATA = [
         "text": "E72_T72_STATUS",
     },
     {
-        "idx": 529,
+        "idx": 530,
         "extid": "0E4072AB8C07DA",
         "max": 0,
         "min": 0,
@@ -3588,7 +3598,7 @@ PARAMETER_DATA = [
         "text": "E72_T72_TEMP",
     },
     {
-        "idx": 531,
+        "idx": 532,
         "extid": "84245EE1CB0A5C",
         "max": 16777216,
         "min": 0,
@@ -3597,7 +3607,7 @@ PARAMETER_DATA = [
         "text": "E81_T81_CONNECTED",
     },
     {
-        "idx": 532,
+        "idx": 533,
         "extid": "8216949C7F0C49",
         "max": 0,
         "min": 0,
@@ -3606,7 +3616,7 @@ PARAMETER_DATA = [
         "text": "EEPROM_HEATING_SEASON_START_DELAY_TIME",
     },
     {
-        "idx": 534,
+        "idx": 535,
         "extid": "8253CCD6040C44",
         "max": 0,
         "min": 0,
@@ -3615,7 +3625,7 @@ PARAMETER_DATA = [
         "text": "EEPROM_NEUTRALZON_M_VALVE_LIMIT_TIME",
     },
     {
-        "idx": 536,
+        "idx": 537,
         "extid": "A1495778540CAA",
         "max": 1,
         "min": 0,
@@ -3624,7 +3634,7 @@ PARAMETER_DATA = [
         "text": "ELECTRICAL_CONNECTION_400V",
     },
     {
-        "idx": 537,
+        "idx": 538,
         "extid": "81A2A7F6370CB5",
         "max": 0,
         "min": 0,
@@ -3633,7 +3643,7 @@ PARAMETER_DATA = [
         "text": "ELECTRICAL_MODE",
     },
     {
-        "idx": 538,
+        "idx": 539,
         "extid": "80D5D68B790CB6",
         "max": 0,
         "min": 0,
@@ -3642,7 +3652,7 @@ PARAMETER_DATA = [
         "text": "ELECTRICAL_MODE_SELECTED",
     },
     {
-        "idx": 539,
+        "idx": 540,
         "extid": "00A5F331C0004A",
         "max": 0,
         "min": 0,
@@ -3651,7 +3661,7 @@ PARAMETER_DATA = [
         "text": "ELSKAP_MAX",
     },
     {
-        "idx": 540,
+        "idx": 541,
         "extid": "EEA593EA5F004B",
         "max": 900,
         "min": 300,
@@ -3660,7 +3670,7 @@ PARAMETER_DATA = [
         "text": "ELSKAP_MAX_TEMP",
     },
     {
-        "idx": 542,
+        "idx": 543,
         "extid": "0E3F05D925004C",
         "max": 0,
         "min": 0,
@@ -3669,7 +3679,7 @@ PARAMETER_DATA = [
         "text": "ELSKAP_TEMP",
     },
     {
-        "idx": 544,
+        "idx": 545,
         "extid": "00950E43610273",
         "max": 0,
         "min": 0,
@@ -3678,7 +3688,7 @@ PARAMETER_DATA = [
         "text": "EL_DHW_REQUEST",
     },
     {
-        "idx": 545,
+        "idx": 546,
         "extid": "40425EFE1F0A4A",
         "max": 16777216,
         "min": 0,
@@ -3687,7 +3697,7 @@ PARAMETER_DATA = [
         "text": "ENABLE_HIGH_PROTECTION_HS_BY_E21_EXT_1",
     },
     {
-        "idx": 546,
+        "idx": 547,
         "extid": "40DB57AFA50A4B",
         "max": 16777216,
         "min": 0,
@@ -3696,7 +3706,7 @@ PARAMETER_DATA = [
         "text": "ENABLE_HIGH_PROTECTION_HS_BY_E21_EXT_2",
     },
     {
-        "idx": 547,
+        "idx": 548,
         "extid": "4073B6E4820B50",
         "max": 16777216,
         "min": 0,
@@ -3705,7 +3715,7 @@ PARAMETER_DATA = [
         "text": "ENABLE_HIGH_PROTECTION_HS_BY_E22_EXT_1",
     },
     {
-        "idx": 548,
+        "idx": 549,
         "extid": "40EABFB5380B4F",
         "max": 16777216,
         "min": 0,
@@ -3714,7 +3724,7 @@ PARAMETER_DATA = [
         "text": "ENABLE_HIGH_PROTECTION_HS_BY_E22_EXT_2",
     },
     {
-        "idx": 549,
+        "idx": 550,
         "extid": "E10DD5DA4F02D9",
         "max": 120,
         "min": 0,
@@ -3723,7 +3733,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_BLOCK_ACKNOWLEDGE_TIME",
     },
     {
-        "idx": 550,
+        "idx": 551,
         "extid": "E1D2F3149A02D8",
         "max": 600,
         "min": 0,
@@ -3732,7 +3742,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_BLOCK_AFTER_DHW",
     },
     {
-        "idx": 551,
+        "idx": 552,
         "extid": "0E3557D0C70C6F",
         "max": 0,
         "min": 0,
@@ -3741,7 +3751,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_CURVE_MAX_TEMP",
     },
     {
-        "idx": 553,
+        "idx": 554,
         "extid": "8E30CDBEE80C70",
         "max": 0,
         "min": 0,
@@ -3750,7 +3760,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_CURVE_MAX_TEMP_AT_20",
     },
     {
-        "idx": 555,
+        "idx": 556,
         "extid": "8ED3939ECE0C9A",
         "max": 0,
         "min": 0,
@@ -3759,7 +3769,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_CURVE_MAX_TEMP_AT_MINUS_10",
     },
     {
-        "idx": 557,
+        "idx": 558,
         "extid": "8EA3F96A410C99",
         "max": 0,
         "min": 0,
@@ -3768,7 +3778,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_CURVE_MAX_TEMP_AT_MINUS_15",
     },
     {
-        "idx": 559,
+        "idx": 560,
         "extid": "8EF8BECD0D0C6D",
         "max": 0,
         "min": 0,
@@ -3777,7 +3787,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_CURVE_MAX_TEMP_AT_MINUS_20",
     },
     {
-        "idx": 561,
+        "idx": 562,
         "extid": "8E4D6D81680C6C",
         "max": 0,
         "min": 0,
@@ -3786,7 +3796,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_CURVE_MAX_TEMP_AT_MINUS_5",
     },
     {
-        "idx": 563,
+        "idx": 564,
         "extid": "00301E92E30C71",
         "max": 0,
         "min": 0,
@@ -3795,7 +3805,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_CURVE_STOP",
     },
     {
-        "idx": 564,
+        "idx": 565,
         "extid": "80ED3D05F40C6E",
         "max": 0,
         "min": 0,
@@ -3804,7 +3814,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_CURVE_STOP_FUNCTION_ACTIVE",
     },
     {
-        "idx": 565,
+        "idx": 566,
         "extid": "A195D2E6790C95",
         "max": 70,
         "min": 0,
@@ -3813,7 +3823,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_MAX_OUTDOOR_TEMP",
     },
     {
-        "idx": 566,
+        "idx": 567,
         "extid": "E5D1CEC0E902D4",
         "max": 10,
         "min": -20,
@@ -3822,7 +3832,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_MAX_TEMPERATURE",
     },
     {
-        "idx": 567,
+        "idx": 568,
         "extid": "E5CB75C22002DA",
         "max": 0,
         "min": -40,
@@ -3831,7 +3841,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_MIN_OUTDOOR_TEMPERATURE",
     },
     {
-        "idx": 568,
+        "idx": 569,
         "extid": "013E83F56902D6",
         "max": 0,
         "min": 0,
@@ -3840,7 +3850,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_STOP",
     },
     {
-        "idx": 569,
+        "idx": 570,
         "extid": "01CDC5EA1A0693",
         "max": 0,
         "min": 0,
@@ -3849,7 +3859,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_STOP_2",
     },
     {
-        "idx": 570,
+        "idx": 571,
         "extid": "00FCA08D740C97",
         "max": 0,
         "min": 0,
@@ -3858,7 +3868,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_STOP_HIGH_OUTDOOR_TEMP",
     },
     {
-        "idx": 571,
+        "idx": 572,
         "extid": "C0648EA3B3064E",
         "max": 16777216,
         "min": 0,
@@ -3867,7 +3877,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_STOP_HOT_GAS_FUNCTION_ACTIVE",
     },
     {
-        "idx": 572,
+        "idx": 573,
         "extid": "002854632603A7",
         "max": 0,
         "min": 0,
@@ -3876,7 +3886,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_STOP_OUTDOOR",
     },
     {
-        "idx": 573,
+        "idx": 574,
         "extid": "C0694D6ACE064F",
         "max": 16777216,
         "min": 0,
@@ -3885,7 +3895,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_STOP_OUTDOOR_FUNCTION_ACTIVE",
     },
     {
-        "idx": 574,
+        "idx": 575,
         "extid": "E1CB5E3E8F02D7",
         "max": 150,
         "min": 50,
@@ -3894,7 +3904,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_STOP_TEMPERATURE",
     },
     {
-        "idx": 575,
+        "idx": 576,
         "extid": "01AC34897F02D5",
         "max": 0,
         "min": 0,
@@ -3903,7 +3913,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_STOP_VV",
     },
     {
-        "idx": 576,
+        "idx": 577,
         "extid": "0188EEF06D067A",
         "max": 0,
         "min": 0,
@@ -3912,7 +3922,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_STOP_VV_2",
     },
     {
-        "idx": 577,
+        "idx": 578,
         "extid": "C05D9CC10C0302",
         "max": 16777216,
         "min": 0,
@@ -3921,7 +3931,7 @@ PARAMETER_DATA = [
         "text": "EVU_1_ACTIVATED_BY_E21_EXT_1",
     },
     {
-        "idx": 578,
+        "idx": 579,
         "extid": "C0C49590B60B45",
         "max": 16777216,
         "min": 0,
@@ -3930,7 +3940,7 @@ PARAMETER_DATA = [
         "text": "EVU_1_ACTIVATED_BY_E21_EXT_2",
     },
     {
-        "idx": 579,
+        "idx": 580,
         "extid": "C06C74DB910B46",
         "max": 16777216,
         "min": 0,
@@ -3939,7 +3949,7 @@ PARAMETER_DATA = [
         "text": "EVU_1_ACTIVATED_BY_E22_EXT_1",
     },
     {
-        "idx": 580,
+        "idx": 581,
         "extid": "C0F57D8A2B0488",
         "max": 16777216,
         "min": 0,
@@ -3948,7 +3958,7 @@ PARAMETER_DATA = [
         "text": "EVU_1_ACTIVATED_BY_E22_EXT_2",
     },
     {
-        "idx": 581,
+        "idx": 582,
         "extid": "00271682D90308",
         "max": 0,
         "min": 0,
@@ -3957,7 +3967,7 @@ PARAMETER_DATA = [
         "text": "EVU_1_ACTIVE",
     },
     {
-        "idx": 582,
+        "idx": 583,
         "extid": "C0058268240489",
         "max": 16777216,
         "min": 0,
@@ -3966,7 +3976,7 @@ PARAMETER_DATA = [
         "text": "EVU_2_ACTIVATED_BY_E21_EXT_1",
     },
     {
-        "idx": 583,
+        "idx": 584,
         "extid": "C09C8B399E048A",
         "max": 16777216,
         "min": 0,
@@ -3975,7 +3985,7 @@ PARAMETER_DATA = [
         "text": "EVU_2_ACTIVATED_BY_E21_EXT_2",
     },
     {
-        "idx": 584,
+        "idx": 585,
         "extid": "C0346A72B90B47",
         "max": 16777216,
         "min": 0,
@@ -3984,7 +3994,7 @@ PARAMETER_DATA = [
         "text": "EVU_2_ACTIVATED_BY_E22_EXT_1",
     },
     {
-        "idx": 585,
+        "idx": 586,
         "extid": "C0AD6323030B48",
         "max": 16777216,
         "min": 0,
@@ -3993,7 +4003,7 @@ PARAMETER_DATA = [
         "text": "EVU_2_ACTIVATED_BY_E22_EXT_2",
     },
     {
-        "idx": 586,
+        "idx": 587,
         "extid": "00A999853A0487",
         "max": 0,
         "min": 0,
@@ -4002,7 +4012,7 @@ PARAMETER_DATA = [
         "text": "EVU_2_ACTIVE",
     },
     {
-        "idx": 587,
+        "idx": 588,
         "extid": "C084A70D030B02",
         "max": 16777216,
         "min": 0,
@@ -4011,7 +4021,7 @@ PARAMETER_DATA = [
         "text": "EVU_3_ACTIVATED_BY_E21_EXT_1",
     },
     {
-        "idx": 588,
+        "idx": 589,
         "extid": "C01DAE5CB90B03",
         "max": 16777216,
         "min": 0,
@@ -4020,7 +4030,7 @@ PARAMETER_DATA = [
         "text": "EVU_3_ACTIVATED_BY_E21_EXT_2",
     },
     {
-        "idx": 589,
+        "idx": 590,
         "extid": "C0B54F179E0B49",
         "max": 16777216,
         "min": 0,
@@ -4029,7 +4039,7 @@ PARAMETER_DATA = [
         "text": "EVU_3_ACTIVATED_BY_E22_EXT_1",
     },
     {
-        "idx": 590,
+        "idx": 591,
         "extid": "C02C4646240B4A",
         "max": 16777216,
         "min": 0,
@@ -4038,7 +4048,7 @@ PARAMETER_DATA = [
         "text": "EVU_3_ACTIVATED_BY_E22_EXT_2",
     },
     {
-        "idx": 591,
+        "idx": 592,
         "extid": "00653385A40B04",
         "max": 0,
         "min": 0,
@@ -4047,7 +4057,7 @@ PARAMETER_DATA = [
         "text": "EVU_3_ACTIVE",
     },
     {
-        "idx": 592,
+        "idx": 593,
         "extid": "C146FF6AC202AA",
         "max": 7,
         "min": 1,
@@ -4056,7 +4066,7 @@ PARAMETER_DATA = [
         "text": "EXERCISE_DAY",
     },
     {
-        "idx": 593,
+        "idx": 594,
         "extid": "02AC9077580B80",
         "max": 0,
         "min": 0,
@@ -4065,7 +4075,7 @@ PARAMETER_DATA = [
         "text": "EXERCISE_IOB6126_BITMASK",
     },
     {
-        "idx": 595,
+        "idx": 596,
         "extid": "006C26255200BF",
         "max": 0,
         "min": 0,
@@ -4074,7 +4084,7 @@ PARAMETER_DATA = [
         "text": "EXERCISE_REQUEST",
     },
     {
-        "idx": 596,
+        "idx": 597,
         "extid": "016A215A3200BE",
         "max": 0,
         "min": 0,
@@ -4083,7 +4093,7 @@ PARAMETER_DATA = [
         "text": "EXERCISE_STATE",
     },
     {
-        "idx": 597,
+        "idx": 598,
         "extid": "E1D13CD71600C0",
         "max": 23,
         "min": 0,
@@ -4092,7 +4102,7 @@ PARAMETER_DATA = [
         "text": "EXERCISE_TIME",
     },
     {
-        "idx": 598,
+        "idx": 599,
         "extid": "80959153780B98",
         "max": 16777216,
         "min": 0,
@@ -4101,7 +4111,7 @@ PARAMETER_DATA = [
         "text": "EXTERN_HEAT_SOURCE_E71_EXT_INPUT_INV",
     },
     {
-        "idx": 599,
+        "idx": 600,
         "extid": "8084EC39010B9A",
         "max": 16777216,
         "min": 0,
@@ -4110,7 +4120,7 @@ PARAMETER_DATA = [
         "text": "EXTERN_HEAT_SOURCE_E72_EXT_INPUT_INV",
     },
     {
-        "idx": 600,
+        "idx": 601,
         "extid": "00464AC29A0D59",
         "max": 0,
         "min": 0,
@@ -4119,7 +4129,7 @@ PARAMETER_DATA = [
         "text": "FAKE_VARIABLE_BOOL_ONE",
     },
     {
-        "idx": 601,
+        "idx": 602,
         "extid": "004AEC4FCE0D58",
         "max": 0,
         "min": 0,
@@ -4128,7 +4138,7 @@ PARAMETER_DATA = [
         "text": "FAKE_VARIABLE_BOOL_ZERO",
     },
     {
-        "idx": 602,
+        "idx": 603,
         "extid": "01AA9DB4190D5B",
         "max": 0,
         "min": 0,
@@ -4137,7 +4147,7 @@ PARAMETER_DATA = [
         "text": "FAKE_VARIABLE_CHAR_ONE",
     },
     {
-        "idx": 603,
+        "idx": 604,
         "extid": "013EB14A220D5A",
         "max": 0,
         "min": 0,
@@ -4146,7 +4156,7 @@ PARAMETER_DATA = [
         "text": "FAKE_VARIABLE_CHAR_ZERO",
     },
     {
-        "idx": 604,
+        "idx": 605,
         "extid": "EAD40AB6D00913",
         "max": 100,
         "min": 0,
@@ -4155,7 +4165,7 @@ PARAMETER_DATA = [
         "text": "FK_PID_D",
     },
     {
-        "idx": 606,
+        "idx": 607,
         "extid": "EAAABBCA6D0914",
         "max": 6000,
         "min": 50,
@@ -4164,7 +4174,7 @@ PARAMETER_DATA = [
         "text": "FK_PID_I",
     },
     {
-        "idx": 608,
+        "idx": 609,
         "extid": "EACED062AD0915",
         "max": 300,
         "min": 1,
@@ -4173,7 +4183,7 @@ PARAMETER_DATA = [
         "text": "FK_PID_P",
     },
     {
-        "idx": 610,
+        "idx": 611,
         "extid": "E1ACF52887004F",
         "max": 80,
         "min": 20,
@@ -4182,7 +4192,7 @@ PARAMETER_DATA = [
         "text": "FREEZEGARD_COMPRESSOR_FREQUENCY",
     },
     {
-        "idx": 611,
+        "idx": 612,
         "extid": "005BB7B5B3004D",
         "max": 0,
         "min": 0,
@@ -4191,7 +4201,7 @@ PARAMETER_DATA = [
         "text": "FREEZEGUARD",
     },
     {
-        "idx": 612,
+        "idx": 613,
         "extid": "E17CA36100004E",
         "max": 60,
         "min": 0,
@@ -4200,7 +4210,7 @@ PARAMETER_DATA = [
         "text": "FREEZEGUARD_DELAY_TIME",
     },
     {
-        "idx": 613,
+        "idx": 614,
         "extid": "EE2A751B620050",
         "max": 300,
         "min": 20,
@@ -4209,7 +4219,7 @@ PARAMETER_DATA = [
         "text": "FREEZEGUARD_START_TEMPERATURE",
     },
     {
-        "idx": 615,
+        "idx": 616,
         "extid": "EEDEC69BAF0051",
         "max": 500,
         "min": 70,
@@ -4218,7 +4228,7 @@ PARAMETER_DATA = [
         "text": "FREEZEGUARD_STOP_TEMPERATURE",
     },
     {
-        "idx": 617,
+        "idx": 618,
         "extid": "0EE4FE05AE0056",
         "max": 0,
         "min": 0,
@@ -4227,7 +4237,7 @@ PARAMETER_DATA = [
         "text": "GRADMIN",
     },
     {
-        "idx": 619,
+        "idx": 620,
         "extid": "E2C09D3F760057",
         "max": 120,
         "min": 1,
@@ -4236,7 +4246,7 @@ PARAMETER_DATA = [
         "text": "GRADMIN_MAX",
     },
     {
-        "idx": 621,
+        "idx": 622,
         "extid": "EDD48ABC8A0412",
         "max": 50,
         "min": -50,
@@ -4245,7 +4255,7 @@ PARAMETER_DATA = [
         "text": "GT10_2_KORRIGERING",
     },
     {
-        "idx": 622,
+        "idx": 623,
         "extid": "EE3BE8C5140847",
         "max": 200,
         "min": -100,
@@ -4254,7 +4264,7 @@ PARAMETER_DATA = [
         "text": "GT10_2_LR_TEMP",
     },
     {
-        "idx": 624,
+        "idx": 625,
         "extid": "00F444E6260413",
         "max": 0,
         "min": 0,
@@ -4263,7 +4273,7 @@ PARAMETER_DATA = [
         "text": "GT10_2_STATUS",
     },
     {
-        "idx": 625,
+        "idx": 626,
         "extid": "0EA262CCDE0414",
         "max": 0,
         "min": 0,
@@ -4272,7 +4282,7 @@ PARAMETER_DATA = [
         "text": "GT10_2_TEMP",
     },
     {
-        "idx": 627,
+        "idx": 628,
         "extid": "E15551778D046C",
         "max": 60,
         "min": 1,
@@ -4281,7 +4291,7 @@ PARAMETER_DATA = [
         "text": "GT10_GT11_MAX_DELTA_DELAY_AFTER_SWITCH_TIME",
     },
     {
-        "idx": 628,
+        "idx": 629,
         "extid": "E1BEDA2A7806C6",
         "max": 60,
         "min": 1,
@@ -4290,7 +4300,7 @@ PARAMETER_DATA = [
         "text": "GT10_GT11_MAX_DELTA_DELAY_TIME",
     },
     {
-        "idx": 629,
+        "idx": 630,
         "extid": "E5DFF9C1DC06C5",
         "max": 30,
         "min": 1,
@@ -4299,7 +4309,7 @@ PARAMETER_DATA = [
         "text": "GT10_GT11_MAX_DELTA_TEMP",
     },
     {
-        "idx": 630,
+        "idx": 631,
         "extid": "ED5E390C4F005B",
         "max": 50,
         "min": -50,
@@ -4308,7 +4318,7 @@ PARAMETER_DATA = [
         "text": "GT10_KORRIGERING",
     },
     {
-        "idx": 631,
+        "idx": 632,
         "extid": "EE5634821C022B",
         "max": 300,
         "min": 10,
@@ -4317,7 +4327,7 @@ PARAMETER_DATA = [
         "text": "GT10_LAG_KOND_TEMP",
     },
     {
-        "idx": 633,
+        "idx": 634,
         "extid": "E1B939C0DD016E",
         "max": 4,
         "min": 1,
@@ -4326,7 +4336,7 @@ PARAMETER_DATA = [
         "text": "GT10_LR_ANTAL_VARNINGAR",
     },
     {
-        "idx": 634,
+        "idx": 635,
         "extid": "E93FEC9550016D",
         "max": 100,
         "min": 10,
@@ -4335,7 +4345,7 @@ PARAMETER_DATA = [
         "text": "GT10_LR_HYSTERES",
     },
     {
-        "idx": 635,
+        "idx": 636,
         "extid": "EEB663A78100EC",
         "max": 200,
         "min": -100,
@@ -4344,7 +4354,7 @@ PARAMETER_DATA = [
         "text": "GT10_LR_TEMP",
     },
     {
-        "idx": 637,
+        "idx": 638,
         "extid": "00772B8639005C",
         "max": 0,
         "min": 0,
@@ -4353,7 +4363,7 @@ PARAMETER_DATA = [
         "text": "GT10_STATUS",
     },
     {
-        "idx": 638,
+        "idx": 639,
         "extid": "0E2139C16F005D",
         "max": 0,
         "min": 0,
@@ -4362,7 +4372,7 @@ PARAMETER_DATA = [
         "text": "GT10_TEMP",
     },
     {
-        "idx": 640,
+        "idx": 641,
         "extid": "ED6D7167620415",
         "max": 50,
         "min": -50,
@@ -4371,7 +4381,7 @@ PARAMETER_DATA = [
         "text": "GT11_2_KORRIGERING",
     },
     {
-        "idx": 641,
+        "idx": 642,
         "extid": "EE62215A590848",
         "max": 200,
         "min": -100,
@@ -4380,7 +4390,7 @@ PARAMETER_DATA = [
         "text": "GT11_2_LF_TEMP",
     },
     {
-        "idx": 643,
+        "idx": 644,
         "extid": "001B868D180416",
         "max": 0,
         "min": 0,
@@ -4389,7 +4399,7 @@ PARAMETER_DATA = [
         "text": "GT11_2_STATUS",
     },
     {
-        "idx": 644,
+        "idx": 645,
         "extid": "0E6EC8CC400417",
         "max": 0,
         "min": 0,
@@ -4398,7 +4408,7 @@ PARAMETER_DATA = [
         "text": "GT11_2_TEMP",
     },
     {
-        "idx": 646,
+        "idx": 647,
         "extid": "ED83AFD5CA005E",
         "max": 50,
         "min": -50,
@@ -4407,7 +4417,7 @@ PARAMETER_DATA = [
         "text": "GT11_KORRIGERING",
     },
     {
-        "idx": 647,
+        "idx": 648,
         "extid": "E1B8074529016F",
         "max": 4,
         "min": 1,
@@ -4416,7 +4426,7 @@ PARAMETER_DATA = [
         "text": "GT11_LF_ANTAL_VARNINGAR",
     },
     {
-        "idx": 648,
+        "idx": 649,
         "extid": "E9CC3F6D47016C",
         "max": 100,
         "min": 10,
@@ -4425,7 +4435,7 @@ PARAMETER_DATA = [
         "text": "GT11_LF_HYSTERES",
     },
     {
-        "idx": 649,
+        "idx": 650,
         "extid": "EE395FF34F00ED",
         "max": 200,
         "min": -100,
@@ -4434,7 +4444,7 @@ PARAMETER_DATA = [
         "text": "GT11_LF_TEMP",
     },
     {
-        "idx": 651,
+        "idx": 652,
         "extid": "00BB8186A7005F",
         "max": 0,
         "min": 0,
@@ -4443,7 +4453,7 @@ PARAMETER_DATA = [
         "text": "GT11_STATUS",
     },
     {
-        "idx": 652,
+        "idx": 653,
         "extid": "0EEA6512CA0060",
         "max": 0,
         "min": 0,
@@ -4452,7 +4462,7 @@ PARAMETER_DATA = [
         "text": "GT11_TEMP",
     },
     {
-        "idx": 654,
+        "idx": 655,
         "extid": "ED7C0C0D1B0418",
         "max": 50,
         "min": -50,
@@ -4461,7 +4471,7 @@ PARAMETER_DATA = [
         "text": "GT12_2_KORRIGERING",
     },
     {
-        "idx": 655,
+        "idx": 656,
         "extid": "00F0B1361B0419",
         "max": 0,
         "min": 0,
@@ -4470,7 +4480,7 @@ PARAMETER_DATA = [
         "text": "GT12_2_STATUS",
     },
     {
-        "idx": 656,
+        "idx": 657,
         "extid": "0EE047CBA3041A",
         "max": 0,
         "min": 0,
@@ -4479,7 +4489,7 @@ PARAMETER_DATA = [
         "text": "GT12_2_TEMP",
     },
     {
-        "idx": 658,
+        "idx": 659,
         "extid": "ED3E65B904028B",
         "max": 50,
         "min": -50,
@@ -4488,7 +4498,7 @@ PARAMETER_DATA = [
         "text": "GT12_KORRIGERING",
     },
     {
-        "idx": 659,
+        "idx": 660,
         "extid": "00350E8144028C",
         "max": 0,
         "min": 0,
@@ -4497,7 +4507,7 @@ PARAMETER_DATA = [
         "text": "GT12_STATUS",
     },
     {
-        "idx": 660,
+        "idx": 661,
         "extid": "0E6CF16064024B",
         "max": 0,
         "min": 0,
@@ -4506,7 +4516,7 @@ PARAMETER_DATA = [
         "text": "GT12_TEMP",
     },
     {
-        "idx": 662,
+        "idx": 663,
         "extid": "ED362187850058",
         "max": 50,
         "min": -50,
@@ -4515,7 +4525,7 @@ PARAMETER_DATA = [
         "text": "GT1_KORRIGERING",
     },
     {
-        "idx": 663,
+        "idx": 664,
         "extid": "201692AD510059",
         "max": 0,
         "min": 0,
@@ -4524,7 +4534,7 @@ PARAMETER_DATA = [
         "text": "GT1_STATUS",
     },
     {
-        "idx": 664,
+        "idx": 665,
         "extid": "0EF807E249005A",
         "max": 0,
         "min": 0,
@@ -4533,7 +4543,7 @@ PARAMETER_DATA = [
         "text": "GT1_TEMP",
     },
     {
-        "idx": 666,
+        "idx": 667,
         "extid": "0E222CD0390CBE",
         "max": 0,
         "min": 0,
@@ -4542,7 +4552,7 @@ PARAMETER_DATA = [
         "text": "GT2_ATTENUATED_TEMP",
     },
     {
-        "idx": 668,
+        "idx": 669,
         "extid": "AA88FB658F0CBF",
         "max": 480,
         "min": 0,
@@ -4551,7 +4561,7 @@ PARAMETER_DATA = [
         "text": "GT2_ATTENUATION",
     },
     {
-        "idx": 670,
+        "idx": 671,
         "extid": "ED8BEBEB4B0061",
         "max": 50,
         "min": -50,
@@ -4560,7 +4570,7 @@ PARAMETER_DATA = [
         "text": "GT2_KORRIGERING",
     },
     {
-        "idx": 671,
+        "idx": 672,
         "extid": "00981DAAB20062",
         "max": 0,
         "min": 0,
@@ -4569,7 +4579,7 @@ PARAMETER_DATA = [
         "text": "GT2_STATUS",
     },
     {
-        "idx": 672,
+        "idx": 673,
         "extid": "0E7E9390E70063",
         "max": 0,
         "min": 0,
@@ -4578,7 +4588,7 @@ PARAMETER_DATA = [
         "text": "GT2_TEMP",
     },
     {
-        "idx": 674,
+        "idx": 675,
         "extid": "0E288433280D13",
         "max": 0,
         "min": 0,
@@ -4587,7 +4597,7 @@ PARAMETER_DATA = [
         "text": "GT2_TEMP_ROUND_OFFED",
     },
     {
-        "idx": 676,
+        "idx": 677,
         "extid": "80B4702C470064",
         "max": 0,
         "min": 0,
@@ -4596,7 +4606,7 @@ PARAMETER_DATA = [
         "text": "GT3_ANSLUTEN",
     },
     {
-        "idx": 677,
+        "idx": 678,
         "extid": "ED567D32CE0065",
         "max": 50,
         "min": -50,
@@ -4605,7 +4615,7 @@ PARAMETER_DATA = [
         "text": "GT3_KORRIGERING",
     },
     {
-        "idx": 678,
+        "idx": 679,
         "extid": "C016D09D1D0066",
         "max": 16777216,
         "min": 0,
@@ -4614,7 +4624,7 @@ PARAMETER_DATA = [
         "text": "GT3_KVITTERAD",
     },
     {
-        "idx": 679,
+        "idx": 680,
         "extid": "00AF4D85D70239",
         "max": 0,
         "min": 0,
@@ -4630,7 +4640,6 @@ PARAMETER_DATA = [
         "format": "int",
         "read": 0,
         "text": "GT3_STATUS",
-        # NOTE: idx updated from 680 to 681 based on hardware discovery (2026-01-02)
     },
     {
         "idx": 682,
@@ -4640,11 +4649,9 @@ PARAMETER_DATA = [
         "format": "tem",
         "read": 1,
         "text": "GT3_TEMP",
-        # NOTE: idx updated from 681 to 682 based on hardware discovery (2026-01-02)
-        # Heat pump reports GT3_TEMP at idx=682, NOT static list's idx=681
     },
     {
-        "idx": 683,
+        "idx": 684,
         "extid": "6D4BE87068049E",
         "max": 50,
         "min": -50,
@@ -4653,7 +4660,7 @@ PARAMETER_DATA = [
         "text": "GT41_KORRIGERING_GLOBAL",
     },
     {
-        "idx": 684,
+        "idx": 685,
         "extid": "0EAB0EFFDF049D",
         "max": 0,
         "min": 0,
@@ -4662,7 +4669,7 @@ PARAMETER_DATA = [
         "text": "GT41_TEMP_GLOBAL",
     },
     {
-        "idx": 686,
+        "idx": 687,
         "extid": "C01592B05F0752",
         "max": 16777216,
         "min": 0,
@@ -4671,7 +4678,7 @@ PARAMETER_DATA = [
         "text": "GT45_ACKNOWLEDGED_GLOBAL",
     },
     {
-        "idx": 687,
+        "idx": 688,
         "extid": "0E67FFA7580D12",
         "max": 0,
         "min": 0,
@@ -4680,7 +4687,7 @@ PARAMETER_DATA = [
         "text": "GT45_ATTENUATED_TEMP_GLOBAL",
     },
     {
-        "idx": 689,
+        "idx": 690,
         "extid": "AA6BB86D6D0D11",
         "max": 480,
         "min": 0,
@@ -4689,7 +4696,7 @@ PARAMETER_DATA = [
         "text": "GT45_ATTENUATION_GLOBAL",
     },
     {
-        "idx": 691,
+        "idx": 692,
         "extid": "6D05059B31049F",
         "max": 50,
         "min": -50,
@@ -4698,7 +4705,7 @@ PARAMETER_DATA = [
         "text": "GT45_KORRIGERING_GLOBAL",
     },
     {
-        "idx": 692,
+        "idx": 693,
         "extid": "0E6BB7954904A0",
         "max": 0,
         "min": 0,
@@ -4707,7 +4714,7 @@ PARAMETER_DATA = [
         "text": "GT45_TEMP_GLOBAL",
     },
     {
-        "idx": 694,
+        "idx": 695,
         "extid": "81B96E5C000069",
         "max": 0,
         "min": 0,
@@ -4716,7 +4723,7 @@ PARAMETER_DATA = [
         "text": "GT5_ANSLUTEN",
     },
     {
-        "idx": 695,
+        "idx": 696,
         "extid": "0E02BEAC720CC2",
         "max": 0,
         "min": 0,
@@ -4725,7 +4732,7 @@ PARAMETER_DATA = [
         "text": "GT5_ATTENUATED_TEMP",
     },
     {
-        "idx": 697,
+        "idx": 698,
         "extid": "AAF58863D70CC1",
         "max": 480,
         "min": 0,
@@ -4734,7 +4741,7 @@ PARAMETER_DATA = [
         "text": "GT5_ATTENUATION",
     },
     {
-        "idx": 699,
+        "idx": 700,
         "extid": "EDF698ED13006A",
         "max": 50,
         "min": -50,
@@ -4743,7 +4750,7 @@ PARAMETER_DATA = [
         "text": "GT5_KORRIGERING",
     },
     {
-        "idx": 700,
+        "idx": 701,
         "extid": "C0FE65575E006B",
         "max": 16777216,
         "min": 0,
@@ -4752,7 +4759,7 @@ PARAMETER_DATA = [
         "text": "GT5_KVITTERAD",
     },
     {
-        "idx": 701,
+        "idx": 702,
         "extid": "0092D8A3AB006C",
         "max": 0,
         "min": 0,
@@ -4761,7 +4768,7 @@ PARAMETER_DATA = [
         "text": "GT5_STATUS",
     },
     {
-        "idx": 702,
+        "idx": 703,
         "extid": "0E6396A05F006D",
         "max": 0,
         "min": 0,
@@ -4770,7 +4777,7 @@ PARAMETER_DATA = [
         "text": "GT5_TEMP",
     },
     {
-        "idx": 704,
+        "idx": 705,
         "extid": "0EC9AA394C0D1B",
         "max": 0,
         "min": 0,
@@ -4779,7 +4786,7 @@ PARAMETER_DATA = [
         "text": "GT5_TEMP_ROUND_OFFED",
     },
     {
-        "idx": 706,
+        "idx": 707,
         "extid": "E1378E0B14085D",
         "max": 150,
         "min": 50,
@@ -4788,7 +4795,7 @@ PARAMETER_DATA = [
         "text": "GT6_2_HG_TEMP",
     },
     {
-        "idx": 707,
+        "idx": 708,
         "extid": "ED04F4BEE4041C",
         "max": 50,
         "min": -50,
@@ -4797,7 +4804,7 @@ PARAMETER_DATA = [
         "text": "GT6_2_KORRIGERING",
     },
     {
-        "idx": 708,
+        "idx": 709,
         "extid": "0017008409041B",
         "max": 0,
         "min": 0,
@@ -4806,7 +4813,7 @@ PARAMETER_DATA = [
         "text": "GT6_2_STATUS",
     },
     {
-        "idx": 709,
+        "idx": 710,
         "extid": "0EC91EEEAF041D",
         "max": 0,
         "min": 0,
@@ -4815,7 +4822,7 @@ PARAMETER_DATA = [
         "text": "GT6_2_TEMP",
     },
     {
-        "idx": 711,
+        "idx": 712,
         "extid": "E1365E2D32022D",
         "max": 150,
         "min": 50,
@@ -4824,7 +4831,7 @@ PARAMETER_DATA = [
         "text": "GT6_HG_TEMP",
     },
     {
-        "idx": 712,
+        "idx": 713,
         "extid": "ED4B5281DD006E",
         "max": 50,
         "min": -50,
@@ -4833,7 +4840,7 @@ PARAMETER_DATA = [
         "text": "GT6_KORRIGERING",
     },
     {
-        "idx": 713,
+        "idx": 714,
         "extid": "001C57A448006F",
         "max": 0,
         "min": 0,
@@ -4842,7 +4849,7 @@ PARAMETER_DATA = [
         "text": "GT6_STATUS",
     },
     {
-        "idx": 714,
+        "idx": 715,
         "extid": "0EE502D2F10070",
         "max": 0,
         "min": 0,
@@ -4851,7 +4858,7 @@ PARAMETER_DATA = [
         "text": "GT6_TEMP",
     },
     {
-        "idx": 716,
+        "idx": 717,
         "extid": "EDBD0F650C0C74",
         "max": 50,
         "min": -50,
@@ -4860,7 +4867,7 @@ PARAMETER_DATA = [
         "text": "GT7_2_KORRIGERING",
     },
     {
-        "idx": 717,
+        "idx": 718,
         "extid": "00F8C2EF370C75",
         "max": 0,
         "min": 0,
@@ -4869,7 +4876,7 @@ PARAMETER_DATA = [
         "text": "GT7_2_STATUS",
     },
     {
-        "idx": 718,
+        "idx": 719,
         "extid": "0E05B4EE310C76",
         "max": 0,
         "min": 0,
@@ -4878,7 +4885,7 @@ PARAMETER_DATA = [
         "text": "GT7_2_TEMP",
     },
     {
-        "idx": 720,
+        "idx": 721,
         "extid": "ED96C458580C68",
         "max": 50,
         "min": -50,
@@ -4887,7 +4894,7 @@ PARAMETER_DATA = [
         "text": "GT7_KORRIGERING",
     },
     {
-        "idx": 721,
+        "idx": 722,
         "extid": "00D0FDA4D60C67",
         "max": 0,
         "min": 0,
@@ -4896,7 +4903,7 @@ PARAMETER_DATA = [
         "text": "GT7_STATUS",
     },
     {
-        "idx": 722,
+        "idx": 723,
         "extid": "0E2E5E01540C66",
         "max": 0,
         "min": 0,
@@ -4905,7 +4912,7 @@ PARAMETER_DATA = [
         "text": "GT7_TEMP",
     },
     {
-        "idx": 724,
+        "idx": 725,
         "extid": "ED2DF92A8A04A7",
         "max": 50,
         "min": -50,
@@ -4914,7 +4921,7 @@ PARAMETER_DATA = [
         "text": "GT81_KORRIGERING",
     },
     {
-        "idx": 725,
+        "idx": 726,
         "extid": "C49092AD3504AF",
         "max": 16777216,
         "min": 0,
@@ -4923,7 +4930,7 @@ PARAMETER_DATA = [
         "text": "GT81_KVITTERAD",
     },
     {
-        "idx": 726,
+        "idx": 727,
         "extid": "00172230FC04AA",
         "max": 0,
         "min": 0,
@@ -4932,7 +4939,7 @@ PARAMETER_DATA = [
         "text": "GT81_STATUS",
     },
     {
-        "idx": 727,
+        "idx": 728,
         "extid": "0E7FFD571904A5",
         "max": 0,
         "min": 0,
@@ -4941,7 +4948,7 @@ PARAMETER_DATA = [
         "text": "GT81_TEMP",
     },
     {
-        "idx": 729,
+        "idx": 730,
         "extid": "ED9033464404A8",
         "max": 50,
         "min": -50,
@@ -4950,7 +4957,7 @@ PARAMETER_DATA = [
         "text": "GT82_KORRIGERING",
     },
     {
-        "idx": 730,
+        "idx": 731,
         "extid": "0099AD371F04A9",
         "max": 0,
         "min": 0,
@@ -4959,7 +4966,7 @@ PARAMETER_DATA = [
         "text": "GT82_STATUS",
     },
     {
-        "idx": 731,
+        "idx": 732,
         "extid": "0EF96925B704A6",
         "max": 0,
         "min": 0,
@@ -4968,7 +4975,7 @@ PARAMETER_DATA = [
         "text": "GT82_TEMP",
     },
     {
-        "idx": 733,
+        "idx": 734,
         "extid": "EEAEA4F3B7085B",
         "max": 800,
         "min": 500,
@@ -4977,7 +4984,7 @@ PARAMETER_DATA = [
         "text": "GT8_2_HF_TEMP",
     },
     {
-        "idx": 735,
+        "idx": 736,
         "extid": "EDB712C9F1085C",
         "max": 100,
         "min": 10,
@@ -4986,7 +4993,7 @@ PARAMETER_DATA = [
         "text": "GT8_2_HIGH_GT9_RESTART_HYSTERESIS",
     },
     {
-        "idx": 736,
+        "idx": 737,
         "extid": "EDE987A691041E",
         "max": 50,
         "min": -50,
@@ -4995,7 +5002,7 @@ PARAMETER_DATA = [
         "text": "GT8_2_KORRIGERING",
     },
     {
-        "idx": 737,
+        "idx": 738,
         "extid": "0009C9B4BA041F",
         "max": 0,
         "min": 0,
@@ -5004,7 +5011,7 @@ PARAMETER_DATA = [
         "text": "GT8_2_STATUS",
     },
     {
-        "idx": 738,
+        "idx": 739,
         "extid": "0EDC94FC9D0420",
         "max": 0,
         "min": 0,
@@ -5013,7 +5020,7 @@ PARAMETER_DATA = [
         "text": "GT8_2_TEMP",
     },
     {
-        "idx": 740,
+        "idx": 741,
         "extid": "E197B1FD5406C7",
         "max": 60,
         "min": 1,
@@ -5022,7 +5029,7 @@ PARAMETER_DATA = [
         "text": "GT8_GT9_MAX_DELTA_DELAY_AFTER_SWITCH_TIME",
     },
     {
-        "idx": 741,
+        "idx": 742,
         "extid": "E1EB94F64500F9",
         "max": 60,
         "min": 1,
@@ -5031,7 +5038,7 @@ PARAMETER_DATA = [
         "text": "GT8_GT9_MAX_DELTA_DELAY_TIME",
     },
     {
-        "idx": 742,
+        "idx": 743,
         "extid": "E5CBE851D000F8",
         "max": 30,
         "min": 1,
@@ -5040,7 +5047,7 @@ PARAMETER_DATA = [
         "text": "GT8_GT9_MAX_DELTA_TEMP",
     },
     {
-        "idx": 743,
+        "idx": 744,
         "extid": "005FA258650185",
         "max": 0,
         "min": 0,
@@ -5049,7 +5056,7 @@ PARAMETER_DATA = [
         "text": "GT8_HF_ELK",
     },
     {
-        "idx": 744,
+        "idx": 745,
         "extid": "EDD8570F800186",
         "max": 95,
         "min": 45,
@@ -5058,7 +5065,7 @@ PARAMETER_DATA = [
         "text": "GT8_HF_ELK_TEMP",
     },
     {
-        "idx": 745,
+        "idx": 746,
         "extid": "EE35C0250500EE",
         "max": 800,
         "min": 500,
@@ -5067,7 +5074,7 @@ PARAMETER_DATA = [
         "text": "GT8_HF_TEMP",
     },
     {
-        "idx": 747,
+        "idx": 748,
         "extid": "ED41A459C705B5",
         "max": 100,
         "min": 10,
@@ -5076,7 +5083,7 @@ PARAMETER_DATA = [
         "text": "GT8_HIGH_GT9_RESTART_HYSTERESIS",
     },
     {
-        "idx": 748,
+        "idx": 749,
         "extid": "E143F89A3A084F",
         "max": 100,
         "min": 1,
@@ -5085,7 +5092,7 @@ PARAMETER_DATA = [
         "text": "GT8_HIGH_MAX_WARNING_COUNT",
     },
     {
-        "idx": 749,
+        "idx": 750,
         "extid": "EDB1B48D6D0071",
         "max": 50,
         "min": -50,
@@ -5094,7 +5101,7 @@ PARAMETER_DATA = [
         "text": "GT8_KORRIGERING",
     },
     {
-        "idx": 750,
+        "idx": 751,
         "extid": "0009DDB67A0072",
         "max": 0,
         "min": 0,
@@ -5103,7 +5110,7 @@ PARAMETER_DATA = [
         "text": "GT8_STATUS",
     },
     {
-        "idx": 751,
+        "idx": 752,
         "extid": "0EDF08B3810073",
         "max": 0,
         "min": 0,
@@ -5112,7 +5119,7 @@ PARAMETER_DATA = [
         "text": "GT8_TEMP",
     },
     {
-        "idx": 753,
+        "idx": 754,
         "extid": "ED507C7D790421",
         "max": 50,
         "min": -50,
@@ -5121,7 +5128,7 @@ PARAMETER_DATA = [
         "text": "GT9_2_KORRIGERING",
     },
     {
-        "idx": 754,
+        "idx": 755,
         "extid": "00E60BDF840422",
         "max": 0,
         "min": 0,
@@ -5130,7 +5137,7 @@ PARAMETER_DATA = [
         "text": "GT9_2_STATUS",
     },
     {
-        "idx": 755,
+        "idx": 756,
         "extid": "0E103EFC030423",
         "max": 0,
         "min": 0,
@@ -5139,7 +5146,7 @@ PARAMETER_DATA = [
         "text": "GT9_2_TEMP",
     },
     {
-        "idx": 757,
+        "idx": 758,
         "extid": "ED6C2254E80074",
         "max": 50,
         "min": -50,
@@ -5148,7 +5155,7 @@ PARAMETER_DATA = [
         "text": "GT9_KORRIGERING",
     },
     {
-        "idx": 758,
+        "idx": 759,
         "extid": "00C577B6E40075",
         "max": 0,
         "min": 0,
@@ -5157,7 +5164,7 @@ PARAMETER_DATA = [
         "text": "GT9_STATUS",
     },
     {
-        "idx": 759,
+        "idx": 760,
         "extid": "0E145460240076",
         "max": 0,
         "min": 0,
@@ -5166,7 +5173,7 @@ PARAMETER_DATA = [
         "text": "GT9_TEMP",
     },
     {
-        "idx": 761,
+        "idx": 762,
         "extid": "0A71ACC137026B",
         "max": 0,
         "min": 0,
@@ -5175,7 +5182,7 @@ PARAMETER_DATA = [
         "text": "HEATING_1A_DIFF",
     },
     {
-        "idx": 763,
+        "idx": 764,
         "extid": "0AC849215A05F1",
         "max": 0,
         "min": 0,
@@ -5184,7 +5191,7 @@ PARAMETER_DATA = [
         "text": "HEATING_1A_DIFF_2",
     },
     {
-        "idx": 765,
+        "idx": 766,
         "extid": "EE882E18670249",
         "max": 300,
         "min": 100,
@@ -5193,7 +5200,7 @@ PARAMETER_DATA = [
         "text": "HEATING_1A_DIFF_CONST",
     },
     {
-        "idx": 767,
+        "idx": 768,
         "extid": "EE8DFDEFFC05F2",
         "max": 300,
         "min": 100,
@@ -5202,7 +5209,7 @@ PARAMETER_DATA = [
         "text": "HEATING_1A_DIFF_CONST_2",
     },
     {
-        "idx": 769,
+        "idx": 770,
         "extid": "EA9E9BF7D90247",
         "max": 300,
         "min": 20,
@@ -5211,7 +5218,7 @@ PARAMETER_DATA = [
         "text": "HEATING_1A_DIFF_MAX",
     },
     {
-        "idx": 771,
+        "idx": 772,
         "extid": "EAC70E859605F3",
         "max": 300,
         "min": 20,
@@ -5220,7 +5227,7 @@ PARAMETER_DATA = [
         "text": "HEATING_1A_DIFF_MAX_2",
     },
     {
-        "idx": 773,
+        "idx": 774,
         "extid": "EAA296C8800248",
         "max": 300,
         "min": 20,
@@ -5229,7 +5236,7 @@ PARAMETER_DATA = [
         "text": "HEATING_1A_DIFF_MIN",
     },
     {
-        "idx": 775,
+        "idx": 776,
         "extid": "EA1A1172BB05F4",
         "max": 300,
         "min": 20,
@@ -5238,7 +5245,7 @@ PARAMETER_DATA = [
         "text": "HEATING_1A_DIFF_MIN_2",
     },
     {
-        "idx": 777,
+        "idx": 778,
         "extid": "0E4A9862F40287",
         "max": 0,
         "min": 0,
@@ -5247,7 +5254,7 @@ PARAMETER_DATA = [
         "text": "HEATING_ADDITIONAL_SETPOINT",
     },
     {
-        "idx": 779,
+        "idx": 780,
         "extid": "E990138EC60227",
         "max": 100,
         "min": 0,
@@ -5256,7 +5263,7 @@ PARAMETER_DATA = [
         "text": "HEATING_ADDITIONAL_SETPOINT_OFFSET",
     },
     {
-        "idx": 780,
+        "idx": 781,
         "extid": "E14DC699890281",
         "max": 20,
         "min": 5,
@@ -5265,7 +5272,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CABLE_TEMP",
     },
     {
-        "idx": 781,
+        "idx": 782,
         "extid": "E12901840601F9",
         "max": 60,
         "min": 10,
@@ -5274,7 +5281,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CABLE_TIME",
     },
     {
-        "idx": 782,
+        "idx": 783,
         "extid": "2AFEFEB21203E1",
         "max": 1000,
         "min": 0,
@@ -5283,7 +5290,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CIRCUIT_PID_ISPOINT_GLOBAL",
     },
     {
-        "idx": 784,
+        "idx": 785,
         "extid": "2A0F3EA5A403E0",
         "max": 1000,
         "min": 0,
@@ -5292,7 +5299,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CIRCUIT_PID_SETPOINT_GLOBAL",
     },
     {
-        "idx": 786,
+        "idx": 787,
         "extid": "00ECE8B73C0B5F",
         "max": 0,
         "min": 0,
@@ -5301,7 +5308,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_CHECK_SETTING",
     },
     {
-        "idx": 787,
+        "idx": 788,
         "extid": "6E7F1B6889034B",
         "max": 1080,
         "min": 10,
@@ -5310,7 +5317,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_LEFT_Y_GLOBAL",
     },
     {
-        "idx": 789,
+        "idx": 790,
         "extid": "EE47EC0AC300D4",
         "max": 1080,
         "min": 10,
@@ -5319,7 +5326,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_LEFT_Y_LOCAL",
     },
     {
-        "idx": 791,
+        "idx": 792,
         "extid": "6EB4805109034C",
         "max": 1000,
         "min": 100,
@@ -5328,7 +5335,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_MAX_GLOBAL",
     },
     {
-        "idx": 793,
+        "idx": 794,
         "extid": "EEBD660673026D",
         "max": 1000,
         "min": 100,
@@ -5337,7 +5344,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_MAX_LOCAL",
     },
     {
-        "idx": 795,
+        "idx": 796,
         "extid": "6EB58CCBBD034D",
         "max": 800,
         "min": 100,
@@ -5346,7 +5353,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_MIN_GLOBAL",
     },
     {
-        "idx": 797,
+        "idx": 798,
         "extid": "EE6A8DB432026C",
         "max": 800,
         "min": 100,
@@ -5355,7 +5362,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_MIN_LOCAL",
     },
     {
-        "idx": 799,
+        "idx": 800,
         "extid": "E1EBE5792000D2",
         "max": 20,
         "min": 1,
@@ -5364,7 +5371,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_MYCKET_PROCENT",
     },
     {
-        "idx": 800,
+        "idx": 801,
         "extid": "E1E29D0E3F00D3",
         "max": 20,
         "min": 1,
@@ -5373,7 +5380,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_NORMAL_PROCENT",
     },
     {
-        "idx": 801,
+        "idx": 802,
         "extid": "219D8A4A0703CF",
         "max": 12,
         "min": 9,
@@ -5382,7 +5389,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_NO_OF_POINTS",
     },
     {
-        "idx": 802,
+        "idx": 803,
         "extid": "EE4ACBA689063E",
         "max": 100,
         "min": -100,
@@ -5391,7 +5398,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_PARALLEL_OFFSET",
     },
     {
-        "idx": 804,
+        "idx": 805,
         "extid": "6E596997C7064D",
         "max": 100,
         "min": -100,
@@ -5400,7 +5407,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_PARALLEL_OFFSET_GLOBAL",
     },
     {
-        "idx": 806,
+        "idx": 807,
         "extid": "EEA73672D1069A",
         "max": -100,
         "min": -350,
@@ -5409,7 +5416,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_RIGHT_X_LOCAL",
     },
     {
-        "idx": 808,
+        "idx": 809,
         "extid": "4E40E8C327034E",
         "max": 0,
         "min": 0,
@@ -5418,7 +5425,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_RIGHT_Y_GLOBAL",
     },
     {
-        "idx": 810,
+        "idx": 811,
         "extid": "CE0141796500D1",
         "max": 0,
         "min": 0,
@@ -5427,7 +5434,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_RIGHT_Y_LOCAL",
     },
     {
-        "idx": 812,
+        "idx": 813,
         "extid": "0EA674B3CA00CB",
         "max": 0,
         "min": 0,
@@ -5436,7 +5443,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_VALUE",
     },
     {
-        "idx": 814,
+        "idx": 815,
         "extid": "E5F9FA82E300D5",
         "max": 15,
         "min": -10,
@@ -5445,7 +5452,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_VH_LIMIT",
     },
     {
-        "idx": 815,
+        "idx": 816,
         "extid": "6E696808400359",
         "max": 100,
         "min": -100,
@@ -5454,7 +5461,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y10_GLOBAL",
     },
     {
-        "idx": 817,
+        "idx": 818,
         "extid": "EE5843861C00DF",
         "max": 100,
         "min": -100,
@@ -5463,7 +5470,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y10_LOCAL",
     },
     {
-        "idx": 819,
+        "idx": 820,
         "extid": "6EA5C208DE0358",
         "max": 100,
         "min": -100,
@@ -5472,7 +5479,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y11_GLOBAL",
     },
     {
-        "idx": 821,
+        "idx": 822,
         "extid": "EEFE348DA800E0",
         "max": 100,
         "min": -100,
@@ -5481,7 +5488,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y11_LOCAL",
     },
     {
-        "idx": 823,
+        "idx": 824,
         "extid": "6E2B4D0F3D0357",
         "max": 100,
         "min": -100,
@@ -5490,7 +5497,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y12_GLOBAL",
     },
     {
-        "idx": 825,
+        "idx": 826,
         "extid": "EECFDC973500E1",
         "max": 100,
         "min": -100,
@@ -5499,7 +5506,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y12_LOCAL",
     },
     {
-        "idx": 827,
+        "idx": 828,
         "extid": "6ECBFA50D1035A",
         "max": 100,
         "min": -100,
@@ -5508,7 +5515,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y1_GLOBAL",
     },
     {
-        "idx": 829,
+        "idx": 830,
         "extid": "EEAD6A653F00D6",
         "max": 100,
         "min": -100,
@@ -5517,7 +5524,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y1_LOCAL",
     },
     {
-        "idx": 831,
+        "idx": 832,
         "extid": "6E457557320356",
         "max": 100,
         "min": -100,
@@ -5526,7 +5533,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y2_GLOBAL",
     },
     {
-        "idx": 833,
+        "idx": 834,
         "extid": "EE9C827FA200D7",
         "max": 100,
         "min": -100,
@@ -5535,7 +5542,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y2_LOCAL",
     },
     {
-        "idx": 835,
+        "idx": 836,
         "extid": "6E89DF57AC0355",
         "max": 100,
         "min": -100,
@@ -5544,7 +5551,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y3_GLOBAL",
     },
     {
-        "idx": 837,
+        "idx": 838,
         "extid": "EE3AF5741600D8",
         "max": 100,
         "min": -100,
@@ -5553,7 +5560,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y3_LOCAL",
     },
     {
-        "idx": 839,
+        "idx": 840,
         "extid": "6E831A5EB50354",
         "max": 100,
         "min": -100,
@@ -5562,7 +5569,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y4_GLOBAL",
     },
     {
-        "idx": 841,
+        "idx": 842,
         "extid": "EEFF524A9800D9",
         "max": 100,
         "min": -100,
@@ -5571,7 +5578,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y4_LOCAL",
     },
     {
-        "idx": 843,
+        "idx": 844,
         "extid": "6E4FB05E2B0353",
         "max": 100,
         "min": -100,
@@ -5580,7 +5587,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y5_GLOBAL",
     },
     {
-        "idx": 845,
+        "idx": 846,
         "extid": "EE5925412C00DA",
         "max": 100,
         "min": -100,
@@ -5589,7 +5596,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y5_LOCAL",
     },
     {
-        "idx": 847,
+        "idx": 848,
         "extid": "6EC13F59C80352",
         "max": 100,
         "min": -100,
@@ -5598,7 +5605,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y6_GLOBAL",
     },
     {
-        "idx": 849,
+        "idx": 850,
         "extid": "EE68CD5BB100DB",
         "max": 100,
         "min": -100,
@@ -5607,7 +5614,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y6_LOCAL",
     },
     {
-        "idx": 851,
+        "idx": 852,
         "extid": "6E0D9559560351",
         "max": 100,
         "min": -100,
@@ -5616,7 +5623,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y7_GLOBAL",
     },
     {
-        "idx": 853,
+        "idx": 854,
         "extid": "EECEBA500500DC",
         "max": 100,
         "min": -100,
@@ -5625,7 +5632,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y7_LOCAL",
     },
     {
-        "idx": 855,
+        "idx": 856,
         "extid": "6ED4B54BFA0350",
         "max": 100,
         "min": -100,
@@ -5634,7 +5641,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y8_GLOBAL",
     },
     {
-        "idx": 857,
+        "idx": 858,
         "extid": "EE38F220EC00DD",
         "max": 100,
         "min": -100,
@@ -5643,7 +5650,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y8_LOCAL",
     },
     {
-        "idx": 859,
+        "idx": 860,
         "extid": "6E181F4B64034F",
         "max": 100,
         "min": -100,
@@ -5652,7 +5659,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y9_GLOBAL",
     },
     {
-        "idx": 861,
+        "idx": 862,
         "extid": "EE9E852B5800DE",
         "max": 100,
         "min": -100,
@@ -5661,7 +5668,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CURVE_Y9_LOCAL",
     },
     {
-        "idx": 863,
+        "idx": 864,
         "extid": "00431BEF9C030C",
         "max": 0,
         "min": 0,
@@ -5670,7 +5677,7 @@ PARAMETER_DATA = [
         "text": "HEATING_EXTERN_BLOCKED",
     },
     {
-        "idx": 864,
+        "idx": 865,
         "extid": "C0E4AEF76C0B52",
         "max": 16777216,
         "min": 0,
@@ -5679,7 +5686,7 @@ PARAMETER_DATA = [
         "text": "HEATING_EXTERN_BLOCK_BY_E21_EXT_1",
     },
     {
-        "idx": 865,
+        "idx": 866,
         "extid": "C07DA7A6D6048E",
         "max": 16777216,
         "min": 0,
@@ -5688,7 +5695,7 @@ PARAMETER_DATA = [
         "text": "HEATING_EXTERN_BLOCK_BY_E21_EXT_2",
     },
     {
-        "idx": 866,
+        "idx": 867,
         "extid": "C0D546EDF10306",
         "max": 16777216,
         "min": 0,
@@ -5697,7 +5704,7 @@ PARAMETER_DATA = [
         "text": "HEATING_EXTERN_BLOCK_BY_E22_EXT_1",
     },
     {
-        "idx": 867,
+        "idx": 868,
         "extid": "C04C4FBC4B0B51",
         "max": 16777216,
         "min": 0,
@@ -5706,7 +5713,7 @@ PARAMETER_DATA = [
         "text": "HEATING_EXTERN_BLOCK_BY_E22_EXT_2",
     },
     {
-        "idx": 868,
+        "idx": 869,
         "extid": "EEF07561AC07E4",
         "max": 650,
         "min": 0,
@@ -5715,7 +5722,7 @@ PARAMETER_DATA = [
         "text": "HEATING_FIXED_TEMPERATURE",
     },
     {
-        "idx": 870,
+        "idx": 871,
         "extid": "E1D769501C00CC",
         "max": 120,
         "min": 0,
@@ -5724,7 +5731,7 @@ PARAMETER_DATA = [
         "text": "HEATING_MAX_TIME",
     },
     {
-        "idx": 871,
+        "idx": 872,
         "extid": "EA55C0014400CD",
         "max": 6000,
         "min": 50,
@@ -5733,7 +5740,7 @@ PARAMETER_DATA = [
         "text": "HEATING_REGULATOR_I",
     },
     {
-        "idx": 873,
+        "idx": 874,
         "extid": "EA31ABA98400CE",
         "max": 200,
         "min": 1,
@@ -5742,7 +5749,7 @@ PARAMETER_DATA = [
         "text": "HEATING_REGULATOR_P",
     },
     {
-        "idx": 875,
+        "idx": 876,
         "extid": "00CAE035FA00C8",
         "max": 0,
         "min": 0,
@@ -5751,7 +5758,7 @@ PARAMETER_DATA = [
         "text": "HEATING_REQUEST",
     },
     {
-        "idx": 876,
+        "idx": 877,
         "extid": "000CCD051004BC",
         "max": 0,
         "min": 0,
@@ -5760,7 +5767,7 @@ PARAMETER_DATA = [
         "text": "HEATING_REQUEST_2",
     },
     {
-        "idx": 877,
+        "idx": 878,
         "extid": "E12D76FBC90331",
         "max": 15,
         "min": 1,
@@ -5769,7 +5776,7 @@ PARAMETER_DATA = [
         "text": "HEATING_REQUEST_BLOCK_AFTER_START_TIME",
     },
     {
-        "idx": 878,
+        "idx": 879,
         "extid": "E23409A4FD00C9",
         "max": 600,
         "min": 0,
@@ -5778,7 +5785,7 @@ PARAMETER_DATA = [
         "text": "HEATING_REQUEST_BLOCK_TIME",
     },
     {
-        "idx": 881,  # HARDWARE-VERIFIED: Heat pump reports idx=881 (not 880)
+        "idx": 881,
         "extid": "002280F33400F4",
         "max": 0,
         "min": 0,
@@ -5787,7 +5794,7 @@ PARAMETER_DATA = [
         "text": "HEATING_SEASON_ACTIVE",
     },
     {
-        "idx": 882,  # HARDWARE-VERIFIED: Heat pump reports idx=882 (not 881)
+        "idx": 882,
         "extid": "E1E3B281D900F7",
         "max": 35,
         "min": 5,
@@ -5796,7 +5803,7 @@ PARAMETER_DATA = [
         "text": "HEATING_SEASON_DELAYED_TEMP",
     },
     {
-        "idx": 883,  # HARDWARE-VERIFIED: Heat pump reports idx=883 (not 882)
+        "idx": 883,
         "extid": "E1C800448B00F5",
         "max": 17,
         "min": 5,
@@ -5805,7 +5812,7 @@ PARAMETER_DATA = [
         "text": "HEATING_SEASON_IMMEDIATE_TEMP",
     },
     {
-        "idx": 884,  # HARDWARE-VERIFIED: Heat pump reports idx=884 (not 883)
+        "idx": 884,
         "extid": "E1882248C90440",
         "max": 2,
         "min": 0,
@@ -5814,7 +5821,7 @@ PARAMETER_DATA = [
         "text": "HEATING_SEASON_MODE",
     },
     {
-        "idx": 885,  # HARDWARE-VERIFIED: Heat pump reports idx=885 (not 884)
+        "idx": 885,
         "extid": "E1FF34393100F6",
         "max": 48,
         "min": 1,
@@ -5823,7 +5830,7 @@ PARAMETER_DATA = [
         "text": "HEATING_SEASON_START_DELAY_TIME",
     },
     {
-        "idx": 886,  # HARDWARE-VERIFIED: Heat pump reports idx=886 (not 885)
+        "idx": 886,
         "extid": "E17EE5BF2402F1",
         "max": 48,
         "min": 1,
@@ -5832,7 +5839,7 @@ PARAMETER_DATA = [
         "text": "HEATING_SEASON_STOP_DELAY_TIME",
     },
     {
-        "idx": 887,  # HARDWARE-VERIFIED: Heat pump reports idx=887 (not 886)
+        "idx": 887,
         "extid": "0E7900A31300CA",
         "max": 0,
         "min": 0,
@@ -5841,7 +5848,7 @@ PARAMETER_DATA = [
         "text": "HEATING_SETPOINT",
     },
     {
-        "idx": 888,
+        "idx": 889,
         "extid": "0E7B5ED0CD00CF",
         "max": 0,
         "min": 0,
@@ -5850,7 +5857,7 @@ PARAMETER_DATA = [
         "text": "HEATING_START",
     },
     {
-        "idx": 890,
+        "idx": 891,
         "extid": "0E4CAA026D0631",
         "max": 0,
         "min": 0,
@@ -5859,7 +5866,7 @@ PARAMETER_DATA = [
         "text": "HEATING_START_2",
     },
     {
-        "idx": 892,
+        "idx": 893,
         "extid": "01FBBDF9BE026E",
         "max": 0,
         "min": 0,
@@ -5868,7 +5875,7 @@ PARAMETER_DATA = [
         "text": "HEATING_STATUS_BLOCK",
     },
     {
-        "idx": 893,
+        "idx": 894,
         "extid": "0E901C5F1A00D0",
         "max": 0,
         "min": 0,
@@ -5877,7 +5884,7 @@ PARAMETER_DATA = [
         "text": "HEATING_STOP",
     },
     {
-        "idx": 895,
+        "idx": 896,
         "extid": "0EFFD424460632",
         "max": 0,
         "min": 0,
@@ -5886,7 +5893,7 @@ PARAMETER_DATA = [
         "text": "HEATING_STOP_2",
     },
     {
-        "idx": 897,
+        "idx": 898,
         "extid": "40D1B9506D05DF",
         "max": 150994944,
         "min": 0,
@@ -5895,7 +5902,7 @@ PARAMETER_DATA = [
         "text": "HEATING_SYSTEM_TYPE_GLOBAL",
     },
     {
-        "idx": 898,
+        "idx": 899,
         "extid": "C034BEA42B05DE",
         "max": 150994944,
         "min": 0,
@@ -5904,7 +5911,7 @@ PARAMETER_DATA = [
         "text": "HEATING_SYSTEM_TYPE_LOCAL",
     },
     {
-        "idx": 899,
+        "idx": 900,
         "extid": "C053404CD405C5",
         "max": 16777216,
         "min": 0,
@@ -5913,7 +5920,7 @@ PARAMETER_DATA = [
         "text": "HEATING_USE_EXTERNAL_SETPOINT",
     },
     {
-        "idx": 900,
+        "idx": 901,
         "extid": "C06AA2528F0263",
         "max": 16777216,
         "min": 0,
@@ -5922,7 +5929,7 @@ PARAMETER_DATA = [
         "text": "HOLIDAY_ACTIVE",
     },
     {
-        "idx": 901,
+        "idx": 902,
         "extid": "4080AA43F00861",
         "max": 16777216,
         "min": 0,
@@ -5931,7 +5938,7 @@ PARAMETER_DATA = [
         "text": "HOLIDAY_ACTIVE_GLOBAL",
     },
     {
-        "idx": 902,
+        "idx": 903,
         "extid": "C00ED82215028E",
         "max": 16777216,
         "min": 0,
@@ -5940,7 +5947,7 @@ PARAMETER_DATA = [
         "text": "HOLIDAY_DHW",
     },
     {
-        "idx": 903,
+        "idx": 904,
         "extid": "2093D1EC64024A",
         "max": 0,
         "min": 0,
@@ -5949,7 +5956,7 @@ PARAMETER_DATA = [
         "text": "HOLIDAY_REQUEST",
     },
     {
-        "idx": 904,
+        "idx": 905,
         "extid": "E1C4E03DB0075E",
         "max": 31,
         "min": 1,
@@ -5958,7 +5965,7 @@ PARAMETER_DATA = [
         "text": "HOLIDAY_START_DAY",
     },
     {
-        "idx": 905,
+        "idx": 906,
         "extid": "61A8A44EDB0266",
         "max": 31,
         "min": 1,
@@ -5967,7 +5974,7 @@ PARAMETER_DATA = [
         "text": "HOLIDAY_START_DAY_GLOBAL",
     },
     {
-        "idx": 906,
+        "idx": 907,
         "extid": "E1AF02C5F30265",
         "max": 12,
         "min": 1,
@@ -5976,7 +5983,7 @@ PARAMETER_DATA = [
         "text": "HOLIDAY_START_MONTH",
     },
     {
-        "idx": 907,
+        "idx": 908,
         "extid": "619AB55EF6075F",
         "max": 12,
         "min": 1,
@@ -5985,7 +5992,7 @@ PARAMETER_DATA = [
         "text": "HOLIDAY_START_MONTH_GLOBAL",
     },
     {
-        "idx": 908,
+        "idx": 909,
         "extid": "E1BBA333230264",
         "max": 99,
         "min": 0,
@@ -5994,7 +6001,7 @@ PARAMETER_DATA = [
         "text": "HOLIDAY_START_YEAR",
     },
     {
-        "idx": 909,
+        "idx": 910,
         "extid": "616081D1590760",
         "max": 99,
         "min": 0,
@@ -6003,7 +6010,7 @@ PARAMETER_DATA = [
         "text": "HOLIDAY_START_YEAR_GLOBAL",
     },
     {
-        "idx": 910,
+        "idx": 911,
         "extid": "E167BEED150267",
         "max": 31,
         "min": 1,
@@ -6012,7 +6019,7 @@ PARAMETER_DATA = [
         "text": "HOLIDAY_STOP_DAY",
     },
     {
-        "idx": 911,
+        "idx": 912,
         "extid": "6177F4697C0761",
         "max": 31,
         "min": 1,
@@ -6021,7 +6028,7 @@ PARAMETER_DATA = [
         "text": "HOLIDAY_STOP_DAY_GLOBAL",
     },
     {
-        "idx": 912,
+        "idx": 913,
         "extid": "E1FAA1FCD50268",
         "max": 12,
         "min": 1,
@@ -6030,7 +6037,7 @@ PARAMETER_DATA = [
         "text": "HOLIDAY_STOP_MONTH",
     },
     {
-        "idx": 913,
+        "idx": 914,
         "extid": "61DEF91EE30762",
         "max": 12,
         "min": 1,
@@ -6039,7 +6046,7 @@ PARAMETER_DATA = [
         "text": "HOLIDAY_STOP_MONTH_GLOBAL",
     },
     {
-        "idx": 914,
+        "idx": 915,
         "extid": "E11DBC3A940269",
         "max": 99,
         "min": 0,
@@ -6048,7 +6055,7 @@ PARAMETER_DATA = [
         "text": "HOLIDAY_STOP_YEAR",
     },
     {
-        "idx": 915,
+        "idx": 916,
         "extid": "6128ECB7350763",
         "max": 99,
         "min": 0,
@@ -6057,7 +6064,7 @@ PARAMETER_DATA = [
         "text": "HOLIDAY_STOP_YEAR_GLOBAL",
     },
     {
-        "idx": 916,
+        "idx": 917,
         "extid": "E9B0A0966D0B13",
         "max": 250,
         "min": 0,
@@ -6066,7 +6073,7 @@ PARAMETER_DATA = [
         "text": "HOTGAS_HIGHEST_DIFF",
     },
     {
-        "idx": 917,
+        "idx": 918,
         "extid": "E693E59C200B11",
         "max": 250,
         "min": 0,
@@ -6075,7 +6082,7 @@ PARAMETER_DATA = [
         "text": "HOTGAS_LOWEST_DIFF",
     },
     {
-        "idx": 919,
+        "idx": 920,
         "extid": "E176B325DC0AD8",
         "max": 5,
         "min": 0,
@@ -6084,7 +6091,7 @@ PARAMETER_DATA = [
         "text": "HP_STOPS_UNTIL_ALARM",
     },
     {
-        "idx": 920,
+        "idx": 921,
         "extid": "E1D2A42A030AE8",
         "max": 5,
         "min": 0,
@@ -6093,7 +6100,7 @@ PARAMETER_DATA = [
         "text": "HP_STOPS_UNTIL_ALARM_2",
     },
     {
-        "idx": 921,
+        "idx": 922,
         "extid": "E1E69DB72F0ADC",
         "max": 60,
         "min": 0,
@@ -6102,7 +6109,7 @@ PARAMETER_DATA = [
         "text": "HP_STOP_MAX_TIME",
     },
     {
-        "idx": 922,
+        "idx": 923,
         "extid": "E1F334FA3B0AE9",
         "max": 60,
         "min": 0,
@@ -6111,7 +6118,7 @@ PARAMETER_DATA = [
         "text": "HP_STOP_MAX_TIME_2",
     },
     {
-        "idx": 923,
+        "idx": 924,
         "extid": "E1C80D3B990ADA",
         "max": 5,
         "min": 1,
@@ -6120,7 +6127,7 @@ PARAMETER_DATA = [
         "text": "HP_STOP_TIME_WINDOW",
     },
     {
-        "idx": 924,
+        "idx": 925,
         "extid": "E1A5A5129E0AEA",
         "max": 5,
         "min": 1,
@@ -6129,7 +6136,7 @@ PARAMETER_DATA = [
         "text": "HP_STOP_TIME_WINDOW_2",
     },
     {
-        "idx": 925,
+        "idx": 926,
         "extid": "02D4592AAF0D3C",
         "max": 0,
         "min": 0,
@@ -6138,7 +6145,7 @@ PARAMETER_DATA = [
         "text": "HUMIDITY_BOARD_0_10V_GLOBAL",
     },
     {
-        "idx": 927,
+        "idx": 928,
         "extid": "00F65C47DF024E",
         "max": 0,
         "min": 0,
@@ -6147,7 +6154,7 @@ PARAMETER_DATA = [
         "text": "HW_4_WAY_VALVE",
     },
     {
-        "idx": 928,
+        "idx": 929,
         "extid": "005A35F95B03F7",
         "max": 0,
         "min": 0,
@@ -6156,7 +6163,7 @@ PARAMETER_DATA = [
         "text": "HW_4_WAY_VALVE_2",
     },
     {
-        "idx": 929,
+        "idx": 930,
         "extid": "00F09C9DD3024C",
         "max": 0,
         "min": 0,
@@ -6165,7 +6172,7 @@ PARAMETER_DATA = [
         "text": "HW_ADDITIONAL_ALARM",
     },
     {
-        "idx": 930,
+        "idx": 931,
         "extid": "00F4F8900E02F0",
         "max": 0,
         "min": 0,
@@ -6174,7 +6181,7 @@ PARAMETER_DATA = [
         "text": "HW_ADDITIONAL_DHW",
     },
     {
-        "idx": 931,
+        "idx": 932,
         "extid": "00D9A53A1003AA",
         "max": 0,
         "min": 0,
@@ -6183,7 +6190,7 @@ PARAMETER_DATA = [
         "text": "HW_ADDITIONAL_RELAY_1",
     },
     {
-        "idx": 932,
+        "idx": 933,
         "extid": "0040AC6BAA03AB",
         "max": 0,
         "min": 0,
@@ -6192,7 +6199,7 @@ PARAMETER_DATA = [
         "text": "HW_ADDITIONAL_RELAY_2",
     },
     {
-        "idx": 933,
+        "idx": 934,
         "extid": "0037AB5B3C03AC",
         "max": 0,
         "min": 0,
@@ -6201,7 +6208,7 @@ PARAMETER_DATA = [
         "text": "HW_ADDITIONAL_RELAY_3",
     },
     {
-        "idx": 934,
+        "idx": 935,
         "extid": "001B7A8E8103B2",
         "max": 0,
         "min": 0,
@@ -6210,7 +6217,7 @@ PARAMETER_DATA = [
         "text": "HW_ADDITIONAL_START",
     },
     {
-        "idx": 935,
+        "idx": 936,
         "extid": "007DF794DF03AD",
         "max": 0,
         "min": 0,
@@ -6219,7 +6226,7 @@ PARAMETER_DATA = [
         "text": "HW_ADDITIONAL_TRIAC_1",
     },
     {
-        "idx": 936,
+        "idx": 937,
         "extid": "00E4FEC56503AE",
         "max": 0,
         "min": 0,
@@ -6228,7 +6235,7 @@ PARAMETER_DATA = [
         "text": "HW_ADDITIONAL_TRIAC_2",
     },
     {
-        "idx": 937,
+        "idx": 938,
         "extid": "0093F9F5F303AF",
         "max": 0,
         "min": 0,
@@ -6237,7 +6244,7 @@ PARAMETER_DATA = [
         "text": "HW_ADDITIONAL_TRIAC_3",
     },
     {
-        "idx": 938,
+        "idx": 939,
         "extid": "00A5DAF23603BA",
         "max": 0,
         "min": 0,
@@ -6246,7 +6253,7 @@ PARAMETER_DATA = [
         "text": "HW_ADDITIONAL_VALVE_CLOSE",
     },
     {
-        "idx": 939,
+        "idx": 940,
         "extid": "00192E4CBB03B9",
         "max": 0,
         "min": 0,
@@ -6255,7 +6262,7 @@ PARAMETER_DATA = [
         "text": "HW_ADDITIONAL_VALVE_OPEN",
     },
     {
-        "idx": 940,
+        "idx": 941,
         "extid": "0076AEF2D4007A",
         "max": 0,
         "min": 0,
@@ -6264,7 +6271,7 @@ PARAMETER_DATA = [
         "text": "HW_BUZZER",
     },
     {
-        "idx": 941,
+        "idx": 942,
         "extid": "013A27FDA9009A",
         "max": 0,
         "min": 0,
@@ -6273,7 +6280,7 @@ PARAMETER_DATA = [
         "text": "HW_COMPRESSOR",
     },
     {
-        "idx": 942,
+        "idx": 943,
         "extid": "0108E4B1C203F1",
         "max": 0,
         "min": 0,
@@ -6282,7 +6289,7 @@ PARAMETER_DATA = [
         "text": "HW_COMPRESSOR_2",
     },
     {
-        "idx": 943,
+        "idx": 944,
         "extid": "008BC64CB30093",
         "max": 0,
         "min": 0,
@@ -6291,7 +6298,7 @@ PARAMETER_DATA = [
         "text": "HW_COMPRESSOR_CAN_COMMUNICATION",
     },
     {
-        "idx": 944,
+        "idx": 945,
         "extid": "00C00179FB0094",
         "max": 0,
         "min": 0,
@@ -6300,7 +6307,7 @@ PARAMETER_DATA = [
         "text": "HW_COMPRESSOR_COMMUNICATION_ERR",
     },
     {
-        "idx": 945,
+        "idx": 946,
         "extid": "0AD66D197B0095",
         "max": 0,
         "min": 0,
@@ -6309,7 +6316,7 @@ PARAMETER_DATA = [
         "text": "HW_COMPRESSOR_CURRENT",
     },
     {
-        "idx": 947,
+        "idx": 948,
         "extid": "01CB63A5C50096",
         "max": 0,
         "min": 0,
@@ -6318,7 +6325,7 @@ PARAMETER_DATA = [
         "text": "HW_COMPRESSOR_FREERUN",
     },
     {
-        "idx": 948,
+        "idx": 949,
         "extid": "0251F45BA50097",
         "max": 0,
         "min": 0,
@@ -6327,7 +6334,7 @@ PARAMETER_DATA = [
         "text": "HW_COMPRESSOR_NAK",
     },
     {
-        "idx": 950,
+        "idx": 951,
         "extid": "013905FA110098",
         "max": 0,
         "min": 0,
@@ -6336,7 +6343,7 @@ PARAMETER_DATA = [
         "text": "HW_COMPRESSOR_TARGET_FREQ",
     },
     {
-        "idx": 951,
+        "idx": 952,
         "extid": "0E7173A5E40099",
         "max": 0,
         "min": 0,
@@ -6345,7 +6352,7 @@ PARAMETER_DATA = [
         "text": "HW_COMPRESSOR_TEMP",
     },
     {
-        "idx": 953,
+        "idx": 954,
         "extid": "020706CEB7009B",
         "max": 0,
         "min": 0,
@@ -6354,7 +6361,7 @@ PARAMETER_DATA = [
         "text": "HW_COMPRESSOR_VOLTAGE",
     },
     {
-        "idx": 955,
+        "idx": 956,
         "extid": "0199F3A0A7009C",
         "max": 0,
         "min": 0,
@@ -6363,7 +6370,7 @@ PARAMETER_DATA = [
         "text": "HW_COMPRESSOR_WORKING_FREQ",
     },
     {
-        "idx": 956,
+        "idx": 957,
         "extid": "0018FBFE2E030F",
         "max": 0,
         "min": 0,
@@ -6372,7 +6379,7 @@ PARAMETER_DATA = [
         "text": "HW_CONTACTOR_1",
     },
     {
-        "idx": 957,
+        "idx": 958,
         "extid": "0081F2AF940310",
         "max": 0,
         "min": 0,
@@ -6381,7 +6388,7 @@ PARAMETER_DATA = [
         "text": "HW_CONTACTOR_2",
     },
     {
-        "idx": 958,
+        "idx": 959,
         "extid": "0057227F59009D",
         "max": 0,
         "min": 0,
@@ -6390,7 +6397,7 @@ PARAMETER_DATA = [
         "text": "HW_COOLING_FAN",
     },
     {
-        "idx": 959,
+        "idx": 960,
         "extid": "006E3208CB024F",
         "max": 0,
         "min": 0,
@@ -6399,7 +6406,7 @@ PARAMETER_DATA = [
         "text": "HW_CRANKCASE_HEATER",
     },
     {
-        "idx": 960,
+        "idx": 961,
         "extid": "0092F8EA6103F2",
         "max": 0,
         "min": 0,
@@ -6408,7 +6415,7 @@ PARAMETER_DATA = [
         "text": "HW_CRANKCASE_HEATER_2",
     },
     {
-        "idx": 961,
+        "idx": 962,
         "extid": "0E63FC6C33090E",
         "max": 0,
         "min": 0,
@@ -6417,7 +6424,7 @@ PARAMETER_DATA = [
         "text": "HW_E11_T11_TEMP",
     },
     {
-        "idx": 963,
+        "idx": 964,
         "extid": "006DE32336007F",
         "max": 0,
         "min": 0,
@@ -6426,7 +6433,7 @@ PARAMETER_DATA = [
         "text": "HW_E21_EXT_1",
     },
     {
-        "idx": 964,
+        "idx": 965,
         "extid": "80888802E30B61",
         "max": 16777216,
         "min": 0,
@@ -6435,7 +6442,7 @@ PARAMETER_DATA = [
         "text": "HW_E21_EXT_1_INV",
     },
     {
-        "idx": 965,
+        "idx": 966,
         "extid": "00F4EA728C02A6",
         "max": 0,
         "min": 0,
@@ -6444,7 +6451,7 @@ PARAMETER_DATA = [
         "text": "HW_E21_EXT_2",
     },
     {
-        "idx": 966,
+        "idx": 967,
         "extid": "80CF2878330B62",
         "max": 16777216,
         "min": 0,
@@ -6453,7 +6460,7 @@ PARAMETER_DATA = [
         "text": "HW_E21_EXT_2_INV",
     },
     {
-        "idx": 967,
+        "idx": 968,
         "extid": "005C0B39AB0B5C",
         "max": 0,
         "min": 0,
@@ -6462,7 +6469,7 @@ PARAMETER_DATA = [
         "text": "HW_E22_EXT_1",
     },
     {
-        "idx": 968,
+        "idx": 969,
         "extid": "80116A64E20B63",
         "max": 16777216,
         "min": 0,
@@ -6471,7 +6478,7 @@ PARAMETER_DATA = [
         "text": "HW_E22_EXT_1_INV",
     },
     {
-        "idx": 969,
+        "idx": 970,
         "extid": "00C50268110B5B",
         "max": 0,
         "min": 0,
@@ -6480,7 +6487,7 @@ PARAMETER_DATA = [
         "text": "HW_E22_EXT_2",
     },
     {
-        "idx": 970,
+        "idx": 971,
         "extid": "8056CA1E320B64",
         "max": 16777216,
         "min": 0,
@@ -6489,7 +6496,7 @@ PARAMETER_DATA = [
         "text": "HW_E22_EXT_2_INV",
     },
     {
-        "idx": 971,
+        "idx": 972,
         "extid": "0EAC0FC4DB0833",
         "max": 0,
         "min": 0,
@@ -6498,7 +6505,7 @@ PARAMETER_DATA = [
         "text": "HW_E31_T31_TEMP",
     },
     {
-        "idx": 973,
+        "idx": 974,
         "extid": "0E2A9BB6750825",
         "max": 0,
         "min": 0,
@@ -6507,7 +6514,7 @@ PARAMETER_DATA = [
         "text": "HW_E31_T32_TEMP",
     },
     {
-        "idx": 975,
+        "idx": 976,
         "extid": "009C840C64099B",
         "max": 0,
         "min": 0,
@@ -6516,7 +6523,7 @@ PARAMETER_DATA = [
         "text": "HW_E71_EXT",
     },
     {
-        "idx": 976,
+        "idx": 977,
         "extid": "0EE899934A04B3",
         "max": 0,
         "min": 0,
@@ -6525,7 +6532,7 @@ PARAMETER_DATA = [
         "text": "HW_E71_T71_TEMP",
     },
     {
-        "idx": 978,
+        "idx": 979,
         "extid": "0E6E0DE1E404BB",
         "max": 0,
         "min": 0,
@@ -6534,7 +6541,7 @@ PARAMETER_DATA = [
         "text": "HW_E71_T72_TEMP",
     },
     {
-        "idx": 980,
+        "idx": 981,
         "extid": "00DB2476B4099C",
         "max": 0,
         "min": 0,
@@ -6543,7 +6550,7 @@ PARAMETER_DATA = [
         "text": "HW_E72_EXT",
     },
     {
-        "idx": 981,
+        "idx": 982,
         "extid": "0E03AE284907CC",
         "max": 0,
         "min": 0,
@@ -6552,7 +6559,7 @@ PARAMETER_DATA = [
         "text": "HW_E72_T71_TEMP",
     },
     {
-        "idx": 983,
+        "idx": 984,
         "extid": "0E853A5AE707CD",
         "max": 0,
         "min": 0,
@@ -6561,7 +6568,7 @@ PARAMETER_DATA = [
         "text": "HW_E72_T72_TEMP",
     },
     {
-        "idx": 985,
+        "idx": 986,
         "extid": "008007F2B7007E",
         "max": 0,
         "min": 0,
@@ -6570,7 +6577,7 @@ PARAMETER_DATA = [
         "text": "HW_ELK",
     },
     {
-        "idx": 986,
+        "idx": 987,
         "extid": "004C1A29AC03F3",
         "max": 0,
         "min": 0,
@@ -6579,7 +6586,7 @@ PARAMETER_DATA = [
         "text": "HW_ELK_2",
     },
     {
-        "idx": 987,
+        "idx": 988,
         "extid": "003B1D193A03F4",
         "max": 0,
         "min": 0,
@@ -6588,7 +6595,7 @@ PARAMETER_DATA = [
         "text": "HW_ELK_3",
     },
     {
-        "idx": 988,
+        "idx": 989,
         "extid": "00A5798C9903F5",
         "max": 0,
         "min": 0,
@@ -6597,7 +6604,7 @@ PARAMETER_DATA = [
         "text": "HW_ELK_4",
     },
     {
-        "idx": 989,
+        "idx": 990,
         "extid": "007BB4CEB60A0E",
         "max": 0,
         "min": 0,
@@ -6606,7 +6613,7 @@ PARAMETER_DATA = [
         "text": "HW_EL_VVB_ALARM",
     },
     {
-        "idx": 990,
+        "idx": 991,
         "extid": "0A50F7942F0486",
         "max": 0,
         "min": 0,
@@ -6615,7 +6622,7 @@ PARAMETER_DATA = [
         "text": "HW_EXTERNAL_SETPOINT",
     },
     {
-        "idx": 992,
+        "idx": 993,
         "extid": "0A51533D230B70",
         "max": 0,
         "min": 0,
@@ -6624,7 +6631,7 @@ PARAMETER_DATA = [
         "text": "HW_EXTERNAL_SETPOINT_2",
     },
     {
-        "idx": 994,
+        "idx": 995,
         "extid": "E11E2E44E30661",
         "max": 100,
         "min": 0,
@@ -6633,7 +6640,7 @@ PARAMETER_DATA = [
         "text": "HW_FAN_ANALOG",
     },
     {
-        "idx": 995,
+        "idx": 996,
         "extid": "E1B0CF396C0662",
         "max": 100,
         "min": 0,
@@ -6642,7 +6649,7 @@ PARAMETER_DATA = [
         "text": "HW_FAN_ANALOG_2",
     },
     {
-        "idx": 996,
+        "idx": 997,
         "extid": "0025FF8E2A024D",
         "max": 0,
         "min": 0,
@@ -6651,7 +6658,7 @@ PARAMETER_DATA = [
         "text": "HW_FAN_DIGITAL",
     },
     {
-        "idx": 997,
+        "idx": 998,
         "extid": "00D146451403F6",
         "max": 0,
         "min": 0,
@@ -6660,7 +6667,7 @@ PARAMETER_DATA = [
         "text": "HW_FAN_DIGITAL_2",
     },
     {
-        "idx": 998,
+        "idx": 999,
         "extid": "02B14826A20080",
         "max": 0,
         "min": 0,
@@ -6669,7 +6676,7 @@ PARAMETER_DATA = [
         "text": "HW_GT1",
     },
     {
-        "idx": 1000,
+        "idx": 1001,
         "extid": "02CCB255C3008E",
         "max": 0,
         "min": 0,
@@ -6678,7 +6685,7 @@ PARAMETER_DATA = [
         "text": "HW_GT10",
     },
     {
-        "idx": 1002,
+        "idx": 1003,
         "extid": "024FFBEFA00405",
         "max": 0,
         "min": 0,
@@ -6687,7 +6694,7 @@ PARAMETER_DATA = [
         "text": "HW_GT10_2",
     },
     {
-        "idx": 1004,
+        "idx": 1005,
         "extid": "0E9310C7C2008F",
         "max": 0,
         "min": 0,
@@ -6696,7 +6703,7 @@ PARAMETER_DATA = [
         "text": "HW_GT10_TEMP",
     },
     {
-        "idx": 1006,
+        "idx": 1007,
         "extid": "0E48E1732B0406",
         "max": 0,
         "min": 0,
@@ -6705,7 +6712,7 @@ PARAMETER_DATA = [
         "text": "HW_GT10_TEMP_2",
     },
     {
-        "idx": 1008,
+        "idx": 1009,
         "extid": "02BBB565550090",
         "max": 0,
         "min": 0,
@@ -6714,7 +6721,7 @@ PARAMETER_DATA = [
         "text": "HW_GT11",
     },
     {
-        "idx": 1010,
+        "idx": 1011,
         "extid": "024E3985970407",
         "max": 0,
         "min": 0,
@@ -6723,7 +6730,7 @@ PARAMETER_DATA = [
         "text": "HW_GT11_2",
     },
     {
-        "idx": 1012,
+        "idx": 1013,
         "extid": "0E584C14670091",
         "max": 0,
         "min": 0,
@@ -6732,7 +6739,7 @@ PARAMETER_DATA = [
         "text": "HW_GT11_TEMP",
     },
     {
-        "idx": 1014,
+        "idx": 1015,
         "extid": "0E844B73B50408",
         "max": 0,
         "min": 0,
@@ -6741,7 +6748,7 @@ PARAMETER_DATA = [
         "text": "HW_GT11_TEMP_2",
     },
     {
-        "idx": 1016,
+        "idx": 1017,
         "extid": "0222BC34EF028A",
         "max": 0,
         "min": 0,
@@ -6750,7 +6757,7 @@ PARAMETER_DATA = [
         "text": "HW_GT12",
     },
     {
-        "idx": 1018,
+        "idx": 1019,
         "extid": "024C7F3BCE0409",
         "max": 0,
         "min": 0,
@@ -6759,7 +6766,7 @@ PARAMETER_DATA = [
         "text": "HW_GT12_2",
     },
     {
-        "idx": 1020,
+        "idx": 1021,
         "extid": "0EDED866C9025A",
         "max": 0,
         "min": 0,
@@ -6768,7 +6775,7 @@ PARAMETER_DATA = [
         "text": "HW_GT12_TEMP",
     },
     {
-        "idx": 1022,
+        "idx": 1023,
         "extid": "0E0AC47456040A",
         "max": 0,
         "min": 0,
@@ -6777,7 +6784,7 @@ PARAMETER_DATA = [
         "text": "HW_GT12_TEMP_2",
     },
     {
-        "idx": 1024,
+        "idx": 1025,
         "extid": "0E6C0A67F00081",
         "max": 0,
         "min": 0,
@@ -6786,7 +6793,7 @@ PARAMETER_DATA = [
         "text": "HW_GT1_TEMP",
     },
     {
-        "idx": 1026,
+        "idx": 1027,
         "extid": "02284177180082",
         "max": 0,
         "min": 0,
@@ -6795,7 +6802,7 @@ PARAMETER_DATA = [
         "text": "HW_GT2",
     },
     {
-        "idx": 1028,
+        "idx": 1029,
         "extid": "0EEA9E155E0083",
         "max": 0,
         "min": 0,
@@ -6804,7 +6811,7 @@ PARAMETER_DATA = [
         "text": "HW_GT2_TEMP",
     },
     {
-        "idx": 1030,
+        "idx": 1031,
         "extid": "025F46478E0084",
         "max": 0,
         "min": 0,
@@ -6813,7 +6820,7 @@ PARAMETER_DATA = [
         "text": "HW_GT3",
     },
     {
-        "idx": 1032,
+        "idx": 1033,
         "extid": "0E21C2C6FB0085",
         "max": 0,
         "min": 0,
@@ -6822,7 +6829,7 @@ PARAMETER_DATA = [
         "text": "HW_GT3_TEMP",
     },
     {
-        "idx": 1034,
+        "idx": 1035,
         "extid": "0290D9F8CF0499",
         "max": 0,
         "min": 0,
@@ -6831,7 +6838,7 @@ PARAMETER_DATA = [
         "text": "HW_GT41_GLOBAL",
     },
     {
-        "idx": 1036,
+        "idx": 1037,
         "extid": "0E57D567400502",
         "max": 0,
         "min": 0,
@@ -6840,7 +6847,7 @@ PARAMETER_DATA = [
         "text": "HW_GT41_TEMP_1",
     },
     {
-        "idx": 1038,
+        "idx": 1039,
         "extid": "0ECEDC36FA0503",
         "max": 0,
         "min": 0,
@@ -6849,7 +6856,7 @@ PARAMETER_DATA = [
         "text": "HW_GT41_TEMP_2",
     },
     {
-        "idx": 1040,
+        "idx": 1041,
         "extid": "0EB9DB066C0504",
         "max": 0,
         "min": 0,
@@ -6858,7 +6865,7 @@ PARAMETER_DATA = [
         "text": "HW_GT41_TEMP_3",
     },
     {
-        "idx": 1042,
+        "idx": 1043,
         "extid": "0E27BF93CF0505",
         "max": 0,
         "min": 0,
@@ -6867,7 +6874,7 @@ PARAMETER_DATA = [
         "text": "HW_GT41_TEMP_4",
     },
     {
-        "idx": 1044,
+        "idx": 1045,
         "extid": "0E50B8A3590506",
         "max": 0,
         "min": 0,
@@ -6876,7 +6883,7 @@ PARAMETER_DATA = [
         "text": "HW_GT41_TEMP_5",
     },
     {
-        "idx": 1046,
+        "idx": 1047,
         "extid": "0EC9B1F2E30507",
         "max": 0,
         "min": 0,
@@ -6885,7 +6892,7 @@ PARAMETER_DATA = [
         "text": "HW_GT41_TEMP_6",
     },
     {
-        "idx": 1048,
+        "idx": 1049,
         "extid": "0EBEB6C2750508",
         "max": 0,
         "min": 0,
@@ -6894,7 +6901,7 @@ PARAMETER_DATA = [
         "text": "HW_GT41_TEMP_7",
     },
     {
-        "idx": 1050,
+        "idx": 1051,
         "extid": "0E20816508049B",
         "max": 0,
         "min": 0,
@@ -6903,7 +6910,7 @@ PARAMETER_DATA = [
         "text": "HW_GT41_TEMP_GLOBAL",
     },
     {
-        "idx": 1052,
+        "idx": 1053,
         "extid": "021493F635049A",
         "max": 0,
         "min": 0,
@@ -6912,7 +6919,7 @@ PARAMETER_DATA = [
         "text": "HW_GT45_GLOBAL",
     },
     {
-        "idx": 1054,
+        "idx": 1055,
         "extid": "0EE0380F9E049C",
         "max": 0,
         "min": 0,
@@ -6921,7 +6928,7 @@ PARAMETER_DATA = [
         "text": "HW_GT45_TEMP_GLOBAL",
     },
     {
-        "idx": 1056,
+        "idx": 1057,
         "extid": "02B625E2BB0086",
         "max": 0,
         "min": 0,
@@ -6930,7 +6937,7 @@ PARAMETER_DATA = [
         "text": "HW_GT5",
     },
     {
-        "idx": 1058,
+        "idx": 1059,
         "extid": "0EF79B25E60087",
         "max": 0,
         "min": 0,
@@ -6939,7 +6946,7 @@ PARAMETER_DATA = [
         "text": "HW_GT5_TEMP",
     },
     {
-        "idx": 1060,
+        "idx": 1061,
         "extid": "022F2CB3010088",
         "max": 0,
         "min": 0,
@@ -6948,7 +6955,7 @@ PARAMETER_DATA = [
         "text": "HW_GT6",
     },
     {
-        "idx": 1062,
+        "idx": 1063,
         "extid": "02FF5EFEBF040B",
         "max": 0,
         "min": 0,
@@ -6957,7 +6964,7 @@ PARAMETER_DATA = [
         "text": "HW_GT6_2",
     },
     {
-        "idx": 1064,
+        "idx": 1065,
         "extid": "0E710F57480089",
         "max": 0,
         "min": 0,
@@ -6966,7 +6973,7 @@ PARAMETER_DATA = [
         "text": "HW_GT6_TEMP",
     },
     {
-        "idx": 1066,
+        "idx": 1067,
         "extid": "0E798272B1040C",
         "max": 0,
         "min": 0,
@@ -6975,7 +6982,7 @@ PARAMETER_DATA = [
         "text": "HW_GT6_TEMP_2",
     },
     {
-        "idx": 1068,
+        "idx": 1069,
         "extid": "02582B83970C69",
         "max": 0,
         "min": 0,
@@ -6984,7 +6991,7 @@ PARAMETER_DATA = [
         "text": "HW_GT7",
     },
     {
-        "idx": 1070,
+        "idx": 1071,
         "extid": "02FE9C94880C72",
         "max": 0,
         "min": 0,
@@ -6993,7 +7000,7 @@ PARAMETER_DATA = [
         "text": "HW_GT7_2",
     },
     {
-        "idx": 1072,
+        "idx": 1073,
         "extid": "0EBA5384ED0C6A",
         "max": 0,
         "min": 0,
@@ -7002,7 +7009,7 @@ PARAMETER_DATA = [
         "text": "HW_GT7_TEMP",
     },
     {
-        "idx": 1074,
+        "idx": 1075,
         "extid": "0EB528722F0C73",
         "max": 0,
         "min": 0,
@@ -7011,7 +7018,7 @@ PARAMETER_DATA = [
         "text": "HW_GT7_TEMP_2",
     },
     {
-        "idx": 1076,
+        "idx": 1077,
         "extid": "02C8949E06008A",
         "max": 0,
         "min": 0,
@@ -7020,7 +7027,7 @@ PARAMETER_DATA = [
         "text": "HW_GT8",
     },
     {
-        "idx": 1078,
+        "idx": 1079,
         "extid": "026A77DE1C04AB",
         "max": 0,
         "min": 0,
@@ -7029,7 +7036,7 @@ PARAMETER_DATA = [
         "text": "HW_GT81",
     },
     {
-        "idx": 1080,
+        "idx": 1081,
         "extid": "0ECDD451B404AD",
         "max": 0,
         "min": 0,
@@ -7038,7 +7045,7 @@ PARAMETER_DATA = [
         "text": "HW_GT81_TEMP",
     },
     {
-        "idx": 1082,
+        "idx": 1083,
         "extid": "02F37E8FA604AC",
         "max": 0,
         "min": 0,
@@ -7047,7 +7054,7 @@ PARAMETER_DATA = [
         "text": "HW_GT82",
     },
     {
-        "idx": 1084,
+        "idx": 1085,
         "extid": "0E4B40231A04AE",
         "max": 0,
         "min": 0,
@@ -7056,7 +7063,7 @@ PARAMETER_DATA = [
         "text": "HW_GT82_TEMP",
     },
     {
-        "idx": 1086,
+        "idx": 1087,
         "extid": "02F5C0D3B5040D",
         "max": 0,
         "min": 0,
@@ -7065,7 +7072,7 @@ PARAMETER_DATA = [
         "text": "HW_GT8_2",
     },
     {
-        "idx": 1088,
+        "idx": 1089,
         "extid": "0E4B053638008B",
         "max": 0,
         "min": 0,
@@ -7074,7 +7081,7 @@ PARAMETER_DATA = [
         "text": "HW_GT8_TEMP",
     },
     {
-        "idx": 1090,
+        "idx": 1091,
         "extid": "0E6C086083040E",
         "max": 0,
         "min": 0,
@@ -7083,7 +7090,7 @@ PARAMETER_DATA = [
         "text": "HW_GT8_TEMP_2",
     },
     {
-        "idx": 1092,
+        "idx": 1093,
         "extid": "02BF93AE90008C",
         "max": 0,
         "min": 0,
@@ -7092,7 +7099,7 @@ PARAMETER_DATA = [
         "text": "HW_GT9",
     },
     {
-        "idx": 1094,
+        "idx": 1095,
         "extid": "02F402B982040F",
         "max": 0,
         "min": 0,
@@ -7101,7 +7108,7 @@ PARAMETER_DATA = [
         "text": "HW_GT9_2",
     },
     {
-        "idx": 1096,
+        "idx": 1097,
         "extid": "0E8059E59D008D",
         "max": 0,
         "min": 0,
@@ -7110,7 +7117,7 @@ PARAMETER_DATA = [
         "text": "HW_GT9_TEMP",
     },
     {
-        "idx": 1098,
+        "idx": 1099,
         "extid": "0EA0A2601D0410",
         "max": 0,
         "min": 0,
@@ -7119,7 +7126,7 @@ PARAMETER_DATA = [
         "text": "HW_GT9_TEMP_2",
     },
     {
-        "idx": 1100,
+        "idx": 1101,
         "extid": "001A6BB1B70250",
         "max": 0,
         "min": 0,
@@ -7128,7 +7135,7 @@ PARAMETER_DATA = [
         "text": "HW_HEATING_CABLE",
     },
     {
-        "idx": 1101,
+        "idx": 1102,
         "extid": "00A3CFA3EA0411",
         "max": 0,
         "min": 0,
@@ -7137,7 +7144,7 @@ PARAMETER_DATA = [
         "text": "HW_HEATING_CABLE_2",
     },
     {
-        "idx": 1102,
+        "idx": 1103,
         "extid": "00CC502EFA0092",
         "max": 0,
         "min": 0,
@@ -7146,7 +7153,7 @@ PARAMETER_DATA = [
         "text": "HW_HP",
     },
     {
-        "idx": 1103,
+        "idx": 1104,
         "extid": "0086A8CA4C03F8",
         "max": 0,
         "min": 0,
@@ -7155,7 +7162,7 @@ PARAMETER_DATA = [
         "text": "HW_HP_2",
     },
     {
-        "idx": 1104,
+        "idx": 1105,
         "extid": "023BC26E370D39",
         "max": 0,
         "min": 0,
@@ -7164,7 +7171,7 @@ PARAMETER_DATA = [
         "text": "HW_HUMIDITY",
     },
     {
-        "idx": 1106,
+        "idx": 1107,
         "extid": "028E20D54D0D3A",
         "max": 0,
         "min": 0,
@@ -7173,7 +7180,7 @@ PARAMETER_DATA = [
         "text": "HW_HUMIDITY_2",
     },
     {
-        "idx": 1108,
+        "idx": 1109,
         "extid": "02F927E5DB0D3B",
         "max": 0,
         "min": 0,
@@ -7182,7 +7189,7 @@ PARAMETER_DATA = [
         "text": "HW_HUMIDITY_3",
     },
     {
-        "idx": 1110,
+        "idx": 1111,
         "extid": "0260EDE3E00C9D",
         "max": 0,
         "min": 0,
@@ -7191,7 +7198,7 @@ PARAMETER_DATA = [
         "text": "HW_IOB91119_AI_1",
     },
     {
-        "idx": 1112,
+        "idx": 1113,
         "extid": "02678027F90C9E",
         "max": 0,
         "min": 0,
@@ -7200,7 +7207,7 @@ PARAMETER_DATA = [
         "text": "HW_IOB91119_AI_5",
     },
     {
-        "idx": 1114,
+        "idx": 1115,
         "extid": "00DFC719DF0865",
         "max": 0,
         "min": 0,
@@ -7209,7 +7216,7 @@ PARAMETER_DATA = [
         "text": "HW_IOB91119_DO10",
     },
     {
-        "idx": 1115,
+        "idx": 1116,
         "extid": "0031C978F30866",
         "max": 0,
         "min": 0,
@@ -7218,7 +7225,7 @@ PARAMETER_DATA = [
         "text": "HW_IOB91119_DO12",
     },
     {
-        "idx": 1116,
+        "idx": 1117,
         "extid": "00D140D41E0CD7",
         "max": 0,
         "min": 0,
@@ -7227,7 +7234,7 @@ PARAMETER_DATA = [
         "text": "HW_IOB91119_DO8",
     },
     {
-        "idx": 1117,
+        "idx": 1118,
         "extid": "001F7C0F440D38",
         "max": 0,
         "min": 0,
@@ -7236,7 +7243,7 @@ PARAMETER_DATA = [
         "text": "HW_IOB_B_DO5",
     },
     {
-        "idx": 1118,
+        "idx": 1119,
         "extid": "00A83CEBFE009E",
         "max": 0,
         "min": 0,
@@ -7245,7 +7252,7 @@ PARAMETER_DATA = [
         "text": "HW_LP",
     },
     {
-        "idx": 1119,
+        "idx": 1120,
         "extid": "0009CA5D1B03F9",
         "max": 0,
         "min": 0,
@@ -7254,7 +7261,7 @@ PARAMETER_DATA = [
         "text": "HW_LP_2",
     },
     {
-        "idx": 1120,
+        "idx": 1121,
         "extid": "00A04716A3009F",
         "max": 0,
         "min": 0,
@@ -7263,7 +7270,7 @@ PARAMETER_DATA = [
         "text": "HW_MB1",
     },
     {
-        "idx": 1121,
+        "idx": 1122,
         "extid": "00C5D3F8D803FA",
         "max": 0,
         "min": 0,
@@ -7272,7 +7279,7 @@ PARAMETER_DATA = [
         "text": "HW_MB1_2",
     },
     {
-        "idx": 1122,
+        "idx": 1123,
         "extid": "00394E471900A0",
         "max": 0,
         "min": 0,
@@ -7281,7 +7288,7 @@ PARAMETER_DATA = [
         "text": "HW_MB2",
     },
     {
-        "idx": 1123,
+        "idx": 1124,
         "extid": "00C795468103FB",
         "max": 0,
         "min": 0,
@@ -7290,7 +7297,7 @@ PARAMETER_DATA = [
         "text": "HW_MB2_2",
     },
     {
-        "idx": 1124,
+        "idx": 1125,
         "extid": "004EE167F30C45",
         "max": 0,
         "min": 0,
@@ -7299,7 +7306,7 @@ PARAMETER_DATA = [
         "text": "HW_MV_E12_EXT_1",
     },
     {
-        "idx": 1125,
+        "idx": 1126,
         "extid": "00584D02290C4C",
         "max": 0,
         "min": 0,
@@ -7308,7 +7315,7 @@ PARAMETER_DATA = [
         "text": "HW_MV_E12_PUMP_G1_DIGITAL",
     },
     {
-        "idx": 1126,
+        "idx": 1127,
         "extid": "024C365E680C16",
         "max": 0,
         "min": 0,
@@ -7317,7 +7324,7 @@ PARAMETER_DATA = [
         "text": "HW_MV_E12_T1",
     },
     {
-        "idx": 1128,
+        "idx": 1129,
         "extid": "003E61EE070C4A",
         "max": 0,
         "min": 0,
@@ -7326,7 +7333,7 @@ PARAMETER_DATA = [
         "text": "HW_MV_E12_VALVE_CLOSE",
     },
     {
-        "idx": 1129,
+        "idx": 1130,
         "extid": "00C6F0CD7B0C4B",
         "max": 0,
         "min": 0,
@@ -7335,7 +7342,7 @@ PARAMETER_DATA = [
         "text": "HW_MV_E12_VALVE_OPEN",
     },
     {
-        "idx": 1130,
+        "idx": 1131,
         "extid": "027941CCB0007B",
         "max": 0,
         "min": 0,
@@ -7344,7 +7351,7 @@ PARAMETER_DATA = [
         "text": "HW_PGU_L1",
     },
     {
-        "idx": 1132,
+        "idx": 1133,
         "extid": "02E0489D0A007C",
         "max": 0,
         "min": 0,
@@ -7353,7 +7360,7 @@ PARAMETER_DATA = [
         "text": "HW_PGU_L2",
     },
     {
-        "idx": 1134,
+        "idx": 1135,
         "extid": "02974FAD9C007D",
         "max": 0,
         "min": 0,
@@ -7362,7 +7369,7 @@ PARAMETER_DATA = [
         "text": "HW_PGU_L3",
     },
     {
-        "idx": 1136,
+        "idx": 1137,
         "extid": "006E175E7705BE",
         "max": 16777216,
         "min": 0,
@@ -7371,7 +7378,7 @@ PARAMETER_DATA = [
         "text": "HW_PHASE_DETECTOR",
     },
     {
-        "idx": 1137,
+        "idx": 1138,
         "extid": "005880FF310956",
         "max": 16777216,
         "min": 0,
@@ -7380,7 +7387,7 @@ PARAMETER_DATA = [
         "text": "HW_PHASE_DETECTOR_2",
     },
     {
-        "idx": 1138,
+        "idx": 1139,
         "extid": "00E44C966C05AD",
         "max": 0,
         "min": 0,
@@ -7389,7 +7396,7 @@ PARAMETER_DATA = [
         "text": "HW_POOL_EXT_1",
     },
     {
-        "idx": 1139,
+        "idx": 1140,
         "extid": "217A829F8F05AC",
         "max": 100,
         "min": 0,
@@ -7398,7 +7405,7 @@ PARAMETER_DATA = [
         "text": "HW_POOL_VALVE",
     },
     {
-        "idx": 1140,
+        "idx": 1141,
         "extid": "00CCEB2A1205AB",
         "max": 0,
         "min": 0,
@@ -7407,7 +7414,7 @@ PARAMETER_DATA = [
         "text": "HW_POOL_VALVE_CLOSE",
     },
     {
-        "idx": 1141,
+        "idx": 1142,
         "extid": "002E34962805AA",
         "max": 0,
         "min": 0,
@@ -7416,7 +7423,7 @@ PARAMETER_DATA = [
         "text": "HW_POOL_VALVE_OPEN",
     },
     {
-        "idx": 1142,
+        "idx": 1143,
         "extid": "00FD57CF6C05B7",
         "max": 0,
         "min": 0,
@@ -7425,7 +7432,7 @@ PARAMETER_DATA = [
         "text": "HW_PROTECTIVE_ANODE",
     },
     {
-        "idx": 1143,
+        "idx": 1144,
         "extid": "00BBFDBAA602FD",
         "max": 0,
         "min": 0,
@@ -7434,7 +7441,7 @@ PARAMETER_DATA = [
         "text": "HW_PUMP_DHW_DIGITAL",
     },
     {
-        "idx": 1144,
+        "idx": 1145,
         "extid": "0078C9526005B1",
         "max": 0,
         "min": 0,
@@ -7443,7 +7450,7 @@ PARAMETER_DATA = [
         "text": "HW_PUMP_E71_G71_DIGITAL",
     },
     {
-        "idx": 1145,
+        "idx": 1146,
         "extid": "00C5033EAE07CE",
         "max": 0,
         "min": 0,
@@ -7452,7 +7459,7 @@ PARAMETER_DATA = [
         "text": "HW_PUMP_E72_G71_DIGITAL",
     },
     {
-        "idx": 1146,
+        "idx": 1147,
         "extid": "004617B8D502A7",
         "max": 0,
         "min": 0,
@@ -7461,7 +7468,7 @@ PARAMETER_DATA = [
         "text": "HW_PUMP_G1_DIGITAL",
     },
     {
-        "idx": 1147,
+        "idx": 1148,
         "extid": "217EFB651D02FF",
         "max": 100,
         "min": 0,
@@ -7470,7 +7477,7 @@ PARAMETER_DATA = [
         "text": "HW_PUMP_G2_ANALOG",
     },
     {
-        "idx": 1148,
+        "idx": 1149,
         "extid": "21769985D40BBB",
         "max": 100,
         "min": 0,
@@ -7479,7 +7486,7 @@ PARAMETER_DATA = [
         "text": "HW_PUMP_G2_ANALOG_2",
     },
     {
-        "idx": 1149,
+        "idx": 1150,
         "extid": "007F9A841000A1",
         "max": 0,
         "min": 0,
@@ -7488,7 +7495,7 @@ PARAMETER_DATA = [
         "text": "HW_PUMP_G2_DIGITAL",
     },
     {
-        "idx": 1150,
+        "idx": 1151,
         "extid": "00143A281603FC",
         "max": 0,
         "min": 0,
@@ -7497,7 +7504,7 @@ PARAMETER_DATA = [
         "text": "HW_PUMP_G2_DIGITAL_2",
     },
     {
-        "idx": 1151,
+        "idx": 1152,
         "extid": "01B25165830300",
         "max": 0,
         "min": 0,
@@ -7506,7 +7513,7 @@ PARAMETER_DATA = [
         "text": "HW_PUMP_G3_ANALOG",
     },
     {
-        "idx": 1152,
+        "idx": 1153,
         "extid": "0068E1905300A2",
         "max": 0,
         "min": 0,
@@ -7515,7 +7522,7 @@ PARAMETER_DATA = [
         "text": "HW_PUMP_G3_DIGITAL",
     },
     {
-        "idx": 1153,
+        "idx": 1154,
         "extid": "00D5B4F7D603FD",
         "max": 0,
         "min": 0,
@@ -7524,7 +7531,7 @@ PARAMETER_DATA = [
         "text": "HW_PUMP_G3_DIGITAL_2",
     },
     {
-        "idx": 1154,
+        "idx": 1155,
         "extid": "6169F65B800244",
         "max": 30,
         "min": 1,
@@ -7533,7 +7540,7 @@ PARAMETER_DATA = [
         "text": "HW_ROOM_BUZZER_INTERVALL",
     },
     {
-        "idx": 1155,
+        "idx": 1156,
         "extid": "018A73E4350168",
         "max": 0,
         "min": 0,
@@ -7542,7 +7549,7 @@ PARAMETER_DATA = [
         "text": "HW_ROOM_BUZZER_MODE",
     },
     {
-        "idx": 1156,
+        "idx": 1157,
         "extid": "0289452993016B",
         "max": 0,
         "min": 0,
@@ -7551,7 +7558,7 @@ PARAMETER_DATA = [
         "text": "HW_ROOM_BUZZER_OFF_TIME",
     },
     {
-        "idx": 1158,
+        "idx": 1159,
         "extid": "02B1838E70016A",
         "max": 0,
         "min": 0,
@@ -7560,7 +7567,7 @@ PARAMETER_DATA = [
         "text": "HW_ROOM_BUZZER_ON_TIME",
     },
     {
-        "idx": 1160,
+        "idx": 1161,
         "extid": "0664DD577800A3",
         "max": 0,
         "min": 0,
@@ -7569,7 +7576,7 @@ PARAMETER_DATA = [
         "text": "HW_ROOM_GT5",
     },
     {
-        "idx": 1162,
+        "idx": 1163,
         "extid": "02EAE3D63905B3",
         "max": 0,
         "min": 0,
@@ -7578,7 +7585,7 @@ PARAMETER_DATA = [
         "text": "HW_ROOM_GT5_GLOBAL",
     },
     {
-        "idx": 1164,
+        "idx": 1165,
         "extid": "01BB7F1B9900A4",
         "max": 0,
         "min": 0,
@@ -7587,7 +7594,7 @@ PARAMETER_DATA = [
         "text": "HW_ROOM_LED_MODE",
     },
     {
-        "idx": 1165,
+        "idx": 1166,
         "extid": "02EE3778D900A5",
         "max": 0,
         "min": 0,
@@ -7596,7 +7603,7 @@ PARAMETER_DATA = [
         "text": "HW_ROOM_POT",
     },
     {
-        "idx": 1167,
+        "idx": 1168,
         "extid": "021D45302105B2",
         "max": 0,
         "min": 0,
@@ -7605,7 +7612,7 @@ PARAMETER_DATA = [
         "text": "HW_ROOM_POT_GLOBAL",
     },
     {
-        "idx": 1169,
+        "idx": 1170,
         "extid": "0E5F7D58E80242",
         "max": 0,
         "min": 0,
@@ -7614,7 +7621,7 @@ PARAMETER_DATA = [
         "text": "HW_ROOM_TEMP",
     },
     {
-        "idx": 1171,
+        "idx": 1172,
         "extid": "0EA370F2E60570",
         "max": 0,
         "min": 0,
@@ -7623,7 +7630,7 @@ PARAMETER_DATA = [
         "text": "HW_ROOM_TEMP_GLOBAL",
     },
     {
-        "idx": 1173,
+        "idx": 1174,
         "extid": "0063479E31065F",
         "max": 0,
         "min": 0,
@@ -7632,7 +7639,7 @@ PARAMETER_DATA = [
         "text": "HW_SUMMARY_ALARM",
     },
     {
-        "idx": 1174,
+        "idx": 1175,
         "extid": "00A8BC3F9F00A6",
         "max": 0,
         "min": 0,
@@ -7641,7 +7648,7 @@ PARAMETER_DATA = [
         "text": "HW_SYSTEM_ON",
     },
     {
-        "idx": 1175,
+        "idx": 1176,
         "extid": "00D3CF541200A7",
         "max": 50331648,
         "min": 0,
@@ -7650,7 +7657,7 @@ PARAMETER_DATA = [
         "text": "HW_VXV",
     },
     {
-        "idx": 1176,
+        "idx": 1177,
         "extid": "00A0DF341503FE",
         "max": 50331648,
         "min": 0,
@@ -7659,7 +7666,7 @@ PARAMETER_DATA = [
         "text": "HW_VXV_2",
     },
     {
-        "idx": 1177,
+        "idx": 1178,
         "extid": "01C34AAE520916",
         "max": 0,
         "min": 0,
@@ -7668,7 +7675,7 @@ PARAMETER_DATA = [
         "text": "ICONS_IOB6126_EXTERN_BITMASK",
     },
     {
-        "idx": 1178,
+        "idx": 1179,
         "extid": "000EC773520D0B",
         "max": 0,
         "min": 0,
@@ -7677,7 +7684,16 @@ PARAMETER_DATA = [
         "text": "INIT_MV_STATUS_DONE",
     },
     {
-        "idx": 1179,
+        "idx": 1180,
+        "extid": "007143FF1E0D79",
+        "max": 0,
+        "min": 0,
+        "format": "int",
+        "read": 0,
+        "text": "INSTALLER_SHORTCUT_WATCH",
+    },
+    {
+        "idx": 1181,
         "extid": "814D48DDB806C0",
         "max": 0,
         "min": 0,
@@ -7686,7 +7702,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_BOOT_COUNT",
     },
     {
-        "idx": 1180,
+        "idx": 1182,
         "extid": "01267BEB2A02AC",
         "max": 0,
         "min": 0,
@@ -7695,7 +7711,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_EXTERN_HEAT_CONNECTED",
     },
     {
-        "idx": 1181,
+        "idx": 1183,
         "extid": "01EC9ED3470448",
         "max": 0,
         "min": 0,
@@ -7704,7 +7720,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_EXTERN_HEAT_CONNECTED_2",
     },
     {
-        "idx": 1182,
+        "idx": 1184,
         "extid": "019B99E3D10449",
         "max": 0,
         "min": 0,
@@ -7713,7 +7729,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_EXTERN_HEAT_CONNECTED_3",
     },
     {
-        "idx": 1183,
+        "idx": 1185,
         "extid": "0105FD7672044B",
         "max": 0,
         "min": 0,
@@ -7722,7 +7738,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_EXTERN_HEAT_CONNECTED_4",
     },
     {
-        "idx": 1184,
+        "idx": 1186,
         "extid": "0172FA46E4044A",
         "max": 0,
         "min": 0,
@@ -7731,7 +7747,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_EXTERN_HEAT_CONNECTED_5",
     },
     {
-        "idx": 1185,
+        "idx": 1187,
         "extid": "01EBF3175E044C",
         "max": 0,
         "min": 0,
@@ -7740,7 +7756,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_EXTERN_HEAT_CONNECTED_6",
     },
     {
-        "idx": 1186,
+        "idx": 1188,
         "extid": "019CF427C8044D",
         "max": 0,
         "min": 0,
@@ -7749,7 +7765,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_EXTERN_HEAT_CONNECTED_7",
     },
     {
-        "idx": 1187,
+        "idx": 1189,
         "extid": "1212C74ED502AD",
         "max": 0,
         "min": 0,
@@ -7758,7 +7774,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_EXTERN_HEAT_VERSION",
     },
     {
-        "idx": 1189,
+        "idx": 1191,
         "extid": "12D9064DEE0442",
         "max": 0,
         "min": 0,
@@ -7767,7 +7783,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_EXTERN_HEAT_VERSION_2",
     },
     {
-        "idx": 1191,
+        "idx": 1193,
         "extid": "12AE017D780443",
         "max": 0,
         "min": 0,
@@ -7776,7 +7792,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_EXTERN_HEAT_VERSION_3",
     },
     {
-        "idx": 1193,
+        "idx": 1195,
         "extid": "123065E8DB0444",
         "max": 0,
         "min": 0,
@@ -7785,7 +7801,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_EXTERN_HEAT_VERSION_4",
     },
     {
-        "idx": 1195,
+        "idx": 1197,
         "extid": "124762D84D0445",
         "max": 0,
         "min": 0,
@@ -7794,7 +7810,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_EXTERN_HEAT_VERSION_5",
     },
     {
-        "idx": 1197,
+        "idx": 1199,
         "extid": "12DE6B89F70446",
         "max": 0,
         "min": 0,
@@ -7803,7 +7819,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_EXTERN_HEAT_VERSION_6",
     },
     {
-        "idx": 1199,
+        "idx": 1201,
         "extid": "12A96CB9610447",
         "max": 0,
         "min": 0,
@@ -7812,7 +7828,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_EXTERN_HEAT_VERSION_7",
     },
     {
-        "idx": 1201,
+        "idx": 1203,
         "extid": "128C4247A708E4",
         "max": 0,
         "min": 0,
@@ -7821,7 +7837,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_EXTERN_HEAT_VERSION_GLOBAL",
     },
     {
-        "idx": 1203,
+        "idx": 1205,
         "extid": "016D07017505D8",
         "max": 0,
         "min": 0,
@@ -7830,7 +7846,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_MAIN_COOLING_CONNECTED",
     },
     {
-        "idx": 1204,
+        "idx": 1206,
         "extid": "122B16C99D05D9",
         "max": 0,
         "min": 0,
@@ -7839,7 +7855,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_MAIN_COOLING_VERSION",
     },
     {
-        "idx": 1206,
+        "idx": 1208,
         "extid": "01F905031502E4",
         "max": 0,
         "min": 0,
@@ -7848,7 +7864,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_POOL_CONNECTED",
     },
     {
-        "idx": 1207,
+        "idx": 1209,
         "extid": "1214C98A4702E5",
         "max": 0,
         "min": 0,
@@ -7857,7 +7873,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_POOL_VERSION",
     },
     {
-        "idx": 1209,
+        "idx": 1211,
         "extid": "010CA1C11D0AC9",
         "max": 0,
         "min": 0,
@@ -7866,7 +7882,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_SOLAR_CONNECTED",
     },
     {
-        "idx": 1210,
+        "idx": 1212,
         "extid": "12C3AB84680ACA",
         "max": 0,
         "min": 0,
@@ -7875,7 +7891,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_SOLAR_VERSION",
     },
     {
-        "idx": 1212,
+        "idx": 1214,
         "extid": "01232004980803",
         "max": 0,
         "min": 0,
@@ -7884,7 +7900,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_SUB_COOLING_CONNECTED",
     },
     {
-        "idx": 1213,
+        "idx": 1215,
         "extid": "1274C8946A0804",
         "max": 0,
         "min": 0,
@@ -7893,7 +7909,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_SUB_COOLING_VERSION",
     },
     {
-        "idx": 1215,
+        "idx": 1217,
         "extid": "0180BBBABC02E6",
         "max": 0,
         "min": 0,
@@ -7902,7 +7918,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_WOOD_HEATING_CONNECTED",
     },
     {
-        "idx": 1216,
+        "idx": 1218,
         "extid": "01D7E9397907CF",
         "max": 0,
         "min": 0,
@@ -7911,7 +7927,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_WOOD_HEATING_CONNECTED_2",
     },
     {
-        "idx": 1217,
+        "idx": 1219,
         "extid": "12C8D95C1B02E7",
         "max": 0,
         "min": 0,
@@ -7920,7 +7936,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_WOOD_HEATING_VERSION",
     },
     {
-        "idx": 1219,
+        "idx": 1221,
         "extid": "127FC61C7807D0",
         "max": 0,
         "min": 0,
@@ -7929,7 +7945,7 @@ PARAMETER_DATA = [
         "text": "IOB6126_WOOD_HEATING_VERSION_2",
     },
     {
-        "idx": 1221,
+        "idx": 1223,
         "extid": "013094A8A503FF",
         "max": 0,
         "min": 0,
@@ -7938,7 +7954,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_AW_COMP_CONNECTED",
     },
     {
-        "idx": 1222,
+        "idx": 1224,
         "extid": "01BF5051060403",
         "max": 0,
         "min": 0,
@@ -7947,7 +7963,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_AW_COMP_CONNECTED_2",
     },
     {
-        "idx": 1223,
+        "idx": 1225,
         "extid": "124D8856C20400",
         "max": 0,
         "min": 0,
@@ -7956,7 +7972,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_AW_COMP_VERSION",
     },
     {
-        "idx": 1225,
+        "idx": 1227,
         "extid": "12CFE90E610404",
         "max": 0,
         "min": 0,
@@ -7965,7 +7981,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_AW_COMP_VERSION_2",
     },
     {
-        "idx": 1227,
+        "idx": 1229,
         "extid": "01F020CB6D02AB",
         "max": 0,
         "min": 0,
@@ -7974,7 +7990,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_AW_HEAT_CONNECTED",
     },
     {
-        "idx": 1228,
+        "idx": 1230,
         "extid": "0168C8FC160B74",
         "max": 0,
         "min": 0,
@@ -7983,7 +7999,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_AW_HEAT_CONNECTED_2",
     },
     {
-        "idx": 1229,
+        "idx": 1231,
         "extid": "1299651BCA042E",
         "max": 0,
         "min": 0,
@@ -7992,7 +8008,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_AW_HEAT_VERSION",
     },
     {
-        "idx": 1231,
+        "idx": 1233,
         "extid": "0113477C900BD6",
         "max": 0,
         "min": 0,
@@ -8001,7 +8017,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_AW_LIGHT_HEAT_CONNECTED",
     },
     {
-        "idx": 1232,
+        "idx": 1234,
         "extid": "019CDFA6AE0BD7",
         "max": 0,
         "min": 0,
@@ -8010,7 +8026,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_AW_LIGHT_HEAT_CONNECTED_2",
     },
     {
-        "idx": 1233,
+        "idx": 1235,
         "extid": "12FEAC864C0BD8",
         "max": 0,
         "min": 0,
@@ -8019,7 +8035,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_AW_LIGHT_HEAT_VERSION",
     },
     {
-        "idx": 1235,
+        "idx": 1237,
         "extid": "12EC3ADA540BD9",
         "max": 0,
         "min": 0,
@@ -8028,7 +8044,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_AW_LIGHT_HEAT_VERSION_2",
     },
     {
-        "idx": 1237,
+        "idx": 1239,
         "extid": "81AE30D1F906BF",
         "max": 0,
         "min": 0,
@@ -8037,7 +8053,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_BOOT_COUNT",
     },
     {
-        "idx": 1238,
+        "idx": 1240,
         "extid": "81812E7C260639",
         "max": 0,
         "min": 0,
@@ -8046,7 +8062,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_CONNECTED_BITMASK",
     },
     {
-        "idx": 1239,
+        "idx": 1241,
         "extid": "A19E82E3A00CC8",
         "max": 1,
         "min": 0,
@@ -8055,7 +8071,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_DO8_G6_OR_SUMMARY_ALARM",
     },
     {
-        "idx": 1240,
+        "idx": 1242,
         "extid": "01DF7DAE6102A8",
         "max": 0,
         "min": 0,
@@ -8064,7 +8080,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_LW_CONNECTED",
     },
     {
-        "idx": 1241,
+        "idx": 1243,
         "extid": "01F9A509900401",
         "max": 0,
         "min": 0,
@@ -8073,7 +8089,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_LW_CONNECTED_2",
     },
     {
-        "idx": 1242,
+        "idx": 1244,
         "extid": "01783DD8E70BCC",
         "max": 0,
         "min": 0,
@@ -8082,7 +8098,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_LW_DACH_LIGHT_CONNECTED",
     },
     {
-        "idx": 1243,
+        "idx": 1245,
         "extid": "012D1A45140BCD",
         "max": 0,
         "min": 0,
@@ -8091,7 +8107,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_LW_DACH_LIGHT_CONNECTED_2",
     },
     {
-        "idx": 1244,
+        "idx": 1246,
         "extid": "01002542290D02",
         "max": 0,
         "min": 0,
@@ -8100,7 +8116,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_LW_DACH_LIGHT_HA_CONNECTED",
     },
     {
-        "idx": 1245,
+        "idx": 1247,
         "extid": "0168B9BD960D03",
         "max": 0,
         "min": 0,
@@ -8109,7 +8125,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_LW_DACH_LIGHT_HA_CONNECTED_2",
     },
     {
-        "idx": 1246,
+        "idx": 1248,
         "extid": "1283CBAC440D04",
         "max": 0,
         "min": 0,
@@ -8118,7 +8134,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_LW_DACH_LIGHT_HA_VERSION",
     },
     {
-        "idx": 1248,
+        "idx": 1250,
         "extid": "12FF58E4ED0D05",
         "max": 0,
         "min": 0,
@@ -8127,7 +8143,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_LW_DACH_LIGHT_HA_VERSION_2",
     },
     {
-        "idx": 1250,
+        "idx": 1252,
         "extid": "120A248A970BCE",
         "max": 0,
         "min": 0,
@@ -8136,7 +8152,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_LW_DACH_LIGHT_VERSION",
     },
     {
-        "idx": 1252,
+        "idx": 1254,
         "extid": "1287407E230BCF",
         "max": 0,
         "min": 0,
@@ -8145,7 +8161,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_LW_DACH_LIGHT_VERSION_2",
     },
     {
-        "idx": 1254,
+        "idx": 1256,
         "extid": "01720E94C40ACC",
         "max": 0,
         "min": 0,
@@ -8154,7 +8170,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_LW_LIGHT_CONNECTED",
     },
     {
-        "idx": 1255,
+        "idx": 1257,
         "extid": "01ECD935FD0AEB",
         "max": 0,
         "min": 0,
@@ -8163,7 +8179,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_LW_LIGHT_CONNECTED_2",
     },
     {
-        "idx": 1256,
+        "idx": 1258,
         "extid": "12EB3DE1FA0ACD",
         "max": 0,
         "min": 0,
@@ -8172,7 +8188,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_LW_LIGHT_VERSION",
     },
     {
-        "idx": 1258,
+        "idx": 1260,
         "extid": "128D7332000AEC",
         "max": 0,
         "min": 0,
@@ -8181,7 +8197,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_LW_LIGHT_VERSION_2",
     },
     {
-        "idx": 1260,
+        "idx": 1262,
         "extid": "125882C4E602A9",
         "max": 0,
         "min": 0,
@@ -8190,7 +8206,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_LW_VERSION",
     },
     {
-        "idx": 1262,
+        "idx": 1264,
         "extid": "12200008A50402",
         "max": 0,
         "min": 0,
@@ -8199,7 +8215,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_LW_VERSION_2",
     },
     {
-        "idx": 1264,
+        "idx": 1266,
         "extid": "00B0CF9E6D0B8C",
         "max": 0,
         "min": 0,
@@ -8208,7 +8224,7 @@ PARAMETER_DATA = [
         "text": "IOB91119_REBOOT",
     },
     {
-        "idx": 1265,
+        "idx": 1267,
         "extid": "012516229700AA",
         "max": 0,
         "min": 0,
@@ -8217,7 +8233,7 @@ PARAMETER_DATA = [
         "text": "IOBX10_CONNECTED",
     },
     {
-        "idx": 1266,
+        "idx": 1268,
         "extid": "1282BF1AFF00AB",
         "max": 0,
         "min": 0,
@@ -8226,7 +8242,7 @@ PARAMETER_DATA = [
         "text": "IOBX10_VERSION",
     },
     {
-        "idx": 1268,
+        "idx": 1270,
         "extid": "11602326BB0C65",
         "max": 0,
         "min": 0,
@@ -8235,7 +8251,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_AW_LIGHT_COMP_CONNECTED",
     },
     {
-        "idx": 1269,
+        "idx": 1271,
         "extid": "120FA10E7B0C6B",
         "max": 0,
         "min": 0,
@@ -8244,7 +8260,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_AW_LIGHT_COMP_VERSION",
     },
     {
-        "idx": 1271,
+        "idx": 1273,
         "extid": "01797ED2370D1E",
         "max": 0,
         "min": 0,
@@ -8253,7 +8269,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_EXTERN_HEAT_GENERATION",
     },
     {
-        "idx": 1272,
+        "idx": 1274,
         "extid": "014CF768560D1F",
         "max": 0,
         "min": 0,
@@ -8262,7 +8278,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_EXTERN_HEAT_GENERATION_2",
     },
     {
-        "idx": 1273,
+        "idx": 1275,
         "extid": "013BF058C00D20",
         "max": 0,
         "min": 0,
@@ -8271,7 +8287,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_EXTERN_HEAT_GENERATION_3",
     },
     {
-        "idx": 1274,
+        "idx": 1276,
         "extid": "01A594CD630D21",
         "max": 0,
         "min": 0,
@@ -8280,7 +8296,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_EXTERN_HEAT_GENERATION_4",
     },
     {
-        "idx": 1275,
+        "idx": 1277,
         "extid": "01D293FDF50D22",
         "max": 0,
         "min": 0,
@@ -8289,7 +8305,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_EXTERN_HEAT_GENERATION_5",
     },
     {
-        "idx": 1276,
+        "idx": 1278,
         "extid": "014B9AAC4F0D23",
         "max": 0,
         "min": 0,
@@ -8298,7 +8314,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_EXTERN_HEAT_GENERATION_6",
     },
     {
-        "idx": 1277,
+        "idx": 1279,
         "extid": "013C9D9CD90D24",
         "max": 0,
         "min": 0,
@@ -8307,7 +8323,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_EXTERN_HEAT_GENERATION_7",
     },
     {
-        "idx": 1278,
+        "idx": 1280,
         "extid": "01F7D26D5F0D25",
         "max": 0,
         "min": 0,
@@ -8316,7 +8332,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_EXTERN_HEAT_REVISION",
     },
     {
-        "idx": 1279,
+        "idx": 1281,
         "extid": "01BA0DA9480D26",
         "max": 0,
         "min": 0,
@@ -8325,7 +8341,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_EXTERN_HEAT_REVISION_2",
     },
     {
-        "idx": 1280,
+        "idx": 1282,
         "extid": "01CD0A99DE0D27",
         "max": 0,
         "min": 0,
@@ -8334,7 +8350,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_EXTERN_HEAT_REVISION_3",
     },
     {
-        "idx": 1281,
+        "idx": 1283,
         "extid": "01536E0C7D0D28",
         "max": 0,
         "min": 0,
@@ -8343,7 +8359,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_EXTERN_HEAT_REVISION_4",
     },
     {
-        "idx": 1282,
+        "idx": 1284,
         "extid": "0124693CEB0D29",
         "max": 0,
         "min": 0,
@@ -8352,7 +8368,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_EXTERN_HEAT_REVISION_5",
     },
     {
-        "idx": 1283,
+        "idx": 1285,
         "extid": "01BD606D510D2A",
         "max": 0,
         "min": 0,
@@ -8361,7 +8377,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_EXTERN_HEAT_REVISION_6",
     },
     {
-        "idx": 1284,
+        "idx": 1286,
         "extid": "01CA675DC70D2B",
         "max": 0,
         "min": 0,
@@ -8370,7 +8386,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_EXTERN_HEAT_REVISION_7",
     },
     {
-        "idx": 1285,
+        "idx": 1287,
         "extid": "01B1D7F6620D2C",
         "max": 0,
         "min": 0,
@@ -8379,7 +8395,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_EXTERN_HEAT_VERSION",
     },
     {
-        "idx": 1286,
+        "idx": 1288,
         "extid": "01B738ED3F0D2D",
         "max": 0,
         "min": 0,
@@ -8388,7 +8404,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_EXTERN_HEAT_VERSION_2",
     },
     {
-        "idx": 1287,
+        "idx": 1289,
         "extid": "01C03FDDA90D2E",
         "max": 0,
         "min": 0,
@@ -8397,7 +8413,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_EXTERN_HEAT_VERSION_3",
     },
     {
-        "idx": 1288,
+        "idx": 1290,
         "extid": "015E5B480A0D2F",
         "max": 0,
         "min": 0,
@@ -8406,7 +8422,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_EXTERN_HEAT_VERSION_4",
     },
     {
-        "idx": 1289,
+        "idx": 1291,
         "extid": "01295C789C0D30",
         "max": 0,
         "min": 0,
@@ -8415,7 +8431,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_EXTERN_HEAT_VERSION_5",
     },
     {
-        "idx": 1290,
+        "idx": 1292,
         "extid": "01B05529260D31",
         "max": 0,
         "min": 0,
@@ -8424,7 +8440,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_EXTERN_HEAT_VERSION_6",
     },
     {
-        "idx": 1291,
+        "idx": 1293,
         "extid": "01C75219B00D32",
         "max": 0,
         "min": 0,
@@ -8433,7 +8449,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_EXTERN_HEAT_VERSION_7",
     },
     {
-        "idx": 1292,
+        "idx": 1294,
         "extid": "019FE4CB990D48",
         "max": 0,
         "min": 0,
@@ -8442,7 +8458,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_HUMIDITY_2_CONNECTED",
     },
     {
-        "idx": 1293,
+        "idx": 1295,
         "extid": "015E6A14590D49",
         "max": 0,
         "min": 0,
@@ -8451,7 +8467,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_HUMIDITY_3_CONNECTED",
     },
     {
-        "idx": 1294,
+        "idx": 1296,
         "extid": "01762ABE240D47",
         "max": 0,
         "min": 0,
@@ -8460,7 +8476,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_HUMIDITY_CONNECTED",
     },
     {
-        "idx": 1295,
+        "idx": 1297,
         "extid": "816A19F20A0D51",
         "max": 0,
         "min": 0,
@@ -8469,7 +8485,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_HUMIDITY_CONNECTED_BITMASK",
     },
     {
-        "idx": 1296,
+        "idx": 1298,
         "extid": "016F2C72870D3D",
         "max": 0,
         "min": 0,
@@ -8478,7 +8494,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_HUMIDITY_GENERATION",
     },
     {
-        "idx": 1297,
+        "idx": 1299,
         "extid": "017EE473540D3E",
         "max": 0,
         "min": 0,
@@ -8487,7 +8503,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_HUMIDITY_GENERATION_2",
     },
     {
-        "idx": 1298,
+        "idx": 1300,
         "extid": "0109E343C20D3F",
         "max": 0,
         "min": 0,
@@ -8496,7 +8512,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_HUMIDITY_GENERATION_3",
     },
     {
-        "idx": 1299,
+        "idx": 1301,
         "extid": "01F65069B80D43",
         "max": 0,
         "min": 0,
@@ -8505,7 +8521,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_HUMIDITY_REVISION",
     },
     {
-        "idx": 1300,
+        "idx": 1302,
         "extid": "01AC5F09F80D44",
         "max": 0,
         "min": 0,
@@ -8514,7 +8530,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_HUMIDITY_REVISION_2",
     },
     {
-        "idx": 1301,
+        "idx": 1303,
         "extid": "01DB58396E0D45",
         "max": 0,
         "min": 0,
@@ -8523,7 +8539,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_HUMIDITY_REVISION_3",
     },
     {
-        "idx": 1302,
+        "idx": 1304,
         "extid": "01E8A217230D40",
         "max": 0,
         "min": 0,
@@ -8532,7 +8548,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_HUMIDITY_VERSION",
     },
     {
-        "idx": 1303,
+        "idx": 1305,
         "extid": "01895718E00D41",
         "max": 0,
         "min": 0,
@@ -8541,7 +8557,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_HUMIDITY_VERSION_2",
     },
     {
-        "idx": 1304,
+        "idx": 1306,
         "extid": "01FE5028760D42",
         "max": 0,
         "min": 0,
@@ -8550,7 +8566,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_HUMIDITY_VERSION_3",
     },
     {
-        "idx": 1305,
+        "idx": 1307,
         "extid": "01C29C0E9E0B6D",
         "max": 0,
         "min": 0,
@@ -8559,7 +8575,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_OIL_CONNECTED",
     },
     {
-        "idx": 1306,
+        "idx": 1308,
         "extid": "01442C9EA50D36",
         "max": 0,
         "min": 0,
@@ -8568,7 +8584,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_OIL_GENERATION",
     },
     {
-        "idx": 1307,
+        "idx": 1309,
         "extid": "014B5EE4440D37",
         "max": 0,
         "min": 0,
@@ -8577,7 +8593,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_OIL_REVISION",
     },
     {
-        "idx": 1308,
+        "idx": 1310,
         "extid": "025BDDF7D30B6E",
         "max": 0,
         "min": 0,
@@ -8586,7 +8602,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_OIL_VERSION",
     },
     {
-        "idx": 1310,
+        "idx": 1312,
         "extid": "0134DBC34B0D33",
         "max": 0,
         "min": 0,
@@ -8595,7 +8611,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_POOL_GENERATION",
     },
     {
-        "idx": 1311,
+        "idx": 1313,
         "extid": "0130484EC10D34",
         "max": 0,
         "min": 0,
@@ -8604,7 +8620,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_POOL_REVISION",
     },
     {
-        "idx": 1312,
+        "idx": 1314,
         "extid": "01FC5CDC190D35",
         "max": 0,
         "min": 0,
@@ -8613,7 +8629,7 @@ PARAMETER_DATA = [
         "text": "IOB_B_POOL_VERSION",
     },
     {
-        "idx": 1313,
+        "idx": 1315,
         "extid": "8312E8EDF90171",
         "max": 0,
         "min": 0,
@@ -8622,7 +8638,7 @@ PARAMETER_DATA = [
         "text": "LANGUAGE",
     },
     {
-        "idx": 1317,
+        "idx": 1319,
         "extid": "82466A831A017F",
         "max": 0,
         "min": 0,
@@ -8631,7 +8647,7 @@ PARAMETER_DATA = [
         "text": "LANGUAGE_ISO639_1",
     },
     {
-        "idx": 1319,
+        "idx": 1321,
         "extid": "E2A569B174085E",
         "max": 1200,
         "min": 0,
@@ -8640,7 +8656,7 @@ PARAMETER_DATA = [
         "text": "LP_2_ALARM_DELAY",
     },
     {
-        "idx": 1321,
+        "idx": 1323,
         "extid": "E2EBD0344400BD",
         "max": 1200,
         "min": 0,
@@ -8649,7 +8665,7 @@ PARAMETER_DATA = [
         "text": "LP_ALARM_DELAY",
     },
     {
-        "idx": 1323,
+        "idx": 1325,
         "extid": "E1385ECE850AD2",
         "max": 5,
         "min": 0,
@@ -8658,7 +8674,7 @@ PARAMETER_DATA = [
         "text": "LP_STOPS_UNTIL_ALARM",
     },
     {
-        "idx": 1324,
+        "idx": 1326,
         "extid": "E18E05B9030AE5",
         "max": 5,
         "min": 0,
@@ -8667,7 +8683,7 @@ PARAMETER_DATA = [
         "text": "LP_STOPS_UNTIL_ALARM_2",
     },
     {
-        "idx": 1325,
+        "idx": 1327,
         "extid": "E132ACFBA80AD6",
         "max": 60,
         "min": 0,
@@ -8676,7 +8692,7 @@ PARAMETER_DATA = [
         "text": "LP_STOP_MAX_TIME",
     },
     {
-        "idx": 1326,
+        "idx": 1328,
         "extid": "E1F89C2D3D0AE6",
         "max": 60,
         "min": 0,
@@ -8685,7 +8701,7 @@ PARAMETER_DATA = [
         "text": "LP_STOP_MAX_TIME_2",
     },
     {
-        "idx": 1327,
+        "idx": 1329,
         "extid": "E12165367B0AD4",
         "max": 5,
         "min": 1,
@@ -8694,7 +8710,7 @@ PARAMETER_DATA = [
         "text": "LP_STOP_TIME_WINDOW",
     },
     {
-        "idx": 1328,
+        "idx": 1330,
         "extid": "E1B75C16250AE7",
         "max": 5,
         "min": 1,
@@ -8703,7 +8719,7 @@ PARAMETER_DATA = [
         "text": "LP_STOP_TIME_WINDOW_2",
     },
     {
-        "idx": 1329,
+        "idx": 1331,
         "extid": "4067368D550077",
         "max": 16777216,
         "min": 0,
@@ -8712,7 +8728,7 @@ PARAMETER_DATA = [
         "text": "MAN_OP",
     },
     {
-        "idx": 1330,
+        "idx": 1332,
         "extid": "006E7A13440597",
         "max": 0,
         "min": 0,
@@ -8721,7 +8737,7 @@ PARAMETER_DATA = [
         "text": "MAN_OP_MIXING_VALVE_CLOSE_GLOBAL",
     },
     {
-        "idx": 1331,
+        "idx": 1333,
         "extid": "0031D6749C097A",
         "max": 0,
         "min": 0,
@@ -8730,7 +8746,7 @@ PARAMETER_DATA = [
         "text": "MAN_OP_MIXING_VALVE_D_VALVE_GLOBAL",
     },
     {
-        "idx": 1332,
+        "idx": 1334,
         "extid": "0099C0DA3F097D",
         "max": 0,
         "min": 0,
@@ -8739,7 +8755,7 @@ PARAMETER_DATA = [
         "text": "MAN_OP_MIXING_VALVE_G2_GLOBAL",
     },
     {
-        "idx": 1333,
+        "idx": 1335,
         "extid": "005FAFD3B803DF",
         "max": 0,
         "min": 0,
@@ -8748,7 +8764,7 @@ PARAMETER_DATA = [
         "text": "MAN_OP_MIXING_VALVE_G4_GLOBAL",
     },
     {
-        "idx": 1334,
+        "idx": 1336,
         "extid": "004F6DEF9C03DE",
         "max": 0,
         "min": 0,
@@ -8757,7 +8773,7 @@ PARAMETER_DATA = [
         "text": "MAN_OP_MIXING_VALVE_OPEN_GLOBAL",
     },
     {
-        "idx": 1335,
+        "idx": 1337,
         "extid": "610B8C00CC097E",
         "max": 100,
         "min": 0,
@@ -8766,7 +8782,7 @@ PARAMETER_DATA = [
         "text": "MAN_OP_MIXING_VALVE_SIGNAL_GLOBAL",
     },
     {
-        "idx": 1336,
+        "idx": 1338,
         "extid": "0076ED86F70079",
         "max": 0,
         "min": 0,
@@ -8775,7 +8791,7 @@ PARAMETER_DATA = [
         "text": "MAN_OP_TILLSKOTT",
     },
     {
-        "idx": 1337,
+        "idx": 1339,
         "extid": "61E1BE4FF50078",
         "max": 240,
         "min": 0,
@@ -8784,7 +8800,7 @@ PARAMETER_DATA = [
         "text": "MAN_OP_TIME",
     },
     {
-        "idx": 1338,
+        "idx": 1340,
         "extid": "817C7B65DC063A",
         "max": 0,
         "min": 0,
@@ -8793,7 +8809,7 @@ PARAMETER_DATA = [
         "text": "MIXED_CIRCUITS_CONNECTED_BITMASK",
     },
     {
-        "idx": 1339,
+        "idx": 1341,
         "extid": "013968EBBC0D0C",
         "max": 0,
         "min": 0,
@@ -8802,7 +8818,7 @@ PARAMETER_DATA = [
         "text": "MIXED_CIRCUITS_SETPOINT_INIT_DONE_BITMASK",
     },
     {
-        "idx": 1340,
+        "idx": 1342,
         "extid": "01780DCC6B0D0D",
         "max": 0,
         "min": 0,
@@ -8811,7 +8827,7 @@ PARAMETER_DATA = [
         "text": "MIXED_CIRCUITS_VALVEMODE_INIT_DONE_BITMASK",
     },
     {
-        "idx": 1341,
+        "idx": 1343,
         "extid": "61C1C41C8903D2",
         "max": 60,
         "min": 1,
@@ -8820,7 +8836,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_CLOSE_TIME_GLOBAL",
     },
     {
-        "idx": 1342,
+        "idx": 1344,
         "extid": "62C20AB7B303D6",
         "max": 60,
         "min": 0,
@@ -8829,7 +8845,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_DEFROST_DELAY_TIME_GLOBAL",
     },
     {
-        "idx": 1344,
+        "idx": 1346,
         "extid": "00A6F57CB0050A",
         "max": 0,
         "min": 0,
@@ -8838,7 +8854,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_EXT_INPUT_1",
     },
     {
-        "idx": 1345,
+        "idx": 1347,
         "extid": "003FFC2D0A050B",
         "max": 0,
         "min": 0,
@@ -8847,7 +8863,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_EXT_INPUT_2",
     },
     {
-        "idx": 1346,
+        "idx": 1348,
         "extid": "0048FB1D9C050C",
         "max": 0,
         "min": 0,
@@ -8856,7 +8872,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_EXT_INPUT_3",
     },
     {
-        "idx": 1347,
+        "idx": 1349,
         "extid": "00D69F883F050D",
         "max": 0,
         "min": 0,
@@ -8865,7 +8881,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_EXT_INPUT_4",
     },
     {
-        "idx": 1348,
+        "idx": 1350,
         "extid": "00A198B8A9050E",
         "max": 0,
         "min": 0,
@@ -8874,7 +8890,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_EXT_INPUT_5",
     },
     {
-        "idx": 1349,
+        "idx": 1351,
         "extid": "003891E913050F",
         "max": 0,
         "min": 0,
@@ -8883,7 +8899,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_EXT_INPUT_6",
     },
     {
-        "idx": 1350,
+        "idx": 1352,
         "extid": "004F96D9850510",
         "max": 0,
         "min": 0,
@@ -8892,7 +8908,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_EXT_INPUT_7",
     },
     {
-        "idx": 1351,
+        "idx": 1353,
         "extid": "00DA4773D70509",
         "max": 0,
         "min": 0,
@@ -8901,7 +8917,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_EXT_INPUT_GLOBAL",
     },
     {
-        "idx": 1352,
+        "idx": 1354,
         "extid": "0043129BF80998",
         "max": 0,
         "min": 0,
@@ -8910,7 +8926,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_EXT_INPUT_PRI_COOLING",
     },
     {
-        "idx": 1353,
+        "idx": 1355,
         "extid": "008AACEDF60999",
         "max": 0,
         "min": 0,
@@ -8919,7 +8935,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_EXT_INPUT_SEC_COOLING",
     },
     {
-        "idx": 1354,
+        "idx": 1356,
         "extid": "69CB20868303D8",
         "max": 100,
         "min": 10,
@@ -8928,7 +8944,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_MAX_LIMIT_HEATING_SYSTEM",
     },
     {
-        "idx": 1355,
+        "idx": 1357,
         "extid": "6102B0EEB70277",
         "max": 3,
         "min": 0,
@@ -8937,7 +8953,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_MODE_1",
     },
     {
-        "idx": 1356,
+        "idx": 1358,
         "extid": "619BB9BF0D07BA",
         "max": 3,
         "min": 0,
@@ -8946,7 +8962,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_MODE_2",
     },
     {
-        "idx": 1357,
+        "idx": 1359,
         "extid": "61ECBE8F9B07B8",
         "max": 3,
         "min": 0,
@@ -8955,7 +8971,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_MODE_3",
     },
     {
-        "idx": 1358,
+        "idx": 1360,
         "extid": "6172DA1A3807B9",
         "max": 3,
         "min": 0,
@@ -8964,7 +8980,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_MODE_4",
     },
     {
-        "idx": 1359,
+        "idx": 1361,
         "extid": "6105DD2AAE07BB",
         "max": 3,
         "min": 0,
@@ -8973,7 +8989,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_MODE_5",
     },
     {
-        "idx": 1360,
+        "idx": 1362,
         "extid": "619CD47B1407BC",
         "max": 3,
         "min": 0,
@@ -8982,7 +8998,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_MODE_6",
     },
     {
-        "idx": 1361,
+        "idx": 1363,
         "extid": "61EBD34B8207BD",
         "max": 3,
         "min": 0,
@@ -8991,7 +9007,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_MODE_7",
     },
     {
-        "idx": 1362,
+        "idx": 1364,
         "extid": "61C314B02E07C0",
         "max": 2,
         "min": 0,
@@ -9000,7 +9016,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_MODE_GLOBAL",
     },
     {
-        "idx": 1363,
+        "idx": 1365,
         "extid": "6905D4FB4E03D1",
         "max": 100,
         "min": 1,
@@ -9009,7 +9025,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_NEUTRALZONE_GLOBAL",
     },
     {
-        "idx": 1364,
+        "idx": 1366,
         "extid": "40F2A2575003D4",
         "max": 0,
         "min": 0,
@@ -9018,7 +9034,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_NEUTRALZONE_LIMITATION_GLOBAL",
     },
     {
-        "idx": 1365,
+        "idx": 1367,
         "extid": "6247D78DCF03D5",
         "max": 600,
         "min": 10,
@@ -9027,7 +9043,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_NEUTRALZONE_LIMITATION_TIME_GLOBAL",
     },
     {
-        "idx": 1367,
+        "idx": 1369,
         "extid": "0E4783BF260527",
         "max": 0,
         "min": 0,
@@ -9036,7 +9052,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_NZ_CLOSE_1",
     },
     {
-        "idx": 1369,
+        "idx": 1371,
         "extid": "0EDE8AEE9C0528",
         "max": 0,
         "min": 0,
@@ -9045,7 +9061,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_NZ_CLOSE_2",
     },
     {
-        "idx": 1371,
+        "idx": 1373,
         "extid": "0EA98DDE0A0529",
         "max": 0,
         "min": 0,
@@ -9054,7 +9070,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_NZ_CLOSE_3",
     },
     {
-        "idx": 1373,
+        "idx": 1375,
         "extid": "0E37E94BA9052A",
         "max": 0,
         "min": 0,
@@ -9063,7 +9079,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_NZ_CLOSE_4",
     },
     {
-        "idx": 1375,
+        "idx": 1377,
         "extid": "0E40EE7B3F052B",
         "max": 0,
         "min": 0,
@@ -9072,7 +9088,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_NZ_CLOSE_5",
     },
     {
-        "idx": 1377,
+        "idx": 1379,
         "extid": "0ED9E72A85052C",
         "max": 0,
         "min": 0,
@@ -9081,7 +9097,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_NZ_CLOSE_6",
     },
     {
-        "idx": 1379,
+        "idx": 1381,
         "extid": "0EAEE01A13052D",
         "max": 0,
         "min": 0,
@@ -9090,7 +9106,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_NZ_CLOSE_7",
     },
     {
-        "idx": 1381,
+        "idx": 1383,
         "extid": "0E8DACF5C20520",
         "max": 0,
         "min": 0,
@@ -9099,7 +9115,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_NZ_OPEN_1",
     },
     {
-        "idx": 1383,
+        "idx": 1385,
         "extid": "0E14A5A4780521",
         "max": 0,
         "min": 0,
@@ -9108,7 +9124,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_NZ_OPEN_2",
     },
     {
-        "idx": 1385,
+        "idx": 1387,
         "extid": "0E63A294EE0522",
         "max": 0,
         "min": 0,
@@ -9117,7 +9133,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_NZ_OPEN_3",
     },
     {
-        "idx": 1387,
+        "idx": 1389,
         "extid": "0EFDC6014D0523",
         "max": 0,
         "min": 0,
@@ -9126,7 +9142,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_NZ_OPEN_4",
     },
     {
-        "idx": 1389,
+        "idx": 1391,
         "extid": "0E8AC131DB0524",
         "max": 0,
         "min": 0,
@@ -9135,7 +9151,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_NZ_OPEN_5",
     },
     {
-        "idx": 1391,
+        "idx": 1393,
         "extid": "0E13C860610525",
         "max": 0,
         "min": 0,
@@ -9144,7 +9160,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_NZ_OPEN_6",
     },
     {
-        "idx": 1393,
+        "idx": 1395,
         "extid": "0E64CF50F70526",
         "max": 0,
         "min": 0,
@@ -9153,7 +9169,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_NZ_OPEN_7",
     },
     {
-        "idx": 1395,
+        "idx": 1397,
         "extid": "61A09F089403D3",
         "max": 60,
         "min": 1,
@@ -9162,7 +9178,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_OPEN_TIME_GLOBAL",
     },
     {
-        "idx": 1396,
+        "idx": 1398,
         "extid": "6A5544F20C0372",
         "max": 100,
         "min": 0,
@@ -9171,7 +9187,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_PID_D",
     },
     {
-        "idx": 1398,
+        "idx": 1400,
         "extid": "6A2BF58EB103D9",
         "max": 6000,
         "min": 50,
@@ -9180,7 +9196,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_PID_I",
     },
     {
-        "idx": 1400,
+        "idx": 1402,
         "extid": "623DDC078A0563",
         "max": 100,
         "min": 0,
@@ -9189,7 +9205,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_PID_MAX",
     },
     {
-        "idx": 1402,
+        "idx": 1404,
         "extid": "6201D138D30564",
         "max": 100,
         "min": 0,
@@ -9198,7 +9214,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_PID_MIN",
     },
     {
-        "idx": 1404,
+        "idx": 1406,
         "extid": "6A4F9E267103DB",
         "max": 300,
         "min": 1,
@@ -9207,7 +9223,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_PID_P",
     },
     {
-        "idx": 1406,
+        "idx": 1408,
         "extid": "0089CE456B04E6",
         "max": 0,
         "min": 0,
@@ -9216,7 +9232,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_PUMP_G41_1",
     },
     {
-        "idx": 1407,
+        "idx": 1409,
         "extid": "0010C714D104E7",
         "max": 0,
         "min": 0,
@@ -9225,7 +9241,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_PUMP_G41_2",
     },
     {
-        "idx": 1408,
+        "idx": 1410,
         "extid": "0067C0244704E8",
         "max": 0,
         "min": 0,
@@ -9234,7 +9250,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_PUMP_G41_3",
     },
     {
-        "idx": 1409,
+        "idx": 1411,
         "extid": "00F9A4B1E404E9",
         "max": 0,
         "min": 0,
@@ -9243,7 +9259,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_PUMP_G41_4",
     },
     {
-        "idx": 1410,
+        "idx": 1412,
         "extid": "008EA3817204EA",
         "max": 0,
         "min": 0,
@@ -9252,7 +9268,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_PUMP_G41_5",
     },
     {
-        "idx": 1411,
+        "idx": 1413,
         "extid": "0017AAD0C804EB",
         "max": 0,
         "min": 0,
@@ -9261,7 +9277,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_PUMP_G41_6",
     },
     {
-        "idx": 1412,
+        "idx": 1414,
         "extid": "0060ADE05E0832",
         "max": 0,
         "min": 0,
@@ -9270,7 +9286,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_PUMP_G41_7",
     },
     {
-        "idx": 1413,
+        "idx": 1415,
         "extid": "009363B8A804D2",
         "max": 0,
         "min": 0,
@@ -9279,7 +9295,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_PUMP_G41_GLOBAL",
     },
     {
-        "idx": 1414,
+        "idx": 1416,
         "extid": "009755FDE304EC",
         "max": 0,
         "min": 0,
@@ -9288,7 +9304,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_PUMP_G71",
     },
     {
-        "idx": 1415,
+        "idx": 1417,
         "extid": "62E77AF67003D0",
         "max": 6000,
         "min": 10,
@@ -9297,7 +9313,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_RUNNING_TIME_GLOBAL",
     },
     {
-        "idx": 1417,
+        "idx": 1419,
         "extid": "6940EDBD6F03D7",
         "max": 100,
         "min": 10,
@@ -9306,7 +9322,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_START_LIMIT_HEATING_SYSTEM",
     },
     {
-        "idx": 1418,
+        "idx": 1420,
         "extid": "01B8440D7D03E2",
         "max": 0,
         "min": 0,
@@ -9315,7 +9331,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_TIMECONTROLLED_GLOBAL",
     },
     {
-        "idx": 1419,
+        "idx": 1421,
         "extid": "40DB0290DD03DC",
         "max": 167772160,
         "min": 0,
@@ -9324,7 +9340,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_USE_NEUTRALZONE_REGULATOR",
     },
     {
-        "idx": 1420,
+        "idx": 1422,
         "extid": "0061D87A3804ED",
         "max": 0,
         "min": 0,
@@ -9333,7 +9349,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_VALVECLOSE_1",
     },
     {
-        "idx": 1421,
+        "idx": 1423,
         "extid": "00F8D12B8204EE",
         "max": 0,
         "min": 0,
@@ -9342,7 +9358,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_VALVECLOSE_2",
     },
     {
-        "idx": 1422,
+        "idx": 1424,
         "extid": "008FD61B1404EF",
         "max": 0,
         "min": 0,
@@ -9351,7 +9367,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_VALVECLOSE_3",
     },
     {
-        "idx": 1423,
+        "idx": 1425,
         "extid": "0011B28EB704F0",
         "max": 0,
         "min": 0,
@@ -9360,7 +9376,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_VALVECLOSE_4",
     },
     {
-        "idx": 1424,
+        "idx": 1426,
         "extid": "0066B5BE2104F1",
         "max": 0,
         "min": 0,
@@ -9369,7 +9385,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_VALVECLOSE_5",
     },
     {
-        "idx": 1425,
+        "idx": 1427,
         "extid": "00FFBCEF9B04F2",
         "max": 0,
         "min": 0,
@@ -9378,7 +9394,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_VALVECLOSE_6",
     },
     {
-        "idx": 1426,
+        "idx": 1428,
         "extid": "0088BBDF0D04F3",
         "max": 0,
         "min": 0,
@@ -9387,7 +9403,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_VALVECLOSE_7",
     },
     {
-        "idx": 1427,
+        "idx": 1429,
         "extid": "40CA94436204D4",
         "max": 0,
         "min": 0,
@@ -9396,7 +9412,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_VALVECLOSE_GLOBAL",
     },
     {
-        "idx": 1428,
+        "idx": 1430,
         "extid": "000F5947F204F4",
         "max": 0,
         "min": 0,
@@ -9405,7 +9421,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_VALVEOPEN_1",
     },
     {
-        "idx": 1429,
+        "idx": 1431,
         "extid": "009650164804F5",
         "max": 0,
         "min": 0,
@@ -9414,7 +9430,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_VALVEOPEN_2",
     },
     {
-        "idx": 1430,
+        "idx": 1432,
         "extid": "00E15726DE04F6",
         "max": 0,
         "min": 0,
@@ -9423,7 +9439,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_VALVEOPEN_3",
     },
     {
-        "idx": 1431,
+        "idx": 1433,
         "extid": "007F33B37D04F7",
         "max": 0,
         "min": 0,
@@ -9432,7 +9448,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_VALVEOPEN_4",
     },
     {
-        "idx": 1432,
+        "idx": 1434,
         "extid": "00083483EB04F8",
         "max": 0,
         "min": 0,
@@ -9441,7 +9457,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_VALVEOPEN_5",
     },
     {
-        "idx": 1433,
+        "idx": 1435,
         "extid": "00913DD25104F9",
         "max": 0,
         "min": 0,
@@ -9450,7 +9466,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_VALVEOPEN_6",
     },
     {
-        "idx": 1434,
+        "idx": 1436,
         "extid": "00E63AE2C704FA",
         "max": 0,
         "min": 0,
@@ -9459,7 +9475,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_VALVEOPEN_7",
     },
     {
-        "idx": 1435,
+        "idx": 1437,
         "extid": "4070F9A4FA04D3",
         "max": 0,
         "min": 0,
@@ -9468,7 +9484,7 @@ PARAMETER_DATA = [
         "text": "MIXING_VALVE_VALVEOPEN_GLOBAL",
     },
     {
-        "idx": 1436,
+        "idx": 1438,
         "extid": "02C050B2090A35",
         "max": 0,
         "min": 0,
@@ -9477,7 +9493,7 @@ PARAMETER_DATA = [
         "text": "MV_CONDENSATIONGUARD_ACTIVE_BITMASK",
     },
     {
-        "idx": 1438,
+        "idx": 1440,
         "extid": "007CD550870A33",
         "max": 16777216,
         "min": 0,
@@ -9486,7 +9502,7 @@ PARAMETER_DATA = [
         "text": "MV_CONDENSATIONGUARD_ACTIVE_GLOBAL",
     },
     {
-        "idx": 1439,
+        "idx": 1441,
         "extid": "01689569980D63",
         "max": 0,
         "min": 0,
@@ -9495,7 +9511,7 @@ PARAMETER_DATA = [
         "text": "MV_CONDENSATIONGUARD_ALERT_ACTIVE_BITMASK",
     },
     {
-        "idx": 1440,
+        "idx": 1442,
         "extid": "218161509F0965",
         "max": 100,
         "min": 0,
@@ -9504,7 +9520,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_1",
     },
     {
-        "idx": 1441,
+        "idx": 1443,
         "extid": "21186801250966",
         "max": 100,
         "min": 0,
@@ -9513,7 +9529,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_2",
     },
     {
-        "idx": 1442,
+        "idx": 1444,
         "extid": "216F6F31B30967",
         "max": 100,
         "min": 0,
@@ -9522,7 +9538,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_3",
     },
     {
-        "idx": 1443,
+        "idx": 1445,
         "extid": "21F10BA4100968",
         "max": 100,
         "min": 0,
@@ -9531,7 +9547,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_4",
     },
     {
-        "idx": 1444,
+        "idx": 1446,
         "extid": "21860C94860969",
         "max": 100,
         "min": 0,
@@ -9540,7 +9556,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_5",
     },
     {
-        "idx": 1445,
+        "idx": 1447,
         "extid": "211F05C53C096A",
         "max": 100,
         "min": 0,
@@ -9549,7 +9565,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_6",
     },
     {
-        "idx": 1446,
+        "idx": 1448,
         "extid": "216802F5AA096B",
         "max": 100,
         "min": 0,
@@ -9558,7 +9574,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_7",
     },
     {
-        "idx": 1447,
+        "idx": 1449,
         "extid": "2153ED79CD0880",
         "max": 100,
         "min": 0,
@@ -9567,7 +9583,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_GLOBAL",
     },
     {
-        "idx": 1448,
+        "idx": 1450,
         "extid": "2138510F0B0881",
         "max": 100,
         "min": 0,
@@ -9576,7 +9592,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_PRI_COOLING",
     },
     {
-        "idx": 1449,
+        "idx": 1451,
         "extid": "21F1EF79050908",
         "max": 100,
         "min": 0,
@@ -9585,7 +9601,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_10V_RELATIVE_HUMIDITY_SEC_COOLING",
     },
     {
-        "idx": 1450,
+        "idx": 1452,
         "extid": "007650B81B07FA",
         "max": 16777216,
         "min": 0,
@@ -9594,7 +9610,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_ACTIVE",
     },
     {
-        "idx": 1451,
+        "idx": 1453,
         "extid": "61711891FF076B",
         "max": 48,
         "min": 1,
@@ -9603,7 +9619,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_DELAY_HEATING_GLOBAL",
     },
     {
-        "idx": 1452,
+        "idx": 1454,
         "extid": "0EF5C134D5095D",
         "max": 100,
         "min": 0,
@@ -9612,7 +9628,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_DEWPOINT_SENSOR_1",
     },
     {
-        "idx": 1454,
+        "idx": 1456,
         "extid": "0E6CC8656F095E",
         "max": 100,
         "min": 0,
@@ -9621,7 +9637,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_DEWPOINT_SENSOR_2",
     },
     {
-        "idx": 1456,
+        "idx": 1458,
         "extid": "0E1BCF55F9095F",
         "max": 100,
         "min": 0,
@@ -9630,7 +9646,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_DEWPOINT_SENSOR_3",
     },
     {
-        "idx": 1458,
+        "idx": 1460,
         "extid": "0E85ABC05A0960",
         "max": 100,
         "min": 0,
@@ -9639,7 +9655,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_DEWPOINT_SENSOR_4",
     },
     {
-        "idx": 1460,
+        "idx": 1462,
         "extid": "0EF2ACF0CC0961",
         "max": 100,
         "min": 0,
@@ -9648,7 +9664,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_DEWPOINT_SENSOR_5",
     },
     {
-        "idx": 1462,
+        "idx": 1464,
         "extid": "0E6BA5A1760962",
         "max": 100,
         "min": 0,
@@ -9657,7 +9673,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_DEWPOINT_SENSOR_6",
     },
     {
-        "idx": 1464,
+        "idx": 1466,
         "extid": "0E1CA291E00963",
         "max": 100,
         "min": 0,
@@ -9666,7 +9682,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_DEWPOINT_SENSOR_7",
     },
     {
-        "idx": 1466,
+        "idx": 1468,
         "extid": "0E67C1B8E30836",
         "max": 100,
         "min": 0,
@@ -9675,7 +9691,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_DEWPOINT_SENSOR_GLOBAL",
     },
     {
-        "idx": 1468,
+        "idx": 1470,
         "extid": "0E022C5B7E087D",
         "max": 100,
         "min": 0,
@@ -9684,7 +9700,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_DEWPOINT_SENSOR_PRI_COOLING",
     },
     {
-        "idx": 1470,
+        "idx": 1472,
         "extid": "0ECB922D700907",
         "max": 100,
         "min": 0,
@@ -9693,7 +9709,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_DEWPOINT_SENSOR_SEC_COOLING",
     },
     {
-        "idx": 1472,
+        "idx": 1474,
         "extid": "6E5E88AC2D0772",
         "max": 350,
         "min": 100,
@@ -9702,7 +9718,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_DEW_POINT_SENSOR_SETPOINT_MIN_GLOBAL",
     },
     {
-        "idx": 1474,
+        "idx": 1476,
         "extid": "009DF805BE0852",
         "max": 0,
         "min": 0,
@@ -9711,7 +9727,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_E31_G2",
     },
     {
-        "idx": 1475,
+        "idx": 1477,
         "extid": "61FBAE166E09BB",
         "max": 1,
         "min": 0,
@@ -9720,7 +9736,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_FLOWSENSOR_TYPE_GLOBAL",
     },
     {
-        "idx": 1476,
+        "idx": 1478,
         "extid": "00552EF6290A56",
         "max": 0,
         "min": 0,
@@ -9729,7 +9745,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_FREEZEGUARD_ACTIVE_GLOBAL",
     },
     {
-        "idx": 1477,
+        "idx": 1479,
         "extid": "65DB20760F0805",
         "max": 10,
         "min": -10,
@@ -9738,7 +9754,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_FREEZEGUARD_START",
     },
     {
-        "idx": 1478,
+        "idx": 1480,
         "extid": "69DBC26B46076C",
         "max": 100,
         "min": 5,
@@ -9747,7 +9763,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_GT45_INFLUENCE_GLOBAL",
     },
     {
-        "idx": 1479,
+        "idx": 1481,
         "extid": "6D60AF3BB20769",
         "max": 50,
         "min": -50,
@@ -9756,7 +9772,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_INCREASE_ROOM_SETPOINT_GLOBAL",
     },
     {
-        "idx": 1480,
+        "idx": 1482,
         "extid": "6186FE4CED09BA",
         "max": 1,
         "min": 0,
@@ -9765,7 +9781,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_MAIN_FLOWSENSOR_TYPE",
     },
     {
-        "idx": 1481,
+        "idx": 1483,
         "extid": "65D1F5A6C8076D",
         "max": 35,
         "min": 0,
@@ -9774,7 +9790,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_OUTDOOR_TEMPERATURE_LIMIT_GLOBAL",
     },
     {
-        "idx": 1482,
+        "idx": 1484,
         "extid": "611BB16DB208F5",
         "max": 2,
         "min": 0,
@@ -9783,7 +9799,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_ROOMSENSOR_TYPE_GLOBAL",
     },
     {
-        "idx": 1483,
+        "idx": 1485,
         "extid": "6E2D12B8C8076E",
         "max": 350,
         "min": 100,
@@ -9792,7 +9808,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_SETPOINT_MIN_GLOBAL",
     },
     {
-        "idx": 1485,
+        "idx": 1487,
         "extid": "61511EA1E709BC",
         "max": 1,
         "min": 0,
@@ -9801,7 +9817,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_SUB_FLOWSENSOR_TYPE",
     },
     {
-        "idx": 1486,
+        "idx": 1488,
         "extid": "025903E14F0D5D",
         "max": 0,
         "min": 0,
@@ -9810,7 +9826,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_T5_10V_1",
     },
     {
-        "idx": 1488,
+        "idx": 1490,
         "extid": "02C00AB0F50D46",
         "max": 0,
         "min": 0,
@@ -9819,7 +9835,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_T5_10V_2",
     },
     {
-        "idx": 1490,
+        "idx": 1492,
         "extid": "02B70D80630D5E",
         "max": 0,
         "min": 0,
@@ -9828,7 +9844,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_T5_10V_3",
     },
     {
-        "idx": 1492,
+        "idx": 1494,
         "extid": "02296915C00D5F",
         "max": 0,
         "min": 0,
@@ -9837,7 +9853,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_T5_10V_4",
     },
     {
-        "idx": 1494,
+        "idx": 1496,
         "extid": "025E6E25560D60",
         "max": 0,
         "min": 0,
@@ -9846,7 +9862,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_T5_10V_5",
     },
     {
-        "idx": 1496,
+        "idx": 1498,
         "extid": "02C76774EC0D61",
         "max": 0,
         "min": 0,
@@ -9855,7 +9871,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_T5_10V_6",
     },
     {
-        "idx": 1498,
+        "idx": 1500,
         "extid": "02B060447A0D62",
         "max": 0,
         "min": 0,
@@ -9864,7 +9880,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_T5_10V_7",
     },
     {
-        "idx": 1500,
+        "idx": 1502,
         "extid": "0E7D647F32087F",
         "max": 100,
         "min": 0,
@@ -9873,7 +9889,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_T5_10V_GLOBAL",
     },
     {
-        "idx": 1502,
+        "idx": 1504,
         "extid": "0E32BDBE78087E",
         "max": 100,
         "min": 0,
@@ -9882,7 +9898,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_T5_10V_PRI_COOLING",
     },
     {
-        "idx": 1504,
+        "idx": 1506,
         "extid": "0EFB03C8760906",
         "max": 100,
         "min": 0,
@@ -9891,7 +9907,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_T5_10V_SEC_COOLING",
     },
     {
-        "idx": 1506,
+        "idx": 1508,
         "extid": "6DFD36A8B60768",
         "max": 100,
         "min": 20,
@@ -9900,7 +9916,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_UNDER_SWING_ZONE_GLOBAL",
     },
     {
-        "idx": 1507,
+        "idx": 1509,
         "extid": "407FD9E02508FA",
         "max": 16777216,
         "min": 0,
@@ -9909,7 +9925,7 @@ PARAMETER_DATA = [
         "text": "MV_COOLING_WHEN_HEATING_SEASONG_GLOBAL",
     },
     {
-        "idx": 1508,
+        "idx": 1510,
         "extid": "40C6817A80076A",
         "max": 16777216,
         "min": 0,
@@ -9918,7 +9934,7 @@ PARAMETER_DATA = [
         "text": "MV_DEW_POINT_SENSOR_ACTIVATED_GLOBAL",
     },
     {
-        "idx": 1509,
+        "idx": 1511,
         "extid": "C2A0367B6D09ED",
         "max": 0,
         "min": 0,
@@ -9927,7 +9943,7 @@ PARAMETER_DATA = [
         "text": "MV_DEW_POINT_SENSOR_ALARM_BITMASK",
     },
     {
-        "idx": 1511,
+        "idx": 1513,
         "extid": "00AA92E1180766",
         "max": 0,
         "min": 0,
@@ -9936,7 +9952,7 @@ PARAMETER_DATA = [
         "text": "MV_DEW_POINT_SENSOR_ALARM_GLOBAL",
     },
     {
-        "idx": 1512,
+        "idx": 1514,
         "extid": "40680276A408FD",
         "max": 16777216,
         "min": 0,
@@ -9945,7 +9961,7 @@ PARAMETER_DATA = [
         "text": "MV_DISABLE_COOLING_GLOBAL",
     },
     {
-        "idx": 1513,
+        "idx": 1515,
         "extid": "00CC30D1200862",
         "max": 0,
         "min": 0,
@@ -9954,7 +9970,7 @@ PARAMETER_DATA = [
         "text": "MV_DOWNLOADING_VARIABLES",
     },
     {
-        "idx": 1514,
+        "idx": 1516,
         "extid": "00E2FAA7BB0B8D",
         "max": 0,
         "min": 0,
@@ -9963,7 +9979,7 @@ PARAMETER_DATA = [
         "text": "MV_DOWNLOADING_VARIABLES_FOR_MIXING_VALVE",
     },
     {
-        "idx": 1515,
+        "idx": 1517,
         "extid": "0EAFA14C17090B",
         "max": 0,
         "min": 0,
@@ -9972,7 +9988,7 @@ PARAMETER_DATA = [
         "text": "MV_E11_T11_SETPOINT",
     },
     {
-        "idx": 1517,
+        "idx": 1519,
         "extid": "0177C0211D0C60",
         "max": 0,
         "min": 0,
@@ -9981,7 +9997,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_CAN_ROOM_SENOR_CONNECTED",
     },
     {
-        "idx": 1518,
+        "idx": 1520,
         "extid": "0E4F6ABDDC0C5F",
         "max": 0,
         "min": 0,
@@ -9990,7 +10006,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_CAN_ROOM_SENSOR_GT45",
     },
     {
-        "idx": 1520,
+        "idx": 1522,
         "extid": "C0B786FD240C61",
         "max": 16777216,
         "min": 0,
@@ -9999,7 +10015,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_DISPLAY_ROOM_SENSOR_ACKNOW",
     },
     {
-        "idx": 1521,
+        "idx": 1523,
         "extid": "069DCD5C2E0C46",
         "max": 0,
         "min": 0,
@@ -10008,7 +10024,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_E1x_T1_ALARM",
     },
     {
-        "idx": 1523,
+        "idx": 1525,
         "extid": "8689CD82BB0C59",
         "max": 0,
         "min": 0,
@@ -10017,7 +10033,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_ATTENUATION_FACTOR",
     },
     {
-        "idx": 1525,
+        "idx": 1527,
         "extid": "86F8BC4DFA0C56",
         "max": 0,
         "min": 0,
@@ -10026,7 +10042,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_CHECK_DISPLAY_SYSTEM_ON",
     },
     {
-        "idx": 1527,
+        "idx": 1529,
         "extid": "869AF0D7A60C4F",
         "max": 0,
         "min": 0,
@@ -10035,7 +10051,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_COUPLINGDIFFERENS_ROOM",
     },
     {
-        "idx": 1529,
+        "idx": 1531,
         "extid": "82C990BD440C1D",
         "max": 0,
         "min": 0,
@@ -10044,7 +10060,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_D_VALUE",
     },
     {
-        "idx": 1531,
+        "idx": 1533,
         "extid": "80E8533D5B0C37",
         "max": 0,
         "min": 0,
@@ -10053,7 +10069,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_ENABLE_HEATING_BLOCK_BY_EXT",
     },
     {
-        "idx": 1532,
+        "idx": 1534,
         "extid": "80C27420B00C3D",
         "max": 0,
         "min": 0,
@@ -10062,7 +10078,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_ENABLE_HIGH_PROTECTION_HS_BY_EXT",
     },
     {
-        "idx": 1533,
+        "idx": 1535,
         "extid": "86A11C4ED20C4E",
         "max": 0,
         "min": 0,
@@ -10071,7 +10087,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_ERASE_EEPROM_NEXT_STARTUP",
     },
     {
-        "idx": 1535,
+        "idx": 1537,
         "extid": "86C5C2A2160C06",
         "max": 0,
         "min": 0,
@@ -10080,7 +10096,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_EXTERNAL_TEMP_VALUE",
     },
     {
-        "idx": 1537,
+        "idx": 1539,
         "extid": "81BF243E930C35",
         "max": 0,
         "min": 0,
@@ -10089,7 +10105,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_FREEZEGARD_START_DELAY_TIME",
     },
     {
-        "idx": 1538,
+        "idx": 1540,
         "extid": "86B5B459E50BFE",
         "max": 0,
         "min": 0,
@@ -10098,7 +10114,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_FREEZEGARD_START_TEMPERATURE",
     },
     {
-        "idx": 1540,
+        "idx": 1542,
         "extid": "86A060B9E90BF9",
         "max": 0,
         "min": 0,
@@ -10107,7 +10123,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_FREEZEGARD_STOP_TEMPERATURE",
     },
     {
-        "idx": 1542,
+        "idx": 1544,
         "extid": "81244D29E40C58",
         "max": 0,
         "min": 0,
@@ -10116,7 +10132,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HEATING_COOLING_MODE",
     },
     {
-        "idx": 1543,
+        "idx": 1545,
         "extid": "862F7ED68C0C2C",
         "max": 0,
         "min": 0,
@@ -10125,7 +10141,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HEATING_CURVE_LEFT_Y",
     },
     {
-        "idx": 1545,
+        "idx": 1547,
         "extid": "86C58027CC0BF3",
         "max": 0,
         "min": 0,
@@ -10134,7 +10150,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HEATING_CURVE_PARALLEL_OFFSET",
     },
     {
-        "idx": 1547,
+        "idx": 1549,
         "extid": "86191719180C02",
         "max": 0,
         "min": 0,
@@ -10143,7 +10159,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HEATING_CURVE_RIGHT_Y",
     },
     {
-        "idx": 1549,
+        "idx": 1551,
         "extid": "86B2BED34E0C20",
         "max": 0,
         "min": 0,
@@ -10152,7 +10168,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HEATING_CURVE_Y1",
     },
     {
-        "idx": 1551,
+        "idx": 1553,
         "extid": "86650D0D650C29",
         "max": 0,
         "min": 0,
@@ -10161,7 +10177,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HEATING_CURVE_Y10",
     },
     {
-        "idx": 1553,
+        "idx": 1555,
         "extid": "86120A3DF30C2A",
         "max": 0,
         "min": 0,
@@ -10170,7 +10186,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HEATING_CURVE_Y11",
     },
     {
-        "idx": 1555,
+        "idx": 1557,
         "extid": "868B036C490C2B",
         "max": 0,
         "min": 0,
@@ -10179,7 +10195,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HEATING_CURVE_Y12",
     },
     {
-        "idx": 1557,
+        "idx": 1559,
         "extid": "862BB782F40C21",
         "max": 0,
         "min": 0,
@@ -10188,7 +10204,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HEATING_CURVE_Y2",
     },
     {
-        "idx": 1559,
+        "idx": 1561,
         "extid": "865CB0B2620C22",
         "max": 0,
         "min": 0,
@@ -10197,7 +10213,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HEATING_CURVE_Y3",
     },
     {
-        "idx": 1561,
+        "idx": 1563,
         "extid": "86C2D427C10C23",
         "max": 0,
         "min": 0,
@@ -10206,7 +10222,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HEATING_CURVE_Y4",
     },
     {
-        "idx": 1563,
+        "idx": 1565,
         "extid": "86B5D317570C24",
         "max": 0,
         "min": 0,
@@ -10215,7 +10231,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HEATING_CURVE_Y5",
     },
     {
-        "idx": 1565,
+        "idx": 1567,
         "extid": "862CDA46ED0C25",
         "max": 0,
         "min": 0,
@@ -10224,7 +10240,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HEATING_CURVE_Y6",
     },
     {
-        "idx": 1567,
+        "idx": 1569,
         "extid": "865BDD767B0C26",
         "max": 0,
         "min": 0,
@@ -10233,7 +10249,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HEATING_CURVE_Y7",
     },
     {
-        "idx": 1569,
+        "idx": 1571,
         "extid": "86CB626BEA0C27",
         "max": 0,
         "min": 0,
@@ -10242,7 +10258,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HEATING_CURVE_Y8",
     },
     {
-        "idx": 1571,
+        "idx": 1573,
         "extid": "86BC655B7C0C28",
         "max": 0,
         "min": 0,
@@ -10251,7 +10267,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HEATING_CURVE_Y9",
     },
     {
-        "idx": 1573,
+        "idx": 1575,
         "extid": "864805DCA40C47",
         "max": 0,
         "min": 0,
@@ -10260,7 +10276,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HEATING_SEASON_DELAYED_TEMP",
     },
     {
-        "idx": 1575,
+        "idx": 1577,
         "extid": "86474BC5CE0C15",
         "max": 0,
         "min": 0,
@@ -10269,7 +10285,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HEATING_SEASON_IMMEDIATE_TEMP",
     },
     {
-        "idx": 1577,
+        "idx": 1579,
         "extid": "867C4AD5D90C48",
         "max": 0,
         "min": 0,
@@ -10278,7 +10294,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HEATING_SEASON_MODE",
     },
     {
-        "idx": 1579,
+        "idx": 1581,
         "extid": "86E885BE8C0C17",
         "max": 0,
         "min": 0,
@@ -10287,7 +10303,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HEATING_SEASON_START_DELAY_TIME",
     },
     {
-        "idx": 1581,
+        "idx": 1583,
         "extid": "8678DC41BA0C18",
         "max": 0,
         "min": 0,
@@ -10296,7 +10312,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HEATING_SEASON_STOP_DELAY_TIME",
     },
     {
-        "idx": 1583,
+        "idx": 1585,
         "extid": "80F0DBEA330C36",
         "max": 0,
         "min": 0,
@@ -10305,7 +10321,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HEATING_SYSTEM_TYPE",
     },
     {
-        "idx": 1584,
+        "idx": 1586,
         "extid": "808577AF980C08",
         "max": 0,
         "min": 0,
@@ -10314,7 +10330,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HOLIDAY_ACTIVE",
     },
     {
-        "idx": 1585,
+        "idx": 1587,
         "extid": "862CF8F3400C0A",
         "max": 0,
         "min": 0,
@@ -10323,7 +10339,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HOLIDAY_LEVEL_TEMPERATURE",
     },
     {
-        "idx": 1587,
+        "idx": 1589,
         "extid": "018A2231010C3A",
         "max": 0,
         "min": 0,
@@ -10332,7 +10348,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HOLIDAY_START_DAY",
     },
     {
-        "idx": 1588,
+        "idx": 1590,
         "extid": "815B6A58E30C39",
         "max": 0,
         "min": 0,
@@ -10341,7 +10357,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HOLIDAY_START_MONTH",
     },
     {
-        "idx": 1589,
+        "idx": 1591,
         "extid": "81078B72350C1F",
         "max": 0,
         "min": 0,
@@ -10350,7 +10366,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HOLIDAY_START_YEAR",
     },
     {
-        "idx": 1590,
+        "idx": 1592,
         "extid": "81A13108F70C3F",
         "max": 0,
         "min": 0,
@@ -10359,7 +10375,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HOLIDAY_STOP_DAY",
     },
     {
-        "idx": 1591,
+        "idx": 1593,
         "extid": "814689BDC30C3C",
         "max": 0,
         "min": 0,
@@ -10368,7 +10384,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HOLIDAY_STOP_MONTH",
     },
     {
-        "idx": 1592,
+        "idx": 1594,
         "extid": "81537E36250C3B",
         "max": 0,
         "min": 0,
@@ -10377,7 +10393,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_HOLIDAY_STOP_YEAR",
     },
     {
-        "idx": 1593,
+        "idx": 1595,
         "extid": "8659A00D9D0C50",
         "max": 0,
         "min": 0,
@@ -10386,7 +10402,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_INCREASE_ROOM_SETPOINT",
     },
     {
-        "idx": 1595,
+        "idx": 1597,
         "extid": "80A999A8C60C51",
         "max": 0,
         "min": 0,
@@ -10395,7 +10411,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_INVERT_AI1",
     },
     {
-        "idx": 1596,
+        "idx": 1598,
         "extid": "803090F97C0C52",
         "max": 0,
         "min": 0,
@@ -10404,7 +10420,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_INVERT_AI2",
     },
     {
-        "idx": 1597,
+        "idx": 1599,
         "extid": "80AEF46CDF0C53",
         "max": 0,
         "min": 0,
@@ -10413,7 +10429,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_INVERT_AI5",
     },
     {
-        "idx": 1598,
+        "idx": 1600,
         "extid": "800030FE3F0C07",
         "max": 0,
         "min": 0,
@@ -10422,7 +10438,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_INVERT_EXT_INPUT",
     },
     {
-        "idx": 1599,
+        "idx": 1601,
         "extid": "82A847DC840C1C",
         "max": 0,
         "min": 0,
@@ -10431,7 +10447,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_I_VALUE",
     },
     {
-        "idx": 1601,
+        "idx": 1603,
         "extid": "06D3E57E9A0C54",
         "max": 0,
         "min": 0,
@@ -10440,7 +10456,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_MAX_AI1",
     },
     {
-        "idx": 1603,
+        "idx": 1605,
         "extid": "86F4C266F40BFC",
         "max": 0,
         "min": 0,
@@ -10449,7 +10465,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_MAX_TEMPERAURE_GT41",
     },
     {
-        "idx": 1605,
+        "idx": 1607,
         "extid": "86D0169ED50C55",
         "max": 0,
         "min": 0,
@@ -10458,7 +10474,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_MIN_AI1",
     },
     {
-        "idx": 1607,
+        "idx": 1609,
         "extid": "8653F6E68D0BFD",
         "max": 0,
         "min": 0,
@@ -10467,7 +10483,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_MIN_TEMPERAURE_GT41",
     },
     {
-        "idx": 1609,
+        "idx": 1611,
         "extid": "8218113CB40BF4",
         "max": 0,
         "min": 0,
@@ -10476,7 +10492,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_M_VALVE_DEFROST_DELAY",
     },
     {
-        "idx": 1611,
+        "idx": 1613,
         "extid": "86B74895190C4D",
         "max": 0,
         "min": 0,
@@ -10485,7 +10501,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_M_VALVE_LIMIT_TIME",
     },
     {
-        "idx": 1613,
+        "idx": 1615,
         "extid": "82BFB011F10BFF",
         "max": 0,
         "min": 0,
@@ -10494,7 +10510,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_M_VALVE_RUNNING_TIME",
     },
     {
-        "idx": 1615,
+        "idx": 1617,
         "extid": "866A025FE00BF6",
         "max": 0,
         "min": 0,
@@ -10503,7 +10519,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_NEUTRALZONE_CONTROLLED",
     },
     {
-        "idx": 1617,
+        "idx": 1619,
         "extid": "8613D517D20C2F",
         "max": 0,
         "min": 0,
@@ -10512,7 +10528,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_NEUTRALZON_M_VALVE_LIMIT",
     },
     {
-        "idx": 1619,
+        "idx": 1621,
         "extid": "86D072F0BC0C30",
         "max": 0,
         "min": 0,
@@ -10521,7 +10537,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_NEUTRALZON_M_VALVE_LIMIT_TIME",
     },
     {
-        "idx": 1621,
+        "idx": 1623,
         "extid": "8628B63CE30C34",
         "max": 0,
         "min": 0,
@@ -10530,7 +10546,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_NEUTRALZON_RAMP_DOWN_TIME",
     },
     {
-        "idx": 1623,
+        "idx": 1625,
         "extid": "865CC0C9210C33",
         "max": 0,
         "min": 0,
@@ -10539,7 +10555,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_NEUTRALZON_RAMP_UP_TIME",
     },
     {
-        "idx": 1625,
+        "idx": 1627,
         "extid": "86ED0C7B6A0C2E",
         "max": 0,
         "min": 0,
@@ -10548,7 +10564,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_NEUTRALZON_SIZE",
     },
     {
-        "idx": 1627,
+        "idx": 1629,
         "extid": "86286882970C32",
         "max": 0,
         "min": 0,
@@ -10557,7 +10573,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_NEUTRALZON_TEMP_DECREASE_M_VALVE",
     },
     {
-        "idx": 1629,
+        "idx": 1631,
         "extid": "8643F9DEE30C31",
         "max": 0,
         "min": 0,
@@ -10566,7 +10582,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_NEUTRALZON_TEMP_NO_INCREASE_M_VALVE",
     },
     {
-        "idx": 1631,
+        "idx": 1633,
         "extid": "80620D2E210C0D",
         "max": 0,
         "min": 0,
@@ -10575,7 +10591,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_PARTY_MODE_ENABLE",
     },
     {
-        "idx": 1632,
+        "idx": 1634,
         "extid": "862EBCC1F90C14",
         "max": 0,
         "min": 0,
@@ -10584,7 +10600,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_PID_AIRSYSTEM_ACTIVE",
     },
     {
-        "idx": 1634,
+        "idx": 1636,
         "extid": "828E5E20310C19",
         "max": 0,
         "min": 0,
@@ -10593,7 +10609,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_PID_MAX_VALUE",
     },
     {
-        "idx": 1636,
+        "idx": 1638,
         "extid": "8259B592700C1A",
         "max": 0,
         "min": 0,
@@ -10602,7 +10618,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_PID_MIN_VALUE",
     },
     {
-        "idx": 1638,
+        "idx": 1640,
         "extid": "825A0105990C1B",
         "max": 0,
         "min": 0,
@@ -10611,7 +10627,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_P_VALUE",
     },
     {
-        "idx": 1640,
+        "idx": 1642,
         "extid": "8117E506360C2D",
         "max": 0,
         "min": 0,
@@ -10620,7 +10636,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_ROOMSENSOR_INFLUENCE_FACTOR",
     },
     {
-        "idx": 1641,
+        "idx": 1643,
         "extid": "814A526F5B0BF5",
         "max": 0,
         "min": 0,
@@ -10629,7 +10645,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_ROOM_PROGRAM_MODE",
     },
     {
-        "idx": 1642,
+        "idx": 1644,
         "extid": "8635FFD7B20C03",
         "max": 0,
         "min": 0,
@@ -10638,7 +10654,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_ROOM_SENSOR_ACTIVE",
     },
     {
-        "idx": 1644,
+        "idx": 1646,
         "extid": "858E6674D50C38",
         "max": 0,
         "min": 0,
@@ -10647,7 +10663,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_T1_KORRIGERING",
     },
     {
-        "idx": 1645,
+        "idx": 1647,
         "extid": "854EDF1E430C3E",
         "max": 0,
         "min": 0,
@@ -10656,7 +10672,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_T5_KORRIGERING",
     },
     {
-        "idx": 1646,
+        "idx": 1648,
         "extid": "86D947DA820C0B",
         "max": 0,
         "min": 0,
@@ -10665,7 +10681,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_T5_SETPOINT",
     },
     {
-        "idx": 1648,
+        "idx": 1650,
         "extid": "86C7DACCE10C0E",
         "max": 0,
         "min": 0,
@@ -10674,7 +10690,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_TEMP_TIMECONTROLLED",
     },
     {
-        "idx": 1650,
+        "idx": 1652,
         "extid": "814713BEA40BDA",
         "max": 0,
         "min": 0,
@@ -10683,133 +10699,133 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_TIME_PROGRAM",
     },
     {
-        "idx": 1651,
+        "idx": 1653,
         "extid": "82C52E3F910BE2",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_5FRI",
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_FRI",
     },
     {
-        "idx": 1653,
+        "idx": 1655,
         "extid": "826A1151AC0BEA",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_5FRI_2",
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_FRI_2",
     },
     {
-        "idx": 1655,
+        "idx": 1657,
         "extid": "82A87329CF0BDD",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_1MON",
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_MON",
     },
     {
-        "idx": 1657,
+        "idx": 1659,
         "extid": "82BAFDF97A0BEB",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_1MON_2",
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_MON_2",
     },
     {
-        "idx": 1659,
+        "idx": 1661,
         "extid": "82DD2A73410BE3",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_6SAT",
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_SAT",
     },
     {
-        "idx": 1661,
+        "idx": 1663,
         "extid": "829443810C0BEC",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_6SAT_2",
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_SAT_2",
     },
     {
-        "idx": 1663,
+        "idx": 1665,
         "extid": "820EE65D6E0BE4",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_7SUN",
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_SUN",
     },
     {
-        "idx": 1665,
+        "idx": 1667,
         "extid": "825A8967620BED",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_7SUN_2",
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_SUN_2",
     },
     {
-        "idx": 1667,
+        "idx": 1669,
         "extid": "827EA0EE1B0BE1",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_4THU",
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_THU",
     },
     {
-        "idx": 1669,
+        "idx": 1671,
         "extid": "825AA978A10BEE",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_4THU_2",
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_THU_2",
     },
     {
-        "idx": 1671,
+        "idx": 1673,
         "extid": "829C7B92630BDF",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_2TUE",
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_TUE",
     },
     {
-        "idx": 1673,
+        "idx": 1675,
         "extid": "82E4FC54930BEF",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_2TUE_2",
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_TUE_2",
     },
     {
-        "idx": 1675,
+        "idx": 1677,
         "extid": "82A3F80EFD0BE0",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_3WED",
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_WED",
     },
     {
-        "idx": 1677,
+        "idx": 1679,
         "extid": "82F28713EB0BF0",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 2,
-        "text": "MV_E12_EEPROM_TIME_PROGRAM_3WED_2",
+        "text": "MV_E12_EEPROM_TIME_PROGRAM_WED_2",
     },
     {
-        "idx": 1679,
+        "idx": 1681,
         "extid": "864E663EA20BF1",
         "max": 0,
         "min": 0,
@@ -10818,7 +10834,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_UI_BRAND",
     },
     {
-        "idx": 1681,
+        "idx": 1683,
         "extid": "86145F89880C13",
         "max": 0,
         "min": 0,
@@ -10827,7 +10843,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EEPROM_VALVE_AO_0_10V_ACTIVE",
     },
     {
-        "idx": 1683,
+        "idx": 1685,
         "extid": "00B485612A0C9C",
         "max": 0,
         "min": 0,
@@ -10836,7 +10852,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_EXT_FUNCTION_TRIGGED",
     },
     {
-        "idx": 1684,
+        "idx": 1686,
         "extid": "0694427BED0BFA",
         "max": 0,
         "min": 0,
@@ -10845,7 +10861,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_FREEZEGUARD_ACTIVE",
     },
     {
-        "idx": 1686,
+        "idx": 1688,
         "extid": "06A32DAD1C0BF2",
         "max": 0,
         "min": 0,
@@ -10854,7 +10870,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_GT41_TEMP_SETPOINT",
     },
     {
-        "idx": 1688,
+        "idx": 1690,
         "extid": "06A7558A6D0C57",
         "max": 0,
         "min": 0,
@@ -10863,7 +10879,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_GT5_DAMPING_FACTOR",
     },
     {
-        "idx": 1690,
+        "idx": 1692,
         "extid": "068C603C020BDB",
         "max": 0,
         "min": 0,
@@ -10872,7 +10888,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_HEATING_CURVE_NUMBER_OF_POINTS",
     },
     {
-        "idx": 1692,
+        "idx": 1694,
         "extid": "00930B5D460C12",
         "max": 0,
         "min": 0,
@@ -10881,7 +10897,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_HEATING_SEASON_ACTIVE",
     },
     {
-        "idx": 1693,
+        "idx": 1695,
         "extid": "00D1E8971A0BF8",
         "max": 0,
         "min": 0,
@@ -10890,7 +10906,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_HIGHTEMP_HEATINGSYSTEM_ACTIVE",
     },
     {
-        "idx": 1694,
+        "idx": 1696,
         "extid": "80C95FF0260C09",
         "max": 0,
         "min": 0,
@@ -10899,7 +10915,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_INTERNAL_HOLIDAY_ACTIVE",
     },
     {
-        "idx": 1695,
+        "idx": 1697,
         "extid": "014E8C7DA50C0C",
         "max": 0,
         "min": 0,
@@ -10908,7 +10924,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_INTERNAL_TIMECONTROLLED_ACTIVE",
     },
     {
-        "idx": 1696,
+        "idx": 1698,
         "extid": "00BAEA25FC0C11",
         "max": 0,
         "min": 0,
@@ -10917,7 +10933,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_MAN_OP_G1",
     },
     {
-        "idx": 1697,
+        "idx": 1699,
         "extid": "00C09E410C0C41",
         "max": 0,
         "min": 0,
@@ -10926,7 +10942,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_MAN_OP_VALVE_CLOSE",
     },
     {
-        "idx": 1698,
+        "idx": 1700,
         "extid": "00ED44B0E30C40",
         "max": 0,
         "min": 0,
@@ -10935,7 +10951,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_MAN_OP_VALVE_OPEN",
     },
     {
-        "idx": 1699,
+        "idx": 1701,
         "extid": "02ABF1A7610C00",
         "max": 0,
         "min": 0,
@@ -10944,7 +10960,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_PID_ISPOINT",
     },
     {
-        "idx": 1701,
+        "idx": 1703,
         "extid": "028447AFD90C01",
         "max": 0,
         "min": 0,
@@ -10953,7 +10969,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_PID_SETPOINT",
     },
     {
-        "idx": 1703,
+        "idx": 1705,
         "extid": "067BF2077E0BFB",
         "max": 0,
         "min": 0,
@@ -10962,7 +10978,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_ROOMSENSOR_INFLUENCE",
     },
     {
-        "idx": 1705,
+        "idx": 1707,
         "extid": "06DFBD330E0C05",
         "max": 0,
         "min": 0,
@@ -10971,7 +10987,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_ROOM_SENSOR_ACKNOW",
     },
     {
-        "idx": 1707,
+        "idx": 1709,
         "extid": "064914CE5A0C0F",
         "max": 0,
         "min": 0,
@@ -10980,7 +10996,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_ROOM_SETPOINT_TEMP_ACTIVE",
     },
     {
-        "idx": 1709,
+        "idx": 1711,
         "extid": "00F7957AEF0BF7",
         "max": 0,
         "min": 0,
@@ -10989,7 +11005,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_T1_ALARM",
     },
     {
-        "idx": 1710,
+        "idx": 1712,
         "extid": "06D2EA70FD0C1E",
         "max": 0,
         "min": 0,
@@ -10998,7 +11014,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_T1_TEMP",
     },
     {
-        "idx": 1712,
+        "idx": 1714,
         "extid": "069E4CB8C50C10",
         "max": 0,
         "min": 0,
@@ -11007,7 +11023,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_T5_ATTENUATIONED_TEMP",
     },
     {
-        "idx": 1714,
+        "idx": 1716,
         "extid": "0E497B32EB0C62",
         "max": 0,
         "min": 0,
@@ -11016,7 +11032,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_T5_TEMP",
     },
     {
-        "idx": 1716,
+        "idx": 1718,
         "extid": "0662DE4E250C04",
         "max": 0,
         "min": 0,
@@ -11025,7 +11041,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_T5_TEMP_ACTIVE",
     },
     {
-        "idx": 1718,
+        "idx": 1720,
         "extid": "062A58E9AC0D56",
         "max": 0,
         "min": 0,
@@ -11034,7 +11050,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_T5_TEMP_ACTIVE_TO_DISPLAY",
     },
     {
-        "idx": 1720,
+        "idx": 1722,
         "extid": "02E74CBABE0BE7",
         "max": 0,
         "min": 0,
@@ -11043,7 +11059,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_TIME_PROGRAM_FRI",
     },
     {
-        "idx": 1722,
+        "idx": 1724,
         "extid": "028A11ACE00BDC",
         "max": 0,
         "min": 0,
@@ -11052,7 +11068,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_TIME_PROGRAM_MON",
     },
     {
-        "idx": 1724,
+        "idx": 1726,
         "extid": "02FF48F66E0BE8",
         "max": 0,
         "min": 0,
@@ -11061,7 +11077,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_TIME_PROGRAM_SAT",
     },
     {
-        "idx": 1726,
+        "idx": 1728,
         "extid": "022C84D8410BE9",
         "max": 0,
         "min": 0,
@@ -11070,7 +11086,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_TIME_PROGRAM_SUN",
     },
     {
-        "idx": 1728,
+        "idx": 1730,
         "extid": "025CC26B340BE6",
         "max": 0,
         "min": 0,
@@ -11079,7 +11095,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_TIME_PROGRAM_THU",
     },
     {
-        "idx": 1730,
+        "idx": 1732,
         "extid": "02BE19174C0BDE",
         "max": 0,
         "min": 0,
@@ -11088,7 +11104,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_TIME_PROGRAM_TUE",
     },
     {
-        "idx": 1732,
+        "idx": 1734,
         "extid": "02819A8BD20BE5",
         "max": 0,
         "min": 0,
@@ -11097,7 +11113,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_TIME_PROGRAM_WED",
     },
     {
-        "idx": 1734,
+        "idx": 1736,
         "extid": "063752F5180C43",
         "max": 0,
         "min": 0,
@@ -11106,7 +11122,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_VALVE_PID_ISPOINT",
     },
     {
-        "idx": 1736,
+        "idx": 1738,
         "extid": "06AD02C5130C42",
         "max": 0,
         "min": 0,
@@ -11115,7 +11131,7 @@ PARAMETER_DATA = [
         "text": "MV_E12_VALVE_PID_SETPOINT",
     },
     {
-        "idx": 1738,
+        "idx": 1740,
         "extid": "0031A154580853",
         "max": 0,
         "min": 0,
@@ -11124,7 +11140,7 @@ PARAMETER_DATA = [
         "text": "MV_E31_Q2_PRI_COOLING",
     },
     {
-        "idx": 1739,
+        "idx": 1741,
         "extid": "00F81F2256091E",
         "max": 0,
         "min": 0,
@@ -11133,7 +11149,7 @@ PARAMETER_DATA = [
         "text": "MV_E31_Q2_SEC_COOLING",
     },
     {
-        "idx": 1740,
+        "idx": 1742,
         "extid": "00CCBC30870767",
         "max": 0,
         "min": 0,
@@ -11142,7 +11158,7 @@ PARAMETER_DATA = [
         "text": "MV_E31_T2_SENSOR_ALARM_GLOBAL",
     },
     {
-        "idx": 1741,
+        "idx": 1743,
         "extid": "0A5F4B44470834",
         "max": 0,
         "min": 0,
@@ -11151,7 +11167,7 @@ PARAMETER_DATA = [
         "text": "MV_E31_T31_SETPOINT",
     },
     {
-        "idx": 1743,
+        "idx": 1745,
         "extid": "40C4A80D1E09E8",
         "max": 16777216,
         "min": 0,
@@ -11160,7 +11176,7 @@ PARAMETER_DATA = [
         "text": "MV_E31_T32_ACKNOWLEDGED",
     },
     {
-        "idx": 1744,
+        "idx": 1746,
         "extid": "40CE6501E30A32",
         "max": 16777216,
         "min": 0,
@@ -11169,7 +11185,7 @@ PARAMETER_DATA = [
         "text": "MV_ENABLE_CONDENSATIONGUARD_BY_EXT_GLOBAL",
     },
     {
-        "idx": 1745,
+        "idx": 1747,
         "extid": "40B74C1B5108FB",
         "max": 16777216,
         "min": 0,
@@ -11178,7 +11194,7 @@ PARAMETER_DATA = [
         "text": "MV_ENABLE_COOLING_BLOCK_BY_EXT_GLOBAL",
     },
     {
-        "idx": 1746,
+        "idx": 1748,
         "extid": "406C8F3A590578",
         "max": 16777216,
         "min": 0,
@@ -11187,7 +11203,7 @@ PARAMETER_DATA = [
         "text": "MV_ENABLE_HEATING_BLOCK_BY_EXT_GLOBAL",
     },
     {
-        "idx": 1747,
+        "idx": 1749,
         "extid": "409AF7088B0A31",
         "max": 16777216,
         "min": 0,
@@ -11196,7 +11212,7 @@ PARAMETER_DATA = [
         "text": "MV_ENABLE_HIGH_PROTECTION_HS_BY_EXT_GLOBAL",
     },
     {
-        "idx": 1748,
+        "idx": 1750,
         "extid": "00F33E82C3091F",
         "max": 0,
         "min": 0,
@@ -11205,7 +11221,7 @@ PARAMETER_DATA = [
         "text": "MV_EX1_Q2_GLOBAL",
     },
     {
-        "idx": 1749,
+        "idx": 1751,
         "extid": "014BD1F74D0A1A",
         "max": 0,
         "min": 0,
@@ -11214,7 +11230,7 @@ PARAMETER_DATA = [
         "text": "MV_Ex_T1_ALARM_BITMASK",
     },
     {
-        "idx": 1750,
+        "idx": 1752,
         "extid": "004328FEDD0A19",
         "max": 0,
         "min": 0,
@@ -11223,7 +11239,7 @@ PARAMETER_DATA = [
         "text": "MV_Ex_T1_ALARM_GLOBAL",
     },
     {
-        "idx": 1751,
+        "idx": 1753,
         "extid": "01CEDE82B50A26",
         "max": 0,
         "min": 0,
@@ -11232,7 +11248,7 @@ PARAMETER_DATA = [
         "text": "MV_FREEZEGUARD_ACTIVE_BITMASK",
     },
     {
-        "idx": 1752,
+        "idx": 1754,
         "extid": "00296DDE8F0A27",
         "max": 0,
         "min": 0,
@@ -11241,7 +11257,7 @@ PARAMETER_DATA = [
         "text": "MV_FREEZEGUARD_ACTIVE_GLOBAL",
     },
     {
-        "idx": 1753,
+        "idx": 1755,
         "extid": "010C752B060A36",
         "max": 0,
         "min": 0,
@@ -11250,7 +11266,7 @@ PARAMETER_DATA = [
         "text": "MV_HIGHTEMP_HS_ACTIVE_BITMASK",
     },
     {
-        "idx": 1754,
+        "idx": 1756,
         "extid": "00553BCA330A34",
         "max": 16777216,
         "min": 0,
@@ -11259,7 +11275,7 @@ PARAMETER_DATA = [
         "text": "MV_HIGHTEMP_HS_ACTIVE_GLOBAL",
     },
     {
-        "idx": 1755,
+        "idx": 1757,
         "extid": "014A8CAE040D0E",
         "max": 0,
         "min": 0,
@@ -11268,7 +11284,7 @@ PARAMETER_DATA = [
         "text": "MV_HIGHTEMP_HS_ALERT_ACTIVE_BITMASK",
     },
     {
-        "idx": 1756,
+        "idx": 1758,
         "extid": "011D09D77D0A59",
         "max": 0,
         "min": 0,
@@ -11277,7 +11293,7 @@ PARAMETER_DATA = [
         "text": "MV_HOLIDAY_ACTIVE_BITMASK",
     },
     {
-        "idx": 1757,
+        "idx": 1759,
         "extid": "0028CCEDE80A5A",
         "max": 0,
         "min": 0,
@@ -11286,7 +11302,7 @@ PARAMETER_DATA = [
         "text": "MV_HOLIDAY_ACTIVE_GLOBAL",
     },
     {
-        "idx": 1758,
+        "idx": 1760,
         "extid": "015BDD52580D08",
         "max": 0,
         "min": 0,
@@ -11295,7 +11311,7 @@ PARAMETER_DATA = [
         "text": "MV_ICONS_TIMEPROGRAM_ACTIVE_BITMASK",
     },
     {
-        "idx": 1759,
+        "idx": 1761,
         "extid": "0095F7B1470D09",
         "max": 0,
         "min": 0,
@@ -11304,7 +11320,7 @@ PARAMETER_DATA = [
         "text": "MV_ICONS_TIMEPROGRAM_ACTIVE_GLOBAL",
     },
     {
-        "idx": 1760,
+        "idx": 1762,
         "extid": "00300FAB940B96",
         "max": 16777216,
         "min": 0,
@@ -11313,7 +11329,7 @@ PARAMETER_DATA = [
         "text": "MV_INVERT_EXT_INPUT_GLOBAL",
     },
     {
-        "idx": 1761,
+        "idx": 1763,
         "extid": "0A7A3C917204D8",
         "max": 0,
         "min": 0,
@@ -11322,7 +11338,7 @@ PARAMETER_DATA = [
         "text": "MV_PID_ACTUAL_1",
     },
     {
-        "idx": 1763,
+        "idx": 1765,
         "extid": "0AE335C0C804D9",
         "max": 0,
         "min": 0,
@@ -11331,7 +11347,7 @@ PARAMETER_DATA = [
         "text": "MV_PID_ACTUAL_2",
     },
     {
-        "idx": 1765,
+        "idx": 1767,
         "extid": "0A9432F05E04DA",
         "max": 0,
         "min": 0,
@@ -11340,7 +11356,7 @@ PARAMETER_DATA = [
         "text": "MV_PID_ACTUAL_3",
     },
     {
-        "idx": 1767,
+        "idx": 1769,
         "extid": "0A0A5665FD04DB",
         "max": 0,
         "min": 0,
@@ -11349,7 +11365,7 @@ PARAMETER_DATA = [
         "text": "MV_PID_ACTUAL_4",
     },
     {
-        "idx": 1769,
+        "idx": 1771,
         "extid": "0A7D51556B04DC",
         "max": 0,
         "min": 0,
@@ -11358,7 +11374,7 @@ PARAMETER_DATA = [
         "text": "MV_PID_ACTUAL_5",
     },
     {
-        "idx": 1771,
+        "idx": 1773,
         "extid": "0AE45804D104DD",
         "max": 0,
         "min": 0,
@@ -11367,7 +11383,7 @@ PARAMETER_DATA = [
         "text": "MV_PID_ACTUAL_6",
     },
     {
-        "idx": 1773,
+        "idx": 1775,
         "extid": "0A935F34470830",
         "max": 0,
         "min": 0,
@@ -11376,7 +11392,7 @@ PARAMETER_DATA = [
         "text": "MV_PID_ACTUAL_7",
     },
     {
-        "idx": 1775,
+        "idx": 1777,
         "extid": "6ADE74765504D6",
         "max": 1000,
         "min": 0,
@@ -11385,7 +11401,7 @@ PARAMETER_DATA = [
         "text": "MV_PID_ACTUAL_GLOBAL",
     },
     {
-        "idx": 1777,
+        "idx": 1779,
         "extid": "0AFDAB16F504DE",
         "max": 0,
         "min": 0,
@@ -11394,7 +11410,7 @@ PARAMETER_DATA = [
         "text": "MV_PID_ACTUAL_PRI_COOLING",
     },
     {
-        "idx": 1779,
+        "idx": 1781,
         "extid": "0A341560FB0909",
         "max": 0,
         "min": 0,
@@ -11403,7 +11419,7 @@ PARAMETER_DATA = [
         "text": "MV_PID_ACTUAL_SEC_COOLING",
     },
     {
-        "idx": 1781,
+        "idx": 1783,
         "extid": "0AE10F410D04DF",
         "max": 0,
         "min": 0,
@@ -11412,7 +11428,7 @@ PARAMETER_DATA = [
         "text": "MV_PID_SETPOINT_1",
     },
     {
-        "idx": 1783,
+        "idx": 1785,
         "extid": "0A780610B704E0",
         "max": 0,
         "min": 0,
@@ -11421,7 +11437,7 @@ PARAMETER_DATA = [
         "text": "MV_PID_SETPOINT_2",
     },
     {
-        "idx": 1785,
+        "idx": 1787,
         "extid": "0A0F01202104E1",
         "max": 0,
         "min": 0,
@@ -11430,7 +11446,7 @@ PARAMETER_DATA = [
         "text": "MV_PID_SETPOINT_3",
     },
     {
-        "idx": 1787,
+        "idx": 1789,
         "extid": "0A9165B58204E2",
         "max": 0,
         "min": 0,
@@ -11439,7 +11455,7 @@ PARAMETER_DATA = [
         "text": "MV_PID_SETPOINT_4",
     },
     {
-        "idx": 1789,
+        "idx": 1791,
         "extid": "0AE662851404E3",
         "max": 0,
         "min": 0,
@@ -11448,7 +11464,7 @@ PARAMETER_DATA = [
         "text": "MV_PID_SETPOINT_5",
     },
     {
-        "idx": 1791,
+        "idx": 1793,
         "extid": "0A7F6BD4AE04E4",
         "max": 0,
         "min": 0,
@@ -11457,7 +11473,7 @@ PARAMETER_DATA = [
         "text": "MV_PID_SETPOINT_6",
     },
     {
-        "idx": 1793,
+        "idx": 1795,
         "extid": "0A086CE4380831",
         "max": 0,
         "min": 0,
@@ -11466,7 +11482,7 @@ PARAMETER_DATA = [
         "text": "MV_PID_SETPOINT_7",
     },
     {
-        "idx": 1795,
+        "idx": 1797,
         "extid": "0A373AB0CA04D5",
         "max": 0,
         "min": 0,
@@ -11475,7 +11491,7 @@ PARAMETER_DATA = [
         "text": "MV_PID_SETPOINT_GLOBAL",
     },
     {
-        "idx": 1797,
+        "idx": 1799,
         "extid": "0A0863FF8104E5",
         "max": 0,
         "min": 0,
@@ -11484,7 +11500,7 @@ PARAMETER_DATA = [
         "text": "MV_PID_SETPOINT_PRI_COOLING",
     },
     {
-        "idx": 1799,
+        "idx": 1801,
         "extid": "0AC1DD898F090A",
         "max": 0,
         "min": 0,
@@ -11493,7 +11509,7 @@ PARAMETER_DATA = [
         "text": "MV_PID_SETPOINT_SEC_COOLING",
     },
     {
-        "idx": 1801,
+        "idx": 1803,
         "extid": "026BEA40690870",
         "max": 0,
         "min": 0,
@@ -11502,7 +11518,7 @@ PARAMETER_DATA = [
         "text": "MV_ROOMSENSOR_KNOB_ALARM_BITMASK",
     },
     {
-        "idx": 1803,
+        "idx": 1805,
         "extid": "00171A69A80871",
         "max": 0,
         "min": 0,
@@ -11511,7 +11527,7 @@ PARAMETER_DATA = [
         "text": "MV_ROOMSENSOR_KNOB_ALARM_GLOBAL",
     },
     {
-        "idx": 1804,
+        "idx": 1806,
         "extid": "0E587BBBF90512",
         "max": 0,
         "min": 0,
@@ -11520,7 +11536,7 @@ PARAMETER_DATA = [
         "text": "MV_T1_SETPOINT_1",
     },
     {
-        "idx": 1806,
+        "idx": 1808,
         "extid": "0EC172EA430513",
         "max": 0,
         "min": 0,
@@ -11529,7 +11545,7 @@ PARAMETER_DATA = [
         "text": "MV_T1_SETPOINT_2",
     },
     {
-        "idx": 1808,
+        "idx": 1810,
         "extid": "0EB675DAD50514",
         "max": 0,
         "min": 0,
@@ -11538,7 +11554,7 @@ PARAMETER_DATA = [
         "text": "MV_T1_SETPOINT_3",
     },
     {
-        "idx": 1810,
+        "idx": 1812,
         "extid": "0E28114F760515",
         "max": 0,
         "min": 0,
@@ -11547,7 +11563,7 @@ PARAMETER_DATA = [
         "text": "MV_T1_SETPOINT_4",
     },
     {
-        "idx": 1812,
+        "idx": 1814,
         "extid": "0E5F167FE00516",
         "max": 0,
         "min": 0,
@@ -11556,7 +11572,7 @@ PARAMETER_DATA = [
         "text": "MV_T1_SETPOINT_5",
     },
     {
-        "idx": 1814,
+        "idx": 1816,
         "extid": "0EC61F2E5A0517",
         "max": 0,
         "min": 0,
@@ -11565,7 +11581,7 @@ PARAMETER_DATA = [
         "text": "MV_T1_SETPOINT_6",
     },
     {
-        "idx": 1816,
+        "idx": 1818,
         "extid": "0EB1181ECC0518",
         "max": 0,
         "min": 0,
@@ -11574,7 +11590,7 @@ PARAMETER_DATA = [
         "text": "MV_T1_SETPOINT_7",
     },
     {
-        "idx": 1818,
+        "idx": 1820,
         "extid": "0E05AA65E90511",
         "max": 0,
         "min": 0,
@@ -11583,7 +11599,7 @@ PARAMETER_DATA = [
         "text": "MV_T1_SETPOINT_GLOBAL",
     },
     {
-        "idx": 1820,
+        "idx": 1822,
         "extid": "0E8FEB0F7F090F",
         "max": 0,
         "min": 0,
@@ -11592,7 +11608,7 @@ PARAMETER_DATA = [
         "text": "MV_T1_SETPOINT_PRI_COOLING",
     },
     {
-        "idx": 1822,
+        "idx": 1824,
         "extid": "0E465579710910",
         "max": 0,
         "min": 0,
@@ -11601,7 +11617,7 @@ PARAMETER_DATA = [
         "text": "MV_T1_SETPOINT_SEC_COOLING",
     },
     {
-        "idx": 1824,
+        "idx": 1826,
         "extid": "8222C8523A0A22",
         "max": 0,
         "min": 0,
@@ -11610,7 +11626,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ACKNOWLEDGED_BITMASK",
     },
     {
-        "idx": 1826,
+        "idx": 1828,
         "extid": "0EEAC3175104FB",
         "max": 0,
         "min": 0,
@@ -11619,7 +11635,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ACTUAL_1",
     },
     {
-        "idx": 1828,
+        "idx": 1830,
         "extid": "0EC3E07A4A0D14",
         "max": 0,
         "min": 0,
@@ -11628,7 +11644,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ACTUAL_1_ROUND_OFFED",
     },
     {
-        "idx": 1830,
+        "idx": 1832,
         "extid": "0E73CA46EB04FC",
         "max": 0,
         "min": 0,
@@ -11637,7 +11653,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ACTUAL_2",
     },
     {
-        "idx": 1832,
+        "idx": 1834,
         "extid": "0E7E2A16840D15",
         "max": 0,
         "min": 0,
@@ -11646,7 +11662,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ACTUAL_2_ROUND_OFFED",
     },
     {
-        "idx": 1834,
+        "idx": 1836,
         "extid": "0E04CD767D04FD",
         "max": 0,
         "min": 0,
@@ -11655,7 +11671,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ACTUAL_3",
     },
     {
-        "idx": 1836,
+        "idx": 1838,
         "extid": "0EA3BCCF010D16",
         "max": 0,
         "min": 0,
@@ -11664,7 +11680,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ACTUAL_3_ROUND_OFFED",
     },
     {
-        "idx": 1838,
+        "idx": 1840,
         "extid": "0E9AA9E3DE04FE",
         "max": 0,
         "min": 0,
@@ -11673,7 +11689,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ACTUAL_4",
     },
     {
-        "idx": 1840,
+        "idx": 1842,
         "extid": "0EDECFC9590D17",
         "max": 0,
         "min": 0,
@@ -11682,7 +11698,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ACTUAL_4_ROUND_OFFED",
     },
     {
-        "idx": 1842,
+        "idx": 1844,
         "extid": "0EEDAED34804FF",
         "max": 0,
         "min": 0,
@@ -11691,7 +11707,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ACTUAL_5",
     },
     {
-        "idx": 1844,
+        "idx": 1846,
         "extid": "0E035910DC0D18",
         "max": 0,
         "min": 0,
@@ -11700,7 +11716,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ACTUAL_5_ROUND_OFFED",
     },
     {
-        "idx": 1846,
+        "idx": 1848,
         "extid": "0E74A782F20500",
         "max": 0,
         "min": 0,
@@ -11709,7 +11725,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ACTUAL_6",
     },
     {
-        "idx": 1848,
+        "idx": 1850,
         "extid": "0EBE937C120D19",
         "max": 0,
         "min": 0,
@@ -11718,7 +11734,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ACTUAL_6_ROUND_OFFED",
     },
     {
-        "idx": 1850,
+        "idx": 1852,
         "extid": "0E03A0B2640501",
         "max": 0,
         "min": 0,
@@ -11727,7 +11743,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ACTUAL_7",
     },
     {
-        "idx": 1852,
+        "idx": 1854,
         "extid": "0E6305A5970D1A",
         "max": 0,
         "min": 0,
@@ -11736,7 +11752,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ACTUAL_7_ROUND_OFFED",
     },
     {
-        "idx": 1854,
+        "idx": 1856,
         "extid": "0E5FFE749104D7",
         "max": 0,
         "min": 0,
@@ -11745,7 +11761,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ACTUAL_GLOBAL",
     },
     {
-        "idx": 1856,
+        "idx": 1858,
         "extid": "0E850DA7390835",
         "max": 0,
         "min": 0,
@@ -11754,7 +11770,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ACTUAL_PRI_COOLING",
     },
     {
-        "idx": 1858,
+        "idx": 1860,
         "extid": "0E4CB3D137090C",
         "max": 0,
         "min": 0,
@@ -11763,7 +11779,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ACTUAL_SEC_COOLING",
     },
     {
-        "idx": 1860,
+        "idx": 1862,
         "extid": "0E345582290D66",
         "max": 0,
         "min": 0,
@@ -11772,7 +11788,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ATTENUATED_1",
     },
     {
-        "idx": 1862,
+        "idx": 1864,
         "extid": "0EAD5CD3930D67",
         "max": 0,
         "min": 0,
@@ -11781,7 +11797,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ATTENUATED_2",
     },
     {
-        "idx": 1864,
+        "idx": 1866,
         "extid": "0EDA5BE3050D68",
         "max": 0,
         "min": 0,
@@ -11790,7 +11806,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ATTENUATED_3",
     },
     {
-        "idx": 1866,
+        "idx": 1868,
         "extid": "0E443F76A60D69",
         "max": 0,
         "min": 0,
@@ -11799,7 +11815,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ATTENUATED_4",
     },
     {
-        "idx": 1868,
+        "idx": 1870,
         "extid": "0E333846300D6A",
         "max": 0,
         "min": 0,
@@ -11808,7 +11824,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ATTENUATED_5",
     },
     {
-        "idx": 1870,
+        "idx": 1872,
         "extid": "0EAA31178A0D6B",
         "max": 0,
         "min": 0,
@@ -11817,7 +11833,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ATTENUATED_6",
     },
     {
-        "idx": 1872,
+        "idx": 1874,
         "extid": "0EDD36271C0D6C",
         "max": 0,
         "min": 0,
@@ -11826,7 +11842,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ATTENUATED_7",
     },
     {
-        "idx": 1874,
+        "idx": 1876,
         "extid": "0EF282A04A0D64",
         "max": 0,
         "min": 0,
@@ -11835,7 +11851,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ATTENUATED_PRI_COOLING",
     },
     {
-        "idx": 1876,
+        "idx": 1878,
         "extid": "0E3B3CD6440D65",
         "max": 0,
         "min": 0,
@@ -11844,7 +11860,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_ATTENUATED_SEC_COOLING",
     },
     {
-        "idx": 1878,
+        "idx": 1880,
         "extid": "82F9B521CB0A23",
         "max": 0,
         "min": 0,
@@ -11853,7 +11869,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_CONNECTED_BITMASK",
     },
     {
-        "idx": 1880,
+        "idx": 1882,
         "extid": "0E5B7D80860519",
         "max": 0,
         "min": 0,
@@ -11862,7 +11878,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_SETPOINT_1",
     },
     {
-        "idx": 1882,
+        "idx": 1884,
         "extid": "0EC274D13C051A",
         "max": 0,
         "min": 0,
@@ -11871,7 +11887,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_SETPOINT_2",
     },
     {
-        "idx": 1884,
+        "idx": 1886,
         "extid": "0EB573E1AA051B",
         "max": 0,
         "min": 0,
@@ -11880,7 +11896,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_SETPOINT_3",
     },
     {
-        "idx": 1886,
+        "idx": 1888,
         "extid": "0E2B177409051C",
         "max": 0,
         "min": 0,
@@ -11889,7 +11905,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_SETPOINT_4",
     },
     {
-        "idx": 1888,
+        "idx": 1890,
         "extid": "0E5C10449F051D",
         "max": 0,
         "min": 0,
@@ -11898,7 +11914,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_SETPOINT_5",
     },
     {
-        "idx": 1890,
+        "idx": 1892,
         "extid": "0EC5191525051E",
         "max": 0,
         "min": 0,
@@ -11907,7 +11923,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_SETPOINT_6",
     },
     {
-        "idx": 1892,
+        "idx": 1894,
         "extid": "0EB21E25B3051F",
         "max": 0,
         "min": 0,
@@ -11916,7 +11932,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_SETPOINT_7",
     },
     {
-        "idx": 1894,
+        "idx": 1896,
         "extid": "0EFDDE46C00D6E",
         "max": 0,
         "min": 0,
@@ -11925,7 +11941,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_SETPOINT_ACTUAL_1",
     },
     {
-        "idx": 1896,
+        "idx": 1898,
         "extid": "0E64D7177A0D74",
         "max": 0,
         "min": 0,
@@ -11934,7 +11950,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_SETPOINT_ACTUAL_2",
     },
     {
-        "idx": 1898,
+        "idx": 1900,
         "extid": "0E13D027EC0D73",
         "max": 0,
         "min": 0,
@@ -11943,7 +11959,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_SETPOINT_ACTUAL_3",
     },
     {
-        "idx": 1900,
+        "idx": 1902,
         "extid": "0E8DB4B24F0D72",
         "max": 0,
         "min": 0,
@@ -11952,7 +11968,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_SETPOINT_ACTUAL_4",
     },
     {
-        "idx": 1902,
+        "idx": 1904,
         "extid": "0EFAB382D90D71",
         "max": 0,
         "min": 0,
@@ -11961,7 +11977,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_SETPOINT_ACTUAL_5",
     },
     {
-        "idx": 1904,
+        "idx": 1906,
         "extid": "0E63BAD3630D70",
         "max": 0,
         "min": 0,
@@ -11970,7 +11986,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_SETPOINT_ACTUAL_6",
     },
     {
-        "idx": 1906,
+        "idx": 1908,
         "extid": "0E14BDE3F50D6F",
         "max": 0,
         "min": 0,
@@ -11979,7 +11995,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_SETPOINT_ACTUAL_7",
     },
     {
-        "idx": 1908,
+        "idx": 1910,
         "extid": "0ED154A6430D77",
         "max": 0,
         "min": 0,
@@ -11988,7 +12004,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_SETPOINT_ACTUAL_GLOBAL",
     },
     {
-        "idx": 1910,
+        "idx": 1912,
         "extid": "0E8B8A97610D75",
         "max": 0,
         "min": 0,
@@ -11997,7 +12013,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_SETPOINT_ACTUAL_PRI_COOLING",
     },
     {
-        "idx": 1912,
+        "idx": 1914,
         "extid": "0E4234E16F0D76",
         "max": 0,
         "min": 0,
@@ -12006,7 +12022,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_SETPOINT_ACTUAL_SEC_COOLING",
     },
     {
-        "idx": 1914,
+        "idx": 1916,
         "extid": "0ED34A9C7F0855",
         "max": 0,
         "min": 0,
@@ -12015,7 +12031,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_SETPOINT_PRI_COOLING",
     },
     {
-        "idx": 1916,
+        "idx": 1918,
         "extid": "0E1AF4EA71090D",
         "max": 0,
         "min": 0,
@@ -12024,7 +12040,7 @@ PARAMETER_DATA = [
         "text": "MV_T5_SETPOINT_SEC_COOLING",
     },
     {
-        "idx": 1918,
+        "idx": 1920,
         "extid": "021DD1D0B408F7",
         "max": 0,
         "min": 0,
@@ -12033,7 +12049,7 @@ PARAMETER_DATA = [
         "text": "MV_TIMER_HEATING_COOLING_DELAY_1",
     },
     {
-        "idx": 1920,
+        "idx": 1922,
         "extid": "0284D8810E08F8",
         "max": 0,
         "min": 0,
@@ -12042,7 +12058,7 @@ PARAMETER_DATA = [
         "text": "MV_TIMER_HEATING_COOLING_DELAY_2",
     },
     {
-        "idx": 1922,
+        "idx": 1924,
         "extid": "02F3DFB1980989",
         "max": 0,
         "min": 0,
@@ -12051,7 +12067,7 @@ PARAMETER_DATA = [
         "text": "MV_TIMER_HEATING_COOLING_DELAY_3",
     },
     {
-        "idx": 1924,
+        "idx": 1926,
         "extid": "026DBB243B08F9",
         "max": 0,
         "min": 0,
@@ -12060,7 +12076,7 @@ PARAMETER_DATA = [
         "text": "MV_TIMER_HEATING_COOLING_DELAY_4",
     },
     {
-        "idx": 1926,
+        "idx": 1928,
         "extid": "021ABC14AD098A",
         "max": 0,
         "min": 0,
@@ -12069,7 +12085,7 @@ PARAMETER_DATA = [
         "text": "MV_TIMER_HEATING_COOLING_DELAY_5",
     },
     {
-        "idx": 1928,
+        "idx": 1930,
         "extid": "0283B54517098B",
         "max": 0,
         "min": 0,
@@ -12078,7 +12094,7 @@ PARAMETER_DATA = [
         "text": "MV_TIMER_HEATING_COOLING_DELAY_6",
     },
     {
-        "idx": 1930,
+        "idx": 1932,
         "extid": "02F4B27581098C",
         "max": 0,
         "min": 0,
@@ -12087,7 +12103,7 @@ PARAMETER_DATA = [
         "text": "MV_TIMER_HEATING_COOLING_DELAY_7",
     },
     {
-        "idx": 1932,
+        "idx": 1934,
         "extid": "02100FEAE50854",
         "max": 0,
         "min": 0,
@@ -12096,7 +12112,7 @@ PARAMETER_DATA = [
         "text": "MV_TIMER_HEATING_COOLING_DELAY_GLOBAL",
     },
     {
-        "idx": 1934,
+        "idx": 1936,
         "extid": "0217273D8C08F6",
         "max": 0,
         "min": 0,
@@ -12105,7 +12121,7 @@ PARAMETER_DATA = [
         "text": "MV_TIMER_HEATING_COOLING_DELAY_PRI_COOLING",
     },
     {
-        "idx": 1936,
+        "idx": 1938,
         "extid": "02DE994B820905",
         "max": 0,
         "min": 0,
@@ -12114,7 +12130,7 @@ PARAMETER_DATA = [
         "text": "MV_TIMER_HEATING_COOLING_DELAY_SEC_COOLING",
     },
     {
-        "idx": 1938,
+        "idx": 1940,
         "extid": "406AE0502C08BD",
         "max": 16777216,
         "min": 0,
@@ -12123,7 +12139,7 @@ PARAMETER_DATA = [
         "text": "PARTY_MODE_CIRCUIT_1",
     },
     {
-        "idx": 1939,
+        "idx": 1941,
         "extid": "40F3E9019608BE",
         "max": 16777216,
         "min": 0,
@@ -12132,7 +12148,7 @@ PARAMETER_DATA = [
         "text": "PARTY_MODE_CIRCUIT_2",
     },
     {
-        "idx": 1940,
+        "idx": 1942,
         "extid": "4084EE310008BF",
         "max": 16777216,
         "min": 0,
@@ -12141,7 +12157,7 @@ PARAMETER_DATA = [
         "text": "PARTY_MODE_CIRCUIT_3",
     },
     {
-        "idx": 1941,
+        "idx": 1943,
         "extid": "401A8AA4A308C0",
         "max": 16777216,
         "min": 0,
@@ -12150,7 +12166,7 @@ PARAMETER_DATA = [
         "text": "PARTY_MODE_CIRCUIT_4",
     },
     {
-        "idx": 1942,
+        "idx": 1944,
         "extid": "406D8D943508C1",
         "max": 16777216,
         "min": 0,
@@ -12159,7 +12175,7 @@ PARAMETER_DATA = [
         "text": "PARTY_MODE_CIRCUIT_5",
     },
     {
-        "idx": 1943,
+        "idx": 1945,
         "extid": "40F484C58F08C2",
         "max": 16777216,
         "min": 0,
@@ -12168,7 +12184,7 @@ PARAMETER_DATA = [
         "text": "PARTY_MODE_CIRCUIT_6",
     },
     {
-        "idx": 1944,
+        "idx": 1946,
         "extid": "408383F51908C3",
         "max": 16777216,
         "min": 0,
@@ -12177,7 +12193,7 @@ PARAMETER_DATA = [
         "text": "PARTY_MODE_CIRCUIT_7",
     },
     {
-        "idx": 1945,
+        "idx": 1947,
         "extid": "40133CE88808C4",
         "max": 16777216,
         "min": 0,
@@ -12186,7 +12202,7 @@ PARAMETER_DATA = [
         "text": "PARTY_MODE_CIRCUIT_8",
     },
     {
-        "idx": 1946,
+        "idx": 1948,
         "extid": "0059F750990920",
         "max": 16777216,
         "min": 0,
@@ -12195,7 +12211,7 @@ PARAMETER_DATA = [
         "text": "PARTY_MODE_CIRCUIT_GLOBAL",
     },
     {
-        "idx": 1947,
+        "idx": 1949,
         "extid": "616A0C202C08CF",
         "max": 99,
         "min": 0,
@@ -12204,7 +12220,7 @@ PARAMETER_DATA = [
         "text": "PARTY_MODE_TIME",
     },
     {
-        "idx": 1948,
+        "idx": 1950,
         "extid": "C091347AF3003A",
         "max": 0,
         "min": 0,
@@ -12213,7 +12229,7 @@ PARAMETER_DATA = [
         "text": "PGU_ACTIVATED",
     },
     {
-        "idx": 1949,
+        "idx": 1951,
         "extid": "00BB8F91DB00C1",
         "max": 16777216,
         "min": 0,
@@ -12222,7 +12238,7 @@ PARAMETER_DATA = [
         "text": "PGU_CONNECTED",
     },
     {
-        "idx": 1950,
+        "idx": 1952,
         "extid": "ED6CE96123003C",
         "max": 50,
         "min": -50,
@@ -12231,7 +12247,7 @@ PARAMETER_DATA = [
         "text": "PGU_CORRECTION_L1_A",
     },
     {
-        "idx": 1951,
+        "idx": 1953,
         "extid": "ED6EAFDF7A003D",
         "max": 50,
         "min": -50,
@@ -12240,7 +12256,7 @@ PARAMETER_DATA = [
         "text": "PGU_CORRECTION_L2_A",
     },
     {
-        "idx": 1952,
+        "idx": 1954,
         "extid": "ED6F6DB54D003E",
         "max": 50,
         "min": -50,
@@ -12249,7 +12265,7 @@ PARAMETER_DATA = [
         "text": "PGU_CORRECTION_L3_A",
     },
     {
-        "idx": 1953,
+        "idx": 1955,
         "extid": "E92776E2860043",
         "max": 10,
         "min": 0,
@@ -12258,7 +12274,7 @@ PARAMETER_DATA = [
         "text": "PGU_CURRENT_MARGIN",
     },
     {
-        "idx": 1954,
+        "idx": 1956,
         "extid": "0A9F3BFEB9003F",
         "max": 0,
         "min": 0,
@@ -12267,7 +12283,7 @@ PARAMETER_DATA = [
         "text": "PGU_L1_A",
     },
     {
-        "idx": 1956,
+        "idx": 1958,
         "extid": "0A9D7D40E00040",
         "max": 0,
         "min": 0,
@@ -12276,7 +12292,7 @@ PARAMETER_DATA = [
         "text": "PGU_L2_A",
     },
     {
-        "idx": 1958,
+        "idx": 1960,
         "extid": "0A9CBF2AD70041",
         "max": 0,
         "min": 0,
@@ -12285,7 +12301,7 @@ PARAMETER_DATA = [
         "text": "PGU_L3_A",
     },
     {
-        "idx": 1960,
+        "idx": 1962,
         "extid": "E1D4B3F692003B",
         "max": 50,
         "min": 0,
@@ -12294,7 +12310,7 @@ PARAMETER_DATA = [
         "text": "PGU_MAIN_FUSE",
     },
     {
-        "idx": 1961,
+        "idx": 1963,
         "extid": "E23E5BFE060044",
         "max": 600,
         "min": 5,
@@ -12303,7 +12319,7 @@ PARAMETER_DATA = [
         "text": "PGU_RECONNECTION_TIME",
     },
     {
-        "idx": 1963,
+        "idx": 1965,
         "extid": "E2943A16910042",
         "max": 400,
         "min": 230,
@@ -12312,7 +12328,7 @@ PARAMETER_DATA = [
         "text": "PGU_SUPPLY_VOLTAGE",
     },
     {
-        "idx": 1965,
+        "idx": 1967,
         "extid": "002D1E85D10045",
         "max": 0,
         "min": 0,
@@ -12321,7 +12337,7 @@ PARAMETER_DATA = [
         "text": "PGU_TRIGGERED",
     },
     {
-        "idx": 1966,
+        "idx": 1968,
         "extid": "00733F9A0E0046",
         "max": 0,
         "min": 0,
@@ -12330,7 +12346,7 @@ PARAMETER_DATA = [
         "text": "PGU_TRIGGERED_PHASE1",
     },
     {
-        "idx": 1967,
+        "idx": 1969,
         "extid": "00EA36CBB40047",
         "max": 0,
         "min": 0,
@@ -12339,7 +12355,7 @@ PARAMETER_DATA = [
         "text": "PGU_TRIGGERED_PHASE2",
     },
     {
-        "idx": 1968,
+        "idx": 1970,
         "extid": "009D31FB220048",
         "max": 0,
         "min": 0,
@@ -12348,7 +12364,7 @@ PARAMETER_DATA = [
         "text": "PGU_TRIGGERED_PHASE3",
     },
     {
-        "idx": 1969,
+        "idx": 1971,
         "extid": "E25CA4C19F0049",
         "max": 300,
         "min": 5,
@@ -12357,7 +12373,7 @@ PARAMETER_DATA = [
         "text": "PGU_TRIGGERED_TIME",
     },
     {
-        "idx": 1971,
+        "idx": 1973,
         "extid": "12C6A967E500C2",
         "max": 0,
         "min": 0,
@@ -12366,7 +12382,7 @@ PARAMETER_DATA = [
         "text": "PGU_VERSION",
     },
     {
-        "idx": 1973,
+        "idx": 1975,
         "extid": "C0CBCCD18A0957",
         "max": 16777216,
         "min": 0,
@@ -12375,7 +12391,7 @@ PARAMETER_DATA = [
         "text": "PHASE_DETECTOR_ACKNOWLEDGED",
     },
     {
-        "idx": 1974,
+        "idx": 1976,
         "extid": "C084955BAB0958",
         "max": 16777216,
         "min": 0,
@@ -12384,7 +12400,7 @@ PARAMETER_DATA = [
         "text": "PHASE_DETECTOR_ACKNOWLEDGED_2",
     },
     {
-        "idx": 1975,
+        "idx": 1977,
         "extid": "C0DC2828E804BE",
         "max": 16777216,
         "min": 0,
@@ -12393,7 +12409,7 @@ PARAMETER_DATA = [
         "text": "POOL_ACTIVE",
     },
     {
-        "idx": 1976,
+        "idx": 1978,
         "extid": "C08C59297F0A02",
         "max": 16777216,
         "min": 0,
@@ -12402,25 +12418,25 @@ PARAMETER_DATA = [
         "text": "POOL_BLOCKED_BY_EXT",
     },
     {
-        "idx": 1977,
-        "extid": "E18194411004C1",
-        "max": 20,
-        "min": 1,
+        "idx": 1979,
+        "extid": "EA8194411004C1",
+        "max": 200,
+        "min": 10,
         "format": "int",
         "read": 0,
         "text": "POOL_DIFF_CONST",
     },
     {
-        "idx": 1978,
-        "extid": "E1FF34E027068D",
-        "max": 20,
-        "min": 1,
+        "idx": 1981,
+        "extid": "EAFF34E027068D",
+        "max": 200,
+        "min": 10,
         "format": "int",
         "read": 0,
         "text": "POOL_DIFF_CONST_2",
     },
     {
-        "idx": 1979,
+        "idx": 1983,
         "extid": "ED3DDCC31204BF",
         "max": 50,
         "min": 2,
@@ -12429,7 +12445,7 @@ PARAMETER_DATA = [
         "text": "POOL_DIFF_MAX",
     },
     {
-        "idx": 1980,
+        "idx": 1984,
         "extid": "EDCEB4DCE1068E",
         "max": 50,
         "min": 2,
@@ -12438,7 +12454,7 @@ PARAMETER_DATA = [
         "text": "POOL_DIFF_MAX_2",
     },
     {
-        "idx": 1981,
+        "idx": 1985,
         "extid": "ED01D1FC4B04C0",
         "max": 50,
         "min": 2,
@@ -12447,7 +12463,7 @@ PARAMETER_DATA = [
         "text": "POOL_DIFF_MIN",
     },
     {
-        "idx": 1982,
+        "idx": 1986,
         "extid": "ED13AB2BCC068F",
         "max": 50,
         "min": 2,
@@ -12456,7 +12472,7 @@ PARAMETER_DATA = [
         "text": "POOL_DIFF_MIN_2",
     },
     {
-        "idx": 1983,
+        "idx": 1987,
         "extid": "00510392C90A03",
         "max": 16777216,
         "min": 0,
@@ -12465,7 +12481,7 @@ PARAMETER_DATA = [
         "text": "POOL_EXTERN_BLOCKED",
     },
     {
-        "idx": 1984,
+        "idx": 1988,
         "extid": "80D0ADB7850B9C",
         "max": 16777216,
         "min": 0,
@@ -12474,7 +12490,7 @@ PARAMETER_DATA = [
         "text": "POOL_EXT_INPUT_INV",
     },
     {
-        "idx": 1985,
+        "idx": 1989,
         "extid": "EA30756EF404C3",
         "max": 100,
         "min": 0,
@@ -12483,7 +12499,7 @@ PARAMETER_DATA = [
         "text": "POOL_PID_D",
     },
     {
-        "idx": 1987,
+        "idx": 1991,
         "extid": "EA4EC4124904C4",
         "max": 6000,
         "min": 50,
@@ -12492,7 +12508,7 @@ PARAMETER_DATA = [
         "text": "POOL_PID_I",
     },
     {
-        "idx": 1989,
+        "idx": 1993,
         "extid": "E61800D661054D",
         "max": 100,
         "min": 0,
@@ -12501,7 +12517,7 @@ PARAMETER_DATA = [
         "text": "POOL_PID_MAX",
     },
     {
-        "idx": 1991,
+        "idx": 1995,
         "extid": "E6240DE938054E",
         "max": 100,
         "min": 0,
@@ -12510,7 +12526,7 @@ PARAMETER_DATA = [
         "text": "POOL_PID_MIN",
     },
     {
-        "idx": 1993,
+        "idx": 1997,
         "extid": "EA2AAFBA8904C5",
         "max": 300,
         "min": 1,
@@ -12519,7 +12535,7 @@ PARAMETER_DATA = [
         "text": "POOL_PID_P",
     },
     {
-        "idx": 1995,
+        "idx": 1999,
         "extid": "0040B192E504C2",
         "max": 0,
         "min": 0,
@@ -12528,7 +12544,7 @@ PARAMETER_DATA = [
         "text": "POOL_REQUEST",
     },
     {
-        "idx": 1996,
+        "idx": 2000,
         "extid": "008925B7940679",
         "max": 0,
         "min": 0,
@@ -12537,7 +12553,7 @@ PARAMETER_DATA = [
         "text": "POOL_REQUEST_2",
     },
     {
-        "idx": 1997,
+        "idx": 2001,
         "extid": "EE4914843A04BD",
         "max": 400,
         "min": 40,
@@ -12546,7 +12562,7 @@ PARAMETER_DATA = [
         "text": "POOL_SETPOINT_TEMP",
     },
     {
-        "idx": 1999,
+        "idx": 2003,
         "extid": "E161A234AF0A24",
         "max": 240,
         "min": 15,
@@ -12555,7 +12571,7 @@ PARAMETER_DATA = [
         "text": "POOL_START_DELAY_TIME",
     },
     {
-        "idx": 2000,
+        "idx": 2004,
         "extid": "0E178B819A0D1C",
         "max": 0,
         "min": 0,
@@ -12564,7 +12580,7 @@ PARAMETER_DATA = [
         "text": "POOL_START_TEMP",
     },
     {
-        "idx": 2002,
+        "idx": 2006,
         "extid": "063848EA380D1D",
         "max": 0,
         "min": 0,
@@ -12573,7 +12589,7 @@ PARAMETER_DATA = [
         "text": "POOL_STOP_TEMP",
     },
     {
-        "idx": 2004,
+        "idx": 2008,
         "extid": "C07A64C1EC0827",
         "max": 16777216,
         "min": 0,
@@ -12582,7 +12598,7 @@ PARAMETER_DATA = [
         "text": "POOL_USE_COMPRESSOR_1",
     },
     {
-        "idx": 2005,
+        "idx": 2009,
         "extid": "C0E36D90560826",
         "max": 16777216,
         "min": 0,
@@ -12591,7 +12607,7 @@ PARAMETER_DATA = [
         "text": "POOL_USE_COMPRESSOR_2",
     },
     {
-        "idx": 2006,
+        "idx": 2010,
         "extid": "E114ED4791054F",
         "max": 60,
         "min": 0,
@@ -12600,7 +12616,7 @@ PARAMETER_DATA = [
         "text": "POOL_VALVE_DELAY_AFTER_DEFROST",
     },
     {
-        "idx": 2007,
+        "idx": 2011,
         "extid": "EA2ACC5E79075D",
         "max": 1000,
         "min": 0,
@@ -12609,7 +12625,7 @@ PARAMETER_DATA = [
         "text": "POOL_VALVE_POSITION",
     },
     {
-        "idx": 2009,
+        "idx": 2013,
         "extid": "E210798BA3054C",
         "max": 6000,
         "min": 1,
@@ -12618,7 +12634,7 @@ PARAMETER_DATA = [
         "text": "POOL_VALVE_RUNNING_TIME",
     },
     {
-        "idx": 2011,
+        "idx": 2015,
         "extid": "019A57F78D089A",
         "max": 0,
         "min": 0,
@@ -12627,7 +12643,7 @@ PARAMETER_DATA = [
         "text": "POPUP_WINDOW_DELAY",
     },
     {
-        "idx": 2012,
+        "idx": 2016,
         "extid": "0144B7AB4C01CA",
         "max": 0,
         "min": 0,
@@ -12636,7 +12652,7 @@ PARAMETER_DATA = [
         "text": "PROGRAM_GENERATION",
     },
     {
-        "idx": 2013,
+        "idx": 2017,
         "extid": "011A75548400C3",
         "max": 0,
         "min": 0,
@@ -12645,7 +12661,7 @@ PARAMETER_DATA = [
         "text": "PROGRAM_REVISION",
     },
     {
-        "idx": 2014,
+        "idx": 2018,
         "extid": "02AE6D0DE200C4",
         "max": 0,
         "min": 0,
@@ -12654,7 +12670,7 @@ PARAMETER_DATA = [
         "text": "PROGRAM_VERSION",
     },
     {
-        "idx": 2016,
+        "idx": 2020,
         "extid": "C0A53F3F7D02FE",
         "max": 16777216,
         "min": 0,
@@ -12663,7 +12679,7 @@ PARAMETER_DATA = [
         "text": "PUMP_DHW_ACTIVE",
     },
     {
-        "idx": 2017,
+        "idx": 2021,
         "extid": "E193B840CB0774",
         "max": 96,
         "min": 0,
@@ -12672,7 +12688,7 @@ PARAMETER_DATA = [
         "text": "PUMP_DHW_PROGRAM1_START_TIME",
     },
     {
-        "idx": 2018,
+        "idx": 2022,
         "extid": "E17DBA37BD0775",
         "max": 96,
         "min": 0,
@@ -12681,7 +12697,7 @@ PARAMETER_DATA = [
         "text": "PUMP_DHW_PROGRAM1_STOP_TIME",
     },
     {
-        "idx": 2019,
+        "idx": 2023,
         "extid": "E1E426923B0776",
         "max": 96,
         "min": 0,
@@ -12690,7 +12706,7 @@ PARAMETER_DATA = [
         "text": "PUMP_DHW_PROGRAM2_START_TIME",
     },
     {
-        "idx": 2020,
+        "idx": 2024,
         "extid": "E1E45851BC0777",
         "max": 96,
         "min": 0,
@@ -12699,7 +12715,7 @@ PARAMETER_DATA = [
         "text": "PUMP_DHW_PROGRAM2_STOP_TIME",
     },
     {
-        "idx": 2021,
+        "idx": 2025,
         "extid": "E17F83DE540778",
         "max": 96,
         "min": 0,
@@ -12708,7 +12724,7 @@ PARAMETER_DATA = [
         "text": "PUMP_DHW_PROGRAM3_START_TIME",
     },
     {
-        "idx": 2022,
+        "idx": 2026,
         "extid": "E125D68E7C0779",
         "max": 96,
         "min": 0,
@@ -12717,7 +12733,7 @@ PARAMETER_DATA = [
         "text": "PUMP_DHW_PROGRAM3_STOP_TIME",
     },
     {
-        "idx": 2023,
+        "idx": 2027,
         "extid": "E10B1B37DB077A",
         "max": 96,
         "min": 0,
@@ -12726,7 +12742,7 @@ PARAMETER_DATA = [
         "text": "PUMP_DHW_PROGRAM4_START_TIME",
     },
     {
-        "idx": 2024,
+        "idx": 2028,
         "extid": "E10CED9BFF077B",
         "max": 96,
         "min": 0,
@@ -12735,7 +12751,7 @@ PARAMETER_DATA = [
         "text": "PUMP_DHW_PROGRAM4_STOP_TIME",
     },
     {
-        "idx": 2025,
+        "idx": 2029,
         "extid": "C05AF5405A09A2",
         "max": 16777216,
         "min": 0,
@@ -12744,7 +12760,7 @@ PARAMETER_DATA = [
         "text": "PUMP_E71_G71_BLOCKED_BY_EXT",
     },
     {
-        "idx": 2026,
+        "idx": 2030,
         "extid": "E1612C0C7E066A",
         "max": 20,
         "min": 0,
@@ -12753,7 +12769,7 @@ PARAMETER_DATA = [
         "text": "PUMP_E71_G71_START_DIFF",
     },
     {
-        "idx": 2027,
+        "idx": 2031,
         "extid": "C0B3960C7E0669",
         "max": 33554432,
         "min": 0,
@@ -12762,7 +12778,7 @@ PARAMETER_DATA = [
         "text": "PUMP_E71_G71_START_MODE",
     },
     {
-        "idx": 2028,
+        "idx": 2032,
         "extid": "E12F0FCE1F066B",
         "max": 90,
         "min": 20,
@@ -12771,7 +12787,7 @@ PARAMETER_DATA = [
         "text": "PUMP_E71_G71_START_TEMP",
     },
     {
-        "idx": 2029,
+        "idx": 2033,
         "extid": "C0F55C0D9009A3",
         "max": 16777216,
         "min": 0,
@@ -12780,7 +12796,7 @@ PARAMETER_DATA = [
         "text": "PUMP_E72_G71_BLOCKED_BY_EXT",
     },
     {
-        "idx": 2030,
+        "idx": 2034,
         "extid": "E148E4B88C07D2",
         "max": 20,
         "min": 0,
@@ -12789,7 +12805,7 @@ PARAMETER_DATA = [
         "text": "PUMP_E72_G71_START_DIFF",
     },
     {
-        "idx": 2031,
+        "idx": 2035,
         "extid": "C09A5EB88C07D1",
         "max": 33554432,
         "min": 0,
@@ -12798,7 +12814,7 @@ PARAMETER_DATA = [
         "text": "PUMP_E72_G71_START_MODE",
     },
     {
-        "idx": 2032,
+        "idx": 2036,
         "extid": "E106C77AED07D3",
         "max": 90,
         "min": 20,
@@ -12807,7 +12823,7 @@ PARAMETER_DATA = [
         "text": "PUMP_E72_G71_START_TEMP",
     },
     {
-        "idx": 2033,
+        "idx": 2037,
         "extid": "C0AD220E5C0341",
         "max": 134217728,
         "min": 0,
@@ -12816,7 +12832,7 @@ PARAMETER_DATA = [
         "text": "PUMP_G1_CONTINUAL",
     },
     {
-        "idx": 2034,
+        "idx": 2038,
         "extid": "C034C0685D02FA",
         "max": 134217728,
         "min": 0,
@@ -12825,7 +12841,7 @@ PARAMETER_DATA = [
         "text": "PUMP_G2_CONTINUAL",
     },
     {
-        "idx": 2035,
+        "idx": 2039,
         "extid": "E1C0D22EBB02FC",
         "max": 35,
         "min": 0,
@@ -12834,7 +12850,7 @@ PARAMETER_DATA = [
         "text": "PUMP_G2_LOW_TEMPERATURE",
     },
     {
-        "idx": 2036,
+        "idx": 2040,
         "extid": "E195C275E60565",
         "max": 99,
         "min": 20,
@@ -12843,7 +12859,7 @@ PARAMETER_DATA = [
         "text": "PUMP_G2_MAX_TEMPERATURE",
     },
     {
-        "idx": 2037,
+        "idx": 2041,
         "extid": "C0C820AFFD0981",
         "max": 16777216,
         "min": 0,
@@ -12852,7 +12868,7 @@ PARAMETER_DATA = [
         "text": "PUMP_G3_ACTIVE_IN_COOLING",
     },
     {
-        "idx": 2038,
+        "idx": 2042,
         "extid": "C0F54EB79D02FB",
         "max": 134217728,
         "min": 0,
@@ -12861,7 +12877,7 @@ PARAMETER_DATA = [
         "text": "PUMP_G3_CONTINUAL",
     },
     {
-        "idx": 2039,
+        "idx": 2043,
         "extid": "C04997E841030D",
         "max": 16777216,
         "min": 0,
@@ -12870,7 +12886,7 @@ PARAMETER_DATA = [
         "text": "PUMP_G3_EXTERN_ACTIVATED_BY_E21_EXT_1",
     },
     {
-        "idx": 2040,
+        "idx": 2044,
         "extid": "C0D09EB9FB0490",
         "max": 16777216,
         "min": 0,
@@ -12879,7 +12895,7 @@ PARAMETER_DATA = [
         "text": "PUMP_G3_EXTERN_ACTIVATED_BY_E21_EXT_2",
     },
     {
-        "idx": 2041,
+        "idx": 2045,
         "extid": "C0787FF2DC0B58",
         "max": 16777216,
         "min": 0,
@@ -12888,7 +12904,7 @@ PARAMETER_DATA = [
         "text": "PUMP_G3_EXTERN_ACTIVATED_BY_E22_EXT_1",
     },
     {
-        "idx": 2042,
+        "idx": 2046,
         "extid": "C0E176A3660B57",
         "max": 16777216,
         "min": 0,
@@ -12897,7 +12913,7 @@ PARAMETER_DATA = [
         "text": "PUMP_G3_EXTERN_ACTIVATED_BY_E22_EXT_2",
     },
     {
-        "idx": 2043,
+        "idx": 2047,
         "extid": "0088C4B29B0301",
         "max": 0,
         "min": 0,
@@ -12906,7 +12922,7 @@ PARAMETER_DATA = [
         "text": "PUMP_G3_EXTERN_ACTIVE",
     },
     {
-        "idx": 2044,
+        "idx": 2048,
         "extid": "C06FE120A603ED",
         "max": 16777216,
         "min": 0,
@@ -12915,7 +12931,7 @@ PARAMETER_DATA = [
         "text": "PUMP_G3_LOW_PRESSURE_HEAT_CARRIER_ACTIVATED_BY_E21_EXT_1",
     },
     {
-        "idx": 2045,
+        "idx": 2049,
         "extid": "C0F6E8711C0491",
         "max": 16777216,
         "min": 0,
@@ -12924,7 +12940,7 @@ PARAMETER_DATA = [
         "text": "PUMP_G3_LOW_PRESSURE_HEAT_CARRIER_ACTIVATED_BY_E21_EXT_2",
     },
     {
-        "idx": 2046,
+        "idx": 2050,
         "extid": "C05E093A3B0B59",
         "max": 16777216,
         "min": 0,
@@ -12933,7 +12949,7 @@ PARAMETER_DATA = [
         "text": "PUMP_G3_LOW_PRESSURE_HEAT_CARRIER_ACTIVATED_BY_E22_EXT_1",
     },
     {
-        "idx": 2047,
+        "idx": 2051,
         "extid": "C0C7006B810B5A",
         "max": 16777216,
         "min": 0,
@@ -12942,7 +12958,7 @@ PARAMETER_DATA = [
         "text": "PUMP_G3_LOW_PRESSURE_HEAT_CARRIER_ACTIVATED_BY_E22_EXT_2",
     },
     {
-        "idx": 2048,
+        "idx": 2052,
         "extid": "00E7008FF203EC",
         "max": 0,
         "min": 0,
@@ -12951,7 +12967,7 @@ PARAMETER_DATA = [
         "text": "PUMP_G3_LOW_PRESSURE_HEAT_CARRIER_ACTIVE",
     },
     {
-        "idx": 2049,
+        "idx": 2053,
         "extid": "E10F14FDE50052",
         "max": 100,
         "min": 0,
@@ -12960,7 +12976,7 @@ PARAMETER_DATA = [
         "text": "PUMP_G3_MAX_HASTIGHET",
     },
     {
-        "idx": 2050,
+        "idx": 2054,
         "extid": "C1AA37C2AE0053",
         "max": 0,
         "min": 0,
@@ -12969,7 +12985,7 @@ PARAMETER_DATA = [
         "text": "PUMP_G3_MAX_SPEED_AT_COMPRESSOR_FREQUENCY",
     },
     {
-        "idx": 2051,
+        "idx": 2055,
         "extid": "C14F5B85930054",
         "max": 0,
         "min": 0,
@@ -12978,7 +12994,7 @@ PARAMETER_DATA = [
         "text": "PUMP_G3_MIN_HASTIGHET",
     },
     {
-        "idx": 2052,
+        "idx": 2056,
         "extid": "C1810D090C0055",
         "max": 0,
         "min": 0,
@@ -12987,7 +13003,7 @@ PARAMETER_DATA = [
         "text": "PUMP_G3_MIN_SPEED_AT_COMPRESSOR_FREQUENCY",
     },
     {
-        "idx": 2053,
+        "idx": 2057,
         "extid": "00BC04CC910170",
         "max": 0,
         "min": 0,
@@ -12996,7 +13012,7 @@ PARAMETER_DATA = [
         "text": "REMOTE_GET_DISPLAY",
     },
     {
-        "idx": 2054,
+        "idx": 2058,
         "extid": "401844310700E2",
         "max": 16777216,
         "min": 0,
@@ -13005,7 +13021,7 @@ PARAMETER_DATA = [
         "text": "RESET_LARMHISTORY",
     },
     {
-        "idx": 2055,
+        "idx": 2059,
         "extid": "40E7A15E1F0B0F",
         "max": 16777216,
         "min": 0,
@@ -13014,7 +13030,7 @@ PARAMETER_DATA = [
         "text": "RESET_LARMINFO",
     },
     {
-        "idx": 2056,
+        "idx": 2060,
         "extid": "407ECEAB5B00E3",
         "max": 16777216,
         "min": 0,
@@ -13023,7 +13039,7 @@ PARAMETER_DATA = [
         "text": "RESET_LARMLOG",
     },
     {
-        "idx": 2057,
+        "idx": 2061,
         "extid": "40ACCAC30100E4",
         "max": 16777216,
         "min": 0,
@@ -13032,7 +13048,7 @@ PARAMETER_DATA = [
         "text": "RESET_SYSVAR",
     },
     {
-        "idx": 2058,
+        "idx": 2062,
         "extid": "0005DE7D17035C",
         "max": 0,
         "min": 0,
@@ -13041,7 +13057,7 @@ PARAMETER_DATA = [
         "text": "RESTART_ADDITIONAL_TIMER_BLOCKED",
     },
     {
-        "idx": 2059,
+        "idx": 2063,
         "extid": "00C84276310169",
         "max": 0,
         "min": 0,
@@ -13050,7 +13066,7 @@ PARAMETER_DATA = [
         "text": "RIGGKORNING",
     },
     {
-        "idx": 2060,
+        "idx": 2064,
         "extid": "00C5942E8000E7",
         "max": 0,
         "min": 0,
@@ -13059,7 +13075,7 @@ PARAMETER_DATA = [
         "text": "ROOM_BLOCK",
     },
     {
-        "idx": 2061,
+        "idx": 2065,
         "extid": "C0F28707F00243",
         "max": 16777216,
         "min": 0,
@@ -13068,7 +13084,7 @@ PARAMETER_DATA = [
         "text": "ROOM_BUZZER_BLOCKED",
     },
     {
-        "idx": 2062,
+        "idx": 2066,
         "extid": "E1E543D41F00EB",
         "max": 6,
         "min": 0,
@@ -13077,7 +13093,7 @@ PARAMETER_DATA = [
         "text": "ROOM_DIAL_RANGE",
     },
     {
-        "idx": 2063,
+        "idx": 2067,
         "extid": "6107058A0B03CD",
         "max": 6,
         "min": 0,
@@ -13086,7 +13102,7 @@ PARAMETER_DATA = [
         "text": "ROOM_DIAL_RANGE_GLOBAL",
     },
     {
-        "idx": 2064,
+        "idx": 2068,
         "extid": "EE3FBC687F0580",
         "max": 350,
         "min": 0,
@@ -13095,7 +13111,7 @@ PARAMETER_DATA = [
         "text": "ROOM_EXTERN_SETPOINT_TEMP_BY_E21_EXT_1",
     },
     {
-        "idx": 2066,
+        "idx": 2070,
         "extid": "EEA6B539C50581",
         "max": 350,
         "min": 0,
@@ -13104,7 +13120,7 @@ PARAMETER_DATA = [
         "text": "ROOM_EXTERN_SETPOINT_TEMP_BY_E21_EXT_2",
     },
     {
-        "idx": 2068,
+        "idx": 2072,
         "extid": "EE0E5472E20B54",
         "max": 350,
         "min": 0,
@@ -13113,7 +13129,7 @@ PARAMETER_DATA = [
         "text": "ROOM_EXTERN_SETPOINT_TEMP_BY_E22_EXT_1",
     },
     {
-        "idx": 2070,
+        "idx": 2074,
         "extid": "EE975D23580B53",
         "max": 350,
         "min": 0,
@@ -13122,7 +13138,7 @@ PARAMETER_DATA = [
         "text": "ROOM_EXTERN_SETPOINT_TEMP_BY_E22_EXT_2",
     },
     {
-        "idx": 2072,
+        "idx": 2076,
         "extid": "6E3FCBFD6C03CE",
         "max": 350,
         "min": 0,
@@ -13131,7 +13147,7 @@ PARAMETER_DATA = [
         "text": "ROOM_EXTERN_SETPOINT_TEMP_GLOBAL",
     },
     {
-        "idx": 2074,
+        "idx": 2078,
         "extid": "003F4C64300307",
         "max": 0,
         "min": 0,
@@ -13140,7 +13156,7 @@ PARAMETER_DATA = [
         "text": "ROOM_EXTERN_TEMPERATURE_ACTIVE_1",
     },
     {
-        "idx": 2075,
+        "idx": 2079,
         "extid": "00A645358A0582",
         "max": 0,
         "min": 0,
@@ -13149,7 +13165,7 @@ PARAMETER_DATA = [
         "text": "ROOM_EXTERN_TEMPERATURE_ACTIVE_2",
     },
     {
-        "idx": 2076,
+        "idx": 2080,
         "extid": "00D142051C0B5D",
         "max": 0,
         "min": 0,
@@ -13158,7 +13174,7 @@ PARAMETER_DATA = [
         "text": "ROOM_EXTERN_TEMPERATURE_ACTIVE_3",
     },
     {
-        "idx": 2077,
+        "idx": 2081,
         "extid": "004F2690BF0B5E",
         "max": 0,
         "min": 0,
@@ -13167,7 +13183,7 @@ PARAMETER_DATA = [
         "text": "ROOM_EXTERN_TEMPERATURE_ACTIVE_4",
     },
     {
-        "idx": 2078,
+        "idx": 2082,
         "extid": "EE68497B9C0782",
         "max": 350,
         "min": 100,
@@ -13176,7 +13192,7 @@ PARAMETER_DATA = [
         "text": "ROOM_HOLIDAY_SETPOINT_BASE_TEMP",
     },
     {
-        "idx": 2080,
+        "idx": 2084,
         "extid": "6E0332AF180783",
         "max": 350,
         "min": 100,
@@ -13185,7 +13201,7 @@ PARAMETER_DATA = [
         "text": "ROOM_HOLIDAY_SETPOINT_BASE_TEMP_GLOBAL",
     },
     {
-        "idx": 2082,
+        "idx": 2086,
         "extid": "0E70AF9DB500E9",
         "max": 0,
         "min": 0,
@@ -13194,7 +13210,7 @@ PARAMETER_DATA = [
         "text": "ROOM_INFLUENCE",
     },
     {
-        "idx": 2084,
+        "idx": 2088,
         "extid": "E935C24AA700EA",
         "max": 100,
         "min": 0,
@@ -13203,7 +13219,7 @@ PARAMETER_DATA = [
         "text": "ROOM_INFLUENCE_CONST",
     },
     {
-        "idx": 2085,
+        "idx": 2089,
         "extid": "699921DC4403CC",
         "max": 100,
         "min": 0,
@@ -13212,7 +13228,7 @@ PARAMETER_DATA = [
         "text": "ROOM_INFLUENCE_CONST_GLOBAL",
     },
     {
-        "idx": 2086,
+        "idx": 2090,
         "extid": "406435D2B50CEF",
         "max": 16777216,
         "min": 0,
@@ -13221,7 +13237,7 @@ PARAMETER_DATA = [
         "text": "ROOM_LED_ALLOWED",
     },
     {
-        "idx": 2087,
+        "idx": 2091,
         "extid": "C04D975754077C",
         "max": 16777216,
         "min": 0,
@@ -13230,133 +13246,133 @@ PARAMETER_DATA = [
         "text": "ROOM_LED_BLOCKED",
     },
     {
-        "idx": 2088,
+        "idx": 2092,
         "extid": "C2F7E587150294",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_1_5FRI",
+        "text": "ROOM_PROGRAM_1_FRI",
     },
     {
-        "idx": 2090,
+        "idx": 2094,
         "extid": "C29AB8914B028F",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_1_1MON",
+        "text": "ROOM_PROGRAM_1_MON",
     },
     {
-        "idx": 2092,
+        "idx": 2096,
         "extid": "C2EFE1CBC50296",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_1_6SAT",
+        "text": "ROOM_PROGRAM_1_SAT",
     },
     {
-        "idx": 2094,
+        "idx": 2098,
         "extid": "C23C2DE5EA0298",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_1_7SUN",
+        "text": "ROOM_PROGRAM_1_SUN",
     },
     {
-        "idx": 2096,
+        "idx": 2100,
         "extid": "C24C6B569F0293",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_1_4THU",
+        "text": "ROOM_PROGRAM_1_THU",
     },
     {
-        "idx": 2098,
+        "idx": 2102,
         "extid": "C2AEB02AE70290",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_1_2TUE",
+        "text": "ROOM_PROGRAM_1_TUE",
     },
     {
-        "idx": 2100,
+        "idx": 2104,
         "extid": "C29133B6790291",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_1_3WED",
+        "text": "ROOM_PROGRAM_1_WED",
     },
     {
-        "idx": 2102,
+        "idx": 2106,
         "extid": "C2B045FDC50295",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_2_5FRI",
+        "text": "ROOM_PROGRAM_2_FRI",
     },
     {
-        "idx": 2104,
+        "idx": 2108,
         "extid": "C2DD18EB9B0299",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_2_1MON",
+        "text": "ROOM_PROGRAM_2_MON",
     },
     {
-        "idx": 2106,
+        "idx": 2110,
         "extid": "C2A841B1150297",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_2_6SAT",
+        "text": "ROOM_PROGRAM_2_SAT",
     },
     {
-        "idx": 2108,
+        "idx": 2112,
         "extid": "C27B8D9F3A029C",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_2_7SUN",
+        "text": "ROOM_PROGRAM_2_SUN",
     },
     {
-        "idx": 2110,
+        "idx": 2114,
         "extid": "C20BCB2C4F029B",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_2_4THU",
+        "text": "ROOM_PROGRAM_2_THU",
     },
     {
-        "idx": 2112,
+        "idx": 2116,
         "extid": "C2E9105037029A",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_2_2TUE",
+        "text": "ROOM_PROGRAM_2_TUE",
     },
     {
-        "idx": 2114,
+        "idx": 2118,
         "extid": "C2D693CCA90292",
         "max": 0,
         "min": 0,
         "format": "sw1",
         "read": 1,
-        "text": "ROOM_PROGRAM_2_3WED",
+        "text": "ROOM_PROGRAM_2_WED",
     },
     {
-        "idx": 2116,
+        "idx": 2120,
         "extid": "42363DB8840611",
         "max": 0,
         "min": 0,
@@ -13365,7 +13381,7 @@ PARAMETER_DATA = [
         "text": "ROOM_PROGRAM_FRI_GLOBAL",
     },
     {
-        "idx": 2118,
+        "idx": 2122,
         "extid": "E1049063EA0464",
         "max": 3,
         "min": 0,
@@ -13374,7 +13390,7 @@ PARAMETER_DATA = [
         "text": "ROOM_PROGRAM_MODE",
     },
     {
-        "idx": 2119,
+        "idx": 2123,
         "extid": "61961A9F6C07C5",
         "max": 3,
         "min": 0,
@@ -13383,7 +13399,7 @@ PARAMETER_DATA = [
         "text": "ROOM_PROGRAM_MODE_GLOBAL",
     },
     {
-        "idx": 2120,
+        "idx": 2124,
         "extid": "429997EF4C0614",
         "max": 0,
         "min": 0,
@@ -13392,7 +13408,7 @@ PARAMETER_DATA = [
         "text": "ROOM_PROGRAM_MON_GLOBAL",
     },
     {
-        "idx": 2122,
+        "idx": 2126,
         "extid": "428549A8660612",
         "max": 0,
         "min": 0,
@@ -13401,7 +13417,7 @@ PARAMETER_DATA = [
         "text": "ROOM_PROGRAM_SAT_GLOBAL",
     },
     {
-        "idx": 2124,
+        "idx": 2128,
         "extid": "42991E96F80613",
         "max": 0,
         "min": 0,
@@ -13410,7 +13426,7 @@ PARAMETER_DATA = [
         "text": "ROOM_PROGRAM_SUN_GLOBAL",
     },
     {
-        "idx": 2126,
+        "idx": 2130,
         "extid": "42079C05DA0617",
         "max": 0,
         "min": 0,
@@ -13419,7 +13435,7 @@ PARAMETER_DATA = [
         "text": "ROOM_PROGRAM_THU_GLOBAL",
     },
     {
-        "idx": 2128,
+        "idx": 2132,
         "extid": "4226A891D70615",
         "max": 0,
         "min": 0,
@@ -13428,7 +13444,7 @@ PARAMETER_DATA = [
         "text": "ROOM_PROGRAM_TUE_GLOBAL",
     },
     {
-        "idx": 2130,
+        "idx": 2134,
         "extid": "42ADF5683B0616",
         "max": 0,
         "min": 0,
@@ -13437,7 +13453,7 @@ PARAMETER_DATA = [
         "text": "ROOM_PROGRAM_WED_GLOBAL",
     },
     {
-        "idx": 2132,
+        "idx": 2136,
         "extid": "80863E34500CC4",
         "max": 16777216,
         "min": 0,
@@ -13446,7 +13462,7 @@ PARAMETER_DATA = [
         "text": "ROOM_SENSOR_SHOW_OUTDOOR_TEMP",
     },
     {
-        "idx": 2133,
+        "idx": 2137,
         "extid": "EE6446CFDB00E8",
         "max": 350,
         "min": 100,
@@ -13455,7 +13471,7 @@ PARAMETER_DATA = [
         "text": "ROOM_SETPOINT_BASE_TEMP",
     },
     {
-        "idx": 2135,
+        "idx": 2139,
         "extid": "6ECB439DE5046E",
         "max": 350,
         "min": 100,
@@ -13464,7 +13480,7 @@ PARAMETER_DATA = [
         "text": "ROOM_SETPOINT_BASE_TEMP_GLOBAL",
     },
     {
-        "idx": 2137,
+        "idx": 2141,
         "extid": "0ED933E0190188",
         "max": 0,
         "min": 0,
@@ -13473,7 +13489,7 @@ PARAMETER_DATA = [
         "text": "ROOM_SETPOINT_OFFSET",
     },
     {
-        "idx": 2139,
+        "idx": 2143,
         "extid": "0EB8115D5C0470",
         "max": 0,
         "min": 0,
@@ -13482,7 +13498,7 @@ PARAMETER_DATA = [
         "text": "ROOM_SETPOINT_OFFSET_GLOBAL",
     },
     {
-        "idx": 2141,
+        "idx": 2145,
         "extid": "0EF53B34510189",
         "max": 0,
         "min": 0,
@@ -13491,7 +13507,7 @@ PARAMETER_DATA = [
         "text": "ROOM_SETPOINT_TEMP",
     },
     {
-        "idx": 2143,
+        "idx": 2147,
         "extid": "0087BA736D026A",
         "max": 0,
         "min": 0,
@@ -13500,7 +13516,7 @@ PARAMETER_DATA = [
         "text": "ROOM_TIMECONTROLLED",
     },
     {
-        "idx": 2144,
+        "idx": 2148,
         "extid": "E14AFE95E8029D",
         "max": 6,
         "min": 0,
@@ -13509,7 +13525,7 @@ PARAMETER_DATA = [
         "text": "ROOM_TIMEPROGRAM",
     },
     {
-        "idx": 2145,
+        "idx": 2149,
         "extid": "EE8DE6431B046A",
         "max": 300,
         "min": 100,
@@ -13518,7 +13534,7 @@ PARAMETER_DATA = [
         "text": "ROOM_TIMEPROGRAMMED_SETPOINT_BASE_TEMP",
     },
     {
-        "idx": 2147,
+        "idx": 2151,
         "extid": "6EB57C47E9046F",
         "max": 300,
         "min": 100,
@@ -13527,7 +13543,7 @@ PARAMETER_DATA = [
         "text": "ROOM_TIMEPROGRAMMED_SETPOINT_BASE_TEMP_GLOBAL",
     },
     {
-        "idx": 2149,
+        "idx": 2153,
         "extid": "619F8792630618",
         "max": 6,
         "min": 0,
@@ -13536,7 +13552,7 @@ PARAMETER_DATA = [
         "text": "ROOM_TIMEPROGRAM_GLOBAL",
     },
     {
-        "idx": 2150,
+        "idx": 2154,
         "extid": "01032AAD1F00E5",
         "max": 0,
         "min": 0,
@@ -13545,7 +13561,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_CONNECTED",
     },
     {
-        "idx": 2151,
+        "idx": 2155,
         "extid": "01D110D005044E",
         "max": 0,
         "min": 0,
@@ -13554,7 +13570,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_CONNECTED_2",
     },
     {
-        "idx": 2152,
+        "idx": 2156,
         "extid": "01A617E093044F",
         "max": 0,
         "min": 0,
@@ -13563,7 +13579,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_CONNECTED_3",
     },
     {
-        "idx": 2153,
+        "idx": 2157,
         "extid": "01387375300450",
         "max": 0,
         "min": 0,
@@ -13572,7 +13588,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_CONNECTED_4",
     },
     {
-        "idx": 2154,
+        "idx": 2158,
         "extid": "014F7445A60451",
         "max": 0,
         "min": 0,
@@ -13581,7 +13597,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_CONNECTED_5",
     },
     {
-        "idx": 2155,
+        "idx": 2159,
         "extid": "01D67D141C0452",
         "max": 0,
         "min": 0,
@@ -13590,7 +13606,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_CONNECTED_6",
     },
     {
-        "idx": 2156,
+        "idx": 2160,
         "extid": "01A17A248A0453",
         "max": 0,
         "min": 0,
@@ -13599,7 +13615,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_CONNECTED_7",
     },
     {
-        "idx": 2157,
+        "idx": 2161,
         "extid": "0131C5391B0454",
         "max": 0,
         "min": 0,
@@ -13608,7 +13624,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_CONNECTED_8",
     },
     {
-        "idx": 2158,
+        "idx": 2162,
         "extid": "81D5BA54CD063B",
         "max": 0,
         "min": 0,
@@ -13617,7 +13633,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_CONNECTED_BITMASK",
     },
     {
-        "idx": 2159,
+        "idx": 2163,
         "extid": "014C1EDDDA056F",
         "max": 0,
         "min": 0,
@@ -13626,7 +13642,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_CONNECTED_GLOBAL",
     },
     {
-        "idx": 2160,
+        "idx": 2164,
         "extid": "01DE529BB00CDC",
         "max": 0,
         "min": 0,
@@ -13635,7 +13651,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_GENERATION",
     },
     {
-        "idx": 2161,
+        "idx": 2165,
         "extid": "01373538C20CDE",
         "max": 0,
         "min": 0,
@@ -13644,7 +13660,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_GENERATION_2",
     },
     {
-        "idx": 2162,
+        "idx": 2166,
         "extid": "01403208540CE0",
         "max": 0,
         "min": 0,
@@ -13653,7 +13669,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_GENERATION_3",
     },
     {
-        "idx": 2163,
+        "idx": 2167,
         "extid": "01DE569DF70CE2",
         "max": 0,
         "min": 0,
@@ -13662,7 +13678,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_GENERATION_4",
     },
     {
-        "idx": 2164,
+        "idx": 2168,
         "extid": "01A951AD610CE4",
         "max": 0,
         "min": 0,
@@ -13671,7 +13687,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_GENERATION_5",
     },
     {
-        "idx": 2165,
+        "idx": 2169,
         "extid": "013058FCDB0CE6",
         "max": 0,
         "min": 0,
@@ -13680,7 +13696,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_GENERATION_6",
     },
     {
-        "idx": 2166,
+        "idx": 2170,
         "extid": "01475FCC4D0CE9",
         "max": 0,
         "min": 0,
@@ -13689,7 +13705,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_GENERATION_7",
     },
     {
-        "idx": 2167,
+        "idx": 2171,
         "extid": "01D7E0D1DC0CEB",
         "max": 0,
         "min": 0,
@@ -13698,7 +13714,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_GENERATION_8",
     },
     {
-        "idx": 2168,
+        "idx": 2172,
         "extid": "019CE0CE7A0CDD",
         "max": 0,
         "min": 0,
@@ -13707,7 +13723,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_REVISION",
     },
     {
-        "idx": 2169,
+        "idx": 2173,
         "extid": "011D21E0CF0CDF",
         "max": 0,
         "min": 0,
@@ -13716,7 +13732,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_REVISION_2",
     },
     {
-        "idx": 2170,
+        "idx": 2174,
         "extid": "016A26D0590CE1",
         "max": 0,
         "min": 0,
@@ -13725,7 +13741,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_REVISION_3",
     },
     {
-        "idx": 2171,
+        "idx": 2175,
         "extid": "01F44245FA0CE3",
         "max": 0,
         "min": 0,
@@ -13734,7 +13750,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_REVISION_4",
     },
     {
-        "idx": 2172,
+        "idx": 2176,
         "extid": "018345756C0CE5",
         "max": 0,
         "min": 0,
@@ -13743,7 +13759,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_REVISION_5",
     },
     {
-        "idx": 2173,
+        "idx": 2177,
         "extid": "011A4C24D60CE7",
         "max": 0,
         "min": 0,
@@ -13752,7 +13768,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_REVISION_6",
     },
     {
-        "idx": 2174,
+        "idx": 2178,
         "extid": "016D4B14400CE8",
         "max": 0,
         "min": 0,
@@ -13761,7 +13777,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_REVISION_7",
     },
     {
-        "idx": 2175,
+        "idx": 2179,
         "extid": "01FDF409D10CEA",
         "max": 0,
         "min": 0,
@@ -13770,7 +13786,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_REVISION_8",
     },
     {
-        "idx": 2176,
+        "idx": 2180,
         "extid": "00556417180C63",
         "max": 0,
         "min": 0,
@@ -13779,7 +13795,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_SUPPORTS_NEW_MESSAGES",
     },
     {
-        "idx": 2177,
+        "idx": 2181,
         "extid": "01D97B1C4D0D0A",
         "max": 0,
         "min": 0,
@@ -13788,7 +13804,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_SUPPORTS_NEW_MESSAGES_BITMASK",
     },
     {
-        "idx": 2178,
+        "idx": 2182,
         "extid": "01D3619DF80C64",
         "max": 0,
         "min": 0,
@@ -13797,7 +13813,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_SYSTEM_STATUS",
     },
     {
-        "idx": 2179,
+        "idx": 2183,
         "extid": "01E825273200E6",
         "max": 0,
         "min": 0,
@@ -13806,7 +13822,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_VERSION",
     },
     {
-        "idx": 2180,
+        "idx": 2184,
         "extid": "01FC570BDB0455",
         "max": 0,
         "min": 0,
@@ -13815,7 +13831,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_VERSION_2",
     },
     {
-        "idx": 2181,
+        "idx": 2185,
         "extid": "018B503B4D0456",
         "max": 0,
         "min": 0,
@@ -13824,7 +13840,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_VERSION_3",
     },
     {
-        "idx": 2182,
+        "idx": 2186,
         "extid": "011534AEEE0457",
         "max": 0,
         "min": 0,
@@ -13833,7 +13849,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_VERSION_4",
     },
     {
-        "idx": 2183,
+        "idx": 2187,
         "extid": "0162339E780458",
         "max": 0,
         "min": 0,
@@ -13842,7 +13858,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_VERSION_5",
     },
     {
-        "idx": 2184,
+        "idx": 2188,
         "extid": "01FB3ACFC20459",
         "max": 0,
         "min": 0,
@@ -13851,7 +13867,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_VERSION_6",
     },
     {
-        "idx": 2185,
+        "idx": 2189,
         "extid": "018C3DFF54045A",
         "max": 0,
         "min": 0,
@@ -13860,7 +13876,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_VERSION_7",
     },
     {
-        "idx": 2186,
+        "idx": 2190,
         "extid": "011C82E2C5045B",
         "max": 0,
         "min": 0,
@@ -13869,7 +13885,7 @@ PARAMETER_DATA = [
         "text": "RTU800B_VERSION_8",
     },
     {
-        "idx": 2187,
+        "idx": 2191,
         "extid": "C06BA627980538",
         "max": 16777216,
         "min": 0,
@@ -13878,7 +13894,7 @@ PARAMETER_DATA = [
         "text": "SCREED_DRYING_ACTIVATED",
     },
     {
-        "idx": 2188,
+        "idx": 2192,
         "extid": "02FC92B4A40665",
         "max": 0,
         "min": 0,
@@ -13887,7 +13903,7 @@ PARAMETER_DATA = [
         "text": "SCREED_DRYING_COOLING_STEP_COUNT",
     },
     {
-        "idx": 2190,
+        "idx": 2194,
         "extid": "C13D579DFB0668",
         "max": 0,
         "min": 0,
@@ -13896,7 +13912,7 @@ PARAMETER_DATA = [
         "text": "SCREED_DRYING_CURRENT_HOUR",
     },
     {
-        "idx": 2191,
+        "idx": 2195,
         "extid": "C21039876A053F",
         "max": 0,
         "min": 0,
@@ -13905,7 +13921,7 @@ PARAMETER_DATA = [
         "text": "SCREED_DRYING_CURRENT_PROGRAM_STEP",
     },
     {
-        "idx": 2193,
+        "idx": 2197,
         "extid": "E1A4D2CE57053E",
         "max": 20,
         "min": 0,
@@ -13914,7 +13930,7 @@ PARAMETER_DATA = [
         "text": "SCREED_DRYING_DAYS_AT_MAX_TEMPERATURE",
     },
     {
-        "idx": 2194,
+        "idx": 2198,
         "extid": "E1872A8838053C",
         "max": 5,
         "min": 1,
@@ -13923,7 +13939,7 @@ PARAMETER_DATA = [
         "text": "SCREED_DRYING_DAYS_PER_COOLING_STEP",
     },
     {
-        "idx": 2195,
+        "idx": 2199,
         "extid": "E11DC6A468053B",
         "max": 5,
         "min": 1,
@@ -13932,7 +13948,7 @@ PARAMETER_DATA = [
         "text": "SCREED_DRYING_DAYS_PER_HEATING_STEP",
     },
     {
-        "idx": 2196,
+        "idx": 2200,
         "extid": "029800BDF00666",
         "max": 0,
         "min": 0,
@@ -13941,7 +13957,7 @@ PARAMETER_DATA = [
         "text": "SCREED_DRYING_HEATING_STEP_COUNT",
     },
     {
-        "idx": 2198,
+        "idx": 2202,
         "extid": "E17317C0720A89",
         "max": 2,
         "min": 0,
@@ -13950,7 +13966,7 @@ PARAMETER_DATA = [
         "text": "SCREED_DRYING_HEAT_SOURCE",
     },
     {
-        "idx": 2199,
+        "idx": 2203,
         "extid": "C036C36C230764",
         "max": 16777216,
         "min": 0,
@@ -13959,7 +13975,7 @@ PARAMETER_DATA = [
         "text": "SCREED_DRYING_INCOMPLETE",
     },
     {
-        "idx": 2200,
+        "idx": 2204,
         "extid": "EE85AEC727053D",
         "max": 600,
         "min": 250,
@@ -13968,7 +13984,7 @@ PARAMETER_DATA = [
         "text": "SCREED_DRYING_MAX_TEMPERATURE",
     },
     {
-        "idx": 2202,
+        "idx": 2206,
         "extid": "020761939A0649",
         "max": 0,
         "min": 0,
@@ -13977,7 +13993,7 @@ PARAMETER_DATA = [
         "text": "SCREED_DRYING_PROGRAM_STEP_COUNT",
     },
     {
-        "idx": 2204,
+        "idx": 2208,
         "extid": "0CF05D8A3C0537",
         "max": 0,
         "min": 0,
@@ -13986,7 +14002,7 @@ PARAMETER_DATA = [
         "text": "SCREED_DRYING_REQUEST",
     },
     {
-        "idx": 2205,
+        "idx": 2209,
         "extid": "0E7542150E0536",
         "max": 0,
         "min": 0,
@@ -13995,7 +14011,7 @@ PARAMETER_DATA = [
         "text": "SCREED_DRYING_SETPOINT_TEMP",
     },
     {
-        "idx": 2207,
+        "idx": 2211,
         "extid": "E980506DE3053A",
         "max": 100,
         "min": 10,
@@ -14004,7 +14020,7 @@ PARAMETER_DATA = [
         "text": "SCREED_DRYING_TEMPERATURE_STEP_COOLING",
     },
     {
-        "idx": 2208,
+        "idx": 2212,
         "extid": "E90951DB6E0539",
         "max": 100,
         "min": 10,
@@ -14013,7 +14029,7 @@ PARAMETER_DATA = [
         "text": "SCREED_DRYING_TEMPERATURE_STEP_HEATING",
     },
     {
-        "idx": 2209,
+        "idx": 2213,
         "extid": "00970D250700A9",
         "max": 0,
         "min": 0,
@@ -14022,7 +14038,7 @@ PARAMETER_DATA = [
         "text": "SCREENSAVER_ACTIVE",
     },
     {
-        "idx": 2210,
+        "idx": 2214,
         "extid": "E1F3115A2800A8",
         "max": 240,
         "min": 1,
@@ -14031,7 +14047,7 @@ PARAMETER_DATA = [
         "text": "SCREENSAVER_DELAY_TIME",
     },
     {
-        "idx": 2211,
+        "idx": 2215,
         "extid": "ED0EEADA7F0AB9",
         "max": 50,
         "min": -50,
@@ -14040,7 +14056,7 @@ PARAMETER_DATA = [
         "text": "SENSORS_E74_T1_CORRECTION",
     },
     {
-        "idx": 2212,
+        "idx": 2216,
         "extid": "0EAC7E06AF0AB2",
         "max": 0,
         "min": 0,
@@ -14049,7 +14065,7 @@ PARAMETER_DATA = [
         "text": "SENSORS_E74_T1_DISPLAY_TEMP",
     },
     {
-        "idx": 2214,
+        "idx": 2218,
         "extid": "009F37E8480AB3",
         "max": 0,
         "min": 0,
@@ -14058,7 +14074,7 @@ PARAMETER_DATA = [
         "text": "SENSORS_E74_T1_STATUS",
     },
     {
-        "idx": 2215,
+        "idx": 2219,
         "extid": "0E4ABFEB090AB4",
         "max": 0,
         "min": 0,
@@ -14067,7 +14083,7 @@ PARAMETER_DATA = [
         "text": "SENSORS_E74_T1_TEMP",
     },
     {
-        "idx": 2217,
+        "idx": 2221,
         "extid": "EDE2D144E00AB5",
         "max": 50,
         "min": -50,
@@ -14076,7 +14092,7 @@ PARAMETER_DATA = [
         "text": "SENSORS_E74_T3_CORRECTION",
     },
     {
-        "idx": 2218,
+        "idx": 2222,
         "extid": "0E4D10C2020AB6",
         "max": 0,
         "min": 0,
@@ -14085,7 +14101,7 @@ PARAMETER_DATA = [
         "text": "SENSORS_E74_T3_DISPLAY_TEMP",
     },
     {
-        "idx": 2220,
+        "idx": 2224,
         "extid": "00DD12EF350AB7",
         "max": 0,
         "min": 0,
@@ -14094,7 +14110,7 @@ PARAMETER_DATA = [
         "text": "SENSORS_E74_T3_STATUS",
     },
     {
-        "idx": 2221,
+        "idx": 2225,
         "extid": "0E07774A020AB8",
         "max": 0,
         "min": 0,
@@ -14103,7 +14119,7 @@ PARAMETER_DATA = [
         "text": "SENSORS_E74_T3_TEMP",
     },
     {
-        "idx": 2223,
+        "idx": 2227,
         "extid": "EDE1D77F9F0AAE",
         "max": 50,
         "min": -50,
@@ -14112,7 +14128,7 @@ PARAMETER_DATA = [
         "text": "SENSORS_E74_T7_CORRECTION",
     },
     {
-        "idx": 2224,
+        "idx": 2228,
         "extid": "0E54BC4D190AAF",
         "max": 0,
         "min": 0,
@@ -14121,7 +14137,7 @@ PARAMETER_DATA = [
         "text": "SENSORS_E74_T7_DISPLAY_TEMP",
     },
     {
-        "idx": 2226,
+        "idx": 2230,
         "extid": "005958E1CF0AB0",
         "max": 0,
         "min": 0,
@@ -14130,7 +14146,7 @@ PARAMETER_DATA = [
         "text": "SENSORS_E74_T7_STATUS",
     },
     {
-        "idx": 2227,
+        "idx": 2231,
         "extid": "0E9CE608140AB1",
         "max": 0,
         "min": 0,
@@ -14139,7 +14155,7 @@ PARAMETER_DATA = [
         "text": "SENSORS_E74_T7_TEMP",
     },
     {
-        "idx": 2229,
+        "idx": 2233,
         "extid": "C048543205094C",
         "max": 16777216,
         "min": 0,
@@ -14148,7 +14164,7 @@ PARAMETER_DATA = [
         "text": "SETUP_COMPLETED",
     },
     {
-        "idx": 2230,
+        "idx": 2234,
         "extid": "C029E15D980AFE",
         "max": 0,
         "min": 0,
@@ -14157,7 +14173,7 @@ PARAMETER_DATA = [
         "text": "SOLAR_ACTIVATED",
     },
     {
-        "idx": 2231,
+        "idx": 2235,
         "extid": "00F055A4120A8E",
         "max": 16777216,
         "min": 0,
@@ -14166,7 +14182,7 @@ PARAMETER_DATA = [
         "text": "SOLAR_ACTIVE",
     },
     {
-        "idx": 2232,
+        "idx": 2236,
         "extid": "006BE7E0830A95",
         "max": 0,
         "min": 0,
@@ -14175,7 +14191,7 @@ PARAMETER_DATA = [
         "text": "SOLAR_DHW_BLOCK",
     },
     {
-        "idx": 2233,
+        "idx": 2237,
         "extid": "E977D8E0F20A8F",
         "max": 200,
         "min": 70,
@@ -14184,7 +14200,7 @@ PARAMETER_DATA = [
         "text": "SOLAR_DIFF_START_TEMP",
     },
     {
-        "idx": 2234,
+        "idx": 2238,
         "extid": "E9DBA757A70A90",
         "max": 200,
         "min": 35,
@@ -14193,7 +14209,7 @@ PARAMETER_DATA = [
         "text": "SOLAR_DIFF_STOP_TEMP",
     },
     {
-        "idx": 2235,
+        "idx": 2239,
         "extid": "0057AFD8D50A97",
         "max": 0,
         "min": 0,
@@ -14202,7 +14218,7 @@ PARAMETER_DATA = [
         "text": "SOLAR_FREEZEGUARD_ACTIVE",
     },
     {
-        "idx": 2236,
+        "idx": 2240,
         "extid": "E9AEA686120A98",
         "max": 100,
         "min": 40,
@@ -14211,7 +14227,7 @@ PARAMETER_DATA = [
         "text": "SOLAR_FREEZEGUARD_START_TEMP",
     },
     {
-        "idx": 2237,
+        "idx": 2241,
         "extid": "E9739B6B4E0A99",
         "max": 100,
         "min": 40,
@@ -14220,7 +14236,7 @@ PARAMETER_DATA = [
         "text": "SOLAR_FREEZEGUARD_STOP_TEMP",
     },
     {
-        "idx": 2238,
+        "idx": 2242,
         "extid": "C014177C850A91",
         "max": 0,
         "min": 0,
@@ -14229,7 +14245,7 @@ PARAMETER_DATA = [
         "text": "SOLAR_PIPE_FUNCTION",
     },
     {
-        "idx": 2239,
+        "idx": 2243,
         "extid": "EAA1EA86E90A96",
         "max": 610,
         "min": 90,
@@ -14238,7 +14254,7 @@ PARAMETER_DATA = [
         "text": "SOLAR_PRIO_DHW_BLOCK_TEMP",
     },
     {
-        "idx": 2241,
+        "idx": 2245,
         "extid": "C01D7E5FC10A9A",
         "max": 0,
         "min": 0,
@@ -14247,7 +14263,7 @@ PARAMETER_DATA = [
         "text": "SOLAR_SOUTHEUROPE",
     },
     {
-        "idx": 2242,
+        "idx": 2246,
         "extid": "00C060CDDB0AF0",
         "max": 0,
         "min": 0,
@@ -14256,7 +14272,7 @@ PARAMETER_DATA = [
         "text": "SOLAR_T1_HIGH",
     },
     {
-        "idx": 2243,
+        "idx": 2247,
         "extid": "00992F192F0AEF",
         "max": 0,
         "min": 0,
@@ -14265,7 +14281,7 @@ PARAMETER_DATA = [
         "text": "SOLAR_T1_LOW",
     },
     {
-        "idx": 2244,
+        "idx": 2248,
         "extid": "E1F032413D0A92",
         "max": 140,
         "min": 100,
@@ -14274,7 +14290,7 @@ PARAMETER_DATA = [
         "text": "SOLAR_T1_MAX_TEMP",
     },
     {
-        "idx": 2245,
+        "idx": 2249,
         "extid": "E11652EEDC0A93",
         "max": 80,
         "min": 10,
@@ -14283,7 +14299,7 @@ PARAMETER_DATA = [
         "text": "SOLAR_T1_MIN_TEMP",
     },
     {
-        "idx": 2246,
+        "idx": 2250,
         "extid": "0016392EC60B07",
         "max": 0,
         "min": 0,
@@ -14292,7 +14308,7 @@ PARAMETER_DATA = [
         "text": "SOLAR_T7_HIGH",
     },
     {
-        "idx": 2247,
+        "idx": 2251,
         "extid": "E1FD2C317A0A94",
         "max": 90,
         "min": 20,
@@ -14301,7 +14317,7 @@ PARAMETER_DATA = [
         "text": "SOLAR_T7_MAX_TEMP",
     },
     {
-        "idx": 2248,
+        "idx": 2252,
         "extid": "E12CB8BDE70A9B",
         "max": 10,
         "min": 1,
@@ -14310,7 +14326,7 @@ PARAMETER_DATA = [
         "text": "SOLAR_T7_RESTART_DIFF",
     },
     {
-        "idx": 2249,
+        "idx": 2253,
         "extid": "839188B45602A5",
         "max": 0,
         "min": 0,
@@ -14319,7 +14335,7 @@ PARAMETER_DATA = [
         "text": "STATS_COMPRESSOR_DHW",
     },
     {
-        "idx": 2253,
+        "idx": 2257,
         "extid": "8394C01E2B0694",
         "max": 0,
         "min": 0,
@@ -14328,7 +14344,7 @@ PARAMETER_DATA = [
         "text": "STATS_COMPRESSOR_DHW_2",
     },
     {
-        "idx": 2257,
+        "idx": 2261,
         "extid": "8350DFEBB5029E",
         "max": 0,
         "min": 0,
@@ -14337,7 +14353,7 @@ PARAMETER_DATA = [
         "text": "STATS_COMPRESSOR_HEATING",
     },
     {
-        "idx": 2261,
+        "idx": 2265,
         "extid": "831A4733360699",
         "max": 0,
         "min": 0,
@@ -14346,7 +14362,7 @@ PARAMETER_DATA = [
         "text": "STATS_COMPRESSOR_HEATING_2",
     },
     {
-        "idx": 2265,
+        "idx": 2269,
         "extid": "83E6D0E31F0180",
         "max": 0,
         "min": 0,
@@ -14355,7 +14371,7 @@ PARAMETER_DATA = [
         "text": "STATS_COMPRESSOR_HZ_DHW",
     },
     {
-        "idx": 2269,
+        "idx": 2273,
         "extid": "836333F7F40181",
         "max": 0,
         "min": 0,
@@ -14364,7 +14380,7 @@ PARAMETER_DATA = [
         "text": "STATS_COMPRESSOR_HZ_HEATING",
     },
     {
-        "idx": 2273,
+        "idx": 2277,
         "extid": "8377DED05706A5",
         "max": 0,
         "min": 0,
@@ -14373,7 +14389,7 @@ PARAMETER_DATA = [
         "text": "STATS_COMPRESSOR_POOL",
     },
     {
-        "idx": 2277,
+        "idx": 2281,
         "extid": "83C7046C7D06A6",
         "max": 0,
         "min": 0,
@@ -14382,7 +14398,7 @@ PARAMETER_DATA = [
         "text": "STATS_COMPRESSOR_POOL_2",
     },
     {
-        "idx": 2281,
+        "idx": 2285,
         "extid": "409AFF32BE05BB",
         "max": 16777216,
         "min": 0,
@@ -14391,7 +14407,7 @@ PARAMETER_DATA = [
         "text": "STATS_COMPRESSOR_RESET",
     },
     {
-        "idx": 2282,
+        "idx": 2286,
         "extid": "831852F1E30257",
         "max": 0,
         "min": 0,
@@ -14400,7 +14416,7 @@ PARAMETER_DATA = [
         "text": "STATS_COMPRESSOR_START_DHW",
     },
     {
-        "idx": 2286,
+        "idx": 2290,
         "extid": "830BC478130697",
         "max": 0,
         "min": 0,
@@ -14409,7 +14425,7 @@ PARAMETER_DATA = [
         "text": "STATS_COMPRESSOR_START_DHW_2",
     },
     {
-        "idx": 2290,
+        "idx": 2294,
         "extid": "83E3910C270256",
         "max": 0,
         "min": 0,
@@ -14418,7 +14434,7 @@ PARAMETER_DATA = [
         "text": "STATS_COMPRESSOR_START_HEATING",
     },
     {
-        "idx": 2294,
+        "idx": 2298,
         "extid": "83675E1F3B0695",
         "max": 0,
         "min": 0,
@@ -14427,7 +14443,7 @@ PARAMETER_DATA = [
         "text": "STATS_COMPRESSOR_START_HEATING_2",
     },
     {
-        "idx": 2298,
+        "idx": 2302,
         "extid": "83CC5C4D1106A7",
         "max": 0,
         "min": 0,
@@ -14436,7 +14452,7 @@ PARAMETER_DATA = [
         "text": "STATS_COMPRESSOR_START_POOL",
     },
     {
-        "idx": 2302,
+        "idx": 2306,
         "extid": "83EF99D08506A8",
         "max": 0,
         "min": 0,
@@ -14445,7 +14461,7 @@ PARAMETER_DATA = [
         "text": "STATS_COMPRESSOR_START_POOL_2",
     },
     {
-        "idx": 2306,
+        "idx": 2310,
         "extid": "83FAB432F80311",
         "max": 0,
         "min": 0,
@@ -14454,7 +14470,7 @@ PARAMETER_DATA = [
         "text": "STATS_CONTACTOR_1",
     },
     {
-        "idx": 2310,
+        "idx": 2314,
         "extid": "8363BD63420312",
         "max": 0,
         "min": 0,
@@ -14463,7 +14479,7 @@ PARAMETER_DATA = [
         "text": "STATS_CONTACTOR_2",
     },
     {
-        "idx": 2314,
+        "idx": 2318,
         "extid": "406512BBC205BC",
         "max": 0,
         "min": 0,
@@ -14472,7 +14488,7 @@ PARAMETER_DATA = [
         "text": "STATS_CONTACTOR_RESET",
     },
     {
-        "idx": 2315,
+        "idx": 2319,
         "extid": "83AB5B0DA5030E",
         "max": 0,
         "min": 0,
@@ -14481,7 +14497,7 @@ PARAMETER_DATA = [
         "text": "STATS_CONTROL",
     },
     {
-        "idx": 2319,
+        "idx": 2323,
         "extid": "405591EFAF07C9",
         "max": 16777216,
         "min": 0,
@@ -14490,7 +14506,7 @@ PARAMETER_DATA = [
         "text": "STATS_CONTROL_RESET",
     },
     {
-        "idx": 2320,
+        "idx": 2324,
         "extid": "8302AE12AC0034",
         "max": 0,
         "min": 0,
@@ -14499,7 +14515,7 @@ PARAMETER_DATA = [
         "text": "STATS_ELECTR_ADD_DHW",
     },
     {
-        "idx": 2324,
+        "idx": 2328,
         "extid": "83CE297D7E0033",
         "max": 0,
         "min": 0,
@@ -14508,7 +14524,7 @@ PARAMETER_DATA = [
         "text": "STATS_ELECTR_ADD_HEATING",
     },
     {
-        "idx": 2328,
+        "idx": 2332,
         "extid": "832A25EDF306A9",
         "max": 0,
         "min": 0,
@@ -14517,7 +14533,7 @@ PARAMETER_DATA = [
         "text": "STATS_ELECTR_ADD_POOL",
     },
     {
-        "idx": 2332,
+        "idx": 2336,
         "extid": "404B19AE7205B9",
         "max": 16777216,
         "min": 0,
@@ -14526,7 +14542,7 @@ PARAMETER_DATA = [
         "text": "STATS_ELECTR_ADD_RESET",
     },
     {
-        "idx": 2333,
+        "idx": 2337,
         "extid": "80F63E80420B2A",
         "max": 0,
         "min": 0,
@@ -14535,7 +14551,7 @@ PARAMETER_DATA = [
         "text": "STATS_ENERGY_HIDE_MENU",
     },
     {
-        "idx": 2334,
+        "idx": 2338,
         "extid": "935B8C70A60A6A",
         "max": 0,
         "min": 0,
@@ -14544,7 +14560,7 @@ PARAMETER_DATA = [
         "text": "STATS_ENERGY_OUTPUT",
     },
     {
-        "idx": 2338,
+        "idx": 2342,
         "extid": "935F68951C0A6B",
         "max": 0,
         "min": 0,
@@ -14553,7 +14569,7 @@ PARAMETER_DATA = [
         "text": "STATS_ENERGY_OUTPUT_DHW",
     },
     {
-        "idx": 2342,
+        "idx": 2346,
         "extid": "93BF5B63600A69",
         "max": 0,
         "min": 0,
@@ -14562,7 +14578,7 @@ PARAMETER_DATA = [
         "text": "STATS_ENERGY_OUTPUT_HEATING",
     },
     {
-        "idx": 2346,
+        "idx": 2350,
         "extid": "93E11998F80A6F",
         "max": 0,
         "min": 0,
@@ -14571,7 +14587,7 @@ PARAMETER_DATA = [
         "text": "STATS_ENERGY_OUTPUT_POOL",
     },
     {
-        "idx": 2350,
+        "idx": 2354,
         "extid": "8347EABD6A02A0",
         "max": 0,
         "min": 0,
@@ -14580,7 +14596,7 @@ PARAMETER_DATA = [
         "text": "STATS_OP_DHW",
     },
     {
-        "idx": 2354,
+        "idx": 2358,
         "extid": "83DD88E9E7029F",
         "max": 0,
         "min": 0,
@@ -14589,7 +14605,7 @@ PARAMETER_DATA = [
         "text": "STATS_OP_HEATING",
     },
     {
-        "idx": 2358,
+        "idx": 2362,
         "extid": "4090D0258705BA",
         "max": 16777216,
         "min": 0,
@@ -14598,7 +14614,7 @@ PARAMETER_DATA = [
         "text": "STATS_OP_RESET",
     },
     {
-        "idx": 2359,
+        "idx": 2363,
         "extid": "40ACAF056B0224",
         "max": 16777216,
         "min": 0,
@@ -14607,7 +14623,7 @@ PARAMETER_DATA = [
         "text": "STATS_RESET",
     },
     {
-        "idx": 2360,
+        "idx": 2364,
         "extid": "81DCC8D51E0178",
         "max": 0,
         "min": 0,
@@ -14616,7 +14632,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_COMPRESSOR_AVERAGE_HZ_DHW",
     },
     {
-        "idx": 2361,
+        "idx": 2365,
         "extid": "81BF7E48580179",
         "max": 0,
         "min": 0,
@@ -14625,7 +14641,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_COMPRESSOR_AVERAGE_HZ_HEATING",
     },
     {
-        "idx": 2362,
+        "idx": 2366,
         "extid": "838B1C7E4002A2",
         "max": 0,
         "min": 0,
@@ -14634,7 +14650,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_COMPRESSOR_DHW",
     },
     {
-        "idx": 2366,
+        "idx": 2370,
         "extid": "83F3E99AC6069C",
         "max": 0,
         "min": 0,
@@ -14643,7 +14659,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_COMPRESSOR_DHW_2",
     },
     {
-        "idx": 2370,
+        "idx": 2374,
         "extid": "8351DA460402A1",
         "max": 0,
         "min": 0,
@@ -14652,7 +14668,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_COMPRESSOR_HEATING",
     },
     {
-        "idx": 2374,
+        "idx": 2378,
         "extid": "834FFE729F069B",
         "max": 0,
         "min": 0,
@@ -14661,7 +14677,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_COMPRESSOR_HEATING_2",
     },
     {
-        "idx": 2378,
+        "idx": 2382,
         "extid": "83380C545E0183",
         "max": 0,
         "min": 0,
@@ -14670,7 +14686,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_COMPRESSOR_HZ_DHW",
     },
     {
-        "idx": 2382,
+        "idx": 2386,
         "extid": "83CC6C55F90182",
         "max": 0,
         "min": 0,
@@ -14679,7 +14695,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_COMPRESSOR_HZ_HEATING",
     },
     {
-        "idx": 2386,
+        "idx": 2390,
         "extid": "8379ACDC8506AA",
         "max": 0,
         "min": 0,
@@ -14688,7 +14704,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_COMPRESSOR_HZ_POOL",
     },
     {
-        "idx": 2390,
+        "idx": 2394,
         "extid": "838310F1CC06AE",
         "max": 0,
         "min": 0,
@@ -14697,7 +14713,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_COMPRESSOR_POOL",
     },
     {
-        "idx": 2394,
+        "idx": 2398,
         "extid": "8319D8DB3C06AF",
         "max": 0,
         "min": 0,
@@ -14706,7 +14722,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_COMPRESSOR_POOL_2",
     },
     {
-        "idx": 2398,
+        "idx": 2402,
         "extid": "40FDD6B6530214",
         "max": 16777216,
         "min": 0,
@@ -14715,7 +14731,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_COMPRESSOR_RESET",
     },
     {
-        "idx": 2399,
+        "idx": 2403,
         "extid": "834DEBB04A0259",
         "max": 0,
         "min": 0,
@@ -14724,7 +14740,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_COMPRESSOR_START_DHW",
     },
     {
-        "idx": 2403,
+        "idx": 2407,
         "extid": "8375DA5B0C0698",
         "max": 0,
         "min": 0,
@@ -14733,7 +14749,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_COMPRESSOR_START_DHW_2",
     },
     {
-        "idx": 2407,
+        "idx": 2411,
         "extid": "838CAC0DD50258",
         "max": 0,
         "min": 0,
@@ -14742,7 +14758,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_COMPRESSOR_START_HEATING",
     },
     {
-        "idx": 2411,
+        "idx": 2415,
         "extid": "8336D3C3AF0696",
         "max": 0,
         "min": 0,
@@ -14751,7 +14767,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_COMPRESSOR_START_HEATING_2",
     },
     {
-        "idx": 2415,
+        "idx": 2419,
         "extid": "836303EF1C06AB",
         "max": 0,
         "min": 0,
@@ -14760,7 +14776,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_COMPRESSOR_START_POOL",
     },
     {
-        "idx": 2419,
+        "idx": 2423,
         "extid": "8362EFC35306AC",
         "max": 0,
         "min": 0,
@@ -14769,7 +14785,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_COMPRESSOR_START_POOL_2",
     },
     {
-        "idx": 2423,
+        "idx": 2427,
         "extid": "407BE577990218",
         "max": 16777216,
         "min": 0,
@@ -14778,7 +14794,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_COMPRESSOR_START_RESET",
     },
     {
-        "idx": 2424,
+        "idx": 2428,
         "extid": "83C820ADEC05BF",
         "max": 0,
         "min": 0,
@@ -14787,7 +14803,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_CONTACTOR_1",
     },
     {
-        "idx": 2428,
+        "idx": 2432,
         "extid": "835129FC5605C0",
         "max": 0,
         "min": 0,
@@ -14796,7 +14812,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_CONTACTOR_2",
     },
     {
-        "idx": 2432,
+        "idx": 2436,
         "extid": "4091DC9A5905BD",
         "max": 0,
         "min": 0,
@@ -14805,7 +14821,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_CONTACTOR_RESET",
     },
     {
-        "idx": 2433,
+        "idx": 2437,
         "extid": "83183AD8BA0036",
         "max": 0,
         "min": 0,
@@ -14814,7 +14830,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_ELECTR_ADD_DHW",
     },
     {
-        "idx": 2437,
+        "idx": 2441,
         "extid": "83CF2CD0CF0035",
         "max": 0,
         "min": 0,
@@ -14823,7 +14839,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_ELECTR_ADD_HEATING",
     },
     {
-        "idx": 2441,
+        "idx": 2445,
         "extid": "83DEEBCC6806AD",
         "max": 0,
         "min": 0,
@@ -14832,7 +14848,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_ELECTR_ADD_POOL",
     },
     {
-        "idx": 2445,
+        "idx": 2449,
         "extid": "402C302A9F0037",
         "max": 16777216,
         "min": 0,
@@ -14841,7 +14857,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_ELECTR_ADD_RESET",
     },
     {
-        "idx": 2446,
+        "idx": 2450,
         "extid": "8320D4D38602A4",
         "max": 0,
         "min": 0,
@@ -14850,7 +14866,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_OP_DHW",
     },
     {
-        "idx": 2450,
+        "idx": 2454,
         "extid": "83917B1ECB02A3",
         "max": 0,
         "min": 0,
@@ -14859,7 +14875,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_OP_HEATING",
     },
     {
-        "idx": 2454,
+        "idx": 2458,
         "extid": "40C811B206021D",
         "max": 16777216,
         "min": 0,
@@ -14868,7 +14884,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_OP_RESET",
     },
     {
-        "idx": 2455,
+        "idx": 2459,
         "extid": "404F8B25F00223",
         "max": 16777216,
         "min": 0,
@@ -14877,7 +14893,7 @@ PARAMETER_DATA = [
         "text": "STATS_ST_RESET",
     },
     {
-        "idx": 2456,
+        "idx": 2460,
         "extid": "C0D802DC890660",
         "max": 16777216,
         "min": 0,
@@ -14886,7 +14902,7 @@ PARAMETER_DATA = [
         "text": "SUMMARY_ALARM_MODE",
     },
     {
-        "idx": 2457,
+        "idx": 2461,
         "extid": "033DC6687E0A67",
         "max": 0,
         "min": 0,
@@ -14895,7 +14911,7 @@ PARAMETER_DATA = [
         "text": "TEMP",
     },
     {
-        "idx": 2461,
+        "idx": 2465,
         "extid": "016A5399A300F0",
         "max": 0,
         "min": 0,
@@ -14904,7 +14920,7 @@ PARAMETER_DATA = [
         "text": "TILLSKOTT_DRIFTTILLSTAND",
     },
     {
-        "idx": 2462,
+        "idx": 2466,
         "extid": "E182EE781F00F2",
         "max": 180,
         "min": 10,
@@ -14913,7 +14929,7 @@ PARAMETER_DATA = [
         "text": "TILLSKOTT_RAMP_TID",
     },
     {
-        "idx": 2463,
+        "idx": 2467,
         "extid": "0A68B7289B00F3",
         "max": 0,
         "min": 0,
@@ -14922,7 +14938,7 @@ PARAMETER_DATA = [
         "text": "TILLSKOTT_UTSIGNAL_UT",
     },
     {
-        "idx": 2465,
+        "idx": 2469,
         "extid": "81798B64B6027B",
         "max": 0,
         "min": 0,
@@ -14931,7 +14947,7 @@ PARAMETER_DATA = [
         "text": "UI_BRAND",
     },
     {
-        "idx": 2466,
+        "idx": 2470,
         "extid": "4021FE28EF0759",
         "max": 16777216,
         "min": 0,
@@ -14940,7 +14956,7 @@ PARAMETER_DATA = [
         "text": "USER_CONFIRMATION",
     },
     {
-        "idx": 2467,
+        "idx": 2471,
         "extid": "0150FBFC2B075A",
         "max": 0,
         "min": 0,
@@ -14949,7 +14965,7 @@ PARAMETER_DATA = [
         "text": "USER_CONFIRMATION_OBJECT",
     },
     {
-        "idx": 2468,
+        "idx": 2472,
         "extid": "E959EE228700FA",
         "max": 200,
         "min": 10,
@@ -14958,7 +14974,7 @@ PARAMETER_DATA = [
         "text": "VS_DIREKTSTART_GRANS",
     },
     {
-        "idx": 2469,
+        "idx": 2473,
         "extid": "E92746DA7B00FB",
         "max": 200,
         "min": 10,
@@ -14967,7 +14983,16 @@ PARAMETER_DATA = [
         "text": "VS_DIREKTSTOPP_GRANS",
     },
     {
-        "idx": 2470,
+        "idx": 2474,
+        "extid": "0054B4B37C0D78",
+        "max": 0,
+        "min": 0,
+        "format": "int",
+        "read": 0,
+        "text": "XDHW_ABLE",
+    },
+    {
+        "idx": 2475,
         "extid": "0090432FBD0187",
         "max": 0,
         "min": 0,
@@ -14976,7 +15001,7 @@ PARAMETER_DATA = [
         "text": "XDHW_COMPRESSOR_REQUEST",
     },
     {
-        "idx": 2471,
+        "idx": 2476,
         "extid": "004E977F0B0677",
         "max": 0,
         "min": 0,
@@ -14985,7 +15010,7 @@ PARAMETER_DATA = [
         "text": "XDHW_COMPRESSOR_REQUEST_2",
     },
     {
-        "idx": 2472,
+        "idx": 2477,
         "extid": "01A9D5A48A0253",
         "max": 0,
         "min": 0,
@@ -14999,7 +15024,7 @@ PARAMETER_DATA = [
         "max": 650,
         "min": 500,
         "format": "tem",
-        "read": 0,
+        "read": 1,
         "text": "XDHW_STOP_TEMP",
     },
     {
@@ -15008,11 +15033,11 @@ PARAMETER_DATA = [
         "max": 48,
         "min": 0,
         "format": "int",
-        "read": 0,
+        "read": 1,
         "text": "XDHW_TIME",
     },
     {
-        "idx": 2476,
+        "idx": 2481,
         "extid": "E17B4289E402CD",
         "max": 8,
         "min": 0,
@@ -15021,7 +15046,7 @@ PARAMETER_DATA = [
         "text": "XDHW_WEEKPROGRAM_DAY",
     },
     {
-        "idx": 2477,
+        "idx": 2482,
         "extid": "C9939E5AB602BD",
         "max": 0,
         "min": 0,
@@ -15030,7 +15055,7 @@ PARAMETER_DATA = [
         "text": "XDHW_WEEKPROGRAM_DURATION_TIME",
     },
     {
-        "idx": 2478,
+        "idx": 2483,
         "extid": "00BBD71E5202BE",
         "max": 0,
         "min": 0,
@@ -15039,7 +15064,7 @@ PARAMETER_DATA = [
         "text": "XDHW_WEEKPROGRAM_FAILED",
     },
     {
-        "idx": 2479,
+        "idx": 2484,
         "extid": "80C54B781C0CA2",
         "max": 0,
         "min": 0,
@@ -15048,7 +15073,7 @@ PARAMETER_DATA = [
         "text": "XDHW_WEEKPROGRAM_HAS_FINISHED",
     },
     {
-        "idx": 2480,
+        "idx": 2485,
         "extid": "E11C86660302BB",
         "max": 23,
         "min": 0,
@@ -15057,7 +15082,7 @@ PARAMETER_DATA = [
         "text": "XDHW_WEEKPROGRAM_HOUR",
     },
     {
-        "idx": 2481,
+        "idx": 2486,
         "extid": "E922E7AC5902BC",
         "max": 50,
         "min": 10,
@@ -15066,7 +15091,7 @@ PARAMETER_DATA = [
         "text": "XDHW_WEEKPROGRAM_MAX_TIME",
     },
     {
-        "idx": 2482,
+        "idx": 2487,
         "extid": "004BD827AD02BA",
         "max": 0,
         "min": 0,
@@ -15075,7 +15100,7 @@ PARAMETER_DATA = [
         "text": "XDHW_WEEKPROGRAM_REQUEST",
     },
     {
-        "idx": 2483,
+        "idx": 2488,
         "extid": "813A7FAA280CA1",
         "max": 0,
         "min": 0,
@@ -15084,7 +15109,7 @@ PARAMETER_DATA = [
         "text": "XDHW_WEEKPROGRAM_SAVED_DAY",
     },
     {
-        "idx": 2484,
+        "idx": 2489,
         "extid": "EEBBE3635F033A",
         "max": 700,
         "min": 480,
@@ -15093,7 +15118,7 @@ PARAMETER_DATA = [
         "text": "XDHW_WEEKPROGRAM_STOP_TEMP",
     },
     {
-        "idx": 2486,
+        "idx": 2491,
         "extid": "E137C21E8D0343",
         "max": 4,
         "min": 1,
@@ -15102,7 +15127,7 @@ PARAMETER_DATA = [
         "text": "XDHW_WEEKPROGRAM_WEEK",
     },
     {
-        "idx": 2487,
+        "idx": 2492,
         "extid": "03A8D5BC550000",
         "max": 0,
         "min": 0,
@@ -15111,7 +15136,7 @@ PARAMETER_DATA = [
         "text": "XDHW_WEEKPROGRAM_WARM_KEEPING_TIMER",
     },
     {
-        "idx": 2488,
+        "idx": 2493,
         "extid": "030C2923470000",
         "max": 0,
         "min": 0,
@@ -15120,7 +15145,7 @@ PARAMETER_DATA = [
         "text": "VV_MAX_TIMER",
     },
     {
-        "idx": 2489,
+        "idx": 2494,
         "extid": "037043A3350000",
         "max": 0,
         "min": 0,
@@ -15129,7 +15154,7 @@ PARAMETER_DATA = [
         "text": "XDHW_TIMER",
     },
     {
-        "idx": 2490,
+        "idx": 2495,
         "extid": "03DF2E585D0000",
         "max": 0,
         "min": 0,
@@ -15138,7 +15163,7 @@ PARAMETER_DATA = [
         "text": "VV_RAD_TIMER",
     },
     {
-        "idx": 2491,
+        "idx": 2496,
         "extid": "039F4458E90000",
         "max": 0,
         "min": 0,
@@ -15147,7 +15172,7 @@ PARAMETER_DATA = [
         "text": "RAD_MAX_TIMER",
     },
     {
-        "idx": 2492,
+        "idx": 2497,
         "extid": "03D904A13A0000",
         "max": 0,
         "min": 0,
@@ -15156,7 +15181,7 @@ PARAMETER_DATA = [
         "text": "RAD_BEHOV_BLOCKERING_TIMER",
     },
     {
-        "idx": 2493,
+        "idx": 2498,
         "extid": "03F977D30A0000",
         "max": 0,
         "min": 0,
@@ -15165,7 +15190,7 @@ PARAMETER_DATA = [
         "text": "DEGREE_MINUTE_SAMPLE_TIMER",
     },
     {
-        "idx": 2494,
+        "idx": 2499,
         "extid": "030646EB560000",
         "max": 0,
         "min": 0,
@@ -15174,7 +15199,7 @@ PARAMETER_DATA = [
         "text": "HEATING_SEASON_START_DELAY_TIMER",
     },
     {
-        "idx": 2495,
+        "idx": 2500,
         "extid": "03571B7C340000",
         "max": 0,
         "min": 0,
@@ -15183,7 +15208,7 @@ PARAMETER_DATA = [
         "text": "FREEZEGUARD_DELAY_TIMER",
     },
     {
-        "idx": 2496,
+        "idx": 2501,
         "extid": "03D5E7D7960000",
         "max": 0,
         "min": 0,
@@ -15192,7 +15217,7 @@ PARAMETER_DATA = [
         "text": "TILLSKOTT_RAMP_TIMER",
     },
     {
-        "idx": 2497,
+        "idx": 2502,
         "extid": "0343C2F8410000",
         "max": 0,
         "min": 0,
@@ -15201,7 +15226,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_STARTUP_TIMER",
     },
     {
-        "idx": 2498,
+        "idx": 2503,
         "extid": "03B6D656E60000",
         "max": 0,
         "min": 0,
@@ -15210,7 +15235,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_START_TIMER",
     },
     {
-        "idx": 2499,
+        "idx": 2504,
         "extid": "0387E23C230000",
         "max": 0,
         "min": 0,
@@ -15219,7 +15244,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_START_DELAY_TIMER",
     },
     {
-        "idx": 2500,
+        "idx": 2505,
         "extid": "03A36256D30000",
         "max": 0,
         "min": 0,
@@ -15228,7 +15253,7 @@ PARAMETER_DATA = [
         "text": "EXERCISE_TIMER",
     },
     {
-        "idx": 2501,
+        "idx": 2506,
         "extid": "03CB658F620000",
         "max": 0,
         "min": 0,
@@ -15237,7 +15262,7 @@ PARAMETER_DATA = [
         "text": "ADDITIONAL_TEMP_LIMIT_TIMER",
     },
     {
-        "idx": 2502,
+        "idx": 2507,
         "extid": "035B7EC57A0000",
         "max": 0,
         "min": 0,
@@ -15246,7 +15271,7 @@ PARAMETER_DATA = [
         "text": "PUMP_G1_OPTIMIZED_TIMER",
     },
     {
-        "idx": 2503,
+        "idx": 2508,
         "extid": "03AE8860720000",
         "max": 0,
         "min": 0,
@@ -15255,7 +15280,7 @@ PARAMETER_DATA = [
         "text": "PUMP_G2_TEMP_BLOCK_TIMER",
     },
     {
-        "idx": 2504,
+        "idx": 2509,
         "extid": "03E496D6400000",
         "max": 0,
         "min": 0,
@@ -15264,7 +15289,7 @@ PARAMETER_DATA = [
         "text": "PUMP_G2_TEMP_BLOCK_TIMER_2",
     },
     {
-        "idx": 2505,
+        "idx": 2510,
         "extid": "036B1ADE3B0000",
         "max": 0,
         "min": 0,
@@ -15273,7 +15298,7 @@ PARAMETER_DATA = [
         "text": "HEATING_SEASON_STOP_DELAY_TIMER",
     },
     {
-        "idx": 2506,
+        "idx": 2511,
         "extid": "03D5C876FB0000",
         "max": 0,
         "min": 0,
@@ -15282,7 +15307,7 @@ PARAMETER_DATA = [
         "text": "ALARM_MODE_DELAY_TIMER",
     },
     {
-        "idx": 2507,
+        "idx": 2512,
         "extid": "03693E03EE0000",
         "max": 0,
         "min": 0,
@@ -15291,7 +15316,7 @@ PARAMETER_DATA = [
         "text": "LARMSUMMER_DELAY_TIMER",
     },
     {
-        "idx": 2508,
+        "idx": 2513,
         "extid": "038A0048B20000",
         "max": 0,
         "min": 0,
@@ -15300,7 +15325,7 @@ PARAMETER_DATA = [
         "text": "LARMSUMMER_INTERVAL_TIMER",
     },
     {
-        "idx": 2509,
+        "idx": 2514,
         "extid": "03AF0414140000",
         "max": 0,
         "min": 0,
@@ -15309,7 +15334,7 @@ PARAMETER_DATA = [
         "text": "SCREENSAVER_TIMER",
     },
     {
-        "idx": 2510,
+        "idx": 2515,
         "extid": "03DF5074270000",
         "max": 0,
         "min": 0,
@@ -15318,7 +15343,7 @@ PARAMETER_DATA = [
         "text": "QUICKMENU_TIMER",
     },
     {
-        "idx": 2511,
+        "idx": 2516,
         "extid": "03DBDCE0BD0000",
         "max": 0,
         "min": 0,
@@ -15327,7 +15352,7 @@ PARAMETER_DATA = [
         "text": "COOLING_FAN_STOP_DELAY_TIMER",
     },
     {
-        "idx": 2512,
+        "idx": 2517,
         "extid": "039E84DA850000",
         "max": 0,
         "min": 0,
@@ -15336,7 +15361,7 @@ PARAMETER_DATA = [
         "text": "TILLSKOTT_START_TIMER",
     },
     {
-        "idx": 2513,
+        "idx": 2518,
         "extid": "0334A501230000",
         "max": 0,
         "min": 0,
@@ -15345,7 +15370,7 @@ PARAMETER_DATA = [
         "text": "LP_LARM_DELAY_TIMER",
     },
     {
-        "idx": 2514,
+        "idx": 2519,
         "extid": "03EB7658B80000",
         "max": 0,
         "min": 0,
@@ -15354,7 +15379,7 @@ PARAMETER_DATA = [
         "text": "LP_2_LARM_DELAY_TIMER",
     },
     {
-        "idx": 2515,
+        "idx": 2520,
         "extid": "03B02C57B20000",
         "max": 0,
         "min": 0,
@@ -15363,7 +15388,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_MAX_TIMER",
     },
     {
-        "idx": 2516,
+        "idx": 2521,
         "extid": "0397D1BAA50000",
         "max": 0,
         "min": 0,
@@ -15372,7 +15397,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_MAX_TIMER_2",
     },
     {
-        "idx": 2517,
+        "idx": 2522,
         "extid": "039655D95C0000",
         "max": 0,
         "min": 0,
@@ -15381,7 +15406,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_MIN_BREAK_TIMER",
     },
     {
-        "idx": 2518,
+        "idx": 2523,
         "extid": "035D2CEC990000",
         "max": 0,
         "min": 0,
@@ -15390,7 +15415,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_MIN_BREAK_TIMER_2",
     },
     {
-        "idx": 2519,
+        "idx": 2524,
         "extid": "039BB8F62B0000",
         "max": 0,
         "min": 0,
@@ -15399,7 +15424,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_BLOCK_TIMER",
     },
     {
-        "idx": 2520,
+        "idx": 2525,
         "extid": "039683331C0000",
         "max": 0,
         "min": 0,
@@ -15408,7 +15433,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_BLOCK_TIMER_2",
     },
     {
-        "idx": 2521,
+        "idx": 2526,
         "extid": "033677609B0000",
         "max": 0,
         "min": 0,
@@ -15417,7 +15442,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_FAN_TIMER",
     },
     {
-        "idx": 2522,
+        "idx": 2527,
         "extid": "036B2A061A0000",
         "max": 0,
         "min": 0,
@@ -15426,7 +15451,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_FAN_TIMER_2",
     },
     {
-        "idx": 2523,
+        "idx": 2528,
         "extid": "03649B4C1B0000",
         "max": 0,
         "min": 0,
@@ -15435,7 +15460,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_DELTA_TIMER",
     },
     {
-        "idx": 2524,
+        "idx": 2529,
         "extid": "036271A05E0000",
         "max": 0,
         "min": 0,
@@ -15444,7 +15469,7 @@ PARAMETER_DATA = [
         "text": "DEFROST_DELTA_TIMER_2",
     },
     {
-        "idx": 2525,
+        "idx": 2530,
         "extid": "03BE2D7BE40000",
         "max": 0,
         "min": 0,
@@ -15453,7 +15478,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CABLE_TIMER",
     },
     {
-        "idx": 2526,
+        "idx": 2531,
         "extid": "0349E822950000",
         "max": 0,
         "min": 0,
@@ -15462,7 +15487,7 @@ PARAMETER_DATA = [
         "text": "HEATING_CABLE_TIMER_2",
     },
     {
-        "idx": 2527,
+        "idx": 2532,
         "extid": "0337E6727C0000",
         "max": 0,
         "min": 0,
@@ -15471,7 +15496,7 @@ PARAMETER_DATA = [
         "text": "ADDITIONAL_BLOCK_HIGH_T2_TIMER",
     },
     {
-        "idx": 2528,
+        "idx": 2533,
         "extid": "03AFA2968B0000",
         "max": 0,
         "min": 0,
@@ -15480,7 +15505,7 @@ PARAMETER_DATA = [
         "text": "NEUTRALZONE_LIMITATION_TIMER",
     },
     {
-        "idx": 2529,
+        "idx": 2534,
         "extid": "0395A0A18D0000",
         "max": 0,
         "min": 0,
@@ -15489,7 +15514,7 @@ PARAMETER_DATA = [
         "text": "ADDITIONAL_EXTERNAL_HEAT_VALVE_DELAY_TIMER",
     },
     {
-        "idx": 2530,
+        "idx": 2535,
         "extid": "038BEED8DC0000",
         "max": 0,
         "min": 0,
@@ -15498,7 +15523,7 @@ PARAMETER_DATA = [
         "text": "T8_T9_DELAY_TIMER",
     },
     {
-        "idx": 2531,
+        "idx": 2536,
         "extid": "03A8432FE00000",
         "max": 0,
         "min": 0,
@@ -15507,7 +15532,7 @@ PARAMETER_DATA = [
         "text": "T8_T9_2_DELAY_TIMER",
     },
     {
-        "idx": 2532,
+        "idx": 2537,
         "extid": "0335BCDBBA0000",
         "max": 0,
         "min": 0,
@@ -15516,7 +15541,7 @@ PARAMETER_DATA = [
         "text": "T8_T9_DELAY_AFTER_SWITCH_TIMER",
     },
     {
-        "idx": 2533,
+        "idx": 2538,
         "extid": "0306E9C7690000",
         "max": 0,
         "min": 0,
@@ -15525,7 +15550,7 @@ PARAMETER_DATA = [
         "text": "T8_T9_2_DELAY_AFTER_SWITCH_TIMER",
     },
     {
-        "idx": 2534,
+        "idx": 2539,
         "extid": "03FB40F9E30000",
         "max": 0,
         "min": 0,
@@ -15534,7 +15559,7 @@ PARAMETER_DATA = [
         "text": "T10_T11_DELAY_TIMER",
     },
     {
-        "idx": 2535,
+        "idx": 2540,
         "extid": "03BCF4652C0000",
         "max": 0,
         "min": 0,
@@ -15543,7 +15568,7 @@ PARAMETER_DATA = [
         "text": "T10_T11_2_DELAY_TIMER",
     },
     {
-        "idx": 2536,
+        "idx": 2541,
         "extid": "03C36360E10000",
         "max": 0,
         "min": 0,
@@ -15552,7 +15577,7 @@ PARAMETER_DATA = [
         "text": "T10_T11_DELAY_AFTER_SWITCH_TIMER",
     },
     {
-        "idx": 2537,
+        "idx": 2542,
         "extid": "030315DF2D0000",
         "max": 0,
         "min": 0,
@@ -15561,7 +15586,7 @@ PARAMETER_DATA = [
         "text": "T10_T11_2_DELAY_AFTER_SWITCH_TIMER",
     },
     {
-        "idx": 2538,
+        "idx": 2543,
         "extid": "0334D523DC0000",
         "max": 0,
         "min": 0,
@@ -15570,7 +15595,7 @@ PARAMETER_DATA = [
         "text": "ADDITIONAL_LIMITATION_DEFROST_DELAY_TIMER",
     },
     {
-        "idx": 2539,
+        "idx": 2544,
         "extid": "035F6232A00000",
         "max": 0,
         "min": 0,
@@ -15579,7 +15604,7 @@ PARAMETER_DATA = [
         "text": "POOL_ADDITIONALHEAT_DELAY_TIMER",
     },
     {
-        "idx": 2540,
+        "idx": 2545,
         "extid": "03BAFFC53E0000",
         "max": 0,
         "min": 0,
@@ -15588,7 +15613,7 @@ PARAMETER_DATA = [
         "text": "TIMER_HEATING_START_DELAY_AT_CASCADE",
     },
     {
-        "idx": 2541,
+        "idx": 2546,
         "extid": "0326475C6E0000",
         "max": 0,
         "min": 0,
@@ -15597,7 +15622,7 @@ PARAMETER_DATA = [
         "text": "TIMER_HEATING_STOP_DELAY_AT_CASCADE",
     },
     {
-        "idx": 2542,
+        "idx": 2547,
         "extid": "030DC217150000",
         "max": 0,
         "min": 0,
@@ -15606,7 +15631,7 @@ PARAMETER_DATA = [
         "text": "SCREED_DRYING_TIMER",
     },
     {
-        "idx": 2543,
+        "idx": 2548,
         "extid": "033E0114990000",
         "max": 0,
         "min": 0,
@@ -15615,7 +15640,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_START_TIMER_2",
     },
     {
-        "idx": 2544,
+        "idx": 2549,
         "extid": "0325EB8EE00000",
         "max": 0,
         "min": 0,
@@ -15624,7 +15649,7 @@ PARAMETER_DATA = [
         "text": "COMPRESSOR_START_DELAY_TIMER_2",
     },
     {
-        "idx": 2545,
+        "idx": 2550,
         "extid": "0338E9DA6F0000",
         "max": 0,
         "min": 0,
@@ -15633,7 +15658,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_BLOCK_AFTER_VV_TIMER",
     },
     {
-        "idx": 2546,
+        "idx": 2551,
         "extid": "0390716E0C0000",
         "max": 0,
         "min": 0,
@@ -15642,7 +15667,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_BLOCK_AFTER_HG_TIMER",
     },
     {
-        "idx": 2547,
+        "idx": 2552,
         "extid": "03987556E00000",
         "max": 0,
         "min": 0,
@@ -15651,7 +15676,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_2_BLOCK_AFTER_VV_TIMER",
     },
     {
-        "idx": 2548,
+        "idx": 2553,
         "extid": "0330EDE2830000",
         "max": 0,
         "min": 0,
@@ -15660,7 +15685,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_2_BLOCK_AFTER_HG_TIMER",
     },
     {
-        "idx": 2549,
+        "idx": 2554,
         "extid": "03CA2A2BBF0000",
         "max": 0,
         "min": 0,
@@ -15669,7 +15694,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_BLOCK_OUTDOOR_ACKNOWLEDGE_TIMER",
     },
     {
-        "idx": 2550,
+        "idx": 2555,
         "extid": "0312F33CA10000",
         "max": 0,
         "min": 0,
@@ -15678,7 +15703,7 @@ PARAMETER_DATA = [
         "text": "ENVELOPE_2_BLOCK_AFTER_GT2_LOW_TIMER",
     },
     {
-        "idx": 2551,
+        "idx": 2556,
         "extid": "0365D5BF960000",
         "max": 0,
         "min": 0,
@@ -15687,7 +15712,7 @@ PARAMETER_DATA = [
         "text": "PARTY_MODE_TIMER",
     },
     {
-        "idx": 2552,
+        "idx": 2557,
         "extid": "03D54804B70000",
         "max": 0,
         "min": 0,
@@ -15696,7 +15721,7 @@ PARAMETER_DATA = [
         "text": "D_VALVE_STARTUP_TIMER",
     },
     {
-        "idx": 2553,
+        "idx": 2558,
         "extid": "03116FC3180000",
         "max": 0,
         "min": 0,
@@ -15705,7 +15730,7 @@ PARAMETER_DATA = [
         "text": "POOL_START_DELAY_TIMER",
     },
     {
-        "idx": 2554,
+        "idx": 2559,
         "extid": "03B6B0774B0000",
         "max": 0,
         "min": 0,
@@ -15714,7 +15739,7 @@ PARAMETER_DATA = [
         "text": "ADDITIONAL_SYNCH_VALVE_TIMER",
     },
     {
-        "idx": 2555,
+        "idx": 2560,
         "extid": "033A5C6DEE0000",
         "max": 0,
         "min": 0,
@@ -15723,7 +15748,7 @@ PARAMETER_DATA = [
         "text": "DHW_PROTECTIVE_ANODE_ALERT_DELAY_TIMER",
     },
     {
-        "idx": 2556,
+        "idx": 2561,
         "extid": "033F942D3B0000",
         "max": 0,
         "min": 0,
@@ -15732,7 +15757,7 @@ PARAMETER_DATA = [
         "text": "TIMER_DEFROST_DELAY_COMPRESSOR_START",
     },
     {
-        "idx": 2557,
+        "idx": 2562,
         "extid": "030D1952910000",
         "max": 0,
         "min": 0,
@@ -15741,7 +15766,7 @@ PARAMETER_DATA = [
         "text": "TIMER_DEFROST_DELAY_4_WAY_VALVE_SWITCH",
     },
     {
-        "idx": 2558,
+        "idx": 2563,
         "extid": "03BE9F792A0000",
         "max": 0,
         "min": 0,
@@ -15750,7 +15775,7 @@ PARAMETER_DATA = [
         "text": "TIMER_DEFROST_DELAY_COMPRESSOR_2_START",
     },
     {
-        "idx": 2559,
+        "idx": 2564,
         "extid": "03BF774E1E0000",
         "max": 0,
         "min": 0,
@@ -15759,7 +15784,7 @@ PARAMETER_DATA = [
         "text": "TIMER_DEFROST_DELAY_4_WAY_VALVE_2_SWITCH",
     },
     {
-        "idx": 2560,
+        "idx": 2565,
         "extid": "038D0B511C0000",
         "max": 0,
         "min": 0,
@@ -15768,7 +15793,7 @@ PARAMETER_DATA = [
         "text": "TIMER_SOLAR_PIPE_DELAY",
     },
     {
-        "idx": 2561,
+        "idx": 2566,
         "extid": "03C32CCD200000",
         "max": 0,
         "min": 0,
@@ -15777,7 +15802,7 @@ PARAMETER_DATA = [
         "text": "TIMER_SOLAR_PIPE_EXERCISE",
     },
     {
-        "idx": 2562,
+        "idx": 2567,
         "extid": "03ACEF37B90000",
         "max": 0,
         "min": 0,
@@ -15786,7 +15811,7 @@ PARAMETER_DATA = [
         "text": "TIMER_SOLAR_T1_HIGH",
     },
     {
-        "idx": 2563,
+        "idx": 2568,
         "extid": "031040967B0000",
         "max": 0,
         "min": 0,
@@ -15795,7 +15820,7 @@ PARAMETER_DATA = [
         "text": "TIMER_SOLAR_T1_LOW",
     },
     {
-        "idx": 2564,
+        "idx": 2569,
         "extid": "038F5858740000",
         "max": 0,
         "min": 0,
@@ -15804,7 +15829,7 @@ PARAMETER_DATA = [
         "text": "LP_STOP_MAX_TIMER",
     },
     {
-        "idx": 2565,
+        "idx": 2570,
         "extid": "03FC507FBB0000",
         "max": 0,
         "min": 0,
@@ -15813,7 +15838,7 @@ PARAMETER_DATA = [
         "text": "HP_STOP_MAX_TIMER",
     },
     {
-        "idx": 2566,
+        "idx": 2571,
         "extid": "039ACEE8880000",
         "max": 0,
         "min": 0,
@@ -15822,7 +15847,7 @@ PARAMETER_DATA = [
         "text": "LP_STOP_MAX_TIMER_2",
     },
     {
-        "idx": 2567,
+        "idx": 2572,
         "extid": "0373A6E56A0000",
         "max": 0,
         "min": 0,
@@ -15831,7 +15856,7 @@ PARAMETER_DATA = [
         "text": "HP_STOP_MAX_TIMER_2",
     },
     {
-        "idx": 2568,
+        "idx": 2573,
         "extid": "03E47EE9760000",
         "max": 0,
         "min": 0,
@@ -15840,7 +15865,7 @@ PARAMETER_DATA = [
         "text": "TIMER_G2_AFTER_XDHW",
     },
     {
-        "idx": 2569,
+        "idx": 2574,
         "extid": "03327B78640000",
         "max": 0,
         "min": 0,
@@ -15849,7 +15874,7 @@ PARAMETER_DATA = [
         "text": "TIMER_SOLAR_T1_DELAY_BEFORE_SHORT_CIRCUIT",
     },
     {
-        "idx": 2570,
+        "idx": 2575,
         "extid": "03CD930CA60000",
         "max": 0,
         "min": 0,
@@ -15858,7 +15883,7 @@ PARAMETER_DATA = [
         "text": "TIMER_SOLAR_T1_CONTROLLED_RISE",
     },
     {
-        "idx": 2571,
+        "idx": 2576,
         "extid": "035396F6D10000",
         "max": 0,
         "min": 0,
@@ -15867,7 +15892,7 @@ PARAMETER_DATA = [
         "text": "TIMER_CIRCULATION_G2_ADJUST_TIMER",
     },
     {
-        "idx": 2572,
+        "idx": 2577,
         "extid": "03BEA3936D0000",
         "max": 0,
         "min": 0,
@@ -15876,7 +15901,7 @@ PARAMETER_DATA = [
         "text": "TIMER_DHW_E21_COMPRESSOR_TEMPORARY_STOP_DELAY",
     },
     {
-        "idx": 2573,
+        "idx": 2578,
         "extid": "03E5B422780000",
         "max": 0,
         "min": 0,
@@ -15885,7 +15910,7 @@ PARAMETER_DATA = [
         "text": "TIMER_DHW_E22_COMPRESSOR_TEMPORARY_STOP_DELAY",
     },
     {
-        "idx": 2574,
+        "idx": 2579,
         "extid": "03688E73320000",
         "max": 0,
         "min": 0,
@@ -15894,7 +15919,7 @@ PARAMETER_DATA = [
         "text": "TIMER_ACCESS_LEVEL",
     },
     {
-        "idx": 2575,
+        "idx": 2580,
         "extid": "0374902F9F0000",
         "max": 0,
         "min": 0,
@@ -15903,7 +15928,7 @@ PARAMETER_DATA = [
         "text": "TIMER_CIRCULATION_E21_G2_TEMPORARY_STOP",
     },
     {
-        "idx": 2576,
+        "idx": 2581,
         "extid": "03D7C6A9360000",
         "max": 0,
         "min": 0,
@@ -15912,7 +15937,7 @@ PARAMETER_DATA = [
         "text": "TIMER_CIRCULATION_E22_G2_TEMPORARY_STOP",
     },
     {
-        "idx": 2577,
+        "idx": 2582,
         "extid": "03DF94AC2C0000",
         "max": 0,
         "min": 0,
@@ -15921,7 +15946,7 @@ PARAMETER_DATA = [
         "text": "TIMER_COMMUNICATION_BAD_CANBUS_REBOOT_DELAY",
     },
     {
-        "idx": 2578,
+        "idx": 2583,
         "extid": "039CA89DB30000",
         "max": 0,
         "min": 0,
@@ -15930,7 +15955,7 @@ PARAMETER_DATA = [
         "text": "TIMER_CIRCULATION_E21_G2_MEAN_VALUE_SAMPLE_TIME",
     },
     {
-        "idx": 2579,
+        "idx": 2584,
         "extid": "032F3CB0700000",
         "max": 0,
         "min": 0,
@@ -15939,7 +15964,7 @@ PARAMETER_DATA = [
         "text": "TIMER_CIRCULATION_E22_G2_MEAN_VALUE_SAMPLE_TIME",
     },
     {
-        "idx": 2580,
+        "idx": 2585,
         "extid": "03CB4C454D0000",
         "max": 0,
         "min": 0,
@@ -15948,7 +15973,7 @@ PARAMETER_DATA = [
         "text": "TIMER_CIRCULATION_E21_G2_INIT",
     },
     {
-        "idx": 2581,
+        "idx": 2586,
         "extid": "03F2C179880000",
         "max": 0,
         "min": 0,
@@ -15957,7 +15982,7 @@ PARAMETER_DATA = [
         "text": "TIMER_CIRCULATION_E22_G2_INIT",
     },
     {
-        "idx": 2582,
+        "idx": 2587,
         "extid": "037AFAC7930000",
         "max": 0,
         "min": 0,
@@ -15966,7 +15991,7 @@ PARAMETER_DATA = [
         "text": "TIMER_MV_E12_FREEZEGUARD",
     },
     {
-        "idx": 2583,
+        "idx": 2588,
         "extid": "039C488E6B0000",
         "max": 0,
         "min": 0,
@@ -15975,7 +16000,7 @@ PARAMETER_DATA = [
         "text": "TIMER_MV_E12_CALIBRATE_PID",
     },
     {
-        "idx": 2584,
+        "idx": 2589,
         "extid": "036B3D4C400000",
         "max": 0,
         "min": 0,
@@ -15984,7 +16009,7 @@ PARAMETER_DATA = [
         "text": "TIMER_MV_E12_PID_SV41",
     },
     {
-        "idx": 2585,
+        "idx": 2590,
         "extid": "03C3827F2F0000",
         "max": 0,
         "min": 0,
@@ -15993,7 +16018,7 @@ PARAMETER_DATA = [
         "text": "TIMER_MV_E12_M_VALVE_DEFROST",
     },
     {
-        "idx": 2586,
+        "idx": 2591,
         "extid": "0330D709630000",
         "max": 0,
         "min": 0,
@@ -16002,7 +16027,7 @@ PARAMETER_DATA = [
         "text": "TIMER_MV_E12_INIT_SV41",
     },
     {
-        "idx": 2587,
+        "idx": 2592,
         "extid": "037A9EF9C90000",
         "max": 0,
         "min": 0,
@@ -16011,7 +16036,7 @@ PARAMETER_DATA = [
         "text": "TIMER_MV_E21_M_VALVE_DEFROST",
     },
     {
-        "idx": 2588,
+        "idx": 2593,
         "extid": "0340EE87130000",
         "max": 0,
         "min": 0,
@@ -16020,7 +16045,7 @@ PARAMETER_DATA = [
         "text": "TIMER_MV_E12_M_VALVE_LIMITATION",
     },
     {
-        "idx": 2589,
+        "idx": 2594,
         "extid": "032CD2DBA80000",
         "max": 0,
         "min": 0,
@@ -16029,7 +16054,7 @@ PARAMETER_DATA = [
         "text": "TIMER_MV_E12_M_VALVE_PULS_PAUS",
     },
     {
-        "idx": 2590,
+        "idx": 2595,
         "extid": "036A78F2900000",
         "max": 0,
         "min": 0,
@@ -16038,7 +16063,7 @@ PARAMETER_DATA = [
         "text": "TIMER_MV_E12_STARTUP_DELAY",
     },
     {
-        "idx": 2591,
+        "idx": 2596,
         "extid": "03F5E34A180000",
         "max": 0,
         "min": 0,
@@ -16047,7 +16072,7 @@ PARAMETER_DATA = [
         "text": "TIMER_MV_E12_HEATING_SEASON_STOP_DELAY",
     },
     {
-        "idx": 2592,
+        "idx": 2597,
         "extid": "03F8766ABC0000",
         "max": 0,
         "min": 0,
@@ -16056,7 +16081,7 @@ PARAMETER_DATA = [
         "text": "TIMER_MV_E12_HEATING_SEASON_START_DELAY",
     },
     {
-        "idx": 2593,
+        "idx": 2598,
         "extid": "035375085C0000",
         "max": 0,
         "min": 0,
@@ -16065,7 +16090,7 @@ PARAMETER_DATA = [
         "text": "TIMER_MV_E12_ATTENUATION",
     },
     {
-        "idx": 2594,
+        "idx": 2599,
         "extid": "031077F8550000",
         "max": 0,
         "min": 0,
@@ -16074,7 +16099,7 @@ PARAMETER_DATA = [
         "text": "TIMER_MV_E12_DEFROST",
     },
     {
-        "idx": 2595,
+        "idx": 2600,
         "extid": "03EB5A5D180000",
         "max": 0,
         "min": 0,
@@ -16083,7 +16108,7 @@ PARAMETER_DATA = [
         "text": "TIMER_DEFROST_MAX_RUNNING_TIME_BETWEEN_DEFROSTS_2",
     },
     {
-        "idx": 2596,
+        "idx": 2601,
         "extid": "03D093BCC60000",
         "max": 0,
         "min": 0,
@@ -16092,7 +16117,7 @@ PARAMETER_DATA = [
         "text": "TIMER_DEFROST_MAX_RUNNING_TIME_BETWEEN_DEFROSTS",
     },
     {
-        "idx": 2597,
+        "idx": 2602,
         "extid": "03C894A2500000",
         "max": 0,
         "min": 0,
@@ -16101,7 +16126,7 @@ PARAMETER_DATA = [
         "text": "TIMER_DHW_E21_T3_START_TEMP_ADJ",
     },
     {
-        "idx": 2598,
+        "idx": 2603,
         "extid": "036BC224F90000",
         "max": 0,
         "min": 0,
@@ -16110,7 +16135,7 @@ PARAMETER_DATA = [
         "text": "TIMER_DHW_E22_T3_START_TEMP_ADJ",
     },
     {
-        "idx": 2599,
+        "idx": 2604,
         "extid": "0327DE5EF70000",
         "max": 0,
         "min": 0,
@@ -16119,7 +16144,7 @@ PARAMETER_DATA = [
         "text": "TIMER_SYSTEM_INIT",
     },
     {
-        "idx": 2600,
+        "idx": 2605,
         "extid": "03B11E70550000",
         "max": 0,
         "min": 0,
