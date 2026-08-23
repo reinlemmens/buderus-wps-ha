@@ -587,11 +587,14 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         teardown/rebuild, including a fresh lock object.
         """
         try:
-            async with asyncio.timeout(UPDATE_CYCLE_TIMEOUT):
-                data = await self._async_update_data_inner()
+            # asyncio.wait_for, not asyncio.timeout: the library supports
+            # Python 3.9+ and asyncio.timeout only exists on 3.11+.
+            data = await asyncio.wait_for(
+                self._async_update_data_inner(), timeout=UPDATE_CYCLE_TIMEOUT
+            )
             self._consecutive_update_timeouts = 0
             return data
-        except TimeoutError as err:
+        except asyncio.TimeoutError as err:
             self._consecutive_failures += 1
             self._consecutive_update_timeouts += 1
             _LOGGER.error(
