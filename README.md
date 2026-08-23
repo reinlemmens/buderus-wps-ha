@@ -58,6 +58,11 @@ After installation, the integration creates the following entities:
 
 ### Controls
 
+Entity IDs below are shown unprefixed. Home Assistant prepends the device's
+area when one is set, so on a real install these may read
+`number.boiler_room_heat_pump_...` — check the entity list before copying an
+ID into an automation.
+
 | Entity | Type | Description |
 |--------|------|-------------|
 | `binary_sensor.heat_pump_compressor` | Binary Sensor | Compressor running state |
@@ -98,9 +103,17 @@ effect in that mode.
 
 That active register is not writable (it carries no write range in the
 protocol reference), so it is exposed read-only as
-`sensor.heat_pump_dhw_stop_temperature_active`. To lower where a charge stops,
-set `number.heat_pump_dhw_stop_temperature_limit` (`DHW_GT8_STOP_MAX_TEMP`),
-the writable ceiling that constrains it, and watch the sensor follow.
+`sensor.heat_pump_dhw_stop_temperature_active`.
+
+`number.heat_pump_dhw_stop_temperature_limit` (`DHW_GT8_STOP_MAX_TEMP`,
+idx 440) is writable, and its name suggests it caps the active register.
+**Whether it actually governs where a charge terminates is not yet
+confirmed.** Writing it does reach the device — the value reads back over
+RTR — but on an idle pump the active register did not follow it, so the
+relationship, if any, is only applied when a charge starts. Watch the
+active sensor and the supply temperature across a charge before relying on
+this to cap DHW temperature; the panel's "hot water temperature" setting
+remains the known-good way to change it.
 
 ### Advanced parameter access
 

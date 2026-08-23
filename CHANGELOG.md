@@ -18,7 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   writable, so it is exposed read-only as
   `sensor.heat_pump_dhw_stop_temperature_active`, alongside a new writable
   `number.heat_pump_dhw_stop_temperature_limit` for `DHW_GT8_STOP_MAX_TEMP`
-  (idx 440, 20.0-64.0 °C), the ceiling that constrains it.
+  (idx 440, 20.0-64.0 °C). Writes to idx 440 reach the device and read back
+  correctly, but whether it governs charge termination is **not yet
+  confirmed**: on an idle pump idx 444 did not follow a write to 440. The
+  read-only sensor is what makes the relationship observable across a
+  charge.
 - **`number.heat_pump_dhw_start_temperature_active`** for
   `DHW_USER_SET_START_TEMP` (idx 498, 20.0-79.0 °C), the active start
   temperature paired with the stop registers above.
