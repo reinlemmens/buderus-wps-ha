@@ -61,8 +61,32 @@ After installation, the integration creates the following entities:
 | Entity | Type | Description |
 |--------|------|-------------|
 | `binary_sensor.heat_pump_compressor` | Binary Sensor | Compressor running state |
-| `switch.heat_pump_energy_block` | Switch | Block heating operation |
+| `switch.heat_pump_energy_block` | Switch | Mode-level block: sets heating AND DHW program modes to Off |
+| `switch.heat_pump_compressor_block` | Switch | Direct compressor block (pumps keep running) |
 | `number.heat_pump_dhw_extra_duration` | Number | DHW boost duration (hours) |
+| `number.heat_pump_dhw_stop_temperature_active` | Number | Active DHW stop temperature (governs "Always On" mode) |
+| `number.heat_pump_dhw_start_temperature_active` | Number | Active DHW start temperature (governs "Always On" mode) |
+
+### Energy Block vs Compressor Block
+
+These two switches have materially different semantics — pick the right one
+for your automation:
+
+- **`switch.heat_pump_energy_block` is a mode-level control, not a compressor
+  shed command.** Turning it on writes `HEATING_SEASON_MODE = Off (summer)`
+  **and** `DHW_PROGRAM_MODE = Always Off`; turning it off restores
+  `Winter` / `Always On`. It changes the heat pump's operating programs, so it
+  will interrupt DHW recovery and space heating, and turning it off overwrites
+  whatever modes you had configured before.
+- **`switch.heat_pump_compressor_block` directly blocks the compressor** (via
+  the external E21 block input) while circulation pumps keep running, so the
+  buffer can still be used. This is the safer actuator for capacity shedding /
+  peak-load protection, because it does not touch your heating or DHW program
+  modes.
+
+In short: use **Compressor Block** for price/peak-based capacity shedding, and
+reserve **Energy Block** for cases where you deliberately want the whole
+machine (heating *and* hot water programs) forced off.
 
 ### Advanced parameter access
 
@@ -97,27 +121,31 @@ If you call the service via the REST API, add `?return_response` to receive the 
 
 ## Example Automations
 
-### Block heating during peak electricity rates
+### Shed compressor load during peak electricity rates
+
+Use the direct compressor block for capacity shedding (see
+[Energy Block vs Compressor Block](#energy-block-vs-compressor-block) —
+`energy_block` would also rewrite your heating and DHW program modes):
 
 ```yaml
 automation:
-  - alias: "Block heat pump during peak rates"
+  - alias: "Block compressor during peak rates"
     trigger:
       - platform: time
         at: "17:00:00"
     action:
       - service: switch.turn_on
         target:
-          entity_id: switch.heat_pump_energy_block
+          entity_id: switch.heat_pump_compressor_block
 
-  - alias: "Resume heating after peak rates"
+  - alias: "Resume compressor after peak rates"
     trigger:
       - platform: time
         at: "21:00:00"
     action:
       - service: switch.turn_off
         target:
-          entity_id: switch.heat_pump_energy_block
+          entity_id: switch.heat_pump_compressor_block
 ```
 
 ### Boost hot water before morning shower

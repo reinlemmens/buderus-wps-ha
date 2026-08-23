@@ -75,6 +75,8 @@ def setup_ha_mocks():
     coordinator_mock = MagicMock()
     coordinator_mock.DataUpdateCoordinator = MockDataUpdateCoordinator
     coordinator_mock.CoordinatorEntity = MockCoordinatorEntity
+    # Real exception type so `raise UpdateFailed(...)` works under the mock
+    coordinator_mock.UpdateFailed = type("UpdateFailed", (Exception,), {})
     sys.modules["homeassistant.helpers.update_coordinator"] = coordinator_mock
 
     # Sensor component with class attributes
@@ -211,6 +213,8 @@ class MockBuderusData:
     dhw_start_temp_economy: Optional[float] = None
     dhw_stop_temp_comfort: Optional[float] = None
     dhw_stop_temp_economy: Optional[float] = None
+    dhw_gt8_stop_temp: Optional[float] = None
+    dhw_user_start_temp: Optional[float] = None
     parameter_results: dict[str, dict[str, Any]] = field(default_factory=dict)
 
 
@@ -273,6 +277,8 @@ def mock_coordinator(mock_buderus_data: MockBuderusData) -> MagicMock:
     coordinator.async_set_dhw_start_temp_economy = AsyncMock()
     coordinator.async_set_dhw_stop_temp_comfort = AsyncMock()
     coordinator.async_set_dhw_stop_temp_economy = AsyncMock()
+    coordinator.async_set_dhw_gt8_stop_temp = AsyncMock()
+    coordinator.async_set_dhw_user_start_temp = AsyncMock()
     coordinator.async_set_dhw_stop_temp = AsyncMock()
     coordinator.async_set_dhw_setpoint = AsyncMock()
     coordinator.async_set_heating_curve_offset = AsyncMock()

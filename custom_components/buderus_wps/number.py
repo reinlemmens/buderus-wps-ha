@@ -32,6 +32,8 @@ async def async_setup_entry(
             BuderusDHWStartTempEconomyNumber(coordinator, entry),
             BuderusDHWStopTempComfortNumber(coordinator, entry),
             BuderusDHWStopTempEconomyNumber(coordinator, entry),
+            BuderusDHWStopTempActiveNumber(coordinator, entry),
+            BuderusDHWStartTempActiveNumber(coordinator, entry),
         ]
     )
 
@@ -363,3 +365,36 @@ class BuderusDHWStopTempEconomyNumber(_BuderusDHWModeTempNumberBase):
     _entity_key = "dhw_stop_temp_economy"
     _data_attr = "dhw_stop_temp_economy"
     _setter_name = "async_set_dhw_stop_temp_economy"
+
+
+class BuderusDHWStopTempActiveNumber(_BuderusDHWModeTempNumberBase):
+    """Active DHW stop temperature (GT8, idx 444) (21.0-64.0°C).
+
+    The register the controller actually charges against in
+    DHW_PROGRAM_MODE=1 ("Always On"), where the Comfort/Economy profile
+    registers are ignored. The parameter table carries no bounds for
+    idx 444, so the Comfort/Economy sibling range is used.
+    """
+
+    _attr_name = "DHW Stop Temperature (Active)"
+    _attr_native_min_value = 21.0
+    _attr_native_max_value = 64.0
+    _entity_key = "dhw_gt8_stop_temp"
+    _data_attr = "dhw_gt8_stop_temp"
+    _setter_name = "async_set_dhw_gt8_stop_temp"
+
+
+class BuderusDHWStartTempActiveNumber(_BuderusDHWModeTempNumberBase):
+    """Active DHW start temperature (DHW_USER_SET_START_TEMP, idx 498).
+
+    Paired with the active stop temperature: a new charge begins when the
+    tank drops below this value in "Always On" mode (20.0-79.0°C per the
+    parameter table).
+    """
+
+    _attr_name = "DHW Start Temperature (Active)"
+    _attr_native_min_value = 20.0
+    _attr_native_max_value = 79.0
+    _entity_key = "dhw_user_start_temp"
+    _data_attr = "dhw_user_start_temp"
+    _setter_name = "async_set_dhw_user_start_temp"

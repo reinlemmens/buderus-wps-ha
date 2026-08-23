@@ -5,6 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **Active DHW start/stop temperature entities (#13).** New
+  `number.heat_pump_dhw_stop_temperature_active` (`DHW_GT8_STOP_TEMP`,
+  idx 444) and `number.heat_pump_dhw_start_temperature_active`
+  (`DHW_USER_SET_START_TEMP`, idx 498). These are the registers the
+  controller actually charges against in `DHW_PROGRAM_MODE=1`
+  ("Always On"), where the existing Comfort/Economy profile entities are
+  inert. Idx 444 carries no bounds in the parameter table, so the
+  Comfort/Economy sibling range (21.0-64.0 °C) is enforced.
+
+### Fixed
+- **Coordinator could wedge silently with no recovery (#10).** The update
+  path acquired the coordinator lock and ran serial I/O with no timeout, so
+  a hung read blocked `_async_update_data` forever: no logs, no reconnect,
+  entities unavailable until a config-entry reload. Every update cycle is
+  now bounded by a 60 s timeout; repeated timeouts (or a stall watchdog
+  detecting no successful update for 5 scan intervals) force-close the
+  serial port, replace the coordinator lock outright so a stuck holder
+  cannot leak into the new session, and re-enter the existing
+  reconnect-with-backoff loop.
+- **Orphaned `number.heat_pump_dhw_stop_temperature` registry row (#9).**
+  The `dhw_stop_temp` -> `xdhw_stop_temp` entity-key rename in v1.5.x left a
+  permanently-unavailable registry entry behind. Setup now removes registry
+  rows whose unique_id the integration no longer produces.
+
+### Changed
+- **README documents Energy Block vs Compressor Block semantics (#8).**
+  `switch.heat_pump_energy_block` is a mode-level control (rewrites heating
+  and DHW program modes), while `switch.heat_pump_compressor_block` blocks
+  the compressor directly with pumps still running. The peak-rate example
+  automation now uses the compressor block, the safer actuator for capacity
+  shedding.
+
 ## [1.6.0-beta.2] - 2026-08-20
 
 ### Fixed
