@@ -146,3 +146,101 @@ def test_write_value_out_of_range_raises():
 
     with pytest.raises(ValueError):
         client.write_value("bar", 1000)
+
+
+class TestWriteBoundsOverride:
+    """Curated bounds keep table-unwritable parameters writable (PR #14)."""
+
+    def _client_with(self, params):
+        adapter = FakeAdapter()
+        return adapter, HeatPumpClient(adapter, ParameterRegistry(params))
+
+    def test_write_dhw_gt8_stop_temp_with_zero_bounds_succeeds(self):
+        """idx 444 carries min=0/max=0 yet must accept a write (issue #13)."""
+        adapter, client = self._client_with(
+            [
+                {
+                    "idx": 444,
+                    "extid": "0E7941ADFC0101",
+                    "min": 0,
+                    "max": 0,
+                    "format": "tem",
+                    "read": 1,
+                    "text": "DHW_GT8_STOP_TEMP",
+                }
+            ]
+        )
+
+        client.write_value("DHW_GT8_STOP_TEMP", 54.0)
+
+        sent = adapter.sent[-1]
+        assert sent.arbitration_id == 0x04003FE0 | (444 << 14)
+        # 'tem' format: raw value is tenths of a degree
+        assert int.from_bytes(sent.data, "big") == 540
+
+    def test_override_enforces_curated_range(self):
+        """Out-of-range values are rejected against the curated bounds."""
+        _, client = self._client_with(
+            [
+                {
+                    "idx": 444,
+                    "extid": "0E7941ADFC0101",
+                    "min": 0,
+                    "max": 0,
+                    "format": "tem",
+                    "read": 1,
+                    "text": "DHW_GT8_STOP_TEMP",
+                }
+            ]
+        )
+
+        with pytest.raises(ValueError):
+            client.write_value("DHW_GT8_STOP_TEMP", 70.0)
+
+    def test_zero_bounds_without_override_still_read_only(self):
+        """Parameters with no override keep the read-only guard."""
+        _, client = self._client_with(
+            [
+                {
+                    "idx": 446,
+                    "extid": "0EA4430A41066D",
+                    "min": 0,
+                    "max": 0,
+                    "format": "tem",
+                    "read": 1,
+                    "text": "DHW_GT8_STOP_TEMP_2",
+                }
+            ]
+        )
+
+        with pytest.raises(PermissionError):
+            client.write_value("DHW_GT8_STOP_TEMP_2", 54.0)
+
+    def test_real_bounds_win_over_override(self):
+        """A table that carries valid bounds is used as-is."""
+        from buderus_wps.parameter_overrides import apply_bounds_override
+        from buderus_wps.parameter_registry import Parameter
+
+        param = Parameter(
+            idx=444,
+            extid="0E7941ADFC0101",
+            min=300,
+            max=600,
+            format="tem",
+            read=1,
+            text="DHW_GT8_STOP_TEMP",
+        )
+        assert apply_bounds_override(param) is param
+
+    def test_write_against_shipped_parameter_table(self):
+        """End-to-end: the real generated table plus override accepts the write."""
+        from buderus_wps.parameter import HeatPump
+
+        registry = HeatPump()
+        adapter = FakeAdapter()
+        client = HeatPumpClient(adapter, registry)
+
+        client.write_value("DHW_GT8_STOP_TEMP", 54.0)
+
+        sent = adapter.sent[-1]
+        assert int.from_bytes(sent.data, "big") == 540

@@ -225,3 +225,57 @@ class TestStallWatchdog:
             await coordinator._watchdog_loop()
 
         forced.assert_not_awaited()
+
+    @pytest.mark.asyncio
+    async def test_watchdog_covers_cold_start_stall(self, mock_hass, monkeypatch):
+        """A coordinator that wedges on its very first poll still gets rescued."""
+        import time
+
+        coordinator = _make_coordinator(mock_hass)
+        coordinator._connected = True
+        coordinator._last_successful_update = None  # No update ever succeeded
+        coordinator._watchdog_reference_time = time.time() - 10_000
+
+        forced = AsyncMock()
+        coordinator._async_force_reconnect = forced  # type: ignore[assignment]
+
+        real_sleep = asyncio.sleep
+
+        async def one_check(delay: float) -> None:
+            if forced.await_count:
+                raise asyncio.CancelledError
+            await real_sleep(0)
+
+        monkeypatch.setattr(coordinator_module.asyncio, "sleep", one_check)
+
+        with pytest.raises(asyncio.CancelledError):
+            await coordinator._watchdog_loop()
+
+        forced.assert_awaited_once()
+
+    @pytest.mark.asyncio
+    async def test_watchdog_survives_rebuild_failure(self, mock_hass, monkeypatch):
+        """A raising rebuild must not kill the watchdog loop."""
+        import time
+
+        coordinator = _make_coordinator(mock_hass)
+        coordinator._connected = True
+        coordinator._last_successful_update = time.time() - 10_000
+
+        forced = AsyncMock(side_effect=RuntimeError("rebuild exploded"))
+        coordinator._async_force_reconnect = forced  # type: ignore[assignment]
+
+        real_sleep = asyncio.sleep
+
+        async def two_checks(delay: float) -> None:
+            # Stop only after the loop survived one failing rebuild
+            if forced.await_count >= 2:
+                raise asyncio.CancelledError
+            await real_sleep(0)
+
+        monkeypatch.setattr(coordinator_module.asyncio, "sleep", two_checks)
+
+        with pytest.raises(asyncio.CancelledError):
+            await coordinator._watchdog_loop()
+
+        assert forced.await_count >= 2

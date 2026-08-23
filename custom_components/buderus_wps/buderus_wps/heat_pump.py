@@ -319,6 +319,11 @@ class HeatPumpClient:
         self, name_or_idx: Any, value: Any, timeout: Optional[float] = None
     ) -> None:
         param = self.get(name_or_idx)
+        # Some writable parameters carry min=0/max=0 in the tables and in
+        # discovery; curated bounds keep them writable and range-checked.
+        from .parameter_overrides import apply_bounds_override
+
+        param = apply_bounds_override(param)
         # FHEM: read=1 means "readable", not "read-only"
         # A parameter is read-only if min >= max (no valid write range)
         if param.min >= param.max:

@@ -65,7 +65,11 @@ STALE_ENTITY_KEYS = ("dhw_stop_temp",)  # renamed to xdhw_stop_temp in v1.5.x
 
 
 def _async_cleanup_stale_entities(hass: HomeAssistant, entry: ConfigEntry) -> None:
-    """Remove registry rows whose unique_id the integration no longer produces."""
+    """Remove registry rows for the known renamed keys in STALE_ENTITY_KEYS.
+
+    Targeted, not a general sweep: only unique_ids derived from that list are
+    removed, so a future entity-key rename must add its old key there.
+    """
     registry = er.async_get(hass)
     stale_unique_ids = {f"{entry.entry_id}_{key}" for key in STALE_ENTITY_KEYS}
     for reg_entry in er.async_entries_for_config_entry(registry, entry.entry_id):

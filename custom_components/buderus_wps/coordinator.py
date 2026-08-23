@@ -129,6 +129,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         # Stall watchdog (issue #10)
         self._watchdog_task: asyncio.Task[None] | None = None
         self._consecutive_update_timeouts: int = 0
+        self._watchdog_reference_time: float = time.time()
         # Last-known-good data caching for graceful degradation
         # Cache is retained indefinitely - stale data preferred over "Unknown"
         self._last_known_good_data: BuderusData | None = None
@@ -329,6 +330,9 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
 
     def _start_watchdog(self) -> None:
         """Start the stall watchdog if it is not already running."""
+        # Cold-start reference: lets the stall check fire even when the very
+        # first poll wedges and _last_successful_update never gets set.
+        self._watchdog_reference_time = time.time()
         if self._watchdog_task is None:
             self._watchdog_task = self.hass.async_create_background_task(
                 self._watchdog_loop(),
@@ -342,26 +346,32 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         own: if no update has succeeded for WATCHDOG_STALL_MULTIPLIER scan
         intervals while we still believe we are connected, the serial layer
         is assumed wedged and the connection is torn down and rebuilt.
+        The loop must outlive its own failures: an exception escaping the
+        body would silently end the stall protection for good.
         """
         while True:
             update_interval = getattr(self, "update_interval", None)
             interval = update_interval.total_seconds() if update_interval else 60.0
             await asyncio.sleep(interval)
 
-            if self._manually_disconnected or not self._connected:
-                continue
-            if self._last_successful_update is None:
-                continue
+            try:
+                if self._manually_disconnected or not self._connected:
+                    continue
 
-            age = time.time() - self._last_successful_update
-            if age > WATCHDOG_STALL_MULTIPLIER * interval:
-                _LOGGER.warning(
-                    "Watchdog: no successful update for %.0fs "
-                    "(threshold %.0fs) - forcing connection rebuild",
-                    age,
-                    WATCHDOG_STALL_MULTIPLIER * interval,
+                last_alive = (
+                    self._last_successful_update or self._watchdog_reference_time
                 )
-                await self._async_force_reconnect()
+                age = time.time() - last_alive
+                if age > WATCHDOG_STALL_MULTIPLIER * interval:
+                    _LOGGER.warning(
+                        "Watchdog: no successful update for %.0fs "
+                        "(threshold %.0fs) - forcing connection rebuild",
+                        age,
+                        WATCHDOG_STALL_MULTIPLIER * interval,
+                    )
+                    await self._async_force_reconnect()
+            except Exception:
+                _LOGGER.exception("Watchdog check failed; will retry next interval")
 
     async def _async_force_reconnect(self) -> None:
         """Tear down a possibly-wedged connection and rebuild it.
@@ -373,6 +383,9 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         """
         self._connected = False
         self._consecutive_update_timeouts = 0
+        # Fresh stall budget for the rebuilt session so the watchdog does not
+        # re-trigger every interval while reconnection is still in progress.
+        self._watchdog_reference_time = time.time()
         self._lock = asyncio.Lock()
         try:
             await asyncio.wait_for(

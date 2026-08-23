@@ -14,8 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`DHW_USER_SET_START_TEMP`, idx 498). These are the registers the
   controller actually charges against in `DHW_PROGRAM_MODE=1`
   ("Always On"), where the existing Comfort/Economy profile entities are
-  inert. Idx 444 carries no bounds in the parameter table, so the
-  Comfort/Economy sibling range (21.0-64.0 °C) is enforced.
+  inert. Idx 444 carries no bounds in the parameter table (min=0/max=0),
+  which the library treats as read-only; a curated write-bounds override
+  (`parameter_overrides.py`, applied in `write_value()` on top of the
+  generated tables and discovery) keeps it writable and range-checked
+  against the Comfort/Economy sibling range (21.0-64.0 °C).
 
 ### Fixed
 - **Coordinator could wedge silently with no recovery (#10).** The update
@@ -30,7 +33,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Orphaned `number.heat_pump_dhw_stop_temperature` registry row (#9).**
   The `dhw_stop_temp` -> `xdhw_stop_temp` entity-key rename in v1.5.x left a
   permanently-unavailable registry entry behind. Setup now removes registry
-  rows whose unique_id the integration no longer produces.
+  rows for a curated list of renamed entity keys (`STALE_ENTITY_KEYS`);
+  future renames must add their old key to that list.
 
 ### Changed
 - **README documents Energy Block vs Compressor Block semantics (#8).**
