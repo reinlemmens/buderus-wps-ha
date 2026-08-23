@@ -5,6 +5,52 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0-beta.3] - 2026-08-23
+
+### Added
+- **DHW stop temperature control in "Always On" mode (#13).** In
+  `DHW_PROGRAM_MODE=1` the controller terminates a charge on
+  `DHW_GT8_STOP_TEMP` (idx 444) and ignores the Comfort/Economy profile
+  registers, so the existing profile entities are inert in that mode.
+  Confirmed on hardware: idx 444 read 61.0 °C — matching every observed
+  charge termination — while the Comfort register read 54.0 and was ignored.
+  Idx 444 carries no write range in the FHEM protocol reference and is not
+  writable, so it is exposed read-only as
+  `sensor.heat_pump_dhw_stop_temperature_active`, alongside a new writable
+  `number.heat_pump_dhw_stop_temperature_limit` for `DHW_GT8_STOP_MAX_TEMP`
+  (idx 440, 20.0-64.0 °C). Writes to idx 440 reach the device and read back
+  correctly, but whether it governs charge termination is **not yet
+  confirmed**: on an idle pump idx 444 did not follow a write to 440. The
+  read-only sensor is what makes the relationship observable across a
+  charge.
+- **`number.heat_pump_dhw_start_temperature_active`** for
+  `DHW_USER_SET_START_TEMP` (idx 498, 20.0-79.0 °C), the active start
+  temperature paired with the stop registers above.
+
+### Fixed
+- **Coordinator could wedge silently with no recovery (#10).** The update
+  path acquired the coordinator lock and ran serial I/O with no timeout, so
+  a hung read blocked `_async_update_data` forever: no logs, no reconnect,
+  entities unavailable until a config-entry reload. Every update cycle is
+  now bounded by a 60 s timeout; repeated timeouts (or a stall watchdog
+  detecting no successful update for 5 scan intervals) force-close the
+  serial port, replace the coordinator lock outright so a stuck holder
+  cannot leak into the new session, and re-enter the existing
+  reconnect-with-backoff loop.
+- **Orphaned `number.heat_pump_dhw_stop_temperature` registry row (#9).**
+  The `dhw_stop_temp` -> `xdhw_stop_temp` entity-key rename in v1.5.x left a
+  permanently-unavailable registry entry behind. Setup now removes registry
+  rows for a curated list of renamed entity keys (`STALE_ENTITY_KEYS`);
+  future renames must add their old key to that list.
+
+### Changed
+- **README documents Energy Block vs Compressor Block semantics (#8).**
+  `switch.heat_pump_energy_block` is a mode-level control (rewrites heating
+  and DHW program modes), while `switch.heat_pump_compressor_block` blocks
+  the compressor directly with pumps still running. The peak-rate example
+  automation now uses the compressor block, the safer actuator for capacity
+  shedding.
+
 ## [1.6.0-beta.2] - 2026-08-20
 
 ### Fixed

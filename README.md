@@ -58,11 +58,62 @@ After installation, the integration creates the following entities:
 
 ### Controls
 
+Entity IDs below are shown unprefixed. Home Assistant prepends the device's
+area when one is set, so on a real install these may read
+`number.boiler_room_heat_pump_...` — check the entity list before copying an
+ID into an automation.
+
 | Entity | Type | Description |
 |--------|------|-------------|
 | `binary_sensor.heat_pump_compressor` | Binary Sensor | Compressor running state |
-| `switch.heat_pump_energy_block` | Switch | Block heating operation |
+| `switch.heat_pump_energy_block` | Switch | Mode-level block: sets heating AND DHW program modes to Off |
+| `switch.heat_pump_compressor_block` | Switch | Direct compressor block (pumps keep running) |
 | `number.heat_pump_dhw_extra_duration` | Number | DHW boost duration (hours) |
+| `number.heat_pump_dhw_stop_temperature_limit` | Number | Ceiling for the DHW stop temperature (governs "Always On" mode) |
+| `number.heat_pump_dhw_start_temperature_active` | Number | Active DHW start temperature (governs "Always On" mode) |
+| `sensor.heat_pump_dhw_stop_temperature_active` | Sensor | Active DHW stop temperature (read-only) |
+
+### Energy Block vs Compressor Block
+
+These two switches have materially different semantics — pick the right one
+for your automation:
+
+- **`switch.heat_pump_energy_block` is a mode-level control, not a compressor
+  shed command.** Turning it on writes `HEATING_SEASON_MODE = Off (summer)`
+  **and** `DHW_PROGRAM_MODE = Always Off`; turning it off restores
+  `Winter` / `Always On`. It changes the heat pump's operating programs, so it
+  will interrupt DHW recovery and space heating, and turning it off overwrites
+  whatever modes you had configured before.
+- **`switch.heat_pump_compressor_block` directly blocks the compressor** (via
+  the external E21 block input) while circulation pumps keep running, so the
+  buffer can still be used. This is the safer actuator for capacity shedding /
+  peak-load protection, because it does not touch your heating or DHW program
+  modes.
+
+In short: use **Compressor Block** for price/peak-based capacity shedding, and
+reserve **Energy Block** for cases where you deliberately want the whole
+machine (heating *and* hot water programs) forced off.
+
+### DHW stop temperature in "Always On" mode
+
+With `DHW_PROGRAM_MODE` set to Always On, the heat pump does **not** use the
+Comfort/Economy profile stop temperatures — a charge terminates on the active
+register `DHW_GT8_STOP_TEMP`, so writing the Comfort/Economy entities has no
+effect in that mode.
+
+That active register is not writable (it carries no write range in the
+protocol reference), so it is exposed read-only as
+`sensor.heat_pump_dhw_stop_temperature_active`.
+
+`number.heat_pump_dhw_stop_temperature_limit` (`DHW_GT8_STOP_MAX_TEMP`,
+idx 440) is writable, and its name suggests it caps the active register.
+**Whether it actually governs where a charge terminates is not yet
+confirmed.** Writing it does reach the device — the value reads back over
+RTR — but on an idle pump the active register did not follow it, so the
+relationship, if any, is only applied when a charge starts. Watch the
+active sensor and the supply temperature across a charge before relying on
+this to cap DHW temperature; the panel's "hot water temperature" setting
+remains the known-good way to change it.
 
 ### Advanced parameter access
 
@@ -97,27 +148,31 @@ If you call the service via the REST API, add `?return_response` to receive the 
 
 ## Example Automations
 
-### Block heating during peak electricity rates
+### Shed compressor load during peak electricity rates
+
+Use the direct compressor block for capacity shedding (see
+[Energy Block vs Compressor Block](#energy-block-vs-compressor-block) —
+`energy_block` would also rewrite your heating and DHW program modes):
 
 ```yaml
 automation:
-  - alias: "Block heat pump during peak rates"
+  - alias: "Block compressor during peak rates"
     trigger:
       - platform: time
         at: "17:00:00"
     action:
       - service: switch.turn_on
         target:
-          entity_id: switch.heat_pump_energy_block
+          entity_id: switch.heat_pump_compressor_block
 
-  - alias: "Resume heating after peak rates"
+  - alias: "Resume compressor after peak rates"
     trigger:
       - platform: time
         at: "21:00:00"
     action:
       - service: switch.turn_off
         target:
-          entity_id: switch.heat_pump_energy_block
+          entity_id: switch.heat_pump_compressor_block
 ```
 
 ### Boost hot water before morning shower

@@ -22,6 +22,7 @@ from homeassistant.const import CONF_SCAN_INTERVAL, Platform
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import discovery
+from homeassistant.helpers import entity_registry as er
 
 try:
     from homeassistant.core import SupportsResponse
@@ -56,6 +57,35 @@ PLATFORMS = [
     Platform.SELECT,
     Platform.NUMBER,
 ]
+
+# Entity keys that were renamed in earlier releases. Their registry rows keep
+# the old unique_id, which no entity claims anymore, leaving a permanently
+# "unavailable" orphan on the device page (issue #9).
+STALE_ENTITY_KEYS = (
+    "dhw_stop_temp",  # renamed to xdhw_stop_temp in v1.5.x
+    # Briefly a writable number on the issue-#13 branch before idx 444 was
+    # confirmed read-only; it is a sensor (dhw_stop_temp_active) now.
+    "dhw_gt8_stop_temp",
+)
+
+
+def _async_cleanup_stale_entities(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Remove registry rows for the known renamed keys in STALE_ENTITY_KEYS.
+
+    Targeted, not a general sweep: only unique_ids derived from that list are
+    removed, so a future entity-key rename must add its old key there.
+    """
+    registry = er.async_get(hass)
+    stale_unique_ids = {f"{entry.entry_id}_{key}" for key in STALE_ENTITY_KEYS}
+    for reg_entry in er.async_entries_for_config_entry(registry, entry.entry_id):
+        if reg_entry.unique_id in stale_unique_ids:
+            _LOGGER.info(
+                "Removing stale entity registry entry %s (unique_id %s)",
+                reg_entry.entity_id,
+                reg_entry.unique_id,
+            )
+            registry.async_remove(reg_entry.entity_id)
+
 
 CONFIG_SCHEMA = vol.Schema(
     {
@@ -314,6 +344,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         "coordinator": coordinator,
         "entry": entry,
     }
+
+    # Drop orphaned registry rows from renamed entity keys (issue #9)
+    _async_cleanup_stale_entities(hass, entry)
 
     # Set up platforms via config entry
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)

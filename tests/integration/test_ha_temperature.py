@@ -24,6 +24,7 @@ from custom_components.buderus_wps.const import (
     SENSOR_SUPPLY,
 )
 from custom_components.buderus_wps.sensor import (
+    BuderusTemperatureSensor,
     async_setup_platform,
 )
 from tests.conftest import MockBuderusData
@@ -49,9 +50,13 @@ class TestTemperatureSensorDataFlow:
             discovery_info={"platform": "buderus_wps"},
         )
 
-        # 14 sensors: 6 core + 4 room + 4 setpoint
-        assert len(entities_added) == 14
-        sensor_types = {s._sensor_type for s in entities_added}
+        # 14 temperature sensors: 6 core + 4 room + 4 setpoint
+        # (the platform also adds non-temperature sensors; filter to these)
+        temp_sensors = [
+            s for s in entities_added if isinstance(s, BuderusTemperatureSensor)
+        ]
+        assert len(temp_sensors) == 14
+        sensor_types = {s._sensor_type for s in temp_sensors}
         assert sensor_types == {
             SENSOR_OUTDOOR,
             SENSOR_SUPPLY,
@@ -106,6 +111,8 @@ class TestTemperatureSensorDataFlow:
         expected_temps = mock_coordinator.data.temperatures
 
         for sensor in entities_added:
+            if not isinstance(sensor, BuderusTemperatureSensor):
+                continue
             sensor_type = sensor._sensor_type
             assert (
                 sensor.native_value == expected_temps[sensor_type]
@@ -211,6 +218,8 @@ class TestTemperatureSensorNames:
 
         # Use SENSOR_NAMES from const.py as the expected names
         for sensor in entities_added:
+            if not isinstance(sensor, BuderusTemperatureSensor):
+                continue
             expected = SENSOR_NAMES[sensor._sensor_type]
             assert sensor.name == expected, (
                 f"Sensor {sensor._sensor_type} name should be '{expected}' (entity-only), "

@@ -146,3 +146,58 @@ def test_write_value_out_of_range_raises():
 
     with pytest.raises(ValueError):
         client.write_value("bar", 1000)
+
+
+class TestZeroBoundsGuard:
+    """min >= max in the table means the parameter cannot be written.
+
+    DHW_GT8_STOP_TEMP (idx 444) is the case that matters: the FHEM reference
+    itself carries min=0/max=0 for it, so the integration must not try to
+    write it (see PR #14 discussion; DHW_GT8_STOP_MAX_TEMP idx 440 is the
+    writable register).
+    """
+
+    def _client_with(self, params):
+        adapter = FakeAdapter()
+        return adapter, HeatPumpClient(adapter, ParameterRegistry(params))
+
+    def test_dhw_gt8_stop_temp_is_rejected_as_read_only(self):
+        _, client = self._client_with(
+            [
+                {
+                    "idx": 444,
+                    "extid": "0E7941ADFC0101",
+                    "min": 0,
+                    "max": 0,
+                    "format": "tem",
+                    "read": 1,
+                    "text": "DHW_GT8_STOP_TEMP",
+                }
+            ]
+        )
+
+        with pytest.raises(PermissionError):
+            client.write_value("DHW_GT8_STOP_TEMP", 54.0)
+
+    def test_dhw_gt8_stop_max_temp_writes_against_shipped_table(self):
+        """The register the integration does write, using the real table."""
+        from buderus_wps.parameter import HeatPump
+
+        adapter = FakeAdapter()
+        client = HeatPumpClient(adapter, HeatPump())
+
+        client.write_value("DHW_GT8_STOP_MAX_TEMP", 54.0)
+
+        sent = adapter.sent[-1]
+        # 'tem' format: raw value is tenths of a degree
+        assert int.from_bytes(sent.data, "big") == 540
+
+    def test_dhw_gt8_stop_max_temp_range_is_enforced(self):
+        """Out-of-range values are rejected by the table's own bounds."""
+        from buderus_wps.parameter import HeatPump
+
+        adapter = FakeAdapter()
+        client = HeatPumpClient(adapter, HeatPump())
+
+        with pytest.raises(ValueError):
+            client.write_value("DHW_GT8_STOP_MAX_TEMP", 70.0)

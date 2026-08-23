@@ -37,6 +37,17 @@ from .const import (
 LOCK_ACQUIRE_TIMEOUT = 5.0
 # Timeout for sync executor jobs (prevent indefinite hangs)
 EXECUTOR_JOB_TIMEOUT = 10.0
+# Hard timeout for one full update cycle (lock wait + broadcast collect + RTR
+# reads). A cycle that exceeds this is treated as wedged, not slow: without it
+# a hung serial read blocks _async_update_data forever and the coordinator
+# never recovers (issue #10).
+UPDATE_CYCLE_TIMEOUT = 60.0
+# Consecutive update-cycle timeouts before the connection (and the lock, whose
+# holder may be a hung executor thread) is forcibly torn down and rebuilt.
+UPDATE_TIMEOUTS_BEFORE_RESET = 2
+# Watchdog: force a teardown/rebuild when no update has succeeded for this
+# many scan intervals, whatever the cause.
+WATCHDOG_STALL_MULTIPLIER = 5
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -74,6 +85,15 @@ class BuderusData:
     dhw_stop_temp_economy: float | None = (
         None  # GT8 stop temp, Economy mode (21.0-64.0°C)
     )
+    dhw_gt8_stop_temp: float | None = (
+        None  # Active GT8 stop temp, idx 444 (read-only: no write bounds in FHEM)
+    )
+    dhw_gt8_stop_max_temp: float | None = (
+        None  # GT8 stop ceiling, idx 440 (20.0-64.0°C), writable
+    )
+    dhw_user_start_temp: float | None = (
+        None  # Active user start temp, idx 498 (20.0-79.0°C)
+    )
     parameter_results: dict[str, dict[str, Any]] = field(default_factory=dict)
 
 
@@ -109,6 +129,10 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         # Exponential backoff for reconnection
         self._backoff_delay = BACKOFF_INITIAL
         self._reconnect_task: asyncio.Task[None] | None = None
+        # Stall watchdog (issue #10)
+        self._watchdog_task: asyncio.Task[None] | None = None
+        self._consecutive_update_timeouts: int = 0
+        self._watchdog_reference_time: float = time.time()
         # Last-known-good data caching for graceful degradation
         # Cache is retained indefinitely - stale data preferred over "Unknown"
         self._last_known_good_data: BuderusData | None = None
@@ -133,6 +157,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         try:
             await self.hass.async_add_executor_job(self._sync_connect)
             self._connected = True
+            self._start_watchdog()
             return True
         except Exception as err:
             _LOGGER.error("Failed to connect to heat pump: %s", err)
@@ -144,6 +169,9 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         if self._reconnect_task is not None:
             self._reconnect_task.cancel()
             self._reconnect_task = None
+        if self._watchdog_task is not None:
+            self._watchdog_task.cancel()
+            self._watchdog_task = None
         if self._dhw_boost_task is not None:
             self._dhw_boost_task.cancel()
             self._dhw_boost_task = None
@@ -187,6 +215,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         # Attempt immediate connection (bypass backoff)
         await self.hass.async_add_executor_job(self._sync_connect)
         self._connected = True
+        self._start_watchdog()
 
         _LOGGER.info("Manual connect: USB port reconnected")
 
@@ -301,6 +330,76 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                 self._backoff_delay = min(self._backoff_delay * 2, BACKOFF_MAX)
 
         self._reconnect_task = None
+
+    def _start_watchdog(self) -> None:
+        """Start the stall watchdog if it is not already running."""
+        # Cold-start reference: lets the stall check fire even when the very
+        # first poll wedges and _last_successful_update never gets set.
+        self._watchdog_reference_time = time.time()
+        if self._watchdog_task is None:
+            self._watchdog_task = self.hass.async_create_background_task(
+                self._watchdog_loop(),
+                "buderus_wps_watchdog",
+            )
+
+    async def _watchdog_loop(self) -> None:
+        """Force a connection rebuild when updates stall for too long.
+
+        Safety net for hangs the per-cycle timeout cannot classify on its
+        own: if no update has succeeded for WATCHDOG_STALL_MULTIPLIER scan
+        intervals while we still believe we are connected, the serial layer
+        is assumed wedged and the connection is torn down and rebuilt.
+        The loop must outlive its own failures: an exception escaping the
+        body would silently end the stall protection for good.
+        """
+        while True:
+            update_interval = getattr(self, "update_interval", None)
+            interval = update_interval.total_seconds() if update_interval else 60.0
+            await asyncio.sleep(interval)
+
+            try:
+                if self._manually_disconnected or not self._connected:
+                    continue
+
+                last_alive = (
+                    self._last_successful_update or self._watchdog_reference_time
+                )
+                age = time.time() - last_alive
+                if age > WATCHDOG_STALL_MULTIPLIER * interval:
+                    _LOGGER.warning(
+                        "Watchdog: no successful update for %.0fs "
+                        "(threshold %.0fs) - forcing connection rebuild",
+                        age,
+                        WATCHDOG_STALL_MULTIPLIER * interval,
+                    )
+                    await self._async_force_reconnect()
+            except Exception:
+                _LOGGER.exception("Watchdog check failed; will retry next interval")
+
+    async def _async_force_reconnect(self) -> None:
+        """Tear down a possibly-wedged connection and rebuild it.
+
+        Replaces the coordinator lock outright so a stuck holder (a hung
+        executor thread) cannot leak into the new session, force-closes the
+        serial port (which makes blocked pyserial I/O in that thread error
+        out), and schedules the normal reconnect-with-backoff loop.
+        """
+        self._connected = False
+        self._consecutive_update_timeouts = 0
+        # Fresh stall budget for the rebuilt session so the watchdog does not
+        # re-trigger every interval while reconnection is still in progress.
+        self._watchdog_reference_time = time.time()
+        self._lock = asyncio.Lock()
+        try:
+            await asyncio.wait_for(
+                self.hass.async_add_executor_job(self._sync_disconnect),
+                timeout=EXECUTOR_JOB_TIMEOUT,
+            )
+        except Exception as err:
+            _LOGGER.warning(
+                "Forced disconnect failed (continuing with reconnect): %s", err
+            )
+        await self._handle_connection_failure()
 
     def _sync_connect(self) -> None:
         """Synchronous connection setup (runs in executor)."""
@@ -496,6 +595,39 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         return results
 
     async def _async_update_data(self) -> BuderusData:
+        """Fetch data from the heat pump with a hard per-cycle timeout.
+
+        A wedged cycle (hung serial I/O in the executor, or a stuck lock
+        holder) surfaces as TimeoutError instead of blocking the update loop
+        forever (issue #10). Repeated timeouts force a full connection
+        teardown/rebuild, including a fresh lock object.
+        """
+        try:
+            # asyncio.wait_for, not asyncio.timeout: the library supports
+            # Python 3.9+ and asyncio.timeout only exists on 3.11+.
+            data = await asyncio.wait_for(
+                self._async_update_data_inner(), timeout=UPDATE_CYCLE_TIMEOUT
+            )
+            self._consecutive_update_timeouts = 0
+            return data
+        except asyncio.TimeoutError as err:
+            self._consecutive_failures += 1
+            self._consecutive_update_timeouts += 1
+            _LOGGER.error(
+                "Update cycle exceeded %.0fs (timeout %d/%d before forced reconnect)",
+                UPDATE_CYCLE_TIMEOUT,
+                self._consecutive_update_timeouts,
+                UPDATE_TIMEOUTS_BEFORE_RESET,
+            )
+            if self._consecutive_update_timeouts >= UPDATE_TIMEOUTS_BEFORE_RESET:
+                await self._async_force_reconnect()
+            if self._last_known_good_data is not None:
+                return self._last_known_good_data
+            raise UpdateFailed(
+                f"Update cycle timed out after {UPDATE_CYCLE_TIMEOUT:.0f}s"
+            ) from err
+
+    async def _async_update_data_inner(self) -> BuderusData:
         """Fetch data from the heat pump with graceful degradation.
 
         Per FR-011: Always return cached data when available (indefinite retention).
@@ -960,6 +1092,20 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             "DHW_GT8_STOP_TEMP_ECONOMY", "dhw_stop_temp_economy"
         )
 
+        # Active (non-profile) DHW start/stop registers (issue #13).
+        # PROTOCOL: in DHW_PROGRAM_MODE=1 ("Always On") the controller charges
+        # against DHW_GT8_STOP_TEMP (idx 444) and ignores the Comfort/Economy
+        # profile registers. Idx 444 carries no write bounds in the FHEM
+        # reference and is read-only; DHW_GT8_STOP_MAX_TEMP (idx 440) is the
+        # writable ceiling that constrains it.
+        dhw_gt8_stop_temp = _read_tem("DHW_GT8_STOP_TEMP", "dhw_gt8_stop_temp")
+        dhw_gt8_stop_max_temp = _read_tem(
+            "DHW_GT8_STOP_MAX_TEMP", "dhw_gt8_stop_max_temp"
+        )
+        dhw_user_start_temp = _read_tem(
+            "DHW_USER_SET_START_TEMP", "dhw_user_start_temp"
+        )
+
         # Get heating curve parallel offset (best-effort)
         # PROTOCOL: Use GLOBAL parameter (idx=804) which is the user-adjustable setting
         # visible in the heat pump menu as "Parallel offset" / "Parallelle verschuiving"
@@ -1134,6 +1280,9 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             dhw_start_temp_economy=dhw_start_temp_economy,
             dhw_stop_temp_comfort=dhw_stop_temp_comfort,
             dhw_stop_temp_economy=dhw_stop_temp_economy,
+            dhw_gt8_stop_temp=dhw_gt8_stop_temp,
+            dhw_gt8_stop_max_temp=dhw_gt8_stop_max_temp,
+            dhw_user_start_temp=dhw_user_start_temp,
             parameter_results=parameter_results,
         )
 
@@ -1614,4 +1763,22 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         """Set DHW stop temperature (GT8) in Economy mode (21.0-64.0°C)."""
         await self._async_set_dhw_mode_temp(
             "DHW_GT8_STOP_TEMP_ECONOMY", temp, 21.0, 64.0, "DHW stop temp (Economy)"
+        )
+
+    async def async_set_dhw_gt8_stop_max_temp(self, temp: float) -> None:
+        """Set the DHW stop temperature ceiling (GT8, idx 440) (20.0-64.0°C).
+
+        The active stop register DHW_GT8_STOP_TEMP (idx 444) governs the
+        charge in DHW_PROGRAM_MODE=1 ("Always On") but carries no write
+        bounds in the FHEM reference and is read-only. Idx 440 is the
+        writable ceiling that constrains it (issue #13).
+        """
+        await self._async_set_dhw_mode_temp(
+            "DHW_GT8_STOP_MAX_TEMP", temp, 20.0, 64.0, "DHW stop temp ceiling"
+        )
+
+    async def async_set_dhw_user_start_temp(self, temp: float) -> None:
+        """Set the active DHW start temperature (idx 498) (20.0-79.0°C)."""
+        await self._async_set_dhw_mode_temp(
+            "DHW_USER_SET_START_TEMP", temp, 20.0, 79.0, "DHW start temp (active)"
         )
