@@ -67,6 +67,7 @@ async def async_setup_entry(
         BuderusTemperatureSensor(coordinator, sensor_type, entry)
         for sensor_type in SENSOR_TYPES
     ]
+    sensors.append(BuderusDHWStopTempActiveSensor(coordinator, entry))
 
     allowlist = coordinator.parameter_allowlist
     if allowlist:
@@ -94,6 +95,7 @@ async def async_setup_platform(
         BuderusTemperatureSensor(coordinator, sensor_type)
         for sensor_type in SENSOR_TYPES
     ]
+    sensors.append(BuderusDHWStopTempActiveSensor(coordinator))
 
     allowlist = coordinator.parameter_allowlist
     if allowlist:
@@ -128,6 +130,37 @@ class BuderusTemperatureSensor(BuderusEntity, SensorEntity):
         if self.coordinator.data is None:
             return None
         return self.coordinator.data.temperatures.get(self._sensor_type)
+
+
+class BuderusDHWStopTempActiveSensor(BuderusEntity, SensorEntity):
+    """Active DHW stop temperature (GT8, idx 444), read-only.
+
+    The register the charge actually terminates on in DHW_PROGRAM_MODE=1
+    ("Always On"). It carries no write bounds in the FHEM reference and is
+    not writable, so it is exposed as a sensor: compare it against the
+    "DHW Stop Temperature Limit" number (idx 440) to see where a charge
+    will stop (issue #13).
+    """
+
+    _attr_name = "DHW Stop Temperature (Active)"
+    _attr_device_class = SensorDeviceClass.TEMPERATURE
+    _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+    _attr_state_class = SensorStateClass.MEASUREMENT
+
+    def __init__(
+        self,
+        coordinator: BuderusCoordinator,
+        entry: ConfigEntry | None = None,
+    ) -> None:
+        """Initialize the active DHW stop temperature sensor."""
+        super().__init__(coordinator, "dhw_stop_temp_active", entry)
+
+    @property
+    def native_value(self) -> float | None:
+        """Return the active DHW stop temperature in °C."""
+        if self.coordinator.data is None:
+            return None
+        return self.coordinator.data.dhw_gt8_stop_temp
 
 
 def _sanitize_parameter_key(value: str) -> str:

@@ -157,53 +157,59 @@ class TestDHWSetpointNumber:
         mock_coordinator.async_set_updated_data.assert_called_once()
 
 
-class TestDHWStopTempActiveNumber:
-    """Test the active DHW stop temperature entity (idx 444, issue #13)."""
+class TestDHWStopMaxTempNumber:
+    """Test the writable DHW stop temperature ceiling (idx 440, issue #13)."""
 
     def test_number_attributes(self, mock_coordinator):
-        """Active stop temp uses the Comfort/Economy sibling range."""
+        """Ceiling uses the parameter table's own range (200/640 raw)."""
         from custom_components.buderus_wps.number import (
-            BuderusDHWStopTempActiveNumber,
+            BuderusDHWStopMaxTempNumber,
         )
 
-        number = BuderusDHWStopTempActiveNumber(mock_coordinator)
-        assert number._attr_name == "DHW Stop Temperature (Active)"
-        assert number._attr_native_min_value == 21.0
+        number = BuderusDHWStopMaxTempNumber(mock_coordinator)
+        assert number._attr_name == "DHW Stop Temperature Limit"
+        assert number._attr_native_min_value == 20.0
         assert number._attr_native_max_value == 64.0
         assert number._attr_native_step == 0.5
-        assert number.entity_key == "dhw_gt8_stop_temp"
+        assert number.entity_key == "dhw_gt8_stop_max_temp"
 
     def test_number_returns_current_value(self, mock_coordinator):
-        """Number returns the active stop temperature from coordinator data."""
+        """Number returns the ceiling from coordinator data."""
         from custom_components.buderus_wps.number import (
-            BuderusDHWStopTempActiveNumber,
+            BuderusDHWStopMaxTempNumber,
         )
 
-        mock_coordinator.data.dhw_gt8_stop_temp = 61.0
-        number = BuderusDHWStopTempActiveNumber(mock_coordinator)
+        mock_coordinator.data.dhw_gt8_stop_max_temp = 61.0
+        number = BuderusDHWStopMaxTempNumber(mock_coordinator)
         assert number.native_value == 61.0
 
     def test_number_returns_none_when_disconnected(self, mock_coordinator_disconnected):
         """Number returns None when coordinator has no data."""
         from custom_components.buderus_wps.number import (
-            BuderusDHWStopTempActiveNumber,
+            BuderusDHWStopMaxTempNumber,
         )
 
-        number = BuderusDHWStopTempActiveNumber(mock_coordinator_disconnected)
+        number = BuderusDHWStopMaxTempNumber(mock_coordinator_disconnected)
         assert number.native_value is None
 
     @pytest.mark.asyncio
     async def test_set_value_calls_coordinator(self, mock_coordinator):
         """Setting value calls the coordinator setter with optimistic update."""
         from custom_components.buderus_wps.number import (
-            BuderusDHWStopTempActiveNumber,
+            BuderusDHWStopMaxTempNumber,
         )
 
-        number = BuderusDHWStopTempActiveNumber(mock_coordinator)
+        number = BuderusDHWStopMaxTempNumber(mock_coordinator)
         await number.async_set_native_value(54.0)
 
-        mock_coordinator.async_set_dhw_gt8_stop_temp.assert_called_once_with(54.0)
+        mock_coordinator.async_set_dhw_gt8_stop_max_temp.assert_called_once_with(54.0)
         mock_coordinator.async_set_updated_data.assert_called_once()
+
+    def test_active_stop_temp_has_no_number_entity(self, mock_coordinator):
+        """idx 444 is read-only; it must not be exposed as a writable number."""
+        from custom_components.buderus_wps import number as number_module
+
+        assert not hasattr(number_module, "BuderusDHWStopTempActiveNumber")
 
 
 class TestDHWStartTempActiveNumber:

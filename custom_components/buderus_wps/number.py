@@ -32,7 +32,7 @@ async def async_setup_entry(
             BuderusDHWStartTempEconomyNumber(coordinator, entry),
             BuderusDHWStopTempComfortNumber(coordinator, entry),
             BuderusDHWStopTempEconomyNumber(coordinator, entry),
-            BuderusDHWStopTempActiveNumber(coordinator, entry),
+            BuderusDHWStopMaxTempNumber(coordinator, entry),
             BuderusDHWStartTempActiveNumber(coordinator, entry),
         ]
     )
@@ -367,21 +367,22 @@ class BuderusDHWStopTempEconomyNumber(_BuderusDHWModeTempNumberBase):
     _setter_name = "async_set_dhw_stop_temp_economy"
 
 
-class BuderusDHWStopTempActiveNumber(_BuderusDHWModeTempNumberBase):
-    """Active DHW stop temperature (GT8, idx 444) (21.0-64.0°C).
+class BuderusDHWStopMaxTempNumber(_BuderusDHWModeTempNumberBase):
+    """DHW stop temperature ceiling (GT8, idx 440) (20.0-64.0°C).
 
-    The register the controller actually charges against in
-    DHW_PROGRAM_MODE=1 ("Always On"), where the Comfort/Economy profile
-    registers are ignored. The parameter table carries no bounds for
-    idx 444, so the Comfort/Economy sibling range is used.
+    In DHW_PROGRAM_MODE=1 ("Always On") the charge terminates on
+    DHW_GT8_STOP_TEMP (idx 444), not on the Comfort/Economy profile
+    registers. Idx 444 carries no write bounds in the FHEM reference and
+    is read-only, so this ceiling is the writable control over where a
+    charge stops; the active value is exposed as a sensor for comparison.
     """
 
-    _attr_name = "DHW Stop Temperature (Active)"
-    _attr_native_min_value = 21.0
+    _attr_name = "DHW Stop Temperature Limit"
+    _attr_native_min_value = 20.0
     _attr_native_max_value = 64.0
-    _entity_key = "dhw_gt8_stop_temp"
-    _data_attr = "dhw_gt8_stop_temp"
-    _setter_name = "async_set_dhw_gt8_stop_temp"
+    _entity_key = "dhw_gt8_stop_max_temp"
+    _data_attr = "dhw_gt8_stop_max_temp"
+    _setter_name = "async_set_dhw_gt8_stop_max_temp"
 
 
 class BuderusDHWStartTempActiveNumber(_BuderusDHWModeTempNumberBase):

@@ -64,8 +64,9 @@ After installation, the integration creates the following entities:
 | `switch.heat_pump_energy_block` | Switch | Mode-level block: sets heating AND DHW program modes to Off |
 | `switch.heat_pump_compressor_block` | Switch | Direct compressor block (pumps keep running) |
 | `number.heat_pump_dhw_extra_duration` | Number | DHW boost duration (hours) |
-| `number.heat_pump_dhw_stop_temperature_active` | Number | Active DHW stop temperature (governs "Always On" mode) |
+| `number.heat_pump_dhw_stop_temperature_limit` | Number | Ceiling for the DHW stop temperature (governs "Always On" mode) |
 | `number.heat_pump_dhw_start_temperature_active` | Number | Active DHW start temperature (governs "Always On" mode) |
+| `sensor.heat_pump_dhw_stop_temperature_active` | Sensor | Active DHW stop temperature (read-only) |
 
 ### Energy Block vs Compressor Block
 
@@ -87,6 +88,19 @@ for your automation:
 In short: use **Compressor Block** for price/peak-based capacity shedding, and
 reserve **Energy Block** for cases where you deliberately want the whole
 machine (heating *and* hot water programs) forced off.
+
+### DHW stop temperature in "Always On" mode
+
+With `DHW_PROGRAM_MODE` set to Always On, the heat pump does **not** use the
+Comfort/Economy profile stop temperatures — a charge terminates on the active
+register `DHW_GT8_STOP_TEMP`, so writing the Comfort/Economy entities has no
+effect in that mode.
+
+That active register is not writable (it carries no write range in the
+protocol reference), so it is exposed read-only as
+`sensor.heat_pump_dhw_stop_temperature_active`. To lower where a charge stops,
+set `number.heat_pump_dhw_stop_temperature_limit` (`DHW_GT8_STOP_MAX_TEMP`),
+the writable ceiling that constrains it, and watch the sensor follow.
 
 ### Advanced parameter access
 

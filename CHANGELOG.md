@@ -8,17 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- **Active DHW start/stop temperature entities (#13).** New
-  `number.heat_pump_dhw_stop_temperature_active` (`DHW_GT8_STOP_TEMP`,
-  idx 444) and `number.heat_pump_dhw_start_temperature_active`
-  (`DHW_USER_SET_START_TEMP`, idx 498). These are the registers the
-  controller actually charges against in `DHW_PROGRAM_MODE=1`
-  ("Always On"), where the existing Comfort/Economy profile entities are
-  inert. Idx 444 carries no bounds in the parameter table (min=0/max=0),
-  which the library treats as read-only; a curated write-bounds override
-  (`parameter_overrides.py`, applied in `write_value()` on top of the
-  generated tables and discovery) keeps it writable and range-checked
-  against the Comfort/Economy sibling range (21.0-64.0 °C).
+- **DHW stop temperature control in "Always On" mode (#13).** In
+  `DHW_PROGRAM_MODE=1` the controller terminates a charge on
+  `DHW_GT8_STOP_TEMP` (idx 444) and ignores the Comfort/Economy profile
+  registers, so the existing profile entities are inert in that mode.
+  Confirmed on hardware: idx 444 read 61.0 °C — matching every observed
+  charge termination — while the Comfort register read 54.0 and was ignored.
+  Idx 444 carries no write range in the FHEM protocol reference and is not
+  writable, so it is exposed read-only as
+  `sensor.heat_pump_dhw_stop_temperature_active`, alongside a new writable
+  `number.heat_pump_dhw_stop_temperature_limit` for `DHW_GT8_STOP_MAX_TEMP`
+  (idx 440, 20.0-64.0 °C), the ceiling that constrains it.
+- **`number.heat_pump_dhw_start_temperature_active`** for
+  `DHW_USER_SET_START_TEMP` (idx 498, 20.0-79.0 °C), the active start
+  temperature paired with the stop registers above.
 
 ### Fixed
 - **Coordinator could wedge silently with no recovery (#10).** The update

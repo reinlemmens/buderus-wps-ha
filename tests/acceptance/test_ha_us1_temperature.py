@@ -34,6 +34,7 @@ from custom_components.buderus_wps.const import (
     SENSOR_SUPPLY,
 )
 from custom_components.buderus_wps.sensor import (
+    BuderusTemperatureSensor,
     async_setup_platform,
 )
 
@@ -60,12 +61,16 @@ class TestUS1Scenario1FiveSensorsAppear:
 
         # 14 sensors: 6 core (outdoor, supply, return, dhw, brine_in, brine_out)
         #             + 4 room temps + 4 room setpoints
+        # (the platform also adds non-temperature sensors; filter to these)
+        temp_sensors = [
+            s for s in entities_added if isinstance(s, BuderusTemperatureSensor)
+        ]
         assert (
-            len(entities_added) == 14
-        ), f"Expected 14 temperature sensors, got {len(entities_added)}"
+            len(temp_sensors) == 14
+        ), f"Expected 14 temperature sensors, got {len(temp_sensors)}"
 
         # All expected sensor types present
-        sensor_types = {s._sensor_type for s in entities_added}
+        sensor_types = {s._sensor_type for s in temp_sensors}
         expected_types = {
             SENSOR_OUTDOOR,
             SENSOR_SUPPLY,
@@ -104,7 +109,9 @@ class TestUS1Scenario1FiveSensorsAppear:
         # Entity-only names (HA prepends "Heat Pump" device name in UI)
         expected_names = set(SENSOR_NAMES.values())
 
-        actual_names = {s.name for s in entities_added}
+        actual_names = {
+            s.name for s in entities_added if isinstance(s, BuderusTemperatureSensor)
+        }
         assert actual_names == expected_names, (
             f"Expected entity names: {expected_names}\n"
             f"Actual entity names: {actual_names}"
@@ -197,6 +204,8 @@ class TestUS1Scenario2CelsiusValues:
         expected = mock_coordinator.data.temperatures
 
         for sensor in entities_added:
+            if not isinstance(sensor, BuderusTemperatureSensor):
+                continue
             actual_value = sensor.native_value
             expected_value = expected[sensor._sensor_type]
 

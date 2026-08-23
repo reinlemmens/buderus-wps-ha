@@ -61,7 +61,12 @@ PLATFORMS = [
 # Entity keys that were renamed in earlier releases. Their registry rows keep
 # the old unique_id, which no entity claims anymore, leaving a permanently
 # "unavailable" orphan on the device page (issue #9).
-STALE_ENTITY_KEYS = ("dhw_stop_temp",)  # renamed to xdhw_stop_temp in v1.5.x
+STALE_ENTITY_KEYS = (
+    "dhw_stop_temp",  # renamed to xdhw_stop_temp in v1.5.x
+    # Briefly a writable number on the issue-#13 branch before idx 444 was
+    # confirmed read-only; it is a sensor (dhw_stop_temp_active) now.
+    "dhw_gt8_stop_temp",
+)
 
 
 def _async_cleanup_stale_entities(hass: HomeAssistant, entry: ConfigEntry) -> None:

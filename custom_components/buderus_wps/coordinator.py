@@ -86,7 +86,10 @@ class BuderusData:
         None  # GT8 stop temp, Economy mode (21.0-64.0°C)
     )
     dhw_gt8_stop_temp: float | None = (
-        None  # Active GT8 stop temp, idx 444 (no table bounds; 21.0-64.0°C enforced)
+        None  # Active GT8 stop temp, idx 444 (read-only: no write bounds in FHEM)
+    )
+    dhw_gt8_stop_max_temp: float | None = (
+        None  # GT8 stop ceiling, idx 440 (20.0-64.0°C), writable
     )
     dhw_user_start_temp: float | None = (
         None  # Active user start temp, idx 498 (20.0-79.0°C)
@@ -1089,11 +1092,16 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             "DHW_GT8_STOP_TEMP_ECONOMY", "dhw_stop_temp_economy"
         )
 
-        # Active (non-profile) DHW start/stop pair (issue #13).
+        # Active (non-profile) DHW start/stop registers (issue #13).
         # PROTOCOL: in DHW_PROGRAM_MODE=1 ("Always On") the controller charges
-        # against DHW_GT8_STOP_TEMP (idx 444) / DHW_USER_SET_START_TEMP
-        # (idx 498) and ignores the Comfort/Economy profile registers.
+        # against DHW_GT8_STOP_TEMP (idx 444) and ignores the Comfort/Economy
+        # profile registers. Idx 444 carries no write bounds in the FHEM
+        # reference and is read-only; DHW_GT8_STOP_MAX_TEMP (idx 440) is the
+        # writable ceiling that constrains it.
         dhw_gt8_stop_temp = _read_tem("DHW_GT8_STOP_TEMP", "dhw_gt8_stop_temp")
+        dhw_gt8_stop_max_temp = _read_tem(
+            "DHW_GT8_STOP_MAX_TEMP", "dhw_gt8_stop_max_temp"
+        )
         dhw_user_start_temp = _read_tem(
             "DHW_USER_SET_START_TEMP", "dhw_user_start_temp"
         )
@@ -1273,6 +1281,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             dhw_stop_temp_comfort=dhw_stop_temp_comfort,
             dhw_stop_temp_economy=dhw_stop_temp_economy,
             dhw_gt8_stop_temp=dhw_gt8_stop_temp,
+            dhw_gt8_stop_max_temp=dhw_gt8_stop_max_temp,
             dhw_user_start_temp=dhw_user_start_temp,
             parameter_results=parameter_results,
         )
@@ -1756,16 +1765,16 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             "DHW_GT8_STOP_TEMP_ECONOMY", temp, 21.0, 64.0, "DHW stop temp (Economy)"
         )
 
-    async def async_set_dhw_gt8_stop_temp(self, temp: float) -> None:
-        """Set the active DHW stop temperature (GT8, idx 444) (21.0-64.0°C).
+    async def async_set_dhw_gt8_stop_max_temp(self, temp: float) -> None:
+        """Set the DHW stop temperature ceiling (GT8, idx 440) (20.0-64.0°C).
 
-        This is the register the controller charges against in
-        DHW_PROGRAM_MODE=1 ("Always On"). The parameter table carries no
-        bounds for idx 444, so the Comfort/Economy sibling range is
-        enforced here (issue #13).
+        The active stop register DHW_GT8_STOP_TEMP (idx 444) governs the
+        charge in DHW_PROGRAM_MODE=1 ("Always On") but carries no write
+        bounds in the FHEM reference and is read-only. Idx 440 is the
+        writable ceiling that constrains it (issue #13).
         """
         await self._async_set_dhw_mode_temp(
-            "DHW_GT8_STOP_TEMP", temp, 21.0, 64.0, "DHW stop temp (active)"
+            "DHW_GT8_STOP_MAX_TEMP", temp, 20.0, 64.0, "DHW stop temp ceiling"
         )
 
     async def async_set_dhw_user_start_temp(self, temp: float) -> None:
