@@ -4,8 +4,16 @@ name: Release
 # integration files at the zip root (what hacs.json zip_release expects),
 # then creates the tag and the GitHub release.
 #
-# Run from the Actions tab, or with:
-#   gh workflow run release.yml -f version=v1.6.0-beta.3
+# Two ways to run it:
+#   1. Actions tab -> Release -> Run workflow, or
+#      gh workflow run release.yml -f version=v1.6.0-beta.3
+#   2. Commit the version string to .github/release-request. This exists
+#      because workflow_dispatch requires actions:write, which automation
+#      acting through the GitHub App does not have — it can commit, so this
+#      path lets it cut a release too.
+#
+# Either way the version must match custom_components/buderus_wps/manifest.json,
+# and an existing tag makes the run skip rather than fail.
 
 on:
   workflow_dispatch:
@@ -14,6 +22,9 @@ on:
         description: "Release version, e.g. v1.6.0-beta.3"
         required: true
         type: string
+  push:
+    branches: [main]
+    paths: [".github/release-request"]
 
 permissions:
   contents: write
@@ -28,9 +39,28 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Validate version and manifest
+      - name: Resolve version
+        id: resolve
         env:
-          VERSION: ${{ inputs.version }}
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          if [ -n "${INPUT_VERSION:-}" ]; then
+            version="$INPUT_VERSION"
+            echo "Version from workflow_dispatch: $version"
+          elif [ -f .github/release-request ]; then
+            version=$(tr -d '[:space:]' < .github/release-request)
+            echo "Version from .github/release-request: $version"
+          else
+            echo "::error::No version supplied and .github/release-request is missing"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Validate version and manifest
+        id: validate
+        env:
+          VERSION: ${{ steps.resolve.outputs.version }}
         run: |
           set -euo pipefail
           if ! [[ "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
@@ -38,19 +68,22 @@ jobs:
             exit 1
           fi
           if git rev-parse "$VERSION" >/dev/null 2>&1; then
-            echo "::error::Tag $VERSION already exists"
-            exit 1
+            echo "::notice::Tag $VERSION already exists - nothing to release"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
           manifest=$(python3 -c "import json;print(json.load(open('custom_components/buderus_wps/manifest.json'))['version'])")
           if [ "$manifest" != "${VERSION#v}" ]; then
             echo "::error::manifest.json version ($manifest) does not match release version (${VERSION#v})"
             exit 1
           fi
+          echo "skip=false" >> "$GITHUB_OUTPUT"
           echo "Version $VERSION validated against manifest"
 
       - name: Build HACS archive
+        if: steps.validate.outputs.skip != 'true'
         env:
-          VERSION: ${{ inputs.version }}
+          VERSION: ${{ steps.resolve.outputs.version }}
         run: |
           set -euo pipefail
           # Earlier releases shipped compiled bytecode by mistake; keep it out.
@@ -63,19 +96,19 @@ jobs:
           unzip -l "buderus-wps-ha-${VERSION}.zip" | head -20
 
       - name: Assemble release notes
+        if: steps.validate.outputs.skip != 'true'
         env:
-          VERSION: ${{ inputs.version }}
+          VERSION: ${{ steps.resolve.outputs.version }}
         run: |
           set -euo pipefail
           # Pull this version's CHANGELOG section when there is one.
-          if awk -v v="${VERSION#v}" '
+          awk -v v="${VERSION#v}" '
                 $0 ~ "^## \\[" v "\\]" {found=1; next}
                 found && /^## \[/ {exit}
                 found {print}
-              ' CHANGELOG.md > notes.md && [ -s notes.md ]; then
-            echo "Using CHANGELOG section for ${VERSION#v}"
-          else
-            echo "No CHANGELOG section found for ${VERSION#v}; generating notes." > notes.md
+              ' CHANGELOG.md > notes.md || true
+          if [ ! -s notes.md ]; then
+            echo "See CHANGELOG.md for details." > notes.md
           fi
           {
             echo
@@ -85,8 +118,9 @@ jobs:
           } >> notes.md
 
       - name: Create release
+        if: steps.validate.outputs.skip != 'true'
         env:
-          VERSION: ${{ inputs.version }}
+          VERSION: ${{ steps.resolve.outputs.version }}
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
