@@ -1,0 +1,101 @@
+name: Release
+
+# Cuts a HACS release: validates the version, builds the archive with the
+# integration files at the zip root (what hacs.json zip_release expects),
+# then creates the tag and the GitHub release.
+#
+# Run from the Actions tab, or with:
+#   gh workflow run release.yml -f version=v1.6.0-beta.3
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version, e.g. v1.6.0-beta.3"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate version and manifest
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          if ! [[ "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
+            echo "::error::Invalid version format: $VERSION (expected vX.Y.Z or vX.Y.Z-beta.N)"
+            exit 1
+          fi
+          if git rev-parse "$VERSION" >/dev/null 2>&1; then
+            echo "::error::Tag $VERSION already exists"
+            exit 1
+          fi
+          manifest=$(python3 -c "import json;print(json.load(open('custom_components/buderus_wps/manifest.json'))['version'])")
+          if [ "$manifest" != "${VERSION#v}" ]; then
+            echo "::error::manifest.json version ($manifest) does not match release version (${VERSION#v})"
+            exit 1
+          fi
+          echo "Version $VERSION validated against manifest"
+
+      - name: Build HACS archive
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          # Earlier releases shipped compiled bytecode by mistake; keep it out.
+          find custom_components/buderus_wps -name '__pycache__' -type d -prune -exec rm -rf {} + 2>/dev/null || true
+          find custom_components/buderus_wps -name '*.pyc' -delete 2>/dev/null || true
+          # hacs.json sets zip_release, so the archive must hold the integration
+          # FILES at its root, not wrapped in a directory.
+          ( cd custom_components/buderus_wps && zip -rq "$GITHUB_WORKSPACE/buderus-wps-ha-${VERSION}.zip" . )
+          cp "buderus-wps-ha-${VERSION}.zip" buderus-wps-ha.zip
+          unzip -l "buderus-wps-ha-${VERSION}.zip" | head -20
+
+      - name: Assemble release notes
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          # Pull this version's CHANGELOG section when there is one.
+          if awk -v v="${VERSION#v}" '
+                $0 ~ "^## \\[" v "\\]" {found=1; next}
+                found && /^## \[/ {exit}
+                found {print}
+              ' CHANGELOG.md > notes.md && [ -s notes.md ]; then
+            echo "Using CHANGELOG section for ${VERSION#v}"
+          else
+            echo "No CHANGELOG section found for ${VERSION#v}; generating notes." > notes.md
+          fi
+          {
+            echo
+            echo "## Installation"
+            echo
+            echo "Install via HACS custom repository: https://github.com/${GITHUB_REPOSITORY}"
+          } >> notes.md
+
+      - name: Create release
+        env:
+          VERSION: ${{ inputs.version }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          prerelease=""
+          case "$VERSION" in *beta*|*alpha*|*rc*) prerelease="--prerelease" ;; esac
+          gh release create "$VERSION" $prerelease \
+            --target "$GITHUB_SHA" \
+            --title "Buderus WPS $VERSION" \
+            --notes-file notes.md \
+            "buderus-wps-ha-${VERSION}.zip" \
+            "buderus-wps-ha.zip"
+          echo "Released $VERSION"
