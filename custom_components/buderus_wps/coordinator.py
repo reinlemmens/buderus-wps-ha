@@ -775,6 +775,18 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             # Extract temperatures from cache
             for (base, idx), sensor_name in sensor_map.items():
                 reading = cache.get_by_idx_and_base(idx, base)
+                if reading is not None and not reading.is_temperature:
+                    # Wrong length or out of range: not a temperature payload.
+                    # Keep the previous value instead of publishing it (#17).
+                    _LOGGER.debug(
+                        "Ignoring non-temperature broadcast for '%s': "
+                        "can_id=0x%08X dlc=%d raw=%s",
+                        sensor_name,
+                        reading.can_id,
+                        reading.dlc,
+                        reading.raw_data.hex(),
+                    )
+                    continue
                 if reading is not None and sensor_name in temperatures:
                     temperatures[sensor_name] = reading.temperature
                     _LOGGER.debug(
