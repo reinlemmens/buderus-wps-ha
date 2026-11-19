@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.6.0-beta.4] - 2026-11-19
 
 ### Fixed
 - **Room temperature spikes on C1–C4 (#17).** `USBtinAdapter._read_frame()`
@@ -29,6 +29,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
   Side effect: far fewer broadcast frames are lost, so the 24 s room-temperature
   frames are caught in more of the 5 s collection windows.
+
+  Verified on hardware: 0 room-temperature spikes on C1–C4 in 24 h
+  (2026-11-18 06:55 → 2026-11-19 07:00 UTC) vs 100 in the 7 days before
+  (~14/day).
 
 ## [1.6.0-beta.3] - 2026-08-23
 
