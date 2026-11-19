@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from unittest.mock import MagicMock
 
 import pytest
@@ -155,6 +156,27 @@ class TestCoordinatorRoomSetpoint:
         coordinator._connected = False
         with pytest.raises(HomeAssistantError, match="Not connected"):
             await coordinator.async_set_room_setpoint(3, 22.0)
+
+    @pytest.mark.asyncio
+    async def test_busy_lock_times_out_and_sends_nothing(
+        self, coordinator, monkeypatch
+    ):
+        from custom_components.buderus_wps import coordinator as coord_mod
+        from custom_components.buderus_wps.coordinator import HomeAssistantError
+
+        monkeypatch.setattr(coord_mod, "LOCK_ACQUIRE_TIMEOUT", 0.05)
+        # Python 3.9 binds a Lock to the loop current at creation; make it here.
+        coordinator._lock = asyncio.Lock()
+        await coordinator._lock.acquire()
+        try:
+            with pytest.raises(HomeAssistantError, match="Timeout"):
+                await coordinator.async_set_room_setpoint(3, 22.0)
+        finally:
+            coordinator._lock.release()
+        coordinator._adapter.send_frame_nowait.assert_not_called()
+        # The failed attempt must not consume the rate-limit quota or the lock
+        await coordinator.async_set_room_setpoint(3, 22.0)
+        assert not coordinator._lock.locked()
 
     def test_read_room_setpoints(self, coordinator):
         coordinator._last_known_good_data = None

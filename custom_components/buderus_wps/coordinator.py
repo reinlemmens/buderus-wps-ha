@@ -1856,16 +1856,20 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                 f"Room setpoint C{circuit} changed too often; "
                 f"try again in {wait_min:.0f} min"
             )
+        # asyncio.wait_for (not asyncio.timeout, 3.11+) keeps Python 3.9 support;
+        # asyncio.TimeoutError is the builtin TimeoutError only from 3.11.
         try:
-            async with asyncio.timeout(LOCK_ACQUIRE_TIMEOUT):
-                async with self._lock:
-                    await asyncio.wait_for(
-                        self.hass.async_add_executor_job(
-                            self._sync_set_room_setpoint, circuit, temp
-                        ),
-                        timeout=EXECUTOR_JOB_TIMEOUT,
-                    )
-        except TimeoutError:
+            await asyncio.wait_for(self._lock.acquire(), timeout=LOCK_ACQUIRE_TIMEOUT)
+            try:
+                await asyncio.wait_for(
+                    self.hass.async_add_executor_job(
+                        self._sync_set_room_setpoint, circuit, temp
+                    ),
+                    timeout=EXECUTOR_JOB_TIMEOUT,
+                )
+            finally:
+                self._lock.release()
+        except asyncio.TimeoutError:
             _LOGGER.error("Timeout setting room setpoint C%d", circuit)
             raise HomeAssistantError("Timeout communicating with heat pump") from None
         self._room_setpoint_limiter.record(circuit)
