@@ -21,7 +21,7 @@ concurrency:
 jobs:
   lint-format:
     name: Lint & Format
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -45,7 +45,7 @@ jobs:
 
   type-check:
     name: Type Check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -68,7 +68,7 @@ jobs:
 
   test:
     name: Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [lint-format, type-check]
     strategy:
       matrix:
@@ -93,7 +93,7 @@ jobs:
 
   all-checks-pass:
     name: All Checks Pass
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [lint-format, type-check, test]
     if: always()
     steps:
