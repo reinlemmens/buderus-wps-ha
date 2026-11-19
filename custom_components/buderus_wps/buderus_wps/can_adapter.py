@@ -33,6 +33,13 @@ from .exceptions import (
     TimeoutError,
 )
 
+# Upper bound for unterminated bytes kept between reads. The longest SLCAN
+# frame ("T" + 8 id + 1 dlc + 16 data + "\r") is 27 bytes.
+_RX_BUFFER_MAX = 4096
+
+# SLCAN frame commands: t/T = standard/extended data, r/R = standard/extended RTR
+_SLCAN_FRAME_COMMANDS = ("t", "T", "r", "R")
+
 
 class USBtinAdapter:
     """USBtin CAN adapter with SLCAN protocol support.
@@ -105,6 +112,8 @@ class USBtinAdapter:
 
         # Internal state
         self._serial: Optional[serial.Serial] = None
+        # Bytes received but not yet consumed as a complete SLCAN line
+        self._rx_buffer = b""
         self._in_operation = False
         self._op_lock = threading.Lock()
 
@@ -161,6 +170,7 @@ class USBtinAdapter:
                 timeout=1.0,  # Internal timeout for read operations
                 write_timeout=1.0,
             )
+            self._rx_buffer = b""
             # Ensure port is open (MagicMocks default to False)
             if hasattr(self._serial, "is_open") and not self._serial.is_open:
                 open_method = getattr(self._serial, "open", None)
@@ -281,6 +291,7 @@ class USBtinAdapter:
 
         finally:
             self._serial = None
+            self._rx_buffer = b""
             self._in_operation = False
             self._logger.debug("Disconnected serial port %s", self.port)
 
@@ -431,60 +442,38 @@ class USBtinAdapter:
             )
 
         start_time = time.time()
-        buffer = b""
 
         try:
-            while time.time() - start_time < timeout:
+            while True:
+                # Serve frames already buffered from a previous read first.
+                # PROTOCOL: one serial read often returns several SLCAN frames;
+                # the bytes after the first '\r' MUST survive until the next
+                # call, otherwise the next read starts mid-frame (issue #17).
+                while b"\r" in self._rx_buffer:
+                    frame_bytes, self._rx_buffer = self._rx_buffer.split(b"\r", 1)
+                    msg = self._parse_slcan_line(frame_bytes)
+                    if msg is not None:
+                        return msg
+
+                if time.time() - start_time >= timeout:
+                    # Timeout - no complete frame received
+                    return None
+
                 to_read = self._serial.in_waiting or 1
                 try:
                     chunk = self._serial.read(to_read)
                 except StopIteration:
                     chunk = b""
                 if chunk:
-                    buffer += chunk
-
-                    # Check for complete frame (terminated by \r)
-                    if b"\r" in buffer:
-                        # Extract frame up to terminator
-                        frame_bytes, remaining = buffer.split(b"\r", 1)
-                        buffer = remaining  # Keep remaining data for next read
-
-                        # Parse and return frame
-                        frame_str = frame_bytes.decode("ascii", errors="ignore").strip()
-                        self._logger.debug("RX frame: %r", frame_str)
-                        if frame_str:
-                            try:
-                                msg = CANMessage.from_usbtin_format(frame_str)
-                                self._logger.debug(
-                                    "Parsed CAN: id=0x%X dlc=%d data=%s",
-                                    msg.arbitration_id,
-                                    msg.dlc,
-                                    msg.data.hex() if msg.data else "",
-                                )
-                                return msg
-                            except Exception as e:
-                                self._logger.debug(
-                                    "Parse failed: %s, trying lenient", e
-                                )
-                                lenient_msg = self._lenient_parse_frame(frame_str)
-                                if lenient_msg:
-                                    self._logger.debug(
-                                        "Lenient parsed: id=0x%X dlc=%d data=%s",
-                                        lenient_msg.arbitration_id,
-                                        lenient_msg.dlc,
-                                        (
-                                            lenient_msg.data.hex()
-                                            if lenient_msg.data
-                                            else ""
-                                        ),
-                                    )
-                                    return lenient_msg
+                    self._rx_buffer += chunk
+                    if len(self._rx_buffer) > _RX_BUFFER_MAX:
+                        # No terminator in a long run of bytes: garbage. Keep
+                        # only the tail so a frame starting there can complete.
+                        self._rx_buffer = self._rx_buffer[-_RX_BUFFER_MAX:]
+                    continue
 
                 # Poll every 10ms for real-time CAN
                 time.sleep(0.01)
-
-            # Timeout - no complete frame received
-            return None
 
         except serial.SerialException as e:
             raise DeviceCommunicationError(
@@ -495,14 +484,56 @@ class USBtinAdapter:
                 f"Frame parsing error: {e}",
                 context={
                     "port": self.port,
-                    "buffer": buffer.decode("ascii", errors="ignore"),
+                    "buffer": self._rx_buffer.decode("ascii", errors="ignore"),
                 },
             )
 
+    def _parse_slcan_line(self, frame_bytes: bytes) -> Optional[CANMessage]:
+        """Parse one '\\r'-terminated SLCAN line; None if it is not a CAN frame.
+
+        Non-frame lines (bell/NAK, 'Z'/'z' transmit acks, empty lines) and
+        fragments of frames whose start was lost are skipped.
+        """
+        frame_str = frame_bytes.decode("ascii", errors="ignore").strip("\a\n\r ")
+        if not frame_str:
+            return None
+        self._logger.debug("RX frame: %r", frame_str)
+        try:
+            msg = CANMessage.from_usbtin_format(frame_str)
+            self._logger.debug(
+                "Parsed CAN: id=0x%X dlc=%d data=%s",
+                msg.arbitration_id,
+                msg.dlc,
+                msg.data.hex() if msg.data else "",
+            )
+            return msg
+        except Exception as e:
+            self._logger.debug("Parse failed: %s, trying lenient", e)
+
+        lenient_msg = self._lenient_parse_frame(frame_str)
+        if lenient_msg:
+            self._logger.debug(
+                "Lenient parsed: id=0x%X dlc=%d data=%s",
+                lenient_msg.arbitration_id,
+                lenient_msg.dlc,
+                lenient_msg.data.hex() if lenient_msg.data else "",
+            )
+        else:
+            self._logger.debug("Dropped non-frame SLCAN line: %r", frame_str)
+        return lenient_msg
+
     def _lenient_parse_frame(self, frame_str: str) -> Optional[CANMessage]:
-        """Attempt a lenient parse for malformed SLCAN frames."""
+        """Attempt a lenient parse for malformed SLCAN frames.
+
+        Only lines that start with a frame command are considered. A fragment
+        whose start was lost (e.g. "4062200E1" from "T0C084062200E1") must be
+        dropped: parsing it would invent an 11-bit frame (ID 0x062) whose
+        payload lands on base 0x0062 / idx 0 (room temperature C3), see #17.
+        """
         try:
             cmd = frame_str[0]
+            if cmd not in _SLCAN_FRAME_COMMANDS:
+                return None
             is_extended = cmd in ("T", "R")
             is_remote = cmd in ("r", "R")
             id_len = 8 if is_extended else 3
@@ -799,6 +830,7 @@ class USBtinAdapter:
                 "Device not connected", context={"port": self.port}
             )
 
+        self._rx_buffer = b""
         try:
             self._serial.reset_input_buffer()
         except serial.SerialException as e:

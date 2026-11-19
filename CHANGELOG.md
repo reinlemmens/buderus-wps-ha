@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0-beta.4] - 2026-11-19
+
+### Fixed
+- **Room temperature spikes on C1–C4 (#17).** `USBtinAdapter._read_frame()`
+  kept the bytes after the first complete SLCAN frame in a local variable, so
+  every serial read that returned several frames (most of them: the bus carries
+  ~25 frames/s) dropped all but the first, and the next read started mid-frame.
+  `_lenient_parse_frame()` then turned the fragment into a fake 11-bit frame,
+  e.g. setpoint `T0C084062200E1` cut after `T0C08` became ID `0x062` = base
+  0x0062 / idx 0 = room temperature C3 with the setpoint's value. A raw bus
+  capture showed no real ID collisions; replaying it through the old parser
+  reproduces every spike class (setpoint copies, 6.x, 97.5–103.6, 0.0/0.1,
+  outdoor temp). Fixes:
+  - Unconsumed RX bytes now persist on the adapter between reads (cleared on
+    connect, disconnect and `flush_input_buffer()`).
+  - The lenient parser rejects lines that do not start with `t`/`T`/`r`/`R`.
+  - `BroadcastMonitor` ignores 11-bit and RTR frames; Buderus broadcasts are
+    always 29-bit data frames.
+  - The coordinator only publishes a broadcast as a temperature when
+    `is_temperature` holds (2 bytes, −50…150 °C); otherwise the previous value
+    is kept.
+
+  Side effect: far fewer broadcast frames are lost, so the 24 s room-temperature
+  frames are caught in more of the 5 s collection windows.
+
+  Verified on hardware: 0 room-temperature spikes on C1–C4 in 24 h
+  (2026-11-18 06:55 → 2026-11-19 07:00 UTC) vs 100 in the 7 days before
+  (~14/day).
+
 ## [1.6.0-beta.3] - 2026-08-23
 
 ### Added

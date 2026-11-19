@@ -293,6 +293,12 @@ class BroadcastMonitor:
         if frame.dlc < 1:
             return None
 
+        # PROTOCOL: all Buderus broadcasts use 29-bit IDs. An 11-bit ID decodes
+        # to idx=0 on its own low bits (e.g. 0x062 -> base 0x0062 / idx 0, the
+        # C3 room temperature), so it can never be a valid broadcast (#17).
+        if not frame.is_extended_id or frame.is_remote_frame:
+            return None
+
         direction, idx, base = decode_can_id(frame.arbitration_id)
 
         # Parse raw value (big-endian, signed for 2-byte temperature values)
