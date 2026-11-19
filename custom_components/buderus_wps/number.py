@@ -8,6 +8,12 @@ from homeassistant.const import UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from .buderus_wps.room_thermostat import (
+    ROOM_SETPOINT_CIRCUITS,
+    ROOM_SETPOINT_MAX,
+    ROOM_SETPOINT_MIN,
+    ROOM_SETPOINT_STEP,
+)
 from .const import DOMAIN, ICON_HEATING_CURVE, ICON_WATER_HEATER, ICON_WATER_THERMOMETER
 from .coordinator import BuderusCoordinator
 from .entity import BuderusEntity
@@ -34,6 +40,10 @@ async def async_setup_entry(
             BuderusDHWStopTempEconomyNumber(coordinator, entry),
             BuderusDHWStopMaxTempNumber(coordinator, entry),
             BuderusDHWStartTempActiveNumber(coordinator, entry),
+        ]
+        + [
+            BuderusRoomSetpointNumber(coordinator, circuit, entry)
+            for circuit in sorted(ROOM_SETPOINT_CIRCUITS)
         ]
     )
 
@@ -399,3 +409,51 @@ class BuderusDHWStartTempActiveNumber(_BuderusDHWModeTempNumberBase):
     _entity_key = "dhw_user_start_temp"
     _data_attr = "dhw_user_start_temp"
     _setter_name = "async_set_dhw_user_start_temp"
+
+
+class BuderusRoomSetpointNumber(BuderusEntity, NumberEntity):
+    """Room setpoint for one heating circuit, set as if from its room thermostat.
+
+    The value shown is the setpoint the circuit runs on (read back from the
+    pump each cycle), so knob changes on the thermostat appear here too.
+    Setting it sends the thermostat's own CAN frame; the thermostat display
+    follows. Changes are rate-limited per circuit.
+    """
+
+    _attr_icon = "mdi:home-thermometer"
+    _attr_native_min_value = ROOM_SETPOINT_MIN
+    _attr_native_max_value = ROOM_SETPOINT_MAX
+    _attr_native_step = ROOM_SETPOINT_STEP
+    _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+    _attr_mode = NumberMode.BOX
+
+    def __init__(
+        self,
+        coordinator: BuderusCoordinator,
+        circuit: int,
+        entry: ConfigEntry | None = None,
+    ) -> None:
+        """Initialize the room setpoint number for ``circuit``."""
+        super().__init__(coordinator, f"room_setpoint_control_c{circuit}", entry)
+        self.circuit = circuit
+        self._attr_name = f"Room Setpoint Control C{circuit}"
+
+    @property
+    def native_value(self) -> float | None:
+        """Return the room setpoint the circuit currently runs on."""
+        if self.coordinator.data is None:
+            return None
+        return self.coordinator.data.room_setpoint_active.get(self.circuit)
+
+    async def async_set_native_value(self, value: float) -> None:
+        """Send the new room setpoint for this circuit."""
+        await self.coordinator.async_set_room_setpoint(self.circuit, value)
+        # Optimistic update; the next refresh reads back the value in use.
+        if self.coordinator.data is not None:
+            from dataclasses import replace
+
+            active = dict(self.coordinator.data.room_setpoint_active)
+            active[self.circuit] = value
+            self.coordinator.async_set_updated_data(
+                replace(self.coordinator.data, room_setpoint_active=active)
+            )

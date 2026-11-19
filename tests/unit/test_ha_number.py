@@ -249,3 +249,42 @@ class TestDHWStartTempActiveNumber:
 
         mock_coordinator.async_set_dhw_user_start_temp.assert_called_once_with(40.0)
         mock_coordinator.async_set_updated_data.assert_called_once()
+
+
+class TestRoomSetpointNumber:
+    """Room setpoint control entities (C3/C4, thermostat-frame based)."""
+
+    def test_attributes(self, mock_coordinator):
+        from custom_components.buderus_wps.number import BuderusRoomSetpointNumber
+
+        number = BuderusRoomSetpointNumber(mock_coordinator, 3)
+        assert number._attr_name == "Room Setpoint Control C3"
+        assert number.entity_key == "room_setpoint_control_c3"
+        assert number._attr_native_min_value == 15.0
+        assert number._attr_native_max_value == 25.0
+        assert number._attr_native_step == 0.5
+        assert number._attr_mode == NumberMode.BOX
+
+    def test_native_value_is_setpoint_in_use(self, mock_coordinator):
+        from custom_components.buderus_wps.number import BuderusRoomSetpointNumber
+
+        assert BuderusRoomSetpointNumber(mock_coordinator, 3).native_value == 22.5
+        assert BuderusRoomSetpointNumber(mock_coordinator, 4).native_value == 20.5
+
+    def test_native_value_none_when_disconnected(self, mock_coordinator_disconnected):
+        from custom_components.buderus_wps.number import BuderusRoomSetpointNumber
+
+        number = BuderusRoomSetpointNumber(mock_coordinator_disconnected, 4)
+        assert number.native_value is None
+
+    @pytest.mark.asyncio
+    async def test_set_value_calls_coordinator_and_updates_optimistically(
+        self, mock_coordinator
+    ):
+        from custom_components.buderus_wps.number import BuderusRoomSetpointNumber
+
+        number = BuderusRoomSetpointNumber(mock_coordinator, 4)
+        await number.async_set_native_value(21.0)
+        mock_coordinator.async_set_room_setpoint.assert_called_once_with(4, 21.0)
+        updated = mock_coordinator.async_set_updated_data.call_args[0][0]
+        assert updated.room_setpoint_active == {3: 22.5, 4: 21.0}

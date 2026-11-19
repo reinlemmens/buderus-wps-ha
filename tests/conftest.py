@@ -216,6 +216,9 @@ class MockBuderusData:
     dhw_gt8_stop_temp: Optional[float] = None
     dhw_gt8_stop_max_temp: Optional[float] = None
     dhw_user_start_temp: Optional[float] = None
+    room_setpoint_active: dict[int, Optional[float]] = field(
+        default_factory=lambda: {3: 22.5, 4: 20.5}
+    )
     parameter_results: dict[str, dict[str, Any]] = field(default_factory=dict)
 
 
@@ -283,6 +286,7 @@ def mock_coordinator(mock_buderus_data: MockBuderusData) -> MagicMock:
     coordinator.async_set_dhw_stop_temp = AsyncMock()
     coordinator.async_set_dhw_setpoint = AsyncMock()
     coordinator.async_set_heating_curve_offset = AsyncMock()
+    coordinator.async_set_room_setpoint = AsyncMock()
     coordinator.async_manual_connect = AsyncMock()
     coordinator.async_manual_disconnect = AsyncMock()
 
