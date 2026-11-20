@@ -94,6 +94,9 @@ class BuderusData:
     dhw_user_start_temp: float | None = (
         None  # Active user start temp, idx 498 (20.0-79.0°C)
     )
+    # Room setpoint each circuit runs on (set by its room thermostat or by HA),
+    # keyed by circuit number. Only circuits in ROOM_SETPOINT_CIRCUITS.
+    room_setpoint_active: dict[int, float | None] = field(default_factory=dict)
     parameter_results: dict[str, dict[str, Any]] = field(default_factory=dict)
 
 
@@ -146,6 +149,10 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         self._dhw_boost_end_time: float | None = None
         self._dhw_boost_original_program_mode: int | None = None
         self._dhw_boost_task: asyncio.Task[None] | None = None
+        # Room setpoint writes impersonate the room thermostat; cap how often.
+        from .buderus_wps.room_thermostat import WriteRateLimiter
+
+        self._room_setpoint_limiter = WriteRateLimiter()
 
     @property
     def parameter_allowlist(self) -> list[str]:
@@ -1271,6 +1278,8 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             else:
                 compressor_blocked = None
 
+        room_setpoint_active = self._sync_read_room_setpoints()
+
         # Build result with mix of fresh and stale data
         result = BuderusData(
             temperatures=temperatures,
@@ -1295,6 +1304,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             dhw_gt8_stop_temp=dhw_gt8_stop_temp,
             dhw_gt8_stop_max_temp=dhw_gt8_stop_max_temp,
             dhw_user_start_temp=dhw_user_start_temp,
+            room_setpoint_active=room_setpoint_active,
             parameter_results=parameter_results,
         )
 
@@ -1307,6 +1317,37 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                 raise RuntimeError("All data reads failed, only stale data available")
 
         return result
+
+    def _sync_read_room_setpoints(self) -> dict[int, float | None]:
+        """Read the room setpoint each supported circuit runs on (best-effort).
+
+        PROTOCOL: the pump mirrors the mixing module's active setpoint into
+        MV_T5_SETPOINT_ACTUAL_n ('int' format, 0.1 °C). This follows both
+        thermostat knob changes and HA writes.
+        """
+        from .buderus_wps.room_thermostat import (
+            ROOM_SETPOINT_CIRCUITS,
+            decode_active_setpoint,
+        )
+
+        previous = (
+            self._last_known_good_data.room_setpoint_active
+            if self._last_known_good_data is not None
+            else {}
+        )
+        values: dict[int, float | None] = {}
+        for circuit, rc in ROOM_SETPOINT_CIRCUITS.items():
+            value: float | None = None
+            try:
+                res = self._client.read_parameter(rc.pump_active_param)
+                value = decode_active_setpoint(res.get("decoded"))
+                if value is None:
+                    raise ValueError(f"implausible value {res.get('decoded')!r}")
+            except Exception as err:
+                _LOGGER.warning("RTR FAILED for %s: %s", rc.pump_active_param, err)
+                value = previous.get(circuit)
+            values[circuit] = value
+        return values
 
     def get_data_age_seconds(self) -> int | None:
         """Get age of current data in seconds.
@@ -1793,4 +1834,57 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         """Set the active DHW start temperature (idx 498) (20.0-79.0°C)."""
         await self._async_set_dhw_mode_temp(
             "DHW_USER_SET_START_TEMP", temp, 20.0, 79.0, "DHW start temp (active)"
+        )
+
+    async def async_set_room_setpoint(self, circuit: int, temp: float) -> None:
+        """Set a circuit's room setpoint by sending its room thermostat's frame.
+
+        The mixing module adopts the value within a second and the thermostat
+        display follows (hardware-verified for C3/C4). Writes are limited per
+        circuit by ``_room_setpoint_limiter``.
+
+        Raises:
+            ValueError: unsupported circuit or invalid temperature
+            HomeAssistantError: rate limit hit, not connected, or timeout
+        """
+        from .buderus_wps.room_thermostat import validate_room_setpoint
+
+        validate_room_setpoint(circuit, temp)
+        if not self._room_setpoint_limiter.allowed(circuit):
+            wait_min = self._room_setpoint_limiter.retry_after(circuit) / 60
+            raise HomeAssistantError(
+                f"Room setpoint C{circuit} changed too often; "
+                f"try again in {wait_min:.0f} min"
+            )
+        # asyncio.wait_for (not asyncio.timeout, 3.11+) keeps Python 3.9 support;
+        # asyncio.TimeoutError is the builtin TimeoutError only from 3.11.
+        try:
+            await asyncio.wait_for(self._lock.acquire(), timeout=LOCK_ACQUIRE_TIMEOUT)
+            try:
+                await asyncio.wait_for(
+                    self.hass.async_add_executor_job(
+                        self._sync_set_room_setpoint, circuit, temp
+                    ),
+                    timeout=EXECUTOR_JOB_TIMEOUT,
+                )
+            finally:
+                self._lock.release()
+        except asyncio.TimeoutError:
+            _LOGGER.error("Timeout setting room setpoint C%d", circuit)
+            raise HomeAssistantError("Timeout communicating with heat pump") from None
+        self._room_setpoint_limiter.record(circuit)
+
+    def _sync_set_room_setpoint(self, circuit: int, temp: float) -> None:
+        """Send the thermostat setpoint frame (runs in executor)."""
+        from .buderus_wps.room_thermostat import build_room_setpoint_frame
+
+        if self._adapter is None or not self._connected:
+            raise HomeAssistantError("Not connected to heat pump")
+        frame = build_room_setpoint_frame(circuit, temp)
+        self._adapter.send_frame_nowait(frame)
+        _LOGGER.info(
+            "Set room setpoint C%d to %.1f°C (thermostat frame 0x%08X)",
+            circuit,
+            temp,
+            frame.arbitration_id,
         )
