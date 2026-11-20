@@ -43,7 +43,7 @@ class BuderusEntity(CoordinatorEntity[BuderusCoordinator]):
             name="Heat Pump",
             manufacturer=MANUFACTURER,
             model=MODEL,
-            sw_version="1.6.0-beta.4",
+            sw_version="1.6.0-beta.5",
         )
 
     @property

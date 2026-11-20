@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0-beta.5] - 2026-11-20
+
+### Added
+- **Room setpoint control for C3/C4.** New "Room Setpoint Control C3/C4" number
+  entities set a heating circuit's room setpoint by sending the room thermostat's own CAN frame
+  (`0x0C04806n`, idx 18, 2-byte big-endian 0.1 °C). The thermostat is the
+  master of the circuit setpoint, so writing the pump-side `MV_T5_SETPOINT_n`
+  parameters has no lasting effect; impersonating the thermostat does, and the
+  thermostat's own display follows. The value shown is read back each update
+  from `MV_T5_SETPOINT_ACTUAL_n`, so changes made on the thermostat knob appear
+  in Home Assistant too. Range 15–25 °C in 0.5 °C steps, limited to 6 changes
+  per hour per circuit.
+  Verified on hardware (C4: 19.0 → 20.5 °C, thermostat display followed) and
+  stable on a live install for 10 h. C1/C2 (regulated inside the pump, no
+  external mixing module) and room influence are not supported yet.
+
 ## [1.6.0-beta.4] - 2026-11-19
 
 ### Fixed
