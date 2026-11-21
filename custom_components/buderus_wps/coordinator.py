@@ -26,10 +26,6 @@ from .const import (
     SENSOR_ROOM_C2,
     SENSOR_ROOM_C3,
     SENSOR_ROOM_C4,
-    SENSOR_SETPOINT_C1,
-    SENSOR_SETPOINT_C2,
-    SENSOR_SETPOINT_C3,
-    SENSOR_SETPOINT_C4,
     SENSOR_SUPPLY,
 )
 
@@ -431,8 +427,8 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
 
         # Run element discovery to get actual device indices
         # This is critical because firmware versions may have different idx values
-        # for the same parameter names (e.g., XDHW_TIME at idx=2475 in static
-        # defaults but idx=2480 on actual device)
+        # for the same parameter names (e.g., XDHW_TIME is idx=2475 in the FHEM
+        # table but idx=2480 on the device and in parameter_data.py)
         #
         # IMPORTANT: Cache is stored in /config/ which persists across HA restarts.
         # On fresh install, discovery MUST succeed - we fail-fast rather than
@@ -751,10 +747,6 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             SENSOR_ROOM_C2: None,
             SENSOR_ROOM_C3: None,
             SENSOR_ROOM_C4: None,
-            SENSOR_SETPOINT_C1: None,
-            SENSOR_SETPOINT_C2: None,
-            SENSOR_SETPOINT_C3: None,
-            SENSOR_SETPOINT_C4: None,
         }
 
         # Pre-fill with last known good data to prevent "Unknown" flapping
@@ -1155,7 +1147,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
 
         # Get DHW setpoint temperature (best-effort)
         # PROTOCOL: DHW_CALCULATED_SETPOINT_TEMP is the normal DHW setpoint (40-70°C)
-        # Note: parameter_defaults.py idx corrected from 385 to 386 per FHEM discovery
+        # Looked up by name: device idx is 386 (FHEM table says 385, see #15)
         dhw_setpoint: float | None = None
         try:
             result = self._client.read_parameter("DHW_CALCULATED_SETPOINT_TEMP")
@@ -1187,7 +1179,9 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         # Get digital status flags
         # Default to False if reading fails (safe fallback)
         # compressor_running = _get_binary("COMPRESSOR_RUNNING") # REMOVED: Unreliable
-        energy_blocked = _get_binary(247)  # COMPRESSOR_BLOCKED
+        # energy_blocked is read by name from ADDITIONAL_BLOCKED above. It used to
+        # be overwritten here by _get_binary(247): 247 is the FHEM index, which on
+        # the device is COMPRESSOR_ALARM_2 (#15).
         dhw_active = _get_binary("PUMP_DHW_ACTIVE")  # idx 2016
         g1_active = _get_binary("PUMP_G1_CONTINUAL")  # idx 12796, Main/Heating pump
 
@@ -1267,7 +1261,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         # Get compressor blocked status (best-effort)
         try:
             # Use the initialized energy_blocking helper to read status
-            # This ensures we use the correct parameter (COMPRESSOR_BLOCKED idx 247)
+            # This ensures we use the correct parameter (COMPRESSOR_BLOCKED, by name)
             compressor_blocked = self.energy_blocking._read_compressor_status(
                 timeout=2.0
             )
@@ -1759,7 +1753,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         """Synchronous DHW setpoint set (runs in executor)."""
         _LOGGER.debug("_sync_set_dhw_setpoint called with temp=%.1f", temp)
         try:
-            # Note: parameter_defaults.py idx corrected from 385 to 386 per FHEM discovery
+            # Looked up by name: device idx is 386 (FHEM table says 385, see #15)
             self._client.write_value("DHW_CALCULATED_SETPOINT_TEMP", temp)
             _LOGGER.info("Set DHW setpoint to %.1f°C", temp)
         except Exception as err:

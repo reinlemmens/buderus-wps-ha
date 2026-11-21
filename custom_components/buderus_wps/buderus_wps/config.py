@@ -48,11 +48,6 @@ class SensorType(Enum):
     ROOM_C2 = "room_c2"
     ROOM_C3 = "room_c3"
     ROOM_C4 = "room_c4"
-    # Room setpoint sensors (adjusted setpoints from RC10 thermostats)
-    SETPOINT_C1 = "setpoint_c1"
-    SETPOINT_C2 = "setpoint_c2"
-    SETPOINT_C3 = "setpoint_c3"
-    SETPOINT_C4 = "setpoint_c4"
 
 
 class HeatingType(Enum):
@@ -256,12 +251,10 @@ DEFAULT_SENSOR_MAPPINGS: list[SensorMapping] = [
     SensorMapping(base=0x0061, idx=0, sensor=SensorType.ROOM_C2),
     SensorMapping(base=0x0062, idx=0, sensor=SensorType.ROOM_C3),
     SensorMapping(base=0x0063, idx=0, sensor=SensorType.ROOM_C4),
-    # Room setpoints from RC10 thermostats
-    # idx=33 on circuit bases 0x0060-0x0063 (adjusted setpoint from heating curve)
-    SensorMapping(base=0x0060, idx=33, sensor=SensorType.SETPOINT_C1),
-    SensorMapping(base=0x0061, idx=33, sensor=SensorType.SETPOINT_C2),
-    SensorMapping(base=0x0062, idx=33, sensor=SensorType.SETPOINT_C3),
-    SensorMapping(base=0x0063, idx=33, sensor=SensorType.SETPOINT_C4),
+    # NOT mapped: idx=33 on bases 0x0060-0x0063. It was exposed as "Room
+    # Setpoint Cn" but tracks room temperature + ~1.4 K and never follows the
+    # thermostat (#19). Room setpoints come from MV_T5_SETPOINT_ACTUAL_n (RTR),
+    # see room_thermostat.ROOM_SETPOINT_CIRCUITS.
 ]
 
 

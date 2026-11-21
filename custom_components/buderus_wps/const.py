@@ -44,12 +44,6 @@ SENSOR_ROOM_C2: Final = "room_c2"
 SENSOR_ROOM_C3: Final = "room_c3"
 SENSOR_ROOM_C4: Final = "room_c4"
 
-# Room setpoint sensors (adjusted setpoints from RC10 thermostats)
-SENSOR_SETPOINT_C1: Final = "setpoint_c1"
-SENSOR_SETPOINT_C2: Final = "setpoint_c2"
-SENSOR_SETPOINT_C3: Final = "setpoint_c3"
-SENSOR_SETPOINT_C4: Final = "setpoint_c4"
-
 # Sensor display names (entity-only, device name prepended by HA when has_entity_name=True)
 SENSOR_NAMES: Final = {
     SENSOR_OUTDOOR: "GT2 Outdoor Temperature",
@@ -62,10 +56,6 @@ SENSOR_NAMES: Final = {
     SENSOR_ROOM_C2: "Room Temperature C2",
     SENSOR_ROOM_C3: "Room Temperature C3",
     SENSOR_ROOM_C4: "Room Temperature C4",
-    SENSOR_SETPOINT_C1: "Room Setpoint C1",
-    SENSOR_SETPOINT_C2: "Room Setpoint C2",
-    SENSOR_SETPOINT_C3: "Room Setpoint C3",
-    SENSOR_SETPOINT_C4: "Room Setpoint C4",
 }
 
 # Device info

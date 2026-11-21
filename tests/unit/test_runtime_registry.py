@@ -133,7 +133,7 @@ class TestRuntimeParameterRegistryFallback:
         registry = RuntimeParameterRegistry(use_static_fallback=True)
 
         # Look up a parameter that exists in static data but not discovered
-        # XDHW_TIME exists in parameter_data.py with idx=2475
+        # XDHW_TIME exists in parameter_data.py with idx=2480
         result = registry.get_by_name("XDHW_TIME")
 
         assert result is not None
@@ -147,7 +147,7 @@ class TestRuntimeParameterRegistryFallback:
 
         # Register a discovered element with different idx than static
         element = DiscoveredElement(
-            idx=2480,  # Different from static value of 2475
+            idx=2490,  # Different from static value of 2480
             extid="E1263DCA71010F",
             text="XDHW_TIME",
             min_value=0,
@@ -158,7 +158,7 @@ class TestRuntimeParameterRegistryFallback:
         result = registry.get_by_name("XDHW_TIME")
 
         # Should use discovered value, not static
-        assert result.idx == 2480
+        assert result.idx == 2490
 
     def test_no_fallback_when_disabled(self):
         """When fallback is disabled, only discovered elements are returned."""
@@ -231,7 +231,7 @@ class TestRuntimeParameterRegistryBulkOperations:
         )
         registry.register(
             DiscoveredElement(
-                idx=2480, extid="BB" * 7, text="XDHW_TIME", min_value=0, max_value=48
+                idx=2490, extid="BB" * 7, text="XDHW_TIME", min_value=0, max_value=48
             )
         )
 
@@ -248,8 +248,8 @@ class TestRuntimeParameterRegistryBulkOperations:
         # But static fallback should still work
         result = registry.get_by_name("XDHW_TIME")
         assert result is not None
-        # Should be static value now (idx=2475), not our registered 2480
-        assert result.idx == 2475
+        # Should be static value now (idx=2480), not our registered 2490
+        assert result.idx == 2480
 
     def test_get_all_discovered(self):
         """Get all discovered elements as a list."""

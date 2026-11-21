@@ -15,6 +15,7 @@ from homeassistant.const import UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from .buderus_wps.room_thermostat import ROOM_SETPOINT_CIRCUITS
 from .const import (
     DOMAIN,
     SENSOR_BRINE_IN,
@@ -27,10 +28,6 @@ from .const import (
     SENSOR_ROOM_C2,
     SENSOR_ROOM_C3,
     SENSOR_ROOM_C4,
-    SENSOR_SETPOINT_C1,
-    SENSOR_SETPOINT_C2,
-    SENSOR_SETPOINT_C3,
-    SENSOR_SETPOINT_C4,
     SENSOR_SUPPLY,
 )
 from .coordinator import BuderusCoordinator
@@ -47,10 +44,6 @@ SENSOR_TYPES = [
     SENSOR_ROOM_C2,
     SENSOR_ROOM_C3,
     SENSOR_ROOM_C4,
-    SENSOR_SETPOINT_C1,
-    SENSOR_SETPOINT_C2,
-    SENSOR_SETPOINT_C3,
-    SENSOR_SETPOINT_C4,
 ]
 
 
@@ -67,6 +60,10 @@ async def async_setup_entry(
         BuderusTemperatureSensor(coordinator, sensor_type, entry)
         for sensor_type in SENSOR_TYPES
     ]
+    sensors.extend(
+        BuderusRoomSetpointSensor(coordinator, circuit, entry)
+        for circuit in sorted(ROOM_SETPOINT_CIRCUITS)
+    )
     sensors.append(BuderusDHWStopTempActiveSensor(coordinator, entry))
 
     allowlist = coordinator.parameter_allowlist
@@ -95,6 +92,10 @@ async def async_setup_platform(
         BuderusTemperatureSensor(coordinator, sensor_type)
         for sensor_type in SENSOR_TYPES
     ]
+    sensors.extend(
+        BuderusRoomSetpointSensor(coordinator, circuit)
+        for circuit in sorted(ROOM_SETPOINT_CIRCUITS)
+    )
     sensors.append(BuderusDHWStopTempActiveSensor(coordinator))
 
     allowlist = coordinator.parameter_allowlist
@@ -130,6 +131,42 @@ class BuderusTemperatureSensor(BuderusEntity, SensorEntity):
         if self.coordinator.data is None:
             return None
         return self.coordinator.data.temperatures.get(self._sensor_type)
+
+
+class BuderusRoomSetpointSensor(BuderusEntity, SensorEntity):
+    """Room setpoint a heating circuit currently runs on (read-only).
+
+    Reads the pump's MV_T5_SETPOINT_ACTUAL_n copy, the same value the room
+    setpoint number entity shows, so it follows both thermostat changes and
+    HA writes. Created only for circuits in ROOM_SETPOINT_CIRCUITS, where
+    that source is hardware-verified.
+
+    Keeps the ``temp_setpoint_cN`` unique ID of the old broadcast-based
+    sensor, which read idx 33 on bases 0x0060-0x0063. That value tracks room
+    temperature + ~1.4 K and never followed the thermostat (#19).
+    """
+
+    _attr_device_class = SensorDeviceClass.TEMPERATURE
+    _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+    _attr_state_class = SensorStateClass.MEASUREMENT
+
+    def __init__(
+        self,
+        coordinator: BuderusCoordinator,
+        circuit: int,
+        entry: ConfigEntry | None = None,
+    ) -> None:
+        """Initialize the room setpoint sensor for one circuit."""
+        super().__init__(coordinator, f"temp_setpoint_c{circuit}", entry)
+        self.circuit = circuit
+        self._attr_name = f"Room Setpoint C{circuit}"
+
+    @property
+    def native_value(self) -> float | None:
+        """Return the active room setpoint in °C."""
+        if self.coordinator.data is None:
+            return None
+        return self.coordinator.data.room_setpoint_active.get(self.circuit)
 
 
 class BuderusDHWStopTempActiveSensor(BuderusEntity, SensorEntity):

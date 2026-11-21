@@ -17,10 +17,6 @@ from custom_components.buderus_wps.const import (
     SENSOR_ROOM_C2,
     SENSOR_ROOM_C3,
     SENSOR_ROOM_C4,
-    SENSOR_SETPOINT_C1,
-    SENSOR_SETPOINT_C2,
-    SENSOR_SETPOINT_C3,
-    SENSOR_SETPOINT_C4,
     SENSOR_SUPPLY,
 )
 from custom_components.buderus_wps.sensor import (
@@ -35,7 +31,7 @@ class TestTemperatureSensorDataFlow:
 
     @pytest.mark.asyncio
     async def test_sensors_created_from_coordinator(self, mock_hass, mock_coordinator):
-        """All 14 temperature sensors should be created from coordinator data."""
+        """All 10 temperature sensors should be created from coordinator data."""
         entities_added = []
 
         def capture_entities(entities):
@@ -50,12 +46,12 @@ class TestTemperatureSensorDataFlow:
             discovery_info={"platform": "buderus_wps"},
         )
 
-        # 14 temperature sensors: 6 core + 4 room + 4 setpoint
+        # 10 temperature sensors: 6 core + 4 room (setpoints: BuderusRoomSetpointSensor)
         # (the platform also adds non-temperature sensors; filter to these)
         temp_sensors = [
             s for s in entities_added if isinstance(s, BuderusTemperatureSensor)
         ]
-        assert len(temp_sensors) == 14
+        assert len(temp_sensors) == 10
         sensor_types = {s._sensor_type for s in temp_sensors}
         assert sensor_types == {
             SENSOR_OUTDOOR,
@@ -68,10 +64,6 @@ class TestTemperatureSensorDataFlow:
             SENSOR_ROOM_C2,
             SENSOR_ROOM_C3,
             SENSOR_ROOM_C4,
-            SENSOR_SETPOINT_C1,
-            SENSOR_SETPOINT_C2,
-            SENSOR_SETPOINT_C3,
-            SENSOR_SETPOINT_C4,
         }
 
     @pytest.mark.asyncio
@@ -154,10 +146,6 @@ class TestTemperatureSensorDataFlow:
                 "room_c2": 20.5,
                 "room_c3": 19.0,
                 "room_c4": 22.0,
-                "setpoint_c1": 21.0,
-                "setpoint_c2": 21.0,
-                "setpoint_c3": 20.0,
-                "setpoint_c4": 22.0,
             },
             compressor_running=True,
             energy_blocked=False,

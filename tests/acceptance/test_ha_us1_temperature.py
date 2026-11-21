@@ -5,7 +5,7 @@ As a homeowner, I want to see my heat pump's temperature readings in Home Assist
 so that I can monitor system performance and detect issues without leaving my dashboard.
 
 Acceptance Scenarios:
-1. Given the integration is configured, When HA starts, Then 14 temperature sensors appear
+1. Given the integration is configured, When HA starts, Then 10 temperature sensors appear
 2. Given the heat pump is operating, When I view sensors, Then I see Celsius values
 3. Given the serial connection is lost, When HA polls, Then sensors show unavailable
 """
@@ -27,10 +27,6 @@ from custom_components.buderus_wps.const import (
     SENSOR_ROOM_C2,
     SENSOR_ROOM_C3,
     SENSOR_ROOM_C4,
-    SENSOR_SETPOINT_C1,
-    SENSOR_SETPOINT_C2,
-    SENSOR_SETPOINT_C3,
-    SENSOR_SETPOINT_C4,
     SENSOR_SUPPLY,
 )
 from custom_components.buderus_wps.sensor import (
@@ -40,14 +36,14 @@ from custom_components.buderus_wps.sensor import (
 
 
 class TestUS1Scenario1FiveSensorsAppear:
-    """Scenario 1: 14 temperature sensors appear on startup."""
+    """Scenario 1: 10 temperature sensors appear on startup."""
 
     @pytest.mark.asyncio
     async def test_all_temperature_sensors_created(self, mock_hass, mock_coordinator):
         """
         Given the integration is configured with the correct serial port
         When Home Assistant starts
-        Then 14 temperature sensors appear (6 core + 4 room + 4 setpoint)
+        Then 10 temperature sensors appear (6 core + 4 room)
         """
         entities_added = []
         mock_hass.data[DOMAIN] = {"coordinator": mock_coordinator}
@@ -59,15 +55,15 @@ class TestUS1Scenario1FiveSensorsAppear:
             discovery_info={"platform": "buderus_wps"},
         )
 
-        # 14 sensors: 6 core (outdoor, supply, return, dhw, brine_in, brine_out)
-        #             + 4 room temps + 4 room setpoints
+        # 10 sensors: 6 core (outdoor, supply, return, dhw, brine_in, brine_out)
+        #             + 4 room temps (room setpoints: BuderusRoomSetpointSensor)
         # (the platform also adds non-temperature sensors; filter to these)
         temp_sensors = [
             s for s in entities_added if isinstance(s, BuderusTemperatureSensor)
         ]
         assert (
-            len(temp_sensors) == 14
-        ), f"Expected 14 temperature sensors, got {len(temp_sensors)}"
+            len(temp_sensors) == 10
+        ), f"Expected 10 temperature sensors, got {len(temp_sensors)}"
 
         # All expected sensor types present
         sensor_types = {s._sensor_type for s in temp_sensors}
@@ -82,10 +78,6 @@ class TestUS1Scenario1FiveSensorsAppear:
             SENSOR_ROOM_C2,
             SENSOR_ROOM_C3,
             SENSOR_ROOM_C4,
-            SENSOR_SETPOINT_C1,
-            SENSOR_SETPOINT_C2,
-            SENSOR_SETPOINT_C3,
-            SENSOR_SETPOINT_C4,
         }
         assert sensor_types == expected_types
 

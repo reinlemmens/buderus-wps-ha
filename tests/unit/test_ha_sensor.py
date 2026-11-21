@@ -14,10 +14,6 @@ from custom_components.buderus_wps.const import (
     SENSOR_ROOM_C2,
     SENSOR_ROOM_C3,
     SENSOR_ROOM_C4,
-    SENSOR_SETPOINT_C1,
-    SENSOR_SETPOINT_C2,
-    SENSOR_SETPOINT_C3,
-    SENSOR_SETPOINT_C4,
     SENSOR_SUPPLY,
 )
 
@@ -38,7 +34,7 @@ class TestSensorConstants:
             ), f"Sensor name for type '{sensor_type}' must be a string"
 
     def test_all_sensors_defined(self):
-        """Must have all temperature sensors defined (6 core + 4 room + 4 setpoint)."""
+        """Must have all temperature sensors defined (6 core + 4 room)."""
         expected_sensors = {
             SENSOR_OUTDOOR,
             SENSOR_SUPPLY,
@@ -50,10 +46,6 @@ class TestSensorConstants:
             SENSOR_ROOM_C2,
             SENSOR_ROOM_C3,
             SENSOR_ROOM_C4,
-            SENSOR_SETPOINT_C1,
-            SENSOR_SETPOINT_C2,
-            SENSOR_SETPOINT_C3,
-            SENSOR_SETPOINT_C4,
         }
         assert set(SENSOR_NAMES.keys()) == expected_sensors
 
