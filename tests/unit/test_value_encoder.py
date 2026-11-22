@@ -370,14 +370,23 @@ class TestFHEMTemperatureFormat:
         assert ValueEncoder.encode_tem(29.04) == 290  # Clearly rounds down
 
     def test_encode_tem_negative(self) -> None:
-        """Test encoding negative temperature.
+        """Negative temperatures round half away from zero.
 
-        Note: For negative values, FHEM's int(val/0.1 + 0.5) behavior:
-        -10.0 / 0.1 + 0.5 = -99.5, int(-99.5) = -99 (Python truncates toward zero)
-        This differs from round() which would give -100.
+        FHEM's int(val/0.1 + 0.5) truncates toward zero for negatives
+        (-10.0 -> -99, -3.0 -> -29), which makes the pump store a value
+        0.1 °C too high. Negative values must mirror positive rounding.
         """
-        # -10.0°C encodes to raw -99 with current FHEM-style rounding
-        assert ValueEncoder.encode_tem(-10.0) == -99
+        assert ValueEncoder.encode_tem(-10.0) == -100
+        assert ValueEncoder.encode_tem(-3.0) == -30
+        assert ValueEncoder.encode_tem(-0.5) == -5
+        assert ValueEncoder.encode_tem(-29.16) == -292
+        assert ValueEncoder.encode_tem(-29.04) == -290
+
+    def test_encode_decode_tem_roundtrip_negative(self) -> None:
+        """Negative tenths survive an encode-decode roundtrip."""
+        for temp in [-0.1, -0.5, -3.0, -10.0, -25.5]:
+            raw = ValueEncoder.encode_tem(temp)
+            assert ValueEncoder.decode_tem(raw) == pytest.approx(temp)
 
     def test_encode_decode_tem_roundtrip(self) -> None:
         """Test encode-decode roundtrip for exact tenths."""
@@ -518,6 +527,20 @@ class TestFHEMDecodeByFormat:
         result = ValueEncoder.decode_by_format(data, "tem", min_val=-500)
         assert result == -10.0
 
+    def test_decode_tem_negative_without_negative_min(self) -> None:
+        """2-byte 'tem' is signed even when the parameter has min=0.
+
+        ROOM_SETPOINT_OFFSET_GLOBAL (idx 2143) has min=max=0; the pump
+        returns 0xFFE2 for -3.0°C, which must not decode as 6550.6.
+        """
+        result = ValueEncoder.decode_by_format(b"\xff\xe2", "tem", min_val=0)
+        assert result == pytest.approx(-3.0)
+
+    def test_decode_tem_single_byte_stays_unsigned(self) -> None:
+        """1-byte 'tem' with min=0 keeps unsigned decoding (0xC8 -> 20.0)."""
+        result = ValueEncoder.decode_by_format(b"\xc8", "tem", min_val=0)
+        assert result == pytest.approx(20.0)
+
     def test_decode_pw2_format(self) -> None:
         """Test decoding 'pw2' format."""
         data = struct.pack(">H", 1234)  # 12.34 kW
@@ -552,6 +575,19 @@ class TestFHEMEncodeByFormat:
         result = ValueEncoder.encode_by_format(53.0, "tem")
         expected = struct.pack(">h", 530)
         assert result == expected
+
+    def test_encode_tem_negative_with_negative_min(self) -> None:
+        """-3.0 °C on a signed tem param encodes to 0xFFE2."""
+        result = ValueEncoder.encode_by_format(-3.0, "tem", min_val=-100)
+        assert result == b"\xff\xe2"
+
+    def test_encode_tem_negative_without_negative_min(self) -> None:
+        """2-byte 'tem' encodes signed even when min=0, mirroring decode."""
+        result = ValueEncoder.encode_by_format(-3.0, "tem", min_val=0)
+        assert result == b"\xff\xe2"
+        assert ValueEncoder.decode_by_format(result, "tem", min_val=0) == (
+            pytest.approx(-3.0)
+        )
 
     def test_encode_int_format(self) -> None:
         """Test encoding 'int' format (no factor)."""
