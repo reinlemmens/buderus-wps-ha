@@ -24,9 +24,14 @@ class BuderusEntity(CoordinatorEntity[BuderusCoordinator]):
         coordinator: BuderusCoordinator,
         entity_key: str,
         entry: ConfigEntry | None = None,
+        context: Any = None,
     ) -> None:
-        """Initialize the entity."""
-        super().__init__(coordinator)
+        """Initialize the entity.
+
+        ``context`` is passed to the coordinator listener, which uses it to
+        poll only the parameters enabled entities show.
+        """
+        super().__init__(coordinator, context)
 
         # Use entry_id for config entry setup, fall back to port for YAML setup
         if entry is not None:

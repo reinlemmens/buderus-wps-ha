@@ -13,11 +13,19 @@ from homeassistant.components.sensor import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfTemperature
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from .buderus_wps.mixed_circuit import (
+    MIXED_CIRCUITS,
+    VALUE_ROOM_SENSOR,
+    VALUE_ROOM_TEMP_USED,
+    VALUE_SUPPLY_TARGET,
+)
 from .buderus_wps.room_thermostat import ROOM_SETPOINT_CIRCUITS
 from .const import (
     DOMAIN,
+    MIXED_CIRCUIT_CONTEXT,
     SENSOR_BRINE_IN,
     SENSOR_BRINE_OUT,
     SENSOR_DHW,
@@ -65,6 +73,11 @@ async def async_setup_entry(
         for circuit in sorted(ROOM_SETPOINT_CIRCUITS)
     )
     sensors.append(BuderusDHWStopTempActiveSensor(coordinator, entry))
+    sensors.extend(
+        BuderusMixedCircuitSensor(coordinator, circuit, key, entry)
+        for circuit in sorted(MIXED_CIRCUITS)
+        for key in MIXED_CIRCUIT_SENSORS
+    )
 
     allowlist = coordinator.parameter_allowlist
     if allowlist:
@@ -198,6 +211,78 @@ class BuderusDHWStopTempActiveSensor(BuderusEntity, SensorEntity):
         if self.coordinator.data is None:
             return None
         return self.coordinator.data.dhw_gt8_stop_temp
+
+
+# value key -> (entity key prefix, display name prefix)
+MIXED_CIRCUIT_SENSORS: dict[str, tuple[str, str]] = {
+    VALUE_ROOM_TEMP_USED: ("room_temp_used", "Room Temperature Used By Pump"),
+    VALUE_ROOM_SENSOR: ("room_sensor_value", "Room Sensor Value"),
+    VALUE_SUPPLY_TARGET: ("supply_target", "Supply Temperature Target"),
+}
+
+
+class BuderusMixedCircuitSensor(BuderusEntity, SensorEntity):
+    """Diagnostic temperature for one mixed circuit (C2-C4), off by default.
+
+    - Room Temperature Used By Pump (MV_T5_ATTENUATED_n): stuck at exactly
+      20.0 while the room thermostat reads otherwise means the pump is not
+      using the room sensor (see the Room Sensor Acknowledged switch).
+    - Room Sensor Value (MV_T5_ACTUAL_n): unavailable when the pump reports
+      0xDEAD.
+    - Supply Temperature Target (MV_T1_SETPOINT_n).
+
+    The coordinator polls a parameter only while its entity is enabled (#22).
+    """
+
+    _attr_device_class = SensorDeviceClass.TEMPERATURE
+    _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _attr_entity_registry_enabled_default = False
+
+    def __init__(
+        self,
+        coordinator: BuderusCoordinator,
+        circuit: int,
+        value_key: str,
+        entry: ConfigEntry | None = None,
+    ) -> None:
+        """Initialize the diagnostic sensor."""
+        key_prefix, name_prefix = MIXED_CIRCUIT_SENSORS[value_key]
+        super().__init__(
+            coordinator,
+            f"{key_prefix}_c{circuit}",
+            entry,
+            context=(MIXED_CIRCUIT_CONTEXT, circuit, value_key),
+        )
+        self.circuit = circuit
+        self.value_key = value_key
+        self._attr_name = f"{name_prefix} C{circuit}"
+
+    def _value(self) -> float | None:
+        if self.coordinator.data is None:
+            return None
+        return self.coordinator.data.mixed_circuit_values.get(self.circuit, {}).get(
+            self.value_key
+        )
+
+    @property
+    def available(self) -> bool:
+        """Room Sensor Value is unavailable while the pump reports 0xDEAD."""
+        if self.value_key == VALUE_ROOM_SENSOR:
+            data = self.coordinator.data
+            if (
+                data is not None
+                and self.value_key in data.mixed_circuit_values.get(self.circuit, {})
+                and self._value() is None
+            ):
+                return False
+        return bool(super().available)
+
+    @property
+    def native_value(self) -> float | None:
+        """Return the temperature in °C."""
+        return self._value()
 
 
 def _sanitize_parameter_key(value: str) -> str:

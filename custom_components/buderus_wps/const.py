@@ -58,6 +58,11 @@ SENSOR_NAMES: Final = {
     SENSOR_ROOM_C4: "Room Temperature C4",
 }
 
+# Listener context tag for mixed circuit diagnostic entities (#22). Entities
+# register ("mixed_circuit", circuit, value_key) so the coordinator polls only
+# the parameters an enabled entity shows.
+MIXED_CIRCUIT_CONTEXT: Final = "mixed_circuit"
+
 # Device info
 MANUFACTURER: Final = "Buderus"
 MODEL: Final = "WPS Heat Pump"
@@ -71,6 +76,7 @@ ICON_USB: Final = "mdi:usb-port"
 ICON_WATER_HEATER: Final = "mdi:water-boiler"
 ICON_WATER_THERMOMETER: Final = "mdi:water-thermometer"
 ICON_HEATING_CURVE: Final = "mdi:chart-line"
+ICON_ROOM_SENSOR: Final = "mdi:home-thermometer"
 
 # Heating Season Mode (idx=884)
 # Used for peak hour blocking - set to OFF (2) to disable heating

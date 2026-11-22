@@ -69,6 +69,10 @@ def setup_ha_mocks():
         def __init__(self, coordinator, *args, **kwargs):
             self.coordinator = coordinator
 
+        @property
+        def available(self) -> bool:
+            return bool(getattr(self.coordinator, "last_update_success", True))
+
         def __class_getitem__(cls, item):
             return cls
 
@@ -219,6 +223,12 @@ class MockBuderusData:
     room_setpoint_active: dict[int, Optional[float]] = field(
         default_factory=lambda: {3: 22.5, 4: 20.5}
     )
+    room_sensor_acknowledged: dict[int, Optional[bool]] = field(
+        default_factory=lambda: {2: True, 3: True, 4: False}
+    )
+    mixed_circuit_values: dict[int, dict[str, Optional[float]]] = field(
+        default_factory=dict
+    )
     parameter_results: dict[str, dict[str, Any]] = field(default_factory=dict)
 
 
@@ -283,6 +293,7 @@ def mock_coordinator(mock_buderus_data: MockBuderusData) -> MagicMock:
     coordinator.async_set_dhw_setpoint = AsyncMock()
     coordinator.async_set_heating_curve_offset = AsyncMock()
     coordinator.async_set_room_setpoint = AsyncMock()
+    coordinator.async_set_room_sensor_acknowledged = AsyncMock()
     coordinator.async_manual_connect = AsyncMock()
     coordinator.async_manual_disconnect = AsyncMock()
 
