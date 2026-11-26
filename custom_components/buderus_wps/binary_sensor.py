@@ -12,6 +12,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+from .buderus_wps.alarm_status import alarm_pending
 from .const import DOMAIN, ICON_COMPRESSOR
 from .coordinator import BuderusCoordinator
 from .entity import BuderusEntity
@@ -31,6 +32,7 @@ async def async_setup_entry(
             BuderusCompressorSensor(coordinator, entry),
             BuderusDHWActiveSensor(coordinator, entry),
             BuderusHeatingActiveSensor(coordinator, entry),
+            BuderusAlarmPendingSensor(coordinator, entry),
         ]
     )
 
@@ -143,3 +145,39 @@ class BuderusHeatingActiveSensor(BuderusEntity, BinarySensorEntity):
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return extra attributes."""
         return {"description": "Indicates if the main heating pump (G1) is active."}
+
+
+class BuderusAlarmPendingSensor(BuderusEntity, BinarySensorEntity):
+    """On while the heat pump has unconfirmed alarms on its panel (issue #25).
+
+    The pump does not put the alarm text or time on the CAN bus; it only
+    reports whether unconfirmed alarm popups exist (RTU800B_SYSTEM_STATUS = 4).
+    A status value of unknown meaning shows as unknown rather than as a guess.
+    """
+
+    _attr_device_class = BinarySensorDeviceClass.PROBLEM
+    _attr_name = "Alarm Pending"
+    _attr_icon = "mdi:alert-circle-outline"
+
+    def __init__(
+        self,
+        coordinator: BuderusCoordinator,
+        entry: ConfigEntry | None = None,
+    ) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator, "alarm_pending", entry)
+
+    @property
+    def is_on(self) -> bool | None:
+        """Return true if an unconfirmed alarm is pending."""
+        if self.coordinator.data is None:
+            return None
+        return alarm_pending(self.coordinator.data.system_status)
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Expose the raw status value next to the staleness attributes."""
+        attrs = super().extra_state_attributes
+        if self.coordinator.data is not None:
+            attrs["system_status"] = self.coordinator.data.system_status
+        return attrs

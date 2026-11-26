@@ -242,9 +242,13 @@ The pump also broadcasts the same value to the room units about every 15 s
 (type 0, idx 2; `0x00008060`..`0x00008063` on the reference installation), and
 at once when the value changes.
 
-Not observed directly yet: the step from 1 to 4 when an alarm is raised, a
-second alarm arriving while the value is already 4, and alarm categories other
-than G and H.
+Raise, observed once with the value polled every 10 s: 1 → 4 within 10 s of
+the popup appearing on the panel. Dismissing that popup with the panel's return
+button (instead of OK) took the value from 4 back to 1; a step through 3 was
+not seen at that resolution.
+
+Not observed yet: a second alarm arriving while the value is already 4, and
+alarm categories other than G and H.
 
 ## Implementation Notes
 

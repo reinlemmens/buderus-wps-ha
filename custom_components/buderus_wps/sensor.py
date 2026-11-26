@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+from datetime import datetime
 from typing import Any
 
 from homeassistant.components.sensor import (
@@ -11,7 +12,7 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import UnitOfTemperature
+from homeassistant.const import EntityCategory, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -68,6 +69,8 @@ async def async_setup_entry(
         for sensor_type in SENSOR_TYPES
     ]
     sensors.append(BuderusDHWStopTempActiveSensor(coordinator, entry))
+    sensors.append(BuderusLastAlarmSensor(coordinator, entry))
+    sensors.append(BuderusSystemStatusSensor(coordinator, entry))
 
     allowlist = coordinator.parameter_allowlist
     if allowlist:
@@ -161,6 +164,62 @@ class BuderusDHWStopTempActiveSensor(BuderusEntity, SensorEntity):
         if self.coordinator.data is None:
             return None
         return self.coordinator.data.dhw_gt8_stop_temp
+
+
+class BuderusLastAlarmSensor(BuderusEntity, SensorEntity):
+    """When Home Assistant last detected a new heat pump alarm (issue #25).
+
+    This is the detection time, up to one scan interval after the alarm was
+    raised (later when it was raised during a restart). The pump's own alarm
+    timestamp is not readable over CAN. The value is kept by the coordinator
+    in Home Assistant storage, so it survives restarts and stays available
+    while the pump is disconnected.
+    """
+
+    _attr_name = "Last Alarm"
+    _attr_device_class = SensorDeviceClass.TIMESTAMP
+    _attr_icon = "mdi:alert-circle-check-outline"
+
+    def __init__(
+        self,
+        coordinator: BuderusCoordinator,
+        entry: ConfigEntry | None = None,
+    ) -> None:
+        """Initialize the last alarm sensor."""
+        super().__init__(coordinator, "last_alarm", entry)
+
+    @property
+    def native_value(self) -> datetime | None:
+        """Return when the last new alarm was detected."""
+        return self.coordinator.last_alarm
+
+
+class BuderusSystemStatusSensor(BuderusEntity, SensorEntity):
+    """Raw RTU800B_SYSTEM_STATUS value (diagnostic, issue #25).
+
+    4 = unconfirmed alarm pending, 1 = none, 3 and 0 = short steps while
+    alarms are confirmed. Exposed raw so Home Assistant history records
+    values and transitions that are not understood yet.
+    """
+
+    _attr_name = "System Status"
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _attr_icon = "mdi:list-status"
+
+    def __init__(
+        self,
+        coordinator: BuderusCoordinator,
+        entry: ConfigEntry | None = None,
+    ) -> None:
+        """Initialize the system status sensor."""
+        super().__init__(coordinator, "system_status", entry)
+
+    @property
+    def native_value(self) -> int | None:
+        """Return the raw status value."""
+        if self.coordinator.data is None:
+            return None
+        return self.coordinator.data.system_status
 
 
 def _sanitize_parameter_key(value: str) -> str:

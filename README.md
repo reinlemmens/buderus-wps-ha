@@ -13,6 +13,7 @@ Monitor and control your Buderus WPS heat pump directly from Home Assistant via 
 - Compressor status monitoring
 - Energy blocking switch (disable heating during peak electricity rates)
 - DHW extra production control (boost hot water on demand)
+- Alarm notification: "alarm pending" sensor and an event on each new alarm
 - Advanced parameter access (allowlist sensors + read/list services)
 - Automatic reconnection with exponential backoff
 
@@ -72,6 +73,42 @@ ID into an automation.
 | `number.heat_pump_dhw_stop_temperature_limit` | Number | Ceiling for the DHW stop temperature (governs "Always On" mode) |
 | `number.heat_pump_dhw_start_temperature_active` | Number | Active DHW start temperature (governs "Always On" mode) |
 | `sensor.heat_pump_dhw_stop_temperature_active` | Sensor | Active DHW stop temperature (read-only) |
+
+### Alarms
+
+| Entity | Type | Description |
+|--------|------|-------------|
+| `binary_sensor.heat_pump_alarm_pending` | Binary Sensor | On while the pump has unconfirmed alarms on its panel |
+| `sensor.heat_pump_last_alarm` | Sensor | When Home Assistant last detected a new alarm (kept across restarts) |
+| `sensor.heat_pump_system_status` | Sensor (diagnostic) | Raw status value: 4 = alarm pending, 1 = none, 3 and 0 = short steps while alarms are confirmed |
+
+The three entities are created for installs set up through the UI (config
+entry). A legacy YAML setup gets the event below but not the entities.
+
+On each new alarm the integration fires the event `buderus_wps_alarm`:
+
+| Field | Meaning |
+|-------|---------|
+| `entry_id` | Config entry of the heat pump (`null` for YAML setup) |
+| `status` | Status value that signalled the alarm (4) |
+| `previous_status` | Status read just before, `null` when the alarm was raised while Home Assistant was restarting |
+| `after_restart` | `true` when the alarm was found on the first reading after a restart |
+
+An alarm that was already pending before a restart does not fire the event
+again. One raised while Home Assistant was down fires it once, on the first
+reading after start.
+
+Limits, set by what the heat pump puts on the CAN bus:
+
+- No alarm text, category or panel timestamp. The alarm log itself is not
+  readable over CAN; the pump only reports that unconfirmed alarms exist. Read
+  the text on the panel.
+- No event per alarm. A further alarm while one is still unconfirmed is not
+  visible; the next event comes after the pending alarms were confirmed on the
+  panel.
+- Detection can be up to one scan interval (default 60 s) late. An alarm that
+  is dismissed on the panel within one scan interval can go unnoticed.
+- Alarms cannot be confirmed or reset from Home Assistant.
 
 ### Energy Block vs Compressor Block
 
@@ -189,6 +226,23 @@ automation:
           entity_id: number.heat_pump_dhw_extra_duration
         data:
           value: 2  # Run for 2 hours
+```
+
+### Notify on a new heat pump alarm
+
+```yaml
+automation:
+  - alias: "Heat pump alarm"
+    trigger:
+      - platform: event
+        event_type: buderus_wps_alarm
+    action:
+      - service: notify.notify
+        data:
+          title: "Heat pump alarm"
+          message: >-
+            The heat pump reports a new alarm. Check the panel for the text.
+            {% if trigger.event.data.after_restart %}(Raised while Home Assistant was restarting.){% endif %}
 ```
 
 ## Troubleshooting
