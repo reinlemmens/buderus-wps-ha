@@ -1,0 +1,247 @@
+{
+  "_comment": "Transcribed by hand from front-panel photos of the Logatherm WPS (Rego 1000). Times are panel clock (about 2 min 13 s slow, local time). Answer key for decoding the alarm log over CAN (issue #25).",
+  "alarm_log": {
+    "photographed": "2026-11-19 09:33 local",
+    "total_entries_shown": 393,
+    "entries": [
+      {
+        "position": 1,
+        "category": "H",
+        "text": "Faulty room sensor knob E14.TT.S1",
+        "panel_time": "2026-11-19 03:43:33"
+      },
+      {
+        "position": 2,
+        "category": "G",
+        "text": "Tripped underfloor temperature limiter circuit E13",
+        "panel_time": "2026-11-19 03:43:31"
+      },
+      {
+        "position": 3,
+        "category": "H",
+        "text": "Failure on sensor E12.T1 flow",
+        "panel_time": "2026-11-13 08:02:22"
+      },
+      {
+        "position": 4,
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-13 06:57:40"
+      },
+      {
+        "position": 5,
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-13 06:36:24"
+      },
+      {
+        "position": 6,
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-13 06:09:17"
+      },
+      {
+        "position": 7,
+        "category": "H",
+        "text": "Faulty room sensor knob E14.TT.S1",
+        "panel_time": "2026-11-13 05:58:20"
+      },
+      {
+        "position": 8,
+        "category": "G",
+        "text": "Tripped underfloor temperature limiter circuit E14",
+        "panel_time": "2026-11-13 05:58:20"
+      },
+      {
+        "position": 9,
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-13 05:53:51"
+      },
+      {
+        "position": 10,
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-13 04:44:12"
+      },
+      {
+        "position": 11,
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-13 03:56:21"
+      },
+      {
+        "position": 12,
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-13 02:41:23"
+      },
+      {
+        "position": 13,
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-13 01:21:06"
+      },
+      {
+        "position": 14,
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-13 01:15:47"
+      },
+      {
+        "position": 15,
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-13 01:05:09"
+      },
+      {
+        "position": 16,
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-13 00:54:31"
+      },
+      {
+        "position": 17,
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-12 23:44:51"
+      },
+      {
+        "position": 18,
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-12 23:23:35"
+      },
+      {
+        "position": 19,
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-12 21:30:52"
+      },
+      {
+        "position": 20,
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-12 21:20:14"
+      },
+      {
+        "position": 21,
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-12 19:33:22"
+      },
+      {
+        "position": 22,
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-12 19:22:44"
+      },
+      {
+        "position": 23,
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-12 18:23:43"
+      },
+      {
+        "position": 24,
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-12 18:02:27"
+      },
+      {
+        "position": 25,
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-12 17:57:08"
+      },
+      {
+        "position": 26,
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-12 17:30:01"
+      },
+      {
+        "position": 27,
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-12 15:48:28"
+      }
+    ]
+  },
+  "alarm_popups": {
+    "photographed": "2026-11-22 13:52 local",
+    "entries": [
+      {
+        "category": "G",
+        "text": "Tripped underfloor temperature limiter circuit E13",
+        "panel_time": "2026-11-22 13:50:08"
+      },
+      {
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-22 13:17:31"
+      },
+      {
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-22 13:01:34"
+      },
+      {
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-22 12:13:11"
+      },
+      {
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-22 11:57:14"
+      }
+    ]
+  },
+  "alarm_popups_2026_11_25": {
+    "photographed": "2026-11-25 08:08-08:16 local, popups confirmed one by one while the bus was recorded (08:11:40-08:41:41)",
+    "entries": [
+      {
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-25 07:39:20"
+      },
+      {
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-25 06:19:35"
+      },
+      {
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-25 06:03:06"
+      },
+      {
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-25 05:52:28"
+      },
+      {
+        "category": "G",
+        "text": "Tripped underfloor temperature limiter circuit E13",
+        "panel_time": "2026-11-25 03:39:39"
+      },
+      {
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "panel_time": "2026-11-25 03:35:49"
+      }
+    ]
+  },
+  "alarm_popups_2026_11_26": {
+    "_comment": "Photographed 2026-11-26 while RTU800B_SYSTEM_STATUS was polled every 10 s through HA. Status 01 at 12:09:56 host time, 04 at 12:10:06 (panel clock ~2 min 15-20 s slow). Dismissed with the return button, not OK: status 04 at 12:11:56, 01 at 12:12:06; C4 acknowledge room sensor stayed Yes (bitmask 0x000E).",
+    "entries": [
+      {
+        "category": "H",
+        "text": "Failure on sensor E14.TT.T5 room",
+        "date": "2026-11-26",
+        "time": "12:07:37"
+      }
+    ]
+  }
+}
