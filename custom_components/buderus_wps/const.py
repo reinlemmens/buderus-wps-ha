@@ -26,6 +26,13 @@ ATTR_TIMEOUT: Final = "timeout"
 ATTR_NAME_CONTAINS: Final = "name_contains"
 ATTR_LIMIT: Final = "limit"
 
+# Alarm detection (issue #25)
+# Fired when the pump goes from "no unconfirmed alarm" to "unconfirmed alarm".
+EVENT_ALARM: Final = "buderus_wps_alarm"
+# Alarm state kept across restarts (helpers.storage); one file per config entry.
+ALARM_STORAGE_VERSION: Final = 1
+ALARM_STORAGE_KEY_PREFIX: Final = "buderus_wps.alarm_state"
+
 # Exponential backoff for reconnection
 BACKOFF_INITIAL: Final = 5  # Initial delay in seconds
 BACKOFF_MAX: Final = 120  # Maximum delay in seconds (2 minutes)

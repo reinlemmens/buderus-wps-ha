@@ -329,7 +329,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
 
     # Create coordinator
-    coordinator = BuderusCoordinator(hass, port, scan_interval, allowlist)
+    coordinator = BuderusCoordinator(
+        hass, port, scan_interval, allowlist, entry_id=entry.entry_id
+    )
 
     # Connect to heat pump
     if not await coordinator.async_setup():

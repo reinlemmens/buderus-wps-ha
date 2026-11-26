@@ -9,7 +9,6 @@ from unittest.mock import MagicMock
 
 import pytest
 from buderus_wps.enums import (
-    AlarmCategory,
     CircuitType,
     DHWProgramMode,
     OperatingMode,
@@ -452,52 +451,33 @@ class TestUS6EnergyStatistics:
 
 class TestUS7Alarms:
     """
-    As a homeowner, I want to see and manage alarms
-    so I can respond to issues.
+    As a homeowner, I want to see whether an alarm is waiting on the panel
+    so I can go and read it.
+
+    The alarm log itself is not readable over CAN and alarms cannot be
+    acknowledged from here; the pump only reports that unconfirmed alarms
+    exist (issue #25).
 
     Acceptance Criteria:
-    - AC1: Read active alarms
-    - AC2: Read alarm log
-    - AC3: Acknowledge alarms
+    - AC1: An unconfirmed alarm shows as pending
+    - AC2: No unconfirmed alarm shows as not pending
     """
 
-    def test_ac1_read_active_alarms(self, mock_client):
-        """AC1: Read active alarms."""
-        mock_client.read_parameter.return_value = {"decoded": 0}
-
-        api = MenuAPI(mock_client)
-        alarms = api.alarms.active_alarms
-
-        assert isinstance(alarms, list)
-
-    def test_ac2_read_alarm_log(self, mock_client):
-        """AC2: Read alarm log."""
-        mock_client.read_parameter.return_value = {"decoded": 0}
-
-        api = MenuAPI(mock_client)
-        log = api.alarms.alarm_log
-
-        assert isinstance(log, list)
-
-    def test_ac3_acknowledge_alarm(self, mock_client):
-        """AC3: Acknowledge alarms."""
-        from datetime import datetime
-
-        from buderus_wps.menu_api import Alarm
+    def test_ac1_alarm_pending(self, mock_client):
+        """AC1: An unconfirmed alarm shows as pending."""
+        mock_client.read_parameter.return_value = {"decoded": 4}
 
         api = MenuAPI(mock_client)
 
-        alarm = Alarm(
-            code=1,
-            category=AlarmCategory.ALARM,
-            description="Test alarm",
-            timestamp=datetime.now(),
-            acknowledged=False,
-            clearable=True,
-        )
+        assert api.alarms.pending is True
 
-        api.alarms.acknowledge(alarm)
-        mock_client.write_value.assert_called()
+    def test_ac2_no_alarm_pending(self, mock_client):
+        """AC2: No unconfirmed alarm shows as not pending."""
+        mock_client.read_parameter.return_value = {"decoded": 1}
+
+        api = MenuAPI(mock_client)
+
+        assert api.alarms.pending is False
 
 
 # =============================================================================
@@ -599,8 +579,7 @@ class TestFullAcceptanceSuite:
         assert kwh == 20.0  # From our mock
 
         # 7. Check alarms
-        alarms = api.alarms.active_alarms
-        assert isinstance(alarms, list)
+        assert api.alarms.pending in (True, False, None)
 
         # 8. Check vacation (mock returns non-zero, so vacation shows active)
         vacation = api.vacation.hot_water

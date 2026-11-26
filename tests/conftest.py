@@ -20,6 +20,28 @@ class HomeAssistantError(Exception):
     pass
 
 
+class MockStore:
+    """Stand-in for homeassistant.helpers.storage.Store."""
+
+    def __init__(self, hass, version, key, *args, **kwargs):
+        self.version = version
+        self.key = key
+        self.data = None  # what async_load returns
+        self.saved = None  # last data handed to a save
+        self.load_error = None
+        self.save_error = None
+
+    async def async_load(self):
+        if self.load_error:
+            raise self.load_error
+        return self.data
+
+    def async_delay_save(self, data_func, delay=0):
+        if self.save_error:
+            raise self.save_error
+        self.saved = data_func()
+
+
 def setup_ha_mocks():
     """Set up all required Home Assistant module mocks.
 
@@ -30,7 +52,10 @@ def setup_ha_mocks():
     """
     # Core HA modules
     sys.modules["homeassistant"] = MagicMock()
-    sys.modules["homeassistant.core"] = MagicMock()
+    core_mock = MagicMock()
+    # Real HA: enum member. A plain value is enough for identity checks.
+    core_mock.CoreState.running = "RUNNING"
+    sys.modules["homeassistant.core"] = core_mock
     sys.modules["homeassistant.config_entries"] = MagicMock()
 
     exceptions_mock = MagicMock()
@@ -41,6 +66,8 @@ def setup_ha_mocks():
     const_mock = MagicMock()
     const_mock.UnitOfTemperature = MagicMock()
     const_mock.UnitOfTemperature.CELSIUS = "°C"
+    const_mock.EntityCategory = MagicMock()
+    const_mock.EntityCategory.DIAGNOSTIC = "diagnostic"
     sys.modules["homeassistant.const"] = const_mock
 
     # Helpers modules
@@ -50,6 +77,11 @@ def setup_ha_mocks():
     sys.modules["homeassistant.helpers.entity_platform"] = MagicMock()
     sys.modules["homeassistant.helpers.config_validation"] = MagicMock()
     sys.modules["homeassistant.helpers.device_registry"] = MagicMock()
+
+    # Storage helper: MockStore keeps what was saved so tests can inspect it
+    storage_mock = MagicMock()
+    storage_mock.Store = MockStore
+    sys.modules["homeassistant.helpers.storage"] = storage_mock
 
     # UpdateCoordinator mock - needs to support generic subscripting
     class MockDataUpdateCoordinator:
@@ -87,6 +119,7 @@ def setup_ha_mocks():
     sensor_mock = MagicMock()
     sensor_mock.SensorDeviceClass = MagicMock()
     sensor_mock.SensorDeviceClass.TEMPERATURE = "temperature"
+    sensor_mock.SensorDeviceClass.TIMESTAMP = "timestamp"
     sensor_mock.SensorStateClass = MagicMock()
     sensor_mock.SensorStateClass.MEASUREMENT = "measurement"
 
@@ -121,6 +154,7 @@ def setup_ha_mocks():
     binary_sensor_mock.BinarySensorDeviceClass = MagicMock()
     binary_sensor_mock.BinarySensorDeviceClass.RUNNING = "running"
     binary_sensor_mock.BinarySensorDeviceClass.POWER = "power"
+    binary_sensor_mock.BinarySensorDeviceClass.PROBLEM = "problem"
 
     class MockBinarySensorEntity:
         _attr_device_class = None
@@ -220,6 +254,7 @@ class MockBuderusData:
     dhw_gt8_stop_temp: Optional[float] = None
     dhw_gt8_stop_max_temp: Optional[float] = None
     dhw_user_start_temp: Optional[float] = None
+    system_status: Optional[int] = None
     room_setpoint_active: dict[int, Optional[float]] = field(
         default_factory=lambda: {3: 22.5, 4: 20.5}
     )
@@ -322,6 +357,7 @@ def mock_hass() -> MagicMock:
     """Create a minimal mock Home Assistant instance."""
     hass = MagicMock()
     hass.data = {}
+    hass.state = "RUNNING"  # CoreState.running, see setup_ha_mocks
     hass.bus = MagicMock()
     hass.bus.async_listen_once = MagicMock()
     hass.async_add_executor_job = AsyncMock(side_effect=lambda f, *args: f(*args))

@@ -29,6 +29,12 @@ __version__ = "0.1.0"
 __author__ = "Buderus WPS HA Project"
 __license__ = "MIT"
 
+from .alarm_status import (
+    STATUS_ALARM_PENDING,
+    SYSTEM_STATUS_PARAM,
+    alarm_pending,
+    parse_system_status,
+)
 from .broadcast_monitor import (
     KNOWN_BROADCASTS,
     BroadcastCache,
@@ -70,14 +76,12 @@ from .energy_blocking import (
     EnergyBlockingControl,
 )
 from .enums import (
-    AlarmCategory,
     CircuitType,
     DHWProgramMode,
     OperatingMode,
     RoomProgramMode,
 )
 from .exceptions import (
-    AlarmNotClearableError,
     BuderusCANException,
     CircuitNotAvailableError,
     ConnectionError,
@@ -95,7 +99,6 @@ from .exceptions import (
 )
 from .heat_pump import HeatPumpClient
 from .menu_api import (
-    Alarm,
     AlarmController,
     Circuit,
     EnergyView,
@@ -119,8 +122,12 @@ from .schedule_codec import ScheduleCodec, ScheduleSlot, WeeklySchedule
 from .value_encoder import ValueEncoder
 
 __all__ = [
+    # Alarm status
+    "STATUS_ALARM_PENDING",
+    "SYSTEM_STATUS_PARAM",
+    "alarm_pending",
+    "parse_system_status",
     # Exceptions
-    "AlarmNotClearableError",
     "BuderusCANException",
     "CircuitNotAvailableError",
     "ConnectionError",
@@ -150,13 +157,11 @@ __all__ = [
     # Utilities
     "ValueEncoder",
     # Menu API enums
-    "AlarmCategory",
     "CircuitType",
     "DHWProgramMode",
     "OperatingMode",
     "RoomProgramMode",
     # Menu API data classes
-    "Alarm",
     "MenuItem",
     "ScheduleSlot",
     "StatusSnapshot",

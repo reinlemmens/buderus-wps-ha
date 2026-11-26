@@ -12,13 +12,15 @@ Menu Structure (from user manual Table 3):
 - Compressor (status, run hours)
 - Vacation (vacation mode settings)
 - Energy (heat generated, aux heater)
-- Alarms (alarm log, info log)
+- Alarms (alarm-pending status; the log itself is not readable over CAN)
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Any, Optional
+
+from .alarm_status import SYSTEM_STATUS_PARAM
 
 
 @dataclass
@@ -130,22 +132,6 @@ ENERGY_PARAMS = {
     "heat_generated_24h": "HEAT_GENERATED_24H",
     "aux_heater_kwh": "AUX_HEATER_ENERGY",
     "aux_heater_hours": "AUX_HEATER_HOURS",
-}
-
-# Alarm Parameters
-ALARM_PARAMS = {
-    "alarm_log_1": "ADDITIONAL_ALARM",
-    "alarm_log_2": "ADDITIONAL_ALARM_2",
-    "alarm_log_3": "ADDITIONAL_ALARM_3",
-    "alarm_log_4": "ADDITIONAL_ALARM_4",
-    "info_log_1": "INFO_LOG_1",
-    "info_log_2": "INFO_LOG_2",
-    "info_log_3": "INFO_LOG_3",
-    "info_log_4": "INFO_LOG_4",
-    "info_log_5": "INFO_LOG_5",
-    "compressor_alarm": "COMPRESSOR_ALARM",
-    "alarm_acknowledge": "ALARM_ACKNOWLEDGE",
-    "alarm_clear": "ALARM_CLEAR",
 }
 
 
@@ -348,15 +334,12 @@ def build_menu_tree() -> MenuItem:
             ),
             MenuItem(
                 name="Alarms",
-                description="Alarm and information logs",
+                description="Alarm status (the alarm log is not readable over CAN)",
                 children=[
                     MenuItem(
-                        name="Alarm Log",
-                        description="Historical alarm entries",
-                    ),
-                    MenuItem(
-                        name="Info Log",
-                        description="Information and warning entries",
+                        name="Alarm Pending Status",
+                        description="4 = unconfirmed alarm pending, 1 = none",
+                        parameter=SYSTEM_STATUS_PARAM,
                     ),
                 ],
             ),

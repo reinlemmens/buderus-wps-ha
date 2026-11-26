@@ -4,19 +4,17 @@ Unit tests for Menu API controllers - T020, T038, T047, T056, T063, T072, T078, 
 Tests all controller classes with mocked HeatPumpClient.
 """
 
-from datetime import date, datetime, time
+from datetime import date, time
 from unittest.mock import MagicMock
 
 import pytest
 from buderus_wps.enums import (
-    AlarmCategory,
     CircuitType,
     DHWProgramMode,
     OperatingMode,
     RoomProgramMode,
 )
 from buderus_wps.exceptions import (
-    AlarmNotClearableError,
     CircuitNotAvailableError,
     MenuNavigationError,
     ParameterNotFoundError,
@@ -24,7 +22,6 @@ from buderus_wps.exceptions import (
     ValidationError,
 )
 from buderus_wps.menu_api import (
-    Alarm,
     AlarmController,
     Circuit,
     EnergyView,
@@ -468,104 +465,28 @@ class TestEnergyView:
 
 
 class TestAlarmController:
-    """Test AlarmController class."""
+    """AlarmController exposes only what the pump really reports."""
 
-    def test_active_alarms_empty(self, mock_client):
-        """No active alarms."""
-        mock_client.read_parameter.return_value = {"decoded": 0}
+    @pytest.mark.parametrize(
+        "decoded,status,pending",
+        [(4, 4, True), (1, 1, False), (2, 2, None), (None, None, None)],
+    )
+    def test_status_and_pending(self, mock_client, decoded, status, pending):
+        mock_client.read_parameter.return_value = {"decoded": decoded}
         ctrl = AlarmController(mock_client)
+        assert ctrl.system_status == status
+        assert ctrl.pending is pending
 
-        alarms = ctrl.active_alarms
-        assert alarms == []
+    def test_reads_system_status_by_name(self, mock_client):
+        mock_client.read_parameter.return_value = {"decoded": 1}
+        assert AlarmController(mock_client).system_status == 1
+        mock_client.read_parameter.assert_called_once_with("RTU800B_SYSTEM_STATUS")
 
-    def test_active_alarms_present(self, mock_client):
-        """Active alarms present."""
-        mock_client.read_parameter.side_effect = [
-            {"decoded": 101},  # alarm 1
-            {"decoded": 0},  # alarm 2 (none)
-            {"decoded": 0},
-            {"decoded": 0},
-            {"decoded": 0},
-        ]
+    def test_no_log_or_write_api(self, mock_client):
         ctrl = AlarmController(mock_client)
-
-        alarms = ctrl.active_alarms
-        assert len(alarms) == 1
-        assert alarms[0].code == 101
-
-    def test_alarm_log(self, mock_client):
-        """Read alarm log."""
-        mock_client.read_parameter.side_effect = [
-            {"decoded": 101},
-            {"decoded": 102},
-            {"decoded": 0},
-            {"decoded": 0},
-            {"decoded": 0},
-        ]
-        ctrl = AlarmController(mock_client)
-
-        log = ctrl.alarm_log
-        assert len(log) == 2
-
-    def test_info_log(self, mock_client):
-        """Read info log."""
-        mock_client.read_parameter.side_effect = [
-            {"decoded": 50},
-            {"decoded": 0},
-            {"decoded": 0},
-            {"decoded": 0},
-            {"decoded": 0},
-        ]
-        ctrl = AlarmController(mock_client)
-
-        log = ctrl.info_log
-        assert len(log) == 1
-        assert log[0].category == AlarmCategory.INFO
-
-    def test_acknowledge_alarm(self, mock_client):
-        """Acknowledge an alarm."""
-        ctrl = AlarmController(mock_client)
-        alarm = Alarm(
-            code=1,
-            category=AlarmCategory.ALARM,
-            description="Test",
-            timestamp=datetime.now(),
-            acknowledged=False,
-            clearable=True,
-        )
-
-        ctrl.acknowledge(alarm)
-        mock_client.write_value.assert_called()
-
-    def test_clear_alarm_success(self, mock_client):
-        """Clear a clearable alarm."""
-        ctrl = AlarmController(mock_client)
-        alarm = Alarm(
-            code=1,
-            category=AlarmCategory.ALARM,
-            description="Test",
-            timestamp=datetime.now(),
-            acknowledged=True,
-            clearable=True,
-        )
-
-        ctrl.clear(alarm)
-        mock_client.write_value.assert_called()
-
-    def test_clear_alarm_not_clearable(self, mock_client):
-        """Cannot clear non-clearable alarm."""
-        ctrl = AlarmController(mock_client)
-        alarm = Alarm(
-            code=1,
-            category=AlarmCategory.ALARM,
-            description="Test",
-            timestamp=datetime.now(),
-            acknowledged=True,
-            clearable=False,
-        )
-
-        with pytest.raises(AlarmNotClearableError):
-            ctrl.clear(alarm)
+        for gone in ("active_alarms", "alarm_log", "info_log", "acknowledge", "clear"):
+            assert not hasattr(ctrl, gone)
+        mock_client.write_value.assert_not_called()
 
 
 # =============================================================================

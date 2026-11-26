@@ -212,6 +212,44 @@ Common temperature bases:
 - 0xA5: DHW temperature
 - 0xD8: Brine inlet temperature
 
+## Alarm Status
+
+The stored alarm log, the alarm texts and their timestamps are **not** readable
+over CAN. The whole parameter index space (type 1, idx 0..4095) and the service
+index space (type 0, idx 0..0xFFF at node 0x3FE0) were swept with read requests
+only, and a bus recording made while six alarm popups were confirmed on the
+panel shows no frame per alarm and none per OK press. The panel is the pump
+controller itself; the log stays inside it.
+
+What the pump does expose is one status value: parameter
+`RTU800B_SYSTEM_STATUS`. Always look it up by name. Its index differs per
+firmware (2178 in the built-in table, 2182 on the reference Logatherm WPS 17-1).
+Read it with a plain RTR read; the element table lists its range as 0..0, so a
+range-validating read rejects the real values.
+
+| Value | Meaning |
+|-------|---------|
+| 4 | Unconfirmed alarm popups exist on the panel |
+| 3 | Short step while the last popup is confirmed (seen for 3.6 s and 51 s) |
+| 0 | Very short step right after 3 |
+| 1 | No pending alarms |
+
+Confirm sequence, seen twice: 4 → 3 → 0 → 1. Between 3 and 0 the pump re-polls
+every node address on the bus (several hundred frames within one second), the
+same burst that follows an element-list download.
+
+The pump also broadcasts the same value to the room units about every 15 s
+(type 0, idx 2; `0x00008060`..`0x00008063` on the reference installation), and
+at once when the value changes.
+
+Raise, observed once with the value polled every 10 s: 1 → 4 within 10 s of
+the popup appearing on the panel. Dismissing that popup with the panel's return
+button (instead of OK) took the value from 4 back to 1; a step through 3 was
+not seen at that resolution.
+
+Not observed yet: a second alarm arriving while the value is already 4, and
+alarm categories other than G and H.
+
 ## Implementation Notes
 
 1. **Byte Order**: All multi-byte values use big-endian (network byte order)

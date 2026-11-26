@@ -227,20 +227,6 @@ class MenuNavigationError(MenuAPIError):
         )
 
 
-class AlarmNotClearableError(MenuAPIError):
-    """Raised when attempting to clear an alarm that cannot be cleared."""
-
-    def __init__(
-        self, alarm_code: int, reason: str = "underlying condition not resolved"
-    ) -> None:
-        self.alarm_code = alarm_code
-        self.reason = reason
-        super().__init__(
-            f"Alarm {alarm_code} cannot be cleared: {reason}",
-            context={"alarm_code": alarm_code, "reason": reason},
-        )
-
-
 class CircuitNotAvailableError(MenuAPIError):
     """Raised when accessing a circuit that is not configured on this installation."""
 

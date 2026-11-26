@@ -338,23 +338,16 @@ class TestEnergyIntegration:
 
 
 class TestAlarmIntegration:
-    """Integration tests for alarm management."""
+    """Integration tests for the alarm-pending status."""
 
     def test_alarm_workflow(self, mock_client):
-        """Read and manage alarms."""
-        # No active alarms
-        mock_client.read_parameter.return_value = {"decoded": 0}
+        """Pending follows the pump's system status from one read to the next."""
+        mock_client.read_parameter.side_effect = [{"decoded": 1}, {"decoded": 4}]
 
         api = MenuAPI(mock_client)
 
-        alarms = api.alarms.active_alarms
-        assert len(alarms) == 0
-
-        log = api.alarms.alarm_log
-        assert len(log) == 0
-
-        info = api.alarms.info_log
-        assert len(info) == 0
+        assert api.alarms.pending is False
+        assert api.alarms.pending is True
 
 
 # =============================================================================

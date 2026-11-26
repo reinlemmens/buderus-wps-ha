@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **Alarm notification (#25).** New binary sensor "Alarm Pending" is on while
+  the heat pump has unconfirmed alarms on its panel, sensor "Last Alarm" keeps
+  the time Home Assistant detected the last new alarm, and the event
+  `buderus_wps_alarm` fires on each new alarm (fields `entry_id`, `status`,
+  `previous_status`, `after_restart`). The state is remembered across restarts:
+  an alarm raised while Home Assistant was down fires the event once on the
+  first reading after Home Assistant has finished starting, one that was
+  already pending does not fire again.
+  A diagnostic sensor "System Status" shows the raw value.
+  The source is the pump parameter `RTU800B_SYSTEM_STATUS` (4 = unconfirmed
+  alarm pending, 1 = none), read once per update cycle and only when the pump
+  reports that parameter in its element list. The alarm log itself is
+  not readable over CAN, so there is no alarm text, category or panel
+  timestamp, and a further alarm while one is still pending gives no new event.
+  See `docs/PROTOCOL.md`, "Alarm Status".
+
+### Changed
+- **Breaking (library API): the alarm log API is gone (#25).** Removed from the
+  bundled `buderus_wps` library: `AlarmController.active_alarms`, `.alarm_log`,
+  `.info_log`, `.acknowledge()` and `.clear()`, the `Alarm` data class,
+  `AlarmCategory`, `AlarmNotClearableError` and `ALARM_PARAMS`. They read
+  `ADDITIONAL_ALARM*`, which are auxiliary-heater flags and not log entries,
+  and wrote to `ALARM_ACKNOWLEDGE` / `ALARM_CLEAR`, which do not exist in the
+  parameter table; the alarm log is not readable over CAN at all.
+  `MenuAPI.alarms` stays, as a read-only object with `system_status` (raw
+  value) and `pending` (True / False / None). The "Alarms" menu now holds one
+  item that reads the system status.
+
 ## [1.6.0-beta.5] - 2026-11-20
 
 ### Added

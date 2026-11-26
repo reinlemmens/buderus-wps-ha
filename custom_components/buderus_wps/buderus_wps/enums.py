@@ -43,11 +43,3 @@ class CircuitType(Enum):
 
     UNMIXED = auto()  # Primary circuit (circuit 1)
     MIXED = auto()  # Secondary circuits (2-4) with mixing valve
-
-
-class AlarmCategory(Enum):
-    """Alarm severity categories."""
-
-    INFO = 0
-    WARNING = 1
-    ALARM = 2
