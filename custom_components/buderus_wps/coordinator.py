@@ -6,17 +6,23 @@ import asyncio
 import logging
 import time
 from dataclasses import dataclass, field
-from datetime import timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any
 
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers.storage import Store
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
+from .alarm_tracker import AlarmTracker
+from .buderus_wps.alarm_status import SYSTEM_STATUS_PARAM, parse_system_status
 from .const import (
+    ALARM_STORAGE_KEY_PREFIX,
+    ALARM_STORAGE_VERSION,
     BACKOFF_INITIAL,
     BACKOFF_MAX,
     DOMAIN,
+    EVENT_ALARM,
     SENSOR_BRINE_IN,
     SENSOR_BRINE_OUT,
     SENSOR_DHW,
@@ -97,6 +103,9 @@ class BuderusData:
     # Room setpoint each circuit runs on (set by its room thermostat or by HA),
     # keyed by circuit number. Only circuits in ROOM_SETPOINT_CIRCUITS.
     room_setpoint_active: dict[int, float | None] = field(default_factory=dict)
+    # Raw RTU800B_SYSTEM_STATUS: 4 = unconfirmed alarm pending, 1 = none
+    # (3 and 0 are short steps while alarms are confirmed). See alarm_status.py.
+    system_status: int | None = None
     parameter_results: dict[str, dict[str, Any]] = field(default_factory=dict)
 
 
@@ -109,6 +118,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         port: str,
         scan_interval: int,
         parameter_allowlist: list[str] | None = None,
+        entry_id: str | None = None,
     ) -> None:
         """Initialize the coordinator."""
         super().__init__(
@@ -118,6 +128,8 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             update_interval=timedelta(seconds=scan_interval),
         )
         self.port = port
+        # Config entry this coordinator belongs to; None for legacy YAML setup.
+        self.entry_id = entry_id
         self._adapter: Any = None
         self._client: Any = None
         self._registry: Any = None
@@ -153,14 +165,76 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         from .buderus_wps.room_thermostat import WriteRateLimiter
 
         self._room_setpoint_limiter = WriteRateLimiter()
+        # New-alarm detection (issue #25). Lives here, not in an entity, so it
+        # keeps working when the user disables the alarm entities. The state
+        # is persisted so an alarm raised during a restart is still reported.
+        self._alarm_tracker = AlarmTracker()
+        self._alarm_store: Store[dict[str, Any]] = Store(
+            hass,
+            ALARM_STORAGE_VERSION,
+            f"{ALARM_STORAGE_KEY_PREFIX}.{entry_id or 'yaml'}",
+        )
 
     @property
     def parameter_allowlist(self) -> list[str]:
         """Return configured parameter allowlist entries."""
         return list(self._parameter_allowlist)
 
+    @property
+    def last_alarm(self) -> datetime | None:
+        """When the last new alarm was detected (survives restarts)."""
+        return self._alarm_tracker.last_alarm
+
+    async def _async_load_alarm_state(self) -> None:
+        """Restore the alarm state remembered from before a restart.
+
+        Never raises: without usable stored state the integration behaves as
+        on a fresh install (an alarm that is already pending is not reported).
+        """
+        try:
+            stored = await self._alarm_store.async_load()
+        except Exception as err:
+            _LOGGER.warning(
+                "Could not load stored alarm state, starting without it: %s", err
+            )
+            stored = None
+        self._alarm_tracker = AlarmTracker.from_dict(stored)
+
+    def _handle_system_status(self, status: int | None) -> None:
+        """Detect a new alarm from a fresh status reading (event loop only).
+
+        Fires EVENT_ALARM on the step from "not pending" to "pending" and
+        schedules a save when the remembered state changed. Never raises: a
+        problem here must not cost the update cycle.
+        """
+        try:
+            before = self._alarm_tracker.as_dict()
+            new_alarm = self._alarm_tracker.update(status, datetime.now(timezone.utc))
+            if new_alarm is not None:
+                _LOGGER.warning(
+                    "Heat pump reports a new unconfirmed alarm "
+                    "(system status %s, previous %s%s)",
+                    new_alarm.status,
+                    new_alarm.previous_status,
+                    ", detected after restart" if new_alarm.after_restart else "",
+                )
+                self.hass.bus.async_fire(
+                    EVENT_ALARM,
+                    {
+                        "entry_id": self.entry_id,
+                        "status": new_alarm.status,
+                        "previous_status": new_alarm.previous_status,
+                        "after_restart": new_alarm.after_restart,
+                    },
+                )
+            if self._alarm_tracker.as_dict() != before:
+                self._alarm_store.async_delay_save(self._alarm_tracker.as_dict, 1.0)
+        except Exception as err:
+            _LOGGER.warning("Alarm state handling failed: %s", err)
+
     async def async_setup(self) -> bool:
         """Set up the connection to the heat pump."""
+        await self._async_load_alarm_state()
         try:
             await self.hass.async_add_executor_job(self._sync_connect)
             self._connected = True
@@ -667,6 +741,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
 
                 # Success! Update cache and reset failure counter
                 self._last_known_good_data = fresh_data
+                self._handle_system_status(fresh_data.system_status)
                 self._last_successful_update = time.time()
                 self._consecutive_failures = 0
 
@@ -1279,6 +1354,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                 compressor_blocked = None
 
         room_setpoint_active = self._sync_read_room_setpoints()
+        system_status = self._sync_read_system_status()
 
         # Build result with mix of fresh and stale data
         result = BuderusData(
@@ -1305,6 +1381,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             dhw_gt8_stop_max_temp=dhw_gt8_stop_max_temp,
             dhw_user_start_temp=dhw_user_start_temp,
             room_setpoint_active=room_setpoint_active,
+            system_status=system_status,
             parameter_results=parameter_results,
         )
 
@@ -1348,6 +1425,27 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                 value = previous.get(circuit)
             values[circuit] = value
         return values
+
+    def _sync_read_system_status(self) -> int | None:
+        """Read the raw alarm-pending status (best-effort).
+
+        PROTOCOL: RTU800B_SYSTEM_STATUS, looked up by name because its index
+        differs per firmware. Plain read on purpose: the element table lists
+        the range as 0..0, so the range-validating read rejects real values.
+        A failed read keeps the previous value, so it cannot look like an
+        alarm starting or ending.
+        """
+        try:
+            res = self._client.read_parameter(SYSTEM_STATUS_PARAM, timeout=0.5)
+            status = parse_system_status(res.get("decoded"))
+            if status is None:
+                raise ValueError(f"not a status value: {res.get('decoded')!r}")
+            return status
+        except Exception as err:
+            _LOGGER.debug("RTR FAILED for %s: %s", SYSTEM_STATUS_PARAM, err)
+        if self._last_known_good_data is not None:
+            return self._last_known_good_data.system_status
+        return None
 
     def get_data_age_seconds(self) -> int | None:
         """Get age of current data in seconds.
