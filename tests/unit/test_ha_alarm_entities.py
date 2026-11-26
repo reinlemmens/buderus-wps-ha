@@ -13,7 +13,8 @@ from custom_components.buderus_wps.sensor import (
 
 class TestAlarmPending:
     @pytest.mark.parametrize(
-        "status,expected", [(4, True), (0, False), (1, False), (3, False), (2, None), (None, None)]
+        "status,expected",
+        [(4, True), (0, False), (1, False), (3, False), (2, None), (None, None)],
     )
     def test_state(self, mock_coordinator, status, expected):
         mock_coordinator.data.system_status = status
@@ -52,7 +53,9 @@ class TestLastAlarm:
     def test_kept_while_disconnected(self, mock_coordinator_disconnected):
         when = datetime(2026, 11, 25, 2, 42, tzinfo=timezone.utc)
         mock_coordinator_disconnected.last_alarm = when
-        assert BuderusLastAlarmSensor(mock_coordinator_disconnected).native_value == when
+        assert (
+            BuderusLastAlarmSensor(mock_coordinator_disconnected).native_value == when
+        )
 
 
 class TestSystemStatus:
@@ -64,7 +67,10 @@ class TestSystemStatus:
         assert s._attr_unique_id.endswith("_system_status")
 
     def test_none_when_disconnected(self, mock_coordinator_disconnected):
-        assert BuderusSystemStatusSensor(mock_coordinator_disconnected).native_value is None
+        assert (
+            BuderusSystemStatusSensor(mock_coordinator_disconnected).native_value
+            is None
+        )
 
 
 async def test_platforms_add_the_entities(mock_hass, mock_coordinator):
@@ -80,7 +86,11 @@ async def test_platforms_add_the_entities(mock_hass, mock_coordinator):
     await binary_sensor.async_setup_entry(mock_hass, entry, added.extend)
     await sensor.async_setup_entry(mock_hass, entry, added.extend)
     kinds = {type(e) for e in added}
-    assert {BuderusAlarmPendingSensor, BuderusLastAlarmSensor, BuderusSystemStatusSensor} <= kinds
+    assert {
+        BuderusAlarmPendingSensor,
+        BuderusLastAlarmSensor,
+        BuderusSystemStatusSensor,
+    } <= kinds
 
 
 async def test_legacy_yaml_platforms_stay_as_they_were(mock_hass, mock_coordinator):

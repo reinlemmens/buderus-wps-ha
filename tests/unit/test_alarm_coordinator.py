@@ -20,7 +20,9 @@ class TestRead:
         c = make(mock_hass)
         c._client.read_parameter.return_value = {"decoded": 4}
         assert c._sync_read_system_status() == 4
-        c._client.read_parameter.assert_called_once_with("RTU800B_SYSTEM_STATUS", timeout=0.5)
+        c._client.read_parameter.assert_called_once_with(
+            "RTU800B_SYSTEM_STATUS", timeout=0.5
+        )
         c._client.read_parameter_with_validation.assert_not_called()
 
     def test_failed_read_keeps_previous_value(self, mock_hass):
@@ -48,7 +50,12 @@ class TestDetection:
         c._handle_system_status(4)
         mock_hass.bus.async_fire.assert_called_once_with(
             EVENT_ALARM,
-            {"entry_id": "entry1", "status": 4, "previous_status": 1, "after_restart": False},
+            {
+                "entry_id": "entry1",
+                "status": 4,
+                "previous_status": 1,
+                "after_restart": False,
+            },
         )
         assert c._alarm_store.saved["pending"] is True
         assert c.last_alarm is not None and c.last_alarm.tzinfo is not None
@@ -91,12 +98,20 @@ class TestRestart:
         c._handle_system_status(4)
         mock_hass.bus.async_fire.assert_called_once_with(
             EVENT_ALARM,
-            {"entry_id": "entry1", "status": 4, "previous_status": None, "after_restart": True},
+            {
+                "entry_id": "entry1",
+                "status": 4,
+                "previous_status": None,
+                "after_restart": True,
+            },
         )
 
     async def test_alarm_already_pending_before_restart_is_silent(self, mock_hass):
         c = make(mock_hass)
-        c._alarm_store.data = {"pending": True, "last_alarm": "2026-11-25T02:42:00+00:00"}
+        c._alarm_store.data = {
+            "pending": True,
+            "last_alarm": "2026-11-25T02:42:00+00:00",
+        }
         await c._async_load_alarm_state()
         c._handle_system_status(4)
         mock_hass.bus.async_fire.assert_not_called()

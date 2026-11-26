@@ -55,7 +55,13 @@ def test_fresh_install_does_not_fire():
 def test_missing_or_unknown_reading_changes_nothing(gap):
     t = AlarmTracker()
     assert feed(t, [1, gap, 1, gap, 4, gap, 4]) == [
-        None, None, None, None, NewAlarm(4, 1, False, T1), None, None,
+        None,
+        None,
+        None,
+        None,
+        NewAlarm(4, 1, False, T1),
+        None,
+        None,
     ]
 
 

@@ -26,8 +26,8 @@ class MockStore:
     def __init__(self, hass, version, key, *args, **kwargs):
         self.version = version
         self.key = key
-        self.data = None          # what async_load returns
-        self.saved = None         # last data handed to a save
+        self.data = None  # what async_load returns
+        self.saved = None  # last data handed to a save
         self.load_error = None
         self.save_error = None
 
