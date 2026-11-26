@@ -76,14 +76,12 @@ from .energy_blocking import (
     EnergyBlockingControl,
 )
 from .enums import (
-    AlarmCategory,
     CircuitType,
     DHWProgramMode,
     OperatingMode,
     RoomProgramMode,
 )
 from .exceptions import (
-    AlarmNotClearableError,
     BuderusCANException,
     CircuitNotAvailableError,
     ConnectionError,
@@ -101,7 +99,6 @@ from .exceptions import (
 )
 from .heat_pump import HeatPumpClient
 from .menu_api import (
-    Alarm,
     AlarmController,
     Circuit,
     EnergyView,
@@ -131,7 +128,6 @@ __all__ = [
     "alarm_pending",
     "parse_system_status",
     # Exceptions
-    "AlarmNotClearableError",
     "BuderusCANException",
     "CircuitNotAvailableError",
     "ConnectionError",
@@ -161,13 +157,11 @@ __all__ = [
     # Utilities
     "ValueEncoder",
     # Menu API enums
-    "AlarmCategory",
     "CircuitType",
     "DHWProgramMode",
     "OperatingMode",
     "RoomProgramMode",
     # Menu API data classes
-    "Alarm",
     "MenuItem",
     "ScheduleSlot",
     "StatusSnapshot",

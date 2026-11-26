@@ -144,3 +144,14 @@ class TestMenuCategories:
         """Alarms menu exists."""
         names = [c.name for c in MENU_ROOT.children]
         assert "Alarms" in names
+
+    def test_alarms_menu_reads_system_status(self):
+        """The Alarms menu holds the one alarm value the pump exposes."""
+        alarms = next(c for c in MENU_ROOT.children if c.name == "Alarms")
+        assert [c.parameter for c in alarms.children] == ["RTU800B_SYSTEM_STATUS"]
+
+    def test_alarm_params_removed(self):
+        """The table of parameters that were never alarm log entries is gone."""
+        import buderus_wps.menu_structure as menu_structure
+
+        assert not hasattr(menu_structure, "ALARM_PARAMS")

@@ -22,6 +22,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   timestamp, and a further alarm while one is still pending gives no new event.
   See `docs/PROTOCOL.md`, "Alarm Status".
 
+### Changed
+- **Breaking (library API): the alarm log API is gone (#25).** Removed from the
+  bundled `buderus_wps` library: `AlarmController.active_alarms`, `.alarm_log`,
+  `.info_log`, `.acknowledge()` and `.clear()`, the `Alarm` data class,
+  `AlarmCategory`, `AlarmNotClearableError` and `ALARM_PARAMS`. They read
+  `ADDITIONAL_ALARM*`, which are auxiliary-heater flags and not log entries,
+  and wrote to `ALARM_ACKNOWLEDGE` / `ALARM_CLEAR`, which do not exist in the
+  parameter table; the alarm log is not readable over CAN at all.
+  `MenuAPI.alarms` stays, as a read-only object with `system_status` (raw
+  value) and `pending` (True / False / None). The "Alarms" menu now holds one
+  item that reads the system status.
+
 ## [1.6.0-beta.5] - 2026-11-20
 
 ### Added

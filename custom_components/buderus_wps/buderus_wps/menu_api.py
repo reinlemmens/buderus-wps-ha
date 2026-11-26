@@ -59,25 +59,23 @@ Example:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date
 from typing import TYPE_CHECKING, Any, Optional, cast
 
+from .alarm_status import SYSTEM_STATUS_PARAM, alarm_pending, parse_system_status
 from .enums import (
-    AlarmCategory,
     CircuitType,
     DHWProgramMode,
     OperatingMode,
     RoomProgramMode,
 )
 from .exceptions import (
-    AlarmNotClearableError,
     CircuitNotAvailableError,
     MenuNavigationError,
     ReadOnlyError,
     ValidationError,
 )
 from .menu_structure import (
-    ALARM_PARAMS,
     CIRCUIT_PARAMS,
     DHW_PARAMS,
     ENERGY_PARAMS,
@@ -140,18 +138,6 @@ class VacationPeriod:
     start_date: Optional[date] = None
     end_date: Optional[date] = None
     reduced_setpoint: Optional[float] = None
-
-
-@dataclass
-class Alarm:
-    """An active or historical alarm."""
-
-    code: int
-    category: AlarmCategory
-    description: str
-    timestamp: datetime
-    acknowledged: bool
-    clearable: bool
 
 
 # =============================================================================
@@ -608,85 +594,27 @@ class EnergyView:
 
 
 class AlarmController:
-    """Manage alarms and information logs."""
+    """Whether the heat pump has unconfirmed alarms (read-only).
+
+    The alarm log, the alarm texts and their timestamps are not readable over
+    CAN, and alarms cannot be acknowledged or cleared from here. The pump only
+    reports, through RTU800B_SYSTEM_STATUS, that unconfirmed alarm popups
+    exist on its panel. See alarm_status.py and docs/PROTOCOL.md.
+    """
 
     def __init__(self, client: HeatPumpClient) -> None:
         self._client = client
 
     @property
-    def active_alarms(self) -> list[Alarm]:
-        """List of currently active alarms."""
-        alarms = []
-        for i in range(1, 6):
-            try:
-                result = self._client.read_parameter(ALARM_PARAMS[f"alarm_log_{i}"])
-                alarm = self._parse_alarm(result, i)
-                if alarm and not alarm.acknowledged:
-                    alarms.append(alarm)
-            except KeyError:
-                continue
-        return alarms
+    def system_status(self) -> Optional[int]:
+        """Raw system status: 4 = alarm pending, 1 = none; None if unusable."""
+        result = self._client.read_parameter(SYSTEM_STATUS_PARAM)
+        return parse_system_status(result.get("decoded"))
 
     @property
-    def alarm_log(self) -> list[Alarm]:
-        """Historical alarm log entries."""
-        alarms = []
-        for i in range(1, 6):
-            try:
-                result = self._client.read_parameter(ALARM_PARAMS[f"alarm_log_{i}"])
-                alarm = self._parse_alarm(result, i)
-                if alarm:
-                    alarms.append(alarm)
-            except KeyError:
-                continue
-        return alarms
-
-    @property
-    def info_log(self) -> list[Alarm]:
-        """Information/warning log entries."""
-        entries = []
-        for i in range(1, 6):
-            try:
-                result = self._client.read_parameter(ALARM_PARAMS[f"info_log_{i}"])
-                entry = self._parse_alarm(result, i, category=AlarmCategory.INFO)
-                if entry:
-                    entries.append(entry)
-            except KeyError:
-                continue
-        return entries
-
-    def _parse_alarm(
-        self,
-        result: dict[str, Any],
-        index: int,
-        category: AlarmCategory = AlarmCategory.ALARM,
-    ) -> Optional[Alarm]:
-        """Parse alarm data from parameter result."""
-        decoded = result.get("decoded")
-        if decoded is None or decoded == 0:
-            return None
-
-        # The decoded value is the alarm code itself (e.g., 5283)
-        error_code = int(decoded)
-
-        return Alarm(
-            code=error_code,
-            category=category,
-            description=f"Error {error_code}",  # TODO: Map codes to text descriptions
-            timestamp=datetime.now(),  # We don't get a timestamp from these params
-            acknowledged=False,  # Status not available in this simple integer
-            clearable=True,
-        )
-
-    def acknowledge(self, alarm: Alarm) -> None:
-        """Acknowledge an active alarm."""
-        self._client.write_value(ALARM_PARAMS["alarm_acknowledge"], alarm.code)
-
-    def clear(self, alarm: Alarm) -> None:
-        """Clear a resolved alarm."""
-        if not alarm.clearable:
-            raise AlarmNotClearableError(alarm.code)
-        self._client.write_value(ALARM_PARAMS["alarm_clear"], alarm.code)
+    def pending(self) -> Optional[bool]:
+        """True while unconfirmed alarms exist, None if the status is unknown."""
+        return alarm_pending(self.system_status)
 
 
 class VacationController:
@@ -958,7 +886,7 @@ class MenuAPI:
 
     @property
     def alarms(self) -> AlarmController:
-        """Alarm management."""
+        """Alarm-pending status (read-only)."""
         return self._alarms
 
     @property
