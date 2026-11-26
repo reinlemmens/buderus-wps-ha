@@ -52,7 +52,10 @@ def setup_ha_mocks():
     """
     # Core HA modules
     sys.modules["homeassistant"] = MagicMock()
-    sys.modules["homeassistant.core"] = MagicMock()
+    core_mock = MagicMock()
+    # Real HA: enum member. A plain value is enough for identity checks.
+    core_mock.CoreState.running = "RUNNING"
+    sys.modules["homeassistant.core"] = core_mock
     sys.modules["homeassistant.config_entries"] = MagicMock()
 
     exceptions_mock = MagicMock()
@@ -347,6 +350,7 @@ def mock_hass() -> MagicMock:
     """Create a minimal mock Home Assistant instance."""
     hass = MagicMock()
     hass.data = {}
+    hass.state = "RUNNING"  # CoreState.running, see setup_ha_mocks
     hass.bus = MagicMock()
     hass.bus.async_listen_once = MagicMock()
     hass.async_add_executor_job = AsyncMock(side_effect=lambda f, *args: f(*args))

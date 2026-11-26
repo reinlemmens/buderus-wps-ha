@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
-from homeassistant.core import HomeAssistant
+from homeassistant.core import CoreState, HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.storage import Store
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
@@ -54,6 +54,10 @@ UPDATE_TIMEOUTS_BEFORE_RESET = 2
 # Watchdog: force a teardown/rebuild when no update has succeeded for this
 # many scan intervals, whatever the cause.
 WATCHDOG_STALL_MULTIPLIER = 5
+# Consecutive failed reads of the alarm status before one warning is logged.
+# A failed read keeps the previous value, so without the warning a read that
+# stopped working would look like "no alarm" forever.
+SYSTEM_STATUS_FAILURES_BEFORE_WARNING = 10
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -169,6 +173,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         # keeps working when the user disables the alarm entities. The state
         # is persisted so an alarm raised during a restart is still reported.
         self._alarm_tracker = AlarmTracker()
+        self._system_status_read_failures = 0
         self._alarm_store: Store[dict[str, Any]] = Store(
             hass,
             ALARM_STORAGE_VERSION,
@@ -206,7 +211,16 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         Fires EVENT_ALARM on the step from "not pending" to "pending" and
         schedules a save when the remembered state changed. Never raises: a
         problem here must not cost the update cycle.
+
+        Nothing is processed until Home Assistant is running. The first
+        reading after a restart is taken during startup, before automations
+        have attached their triggers; an event fired then would reach nobody
+        and the alarm would count as reported. The reading is picked up by the
+        first cycle after startup instead. The same holds while HA is
+        stopping: the alarm is then reported after the next start.
         """
+        if self.hass.state is not CoreState.running:
+            return
         try:
             before = self._alarm_tracker.as_dict()
             new_alarm = self._alarm_tracker.update(status, datetime.now(timezone.utc))
@@ -1434,15 +1448,36 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         the range as 0..0, so the range-validating read rejects real values.
         A failed read keeps the previous value, so it cannot look like an
         alarm starting or ending.
+
+        Only read when this pump reported the parameter in its element list.
+        A name the pump does not know still resolves, to the index from the
+        built-in table, and whatever lives at that index on this firmware
+        would be taken for an alarm status. No reading is better than that.
         """
+        registry = self._registry
+        if registry is None or not registry.is_discovered(SYSTEM_STATUS_PARAM):
+            return None
         try:
             res = self._client.read_parameter(SYSTEM_STATUS_PARAM, timeout=0.5)
             status = parse_system_status(res.get("decoded"))
             if status is None:
                 raise ValueError(f"not a status value: {res.get('decoded')!r}")
+            self._system_status_read_failures = 0
             return status
         except Exception as err:
             _LOGGER.debug("RTR FAILED for %s: %s", SYSTEM_STATUS_PARAM, err)
+            self._system_status_read_failures += 1
+            if (
+                self._system_status_read_failures
+                == SYSTEM_STATUS_FAILURES_BEFORE_WARNING
+            ):
+                _LOGGER.warning(
+                    "%s could not be read %d times in a row (last error: %s); "
+                    "the alarm state shown is the last value that was read",
+                    SYSTEM_STATUS_PARAM,
+                    self._system_status_read_failures,
+                    err,
+                )
         if self._last_known_good_data is not None:
             return self._last_known_good_data.system_status
         return None

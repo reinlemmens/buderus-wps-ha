@@ -12,6 +12,7 @@ def make(mock_hass, entry_id="entry1"):
     c = BuderusCoordinator(mock_hass, "/dev/ttyACM0", 60, entry_id=entry_id)
     c.hass = mock_hass  # mocked parent does not set this
     c._client = MagicMock()
+    c._registry = MagicMock()  # is_discovered() is truthy unless a test says otherwise
     return c
 
 
@@ -41,6 +42,90 @@ class TestRead:
         c = make(mock_hass)
         c._client.read_parameter.return_value = {"decoded": decoded}
         assert c._sync_read_system_status() is None
+
+
+class TestReadGuards:
+    """The read must not guess and must not fail silently forever."""
+
+    def test_parameter_this_pump_did_not_report_is_never_read(self, mock_hass):
+        c = make(mock_hass)
+        c._registry.is_discovered.return_value = False
+        c._last_known_good_data = MagicMock(system_status=4)
+        assert c._sync_read_system_status() is None
+        c._registry.is_discovered.assert_called_with("RTU800B_SYSTEM_STATUS")
+        c._client.read_parameter.assert_not_called()
+
+    def test_no_registry_is_no_reading(self, mock_hass):
+        c = make(mock_hass)
+        c._registry = None
+        assert c._sync_read_system_status() is None
+        c._client.read_parameter.assert_not_called()
+
+    @staticmethod
+    def _warnings(caplog):
+        return [
+            r
+            for r in caplog.records
+            if r.levelname == "WARNING" and "RTU800B_SYSTEM_STATUS" in r.getMessage()
+        ]
+
+    def test_persistent_read_failure_warns_once(self, mock_hass, caplog):
+        c = make(mock_hass)
+        c._last_known_good_data = MagicMock(system_status=1)
+        c._client.read_parameter.side_effect = TimeoutError("no answer")
+        with caplog.at_level("WARNING"):
+            for _ in range(9):
+                assert c._sync_read_system_status() == 1
+            assert self._warnings(caplog) == []
+            for _ in range(16):
+                assert c._sync_read_system_status() == 1
+        assert len(self._warnings(caplog)) == 1
+
+    def test_failure_warning_comes_again_after_a_recovery(self, mock_hass, caplog):
+        c = make(mock_hass)
+        c._last_known_good_data = MagicMock(system_status=1)
+        answers = [TimeoutError("no answer")] * 10 + [{"decoded": 1}]
+        c._client.read_parameter.side_effect = answers + answers[:10]
+        with caplog.at_level("WARNING"):
+            for _ in range(21):
+                assert c._sync_read_system_status() == 1
+        assert len(self._warnings(caplog)) == 2
+
+
+class TestHomeAssistantStillStarting:
+    """Automations attach their triggers only once HA is running."""
+
+    async def test_alarm_raised_during_restart_waits_for_ha_start(self, mock_hass):
+        c = make(mock_hass)
+        c._alarm_store.data = {"pending": False, "last_alarm": None}
+        await c._async_load_alarm_state()
+
+        mock_hass.state = "NOT_RUNNING"
+        c._handle_system_status(4)
+        mock_hass.bus.async_fire.assert_not_called()
+        assert c._alarm_tracker.pending is False
+        assert c.last_alarm is None
+        assert c._alarm_store.saved is None
+
+        mock_hass.state = "RUNNING"
+        c._handle_system_status(4)
+        mock_hass.bus.async_fire.assert_called_once_with(
+            EVENT_ALARM,
+            {
+                "entry_id": "entry1",
+                "status": 4,
+                "previous_status": None,
+                "after_restart": True,
+            },
+        )
+
+    def test_alarm_seen_while_ha_is_stopping_is_kept_for_next_start(self, mock_hass):
+        c = make(mock_hass)
+        c._handle_system_status(1)
+        mock_hass.state = "STOPPING"
+        c._handle_system_status(4)
+        mock_hass.bus.async_fire.assert_not_called()
+        assert c._alarm_store.saved == {"pending": False, "last_alarm": None}
 
 
 class TestDetection:

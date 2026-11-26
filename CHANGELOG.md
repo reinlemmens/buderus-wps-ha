@@ -14,10 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `buderus_wps_alarm` fires on each new alarm (fields `entry_id`, `status`,
   `previous_status`, `after_restart`). The state is remembered across restarts:
   an alarm raised while Home Assistant was down fires the event once on the
-  first reading after start, one that was already pending does not fire again.
+  first reading after Home Assistant has finished starting, one that was
+  already pending does not fire again.
   A diagnostic sensor "System Status" shows the raw value.
   The source is the pump parameter `RTU800B_SYSTEM_STATUS` (4 = unconfirmed
-  alarm pending, 1 = none), read once per update cycle. The alarm log itself is
+  alarm pending, 1 = none), read once per update cycle and only when the pump
+  reports that parameter in its element list. The alarm log itself is
   not readable over CAN, so there is no alarm text, category or panel
   timestamp, and a further alarm while one is still pending gives no new event.
   See `docs/PROTOCOL.md`, "Alarm Status".

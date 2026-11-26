@@ -95,8 +95,9 @@ On each new alarm the integration fires the event `buderus_wps_alarm`:
 | `after_restart` | `true` when the alarm was found on the first reading after a restart |
 
 An alarm that was already pending before a restart does not fire the event
-again. One raised while Home Assistant was down fires it once, on the first
-reading after start.
+again. One raised while Home Assistant was down or restarting fires it once,
+on the first reading after Home Assistant has finished starting (automations
+only listen from then on), so up to one scan interval after startup.
 
 Limits, set by what the heat pump puts on the CAN bus:
 
@@ -109,6 +110,8 @@ Limits, set by what the heat pump puts on the CAN bus:
 - Detection can be up to one scan interval (default 60 s) late. An alarm that
   is dismissed on the panel within one scan interval can go unnoticed.
 - Alarms cannot be confirmed or reset from Home Assistant.
+- If the pump's firmware does not report the `RTU800B_SYSTEM_STATUS` parameter,
+  the value is not read: the entities stay unknown and no event fires.
 
 ### Energy Block vs Compressor Block
 
