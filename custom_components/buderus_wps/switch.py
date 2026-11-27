@@ -9,9 +9,11 @@ from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN, ICON_ENERGY_BLOCK, ICON_USB
+from .buderus_wps.mixed_circuit import MIXED_CIRCUITS
+from .const import DOMAIN, ICON_ENERGY_BLOCK, ICON_ROOM_SENSOR, ICON_USB
 from .coordinator import BuderusCoordinator
 from .entity import BuderusEntity
 
@@ -27,13 +29,16 @@ async def async_setup_entry(
     data = hass.data[DOMAIN][entry.entry_id]
     coordinator: BuderusCoordinator = data["coordinator"]
 
-    async_add_entities(
-        [
-            BuderusEnergyBlockSwitch(coordinator, entry),
-            BuderusCompressorBlockSwitch(coordinator, entry),
-            BuderusUSBConnectionSwitch(coordinator, entry),
-        ]
+    switches: list[SwitchEntity] = [
+        BuderusEnergyBlockSwitch(coordinator, entry),
+        BuderusCompressorBlockSwitch(coordinator, entry),
+        BuderusUSBConnectionSwitch(coordinator, entry),
+    ]
+    switches.extend(
+        BuderusRoomSensorAcknowledgedSwitch(coordinator, circuit, entry)
+        for circuit in sorted(MIXED_CIRCUITS)
     )
+    async_add_entities(switches)
 
 
 async def async_setup_platform(
@@ -236,3 +241,51 @@ class BuderusCompressorBlockSwitch(BuderusEntity, SwitchEntity):
             )
 
         await self.coordinator.async_request_refresh()
+
+
+class BuderusRoomSensorAcknowledgedSwitch(BuderusEntity, SwitchEntity):
+    """Installer setting "Cn room -> Acknowledge room sensor" (#22).
+
+    Backed by the circuit's bit in MV_T5_ACKNOWLEDGED_BITMASK. While off, the
+    pump ignores the circuit's room thermostat: room influence and the room
+    setpoint (including the room setpoint number entity) have no effect.
+    Turning it on for a circuit without a working room sensor makes the pump
+    raise a room sensor failure alarm.
+    """
+
+    _attr_icon = ICON_ROOM_SENSOR
+    _attr_entity_category = EntityCategory.CONFIG
+
+    def __init__(
+        self,
+        coordinator: BuderusCoordinator,
+        circuit: int,
+        entry: ConfigEntry | None = None,
+    ) -> None:
+        """Initialize the switch for one mixed circuit."""
+        super().__init__(coordinator, f"room_sensor_acknowledged_c{circuit}", entry)
+        self.circuit = circuit
+        self._attr_name = f"Room Sensor Acknowledged C{circuit}"
+
+    @property
+    def is_on(self) -> bool | None:
+        """Return True if the pump uses this circuit's room sensor."""
+        if self.coordinator.data is None:
+            return None
+        return self.coordinator.data.room_sensor_acknowledged.get(self.circuit)
+
+    async def async_turn_on(self, **kwargs: Any) -> None:
+        """Acknowledge the circuit's room sensor."""
+        await self._async_set(True)
+
+    async def async_turn_off(self, **kwargs: Any) -> None:
+        """Stop the pump from using the circuit's room sensor."""
+        await self._async_set(False)
+
+    async def _async_set(self, acknowledged: bool) -> None:
+        try:
+            await self.coordinator.async_set_room_sensor_acknowledged(
+                self.circuit, acknowledged
+            )
+        except ValueError as err:
+            raise HomeAssistantError(str(err)) from err

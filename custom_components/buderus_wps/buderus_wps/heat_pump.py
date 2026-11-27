@@ -336,6 +336,35 @@ class HeatPumpClient:
             msg, timeout=timeout if timeout is not None else adapter_timeout
         )
 
+    def write_raw_value(
+        self, name_or_idx: Any, raw: int, timeout: Optional[float] = None
+    ) -> None:
+        """Write a raw unsigned 16-bit value, skipping the min/max guard.
+
+        For parameters whose definition carries no write range (min = max)
+        but which the pump is known to accept writes for, such as
+        MV_T5_ACKNOWLEDGED_BITMASK. Callers must verify the result by
+        reading the parameter back.
+        """
+        param = self.get(name_or_idx)
+        if isinstance(raw, bool) or not isinstance(raw, int):
+            raise ValueError(f"Raw value for {param.text} must be an int, got {raw!r}")
+        if not 0 <= raw <= 0xFFFF:
+            raise ValueError(
+                f"Raw value {raw} out of range for {param.text} [0, 65535]"
+            )
+        request_id = CAN_REQUEST_BASE | (param.idx << 14)
+        msg = CANMessage(
+            arbitration_id=request_id,
+            data=raw.to_bytes(2, "big"),
+            is_extended_id=True,
+        )
+        self._adapter.flush_input_buffer()
+        adapter_timeout = getattr(self._adapter, "timeout", 2.0)
+        self._adapter.send_frame(
+            msg, timeout=timeout if timeout is not None else adapter_timeout
+        )
+
     # Internal helpers
     def _lookup(self, name_or_idx: Any) -> Optional[Parameter]:
         """Look up parameter by name or index using the registry.

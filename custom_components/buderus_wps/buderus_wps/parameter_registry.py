@@ -1,9 +1,11 @@
 """
-Parameter registry backed by static defaults with optional device overrides.
+Parameter registry backed by static data with optional device overrides.
 
-Defaults are generated from fhem/26_KM273v018.pm via tools/generate_parameter_defaults.py
-and stored in buderus_wps/parameter_defaults.py. When a live heat pump provides
-an updated element list, the registry can be rebuilt with those entries.
+Defaults come from buderus_wps/parameter_data.py, the device-derived table that
+HeatPump also falls back to. Do NOT use parameter_defaults.py (FHEM numbering):
+its idx values are offset by up to 5 for most parameters (#15). When a live
+heat pump provides an updated element list, the registry can be rebuilt with
+those entries.
 """
 
 from __future__ import annotations
@@ -11,7 +13,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional
 
-from .parameter_defaults import PARAMETER_DEFAULTS
+from .parameter_data import PARAMETER_DATA
 
 
 @dataclass(frozen=True)
@@ -29,7 +31,7 @@ class ParameterRegistry:
     """Manage parameter metadata with name/index lookup and overrides."""
 
     def __init__(self, parameters: Optional[list[dict]] = None) -> None:
-        source = parameters if parameters is not None else PARAMETER_DEFAULTS
+        source = parameters if parameters is not None else PARAMETER_DATA
         self._parameters: list[Parameter] = [self._to_parameter(p) for p in source]
         self._by_name: dict[str, Parameter] = {
             p.text.upper(): p for p in self._parameters

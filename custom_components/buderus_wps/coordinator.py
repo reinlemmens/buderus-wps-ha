@@ -23,6 +23,7 @@ from .const import (
     BACKOFF_MAX,
     DOMAIN,
     EVENT_ALARM,
+    MIXED_CIRCUIT_CONTEXT,
     SENSOR_BRINE_IN,
     SENSOR_BRINE_OUT,
     SENSOR_DHW,
@@ -32,10 +33,6 @@ from .const import (
     SENSOR_ROOM_C2,
     SENSOR_ROOM_C3,
     SENSOR_ROOM_C4,
-    SENSOR_SETPOINT_C1,
-    SENSOR_SETPOINT_C2,
-    SENSOR_SETPOINT_C3,
-    SENSOR_SETPOINT_C4,
     SENSOR_SUPPLY,
 )
 
@@ -54,6 +51,8 @@ UPDATE_TIMEOUTS_BEFORE_RESET = 2
 # Watchdog: force a teardown/rebuild when no update has succeeded for this
 # many scan intervals, whatever the cause.
 WATCHDOG_STALL_MULTIPLIER = 5
+# Pause between writing MV_T5_ACKNOWLEDGED_BITMASK and reading it back.
+ROOM_SENSOR_ACK_VERIFY_DELAY = 1.0
 # Consecutive failed reads of the alarm status before one warning is logged.
 # A failed read keeps the previous value, so without the warning a read that
 # stopped working would look like "no alarm" forever.
@@ -107,6 +106,13 @@ class BuderusData:
     # Room setpoint each circuit runs on (set by its room thermostat or by HA),
     # keyed by circuit number. Only circuits in ROOM_SETPOINT_CIRCUITS.
     room_setpoint_active: dict[int, float | None] = field(default_factory=dict)
+    # Mixed circuits (C2-C4): "Acknowledge room sensor" installer setting from
+    # MV_T5_ACKNOWLEDGED_BITMASK, and diagnostic values keyed by circuit and
+    # mixed_circuit.VALUE_* (only those an enabled entity asks for) (#22).
+    room_sensor_acknowledged: dict[int, bool | None] = field(default_factory=dict)
+    mixed_circuit_values: dict[int, dict[str, float | None]] = field(
+        default_factory=dict
+    )
     # Raw RTU800B_SYSTEM_STATUS: 4 = unconfirmed alarm pending, 1 = none
     # (3 and 0 are short steps while alarms are confirmed). See alarm_status.py.
     system_status: int | None = None
@@ -169,6 +175,9 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         from .buderus_wps.room_thermostat import WriteRateLimiter
 
         self._room_setpoint_limiter = WriteRateLimiter()
+        self._room_sensor_ack_limiter = WriteRateLimiter()
+        # (circuit, value key) pairs an enabled entity wants read (#22).
+        self._wanted_mixed_values: set[tuple[int, str]] = set()
         # New-alarm detection (issue #25). Lives here, not in an entity, so it
         # keeps working when the user disables the alarm entities. The state
         # is persisted so an alarm raised during a restart is still reported.
@@ -519,8 +528,8 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
 
         # Run element discovery to get actual device indices
         # This is critical because firmware versions may have different idx values
-        # for the same parameter names (e.g., XDHW_TIME at idx=2475 in static
-        # defaults but idx=2480 on actual device)
+        # for the same parameter names (e.g., XDHW_TIME is idx=2475 in the FHEM
+        # table but idx=2480 on the device and in parameter_data.py)
         #
         # IMPORTANT: Cache is stored in /config/ which persists across HA restarts.
         # On fresh install, discovery MUST succeed - we fail-fast rather than
@@ -749,6 +758,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
 
             try:
                 # Attempt to fetch fresh data
+                self._wanted_mixed_values = self._collect_wanted_mixed_values()
                 fresh_data: BuderusData = await self.hass.async_add_executor_job(
                     self._sync_fetch_data
                 )
@@ -840,10 +850,6 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             SENSOR_ROOM_C2: None,
             SENSOR_ROOM_C3: None,
             SENSOR_ROOM_C4: None,
-            SENSOR_SETPOINT_C1: None,
-            SENSOR_SETPOINT_C2: None,
-            SENSOR_SETPOINT_C3: None,
-            SENSOR_SETPOINT_C4: None,
         }
 
         # Pre-fill with last known good data to prevent "Unknown" flapping
@@ -1244,7 +1250,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
 
         # Get DHW setpoint temperature (best-effort)
         # PROTOCOL: DHW_CALCULATED_SETPOINT_TEMP is the normal DHW setpoint (40-70°C)
-        # Note: parameter_defaults.py idx corrected from 385 to 386 per FHEM discovery
+        # Looked up by name: device idx is 386 (FHEM table says 385, see #15)
         dhw_setpoint: float | None = None
         try:
             result = self._client.read_parameter("DHW_CALCULATED_SETPOINT_TEMP")
@@ -1276,7 +1282,9 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         # Get digital status flags
         # Default to False if reading fails (safe fallback)
         # compressor_running = _get_binary("COMPRESSOR_RUNNING") # REMOVED: Unreliable
-        energy_blocked = _get_binary(247)  # COMPRESSOR_BLOCKED
+        # energy_blocked is read by name from ADDITIONAL_BLOCKED above. It used to
+        # be overwritten here by _get_binary(247): 247 is the FHEM index, which on
+        # the device is COMPRESSOR_ALARM_2 (#15).
         dhw_active = _get_binary("PUMP_DHW_ACTIVE")  # idx 2016
         g1_active = _get_binary("PUMP_G1_CONTINUAL")  # idx 12796, Main/Heating pump
 
@@ -1356,7 +1364,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         # Get compressor blocked status (best-effort)
         try:
             # Use the initialized energy_blocking helper to read status
-            # This ensures we use the correct parameter (COMPRESSOR_BLOCKED idx 247)
+            # This ensures we use the correct parameter (COMPRESSOR_BLOCKED, by name)
             compressor_blocked = self.energy_blocking._read_compressor_status(
                 timeout=2.0
             )
@@ -1368,6 +1376,9 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                 compressor_blocked = None
 
         room_setpoint_active = self._sync_read_room_setpoints()
+        room_sensor_acknowledged, mixed_circuit_values = (
+            self._sync_read_mixed_circuits()
+        )
         system_status = self._sync_read_system_status()
 
         # Build result with mix of fresh and stale data
@@ -1395,6 +1406,8 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             dhw_gt8_stop_max_temp=dhw_gt8_stop_max_temp,
             dhw_user_start_temp=dhw_user_start_temp,
             room_setpoint_active=room_setpoint_active,
+            room_sensor_acknowledged=room_sensor_acknowledged,
+            mixed_circuit_values=mixed_circuit_values,
             system_status=system_status,
             parameter_results=parameter_results,
         )
@@ -1439,6 +1452,74 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
                 value = previous.get(circuit)
             values[circuit] = value
         return values
+
+    def _collect_wanted_mixed_values(self) -> set[tuple[int, str]]:
+        """Return the mixed circuit values enabled entities listen for.
+
+        Diagnostic entities register a ``("mixed_circuit", circuit, key)``
+        listener context; disabled entities register none, so their
+        parameters are not polled.
+        """
+        wanted: set[tuple[int, str]] = set()
+        try:
+            contexts = list(self.async_contexts())
+        except Exception:  # noqa: BLE001 - older HA / test doubles
+            return wanted
+        for ctx in contexts:
+            if (
+                isinstance(ctx, tuple)
+                and len(ctx) == 3
+                and ctx[0] == MIXED_CIRCUIT_CONTEXT
+            ):
+                wanted.add((ctx[1], ctx[2]))
+        return wanted
+
+    def _sync_read_mixed_circuits(
+        self,
+    ) -> tuple[dict[int, bool | None], dict[int, dict[str, float | None]]]:
+        """Read mixed circuit room sensor state (best-effort, #22).
+
+        Always reads MV_T5_ACKNOWLEDGED_BITMASK (one RTR); per-circuit
+        diagnostic values only when an enabled entity wants them. A failed
+        read keeps the previous value; a successful read of 0xDEAD gives None.
+        """
+        from .buderus_wps.mixed_circuit import (
+            MIXED_CIRCUITS,
+            ROOM_SENSOR_ACK_PARAM,
+            decode_bitmask,
+            decode_temperature,
+            is_acknowledged,
+        )
+
+        previous = self._last_known_good_data
+        prev_ack = previous.room_sensor_acknowledged if previous else {}
+        prev_values = previous.mixed_circuit_values if previous else {}
+
+        acknowledged: dict[int, bool | None]
+        try:
+            res = self._client.read_parameter(ROOM_SENSOR_ACK_PARAM)
+            mask = decode_bitmask(res.get("decoded"))
+            if mask is None:
+                raise ValueError(f"invalid bitmask {res.get('decoded')!r}")
+            acknowledged = {c: is_acknowledged(mask, c) for c in MIXED_CIRCUITS}
+        except Exception as err:
+            _LOGGER.warning("RTR FAILED for %s: %s", ROOM_SENSOR_ACK_PARAM, err)
+            acknowledged = {c: prev_ack.get(c) for c in MIXED_CIRCUITS}
+
+        values: dict[int, dict[str, float | None]] = {}
+        for circuit, key in sorted(self._wanted_mixed_values):
+            mc = MIXED_CIRCUITS.get(circuit)
+            if mc is None or key not in mc.params:
+                continue
+            param = mc.params[key]
+            try:
+                res = self._client.read_parameter(param)
+                value = decode_temperature(res.get("decoded"))
+            except Exception as err:
+                _LOGGER.warning("RTR FAILED for %s: %s", param, err)
+                value = prev_values.get(circuit, {}).get(key)
+            values.setdefault(circuit, {})[key] = value
+        return acknowledged, values
 
     def _sync_read_system_status(self) -> int | None:
         """Read the raw alarm-pending status (best-effort).
@@ -1892,7 +1973,7 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
         """Synchronous DHW setpoint set (runs in executor)."""
         _LOGGER.debug("_sync_set_dhw_setpoint called with temp=%.1f", temp)
         try:
-            # Note: parameter_defaults.py idx corrected from 385 to 386 per FHEM discovery
+            # Looked up by name: device idx is 386 (FHEM table says 385, see #15)
             self._client.write_value("DHW_CALCULATED_SETPOINT_TEMP", temp)
             _LOGGER.info("Set DHW setpoint to %.1f°C", temp)
         except Exception as err:
@@ -2020,4 +2101,102 @@ class BuderusCoordinator(DataUpdateCoordinator[BuderusData]):
             circuit,
             temp,
             frame.arbitration_id,
+        )
+
+    async def async_set_room_sensor_acknowledged(
+        self, circuit: int, acknowledged: bool
+    ) -> None:
+        """Set a mixed circuit's "Acknowledge room sensor" installer setting.
+
+        Read-modify-writes the circuit's bit in MV_T5_ACKNOWLEDGED_BITMASK and
+        reads it back to confirm the pump took it (#22). Writes are limited per
+        circuit by ``_room_sensor_ack_limiter``.
+
+        Raises:
+            ValueError: not a mixed circuit
+            HomeAssistantError: rate limit hit, not connected, timeout, or the
+                pump did not apply the change
+        """
+        from .buderus_wps.mixed_circuit import MIXED_CIRCUITS
+
+        if circuit not in MIXED_CIRCUITS:
+            raise ValueError(
+                f"Room sensor acknowledgement not supported for circuit {circuit}; "
+                f"supported: {sorted(MIXED_CIRCUITS)}"
+            )
+        if not self._room_sensor_ack_limiter.allowed(circuit):
+            wait_min = self._room_sensor_ack_limiter.retry_after(circuit) / 60
+            raise HomeAssistantError(
+                f"Room sensor acknowledgement C{circuit} changed too often; "
+                f"try again in {wait_min:.0f} min"
+            )
+        # asyncio.wait_for keeps Python 3.9 support (see async_set_room_setpoint).
+        try:
+            await asyncio.wait_for(self._lock.acquire(), timeout=LOCK_ACQUIRE_TIMEOUT)
+            try:
+                await asyncio.wait_for(
+                    self.hass.async_add_executor_job(
+                        self._sync_set_room_sensor_acknowledged, circuit, acknowledged
+                    ),
+                    timeout=EXECUTOR_JOB_TIMEOUT,
+                )
+            finally:
+                self._lock.release()
+        except asyncio.TimeoutError:
+            _LOGGER.error("Timeout setting room sensor acknowledgement C%d", circuit)
+            raise HomeAssistantError("Timeout communicating with heat pump") from None
+        self._room_sensor_ack_limiter.record(circuit)
+
+        if self.data is not None:
+            self.data.room_sensor_acknowledged[circuit] = acknowledged
+            self.async_set_updated_data(self.data)
+
+    def _sync_set_room_sensor_acknowledged(
+        self, circuit: int, acknowledged: bool
+    ) -> None:
+        """Read-modify-write-verify the acknowledgement bit (runs in executor)."""
+        from .buderus_wps.mixed_circuit import (
+            ROOM_SENSOR_ACK_PARAM,
+            decode_bitmask,
+            is_acknowledged,
+            with_acknowledged,
+        )
+
+        if self._client is None or not self._connected:
+            raise HomeAssistantError("Not connected to heat pump")
+
+        def _read_mask() -> int:
+            res = self._client.read_parameter(ROOM_SENSOR_ACK_PARAM)
+            mask = decode_bitmask(res.get("decoded"))
+            if mask is None:
+                raise HomeAssistantError(
+                    f"Invalid {ROOM_SENSOR_ACK_PARAM} value {res.get('decoded')!r}"
+                )
+            return mask
+
+        current = _read_mask()
+        target = with_acknowledged(current, circuit, acknowledged)
+        if target == current:
+            _LOGGER.info(
+                "Room sensor C%d already %s (mask 0x%04X)",
+                circuit,
+                "acknowledged" if acknowledged else "not acknowledged",
+                current,
+            )
+            return
+
+        self._client.write_raw_value(ROOM_SENSOR_ACK_PARAM, target)
+        time.sleep(ROOM_SENSOR_ACK_VERIFY_DELAY)
+        readback = _read_mask()
+        if is_acknowledged(readback, circuit) != acknowledged:
+            raise HomeAssistantError(
+                f"Heat pump did not apply room sensor acknowledgement C{circuit}: "
+                f"wrote 0x{target:04X}, read back 0x{readback:04X}"
+            )
+        _LOGGER.info(
+            "Set room sensor C%d %s (mask 0x%04X -> 0x%04X)",
+            circuit,
+            "acknowledged" if acknowledged else "not acknowledged",
+            current,
+            readback,
         )

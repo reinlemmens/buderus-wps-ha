@@ -127,6 +127,35 @@ def test_write_value_encodes_and_sends():
     assert sent.data == b"\x00\x05"
 
 
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [(-3.0, b"\xff\xe2"), (-0.5, b"\xff\xfb"), (2.5, b"\x00\x19")],
+)
+def test_write_value_negative_tem_offset(value, expected):
+    """HEATING_CURVE_PARALLEL_OFFSET_GLOBAL (tem, -10..+10 °C) round-trips exactly.
+
+    Regression: -3.0 used to be sent as raw -29 (pump stored -2.9).
+    """
+    reg = ParameterRegistry(
+        [
+            {
+                "idx": 805,
+                "extid": "00000001",
+                "min": -100,
+                "max": 100,
+                "format": "tem",
+                "read": 0,
+                "text": "HEATING_CURVE_PARALLEL_OFFSET_GLOBAL",
+            }
+        ]
+    )
+    adapter = FakeAdapter()
+    client = HeatPumpClient(adapter, reg)
+
+    client.write_value("HEATING_CURVE_PARALLEL_OFFSET_GLOBAL", value)
+    assert adapter.sent[-1].data == expected
+
+
 def test_write_value_out_of_range_raises():
     reg = ParameterRegistry(
         [

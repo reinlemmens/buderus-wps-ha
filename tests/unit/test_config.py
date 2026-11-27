@@ -267,11 +267,6 @@ class TestGetDefaultSensorMap:
         assert sensor_map.get((0x0061, 0)) == "room_c2"
         assert sensor_map.get((0x0062, 0)) == "room_c3"
         assert sensor_map.get((0x0063, 0)) == "room_c4"
-        # Room setpoints from RC10 thermostats (idx=33 on circuit bases)
-        assert sensor_map.get((0x0060, 33)) == "setpoint_c1"
-        assert sensor_map.get((0x0061, 33)) == "setpoint_c2"
-        assert sensor_map.get((0x0062, 33)) == "setpoint_c3"
-        assert sensor_map.get((0x0063, 33)) == "setpoint_c4"
         # Note: DHW and brine sensors now read via RTR, not broadcast
 
     def test_returns_all_sensor_types(self) -> None:
@@ -286,10 +281,6 @@ class TestGetDefaultSensorMap:
         # Room temperature sensors (all 4 circuits)
         room_sensors = {"room_c1", "room_c2", "room_c3", "room_c4"}
         assert room_sensors.issubset(sensor_values)
-
-        # Room setpoint sensors (all 4 circuits)
-        setpoint_sensors = {"setpoint_c1", "setpoint_c2", "setpoint_c3", "setpoint_c4"}
-        assert setpoint_sensors.issubset(sensor_values)
 
 
 # =============================================================================

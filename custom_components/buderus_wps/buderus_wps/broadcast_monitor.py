@@ -116,30 +116,30 @@ KNOWN_BROADCASTS: dict[tuple[int, int], tuple[str, str]] = {
     (0x0060, 0): ("RC10_C1_ROOM_TEMP", "tem"),  # Room temperature
     (0x0060, 18): ("RC10_C1_DEMAND_TEMP", "tem"),  # Demand/setpoint temperature
     (0x0060, 33): (
-        "RC10_C1_ADJUSTED_SETPOINT",
+        "RC10_C1_ROOM_TEMP_PLUS_OFFSET",
         "tem",
-    ),  # Adjusted setpoint (base + offset)
+    ),  # ~room temp + 1.4 K; NOT a setpoint, meaning unknown (#19)
     (0x0060, 83): ("RC10_C1_ROOM_TEMP_COPY", "tem"),  # Room temperature (copy)
     # RC10 Room Controller - Circuit 2 (base 0x0061) - Hardware verified 2024-12-28
     (0x0061, 0): ("RC10_C2_ROOM_TEMP", "tem"),  # Room temperature
     (0x0061, 33): (
-        "RC10_C2_ADJUSTED_SETPOINT",
+        "RC10_C2_ROOM_TEMP_PLUS_OFFSET",
         "tem",
-    ),  # Adjusted setpoint (base + offset)
+    ),  # ~room temp + 1.4 K; NOT a setpoint, meaning unknown (#19)
     (0x0061, 83): ("RC10_C2_ROOM_TEMP_COPY", "tem"),  # Room temperature (copy)
     # RC10 Room Controller - Circuit 3 (base 0x0062) - Hardware verified 2024-12-28
     (0x0062, 0): ("RC10_C3_ROOM_TEMP", "tem"),  # Room temperature
     (0x0062, 33): (
-        "RC10_C3_ADJUSTED_SETPOINT",
+        "RC10_C3_ROOM_TEMP_PLUS_OFFSET",
         "tem",
-    ),  # Adjusted setpoint (base + offset)
+    ),  # ~room temp + 1.4 K; NOT a setpoint, meaning unknown (#19)
     (0x0062, 83): ("RC10_C3_ROOM_TEMP_COPY", "tem"),  # Room temperature (copy)
     # RC10 Room Controller - Circuit 4 (base 0x0063) - Hardware verified 2024-12-28
     (0x0063, 0): ("RC10_C4_ROOM_TEMP", "tem"),  # Room temperature
     (0x0063, 33): (
-        "RC10_C4_ADJUSTED_SETPOINT",
+        "RC10_C4_ROOM_TEMP_PLUS_OFFSET",
         "tem",
-    ),  # Adjusted setpoint (base + offset)
+    ),  # ~room temp + 1.4 K; NOT a setpoint, meaning unknown (#19)
     (0x0063, 83): ("RC10_C4_ROOM_TEMP_COPY", "tem"),  # Room temperature (copy)
     # Legacy C3 mapping on base 0x0402 (kept for compatibility)
     (0x0402, 55): ("RC10_C3_ROOM_TEMP_ALT", "tem"),  # Room temperature (alternate)
@@ -148,8 +148,11 @@ KNOWN_BROADCASTS: dict[tuple[int, int], tuple[str, str]] = {
         "RC10_C3_ROOM_TEMP_ALT_COPY",
         "tem",
     ),  # Room temperature (alternate copy)
-    (0x0402, 107): ("RC10_C3_DEMAND_TEMP", "tem"),  # Demand/setpoint temperature
+    # Mixing modules E13 (C3) / E14 (C4): setpoint the circuit runs on, ~32 s
+    # (hardware-verified 2026-11-19, see room_thermostat.py)
+    (0x0402, 107): ("C3_MODULE_ACTIVE_SETPOINT", "tem"),
     (0x0403, 78): ("DHW_TEMP_ACTUAL_COPY", "tem"),  # ACTUAL DHW tank temp (copy)
+    (0x0403, 107): ("C4_MODULE_ACTIVE_SETPOINT", "tem"),
     # Additional sensors on circuit bases
     (0x0060, 58): ("DHW_SETPOINT_OR_SUPPLY", "tem"),  # ~54°C - NOT actual tank temp!
     (0x0060, 59): ("SENSOR_TEMP_C1_59", "tem"),
@@ -192,11 +195,11 @@ PARAM_TO_BROADCAST: dict[str, tuple[Optional[int], int]] = {
     "RC10_C2_ROOM_TEMP": (0x0061, 0),
     "RC10_C3_ROOM_TEMP": (0x0062, 0),
     "RC10_C4_ROOM_TEMP": (0x0063, 0),
-    # Adjusted setpoints (room setpoint + offset) - all circuits
-    "RC10_C1_ADJUSTED_SETPOINT": (0x0060, 33),
-    "RC10_C2_ADJUSTED_SETPOINT": (0x0061, 33),
-    "RC10_C3_ADJUSTED_SETPOINT": (0x0062, 33),
-    "RC10_C4_ADJUSTED_SETPOINT": (0x0063, 33),
+    # idx 33: tracks room temp + ~1.4 K, NOT a setpoint (#19)
+    "RC10_C1_ROOM_TEMP_PLUS_OFFSET": (0x0060, 33),
+    "RC10_C2_ROOM_TEMP_PLUS_OFFSET": (0x0061, 33),
+    "RC10_C3_ROOM_TEMP_PLUS_OFFSET": (0x0062, 33),
+    "RC10_C4_ROOM_TEMP_PLUS_OFFSET": (0x0063, 33),
 }
 
 # Circuit base addresses for temperature broadcasts

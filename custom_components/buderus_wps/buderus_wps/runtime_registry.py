@@ -13,10 +13,12 @@ import logging
 from typing import Optional, cast
 
 from .element_discovery import DiscoveredElement
-from .parameter_defaults import PARAMETER_DEFAULTS
+from .parameter_data import PARAMETER_DATA
 
-# Build a lookup dict from the parameter defaults list
-_STATIC_PARAMS = {str(p["text"]).upper(): p for p in PARAMETER_DEFAULTS}
+# PROTOCOL: the static fallback MUST use the device-derived index base of
+# parameter_data.py. parameter_defaults.py (FHEM) numbers ~1560 parameters
+# 1-5 lower, which would address a neighbouring register (#15).
+_STATIC_PARAMS = {str(p["text"]).upper(): p for p in PARAMETER_DATA}
 
 logger = logging.getLogger(__name__)
 
@@ -105,7 +107,7 @@ class RuntimeParameterRegistry:
         return None
 
     def _get_from_static(self, name: str) -> Optional[DiscoveredElement]:
-        """Get a parameter from static parameter_defaults.py.
+        """Get a parameter from static parameter_data.py.
 
         Args:
             name: The parameter name (already uppercase).

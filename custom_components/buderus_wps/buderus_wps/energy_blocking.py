@@ -10,7 +10,7 @@ Use cases:
 
 PROTOCOL: CAN Parameters
 - COMPRESSOR_E21_EXTERN_BLOCK_BY_E21_EXT_1 (idx 263) - write compressor block
-- COMPRESSOR_BLOCKED (idx 247) - read compressor status
+- COMPRESSOR_BLOCKED (looked up by name) - read compressor status
 - ADDITIONAL_USER_BLOCKED (idx 155) - write aux heater block
 - ADDITIONAL_BLOCKED (idx 9) - read aux heater status
 
@@ -30,7 +30,7 @@ if TYPE_CHECKING:
 # PROTOCOL: CAN Parameter indices
 # Reference: FHEM 26_KM273v018.pm
 PARAM_COMPRESSOR_BLOCK = "COMPRESSOR_E21_EXTERN_BLOCK_BY_E21_EXT_1"  # idx 263
-PARAM_COMPRESSOR_STATUS = "COMPRESSOR_BLOCKED"  # idx 247
+PARAM_COMPRESSOR_STATUS = "COMPRESSOR_BLOCKED"  # looked up by name (#15)
 PARAM_AUX_HEATER_BLOCK = "ADDITIONAL_USER_BLOCKED"  # idx 155
 PARAM_AUX_HEATER_STATUS = "ADDITIONAL_BLOCKED"  # idx 9
 
@@ -94,7 +94,7 @@ class EnergyBlockingControl:
 
     PROTOCOL: Uses the following CAN parameters:
     - COMPRESSOR_E21_EXTERN_BLOCK_BY_E21_EXT_1 (idx 263) - write compressor block
-    - COMPRESSOR_BLOCKED (idx 247) - read compressor status
+    - COMPRESSOR_BLOCKED (looked up by name) - read compressor status
     - ADDITIONAL_USER_BLOCKED (idx 155) - write aux heater block
     - ADDITIONAL_BLOCKED (idx 9) - read aux heater status
     """
@@ -121,7 +121,7 @@ class EnergyBlockingControl:
     def _read_compressor_status(self, timeout: float) -> bool:
         """Read compressor blocked status.
 
-        PROTOCOL: Reads COMPRESSOR_BLOCKED (idx 247)
+        PROTOCOL: Reads COMPRESSOR_BLOCKED (looked up by name)
         Returns True if compressor is blocked.
         """
         result = self._client.read_parameter(PARAM_COMPRESSOR_STATUS, timeout=timeout)

@@ -31,6 +31,19 @@ from .formats import (
 TemperatureFormat = Literal["temp", "temp_byte", "temp_uint"]
 
 
+def _scale_to_raw(value: float, factor: float) -> int:
+    """Scale a human-readable value to raw, rounding half away from zero.
+
+    FHEM uses int(value / factor + 0.5), which is correct for positive values
+    but truncates toward zero for negative ones (-3.0 -> -29 instead of -30).
+    Positive results are identical to FHEM; negative ones mirror them.
+    """
+    scaled = value / factor
+    if scaled >= 0:
+        return int(scaled + 0.5)
+    return -int(-scaled + 0.5)
+
+
 class ValueEncoder:
     """
     Static utility class for encoding/decoding multi-byte values.
@@ -306,8 +319,11 @@ class ValueEncoder:
             if is_dead_value(signed_value):
                 return None
 
-        # Determine signedness from min value (FHEM convention)
-        signed = min_val < 0
+        # Determine signedness from min value (FHEM convention).
+        # Multi-byte 'tem' is always signed: many temperature/offset parameters
+        # carry min=max=0 in the element table (e.g. ROOM_SETPOINT_OFFSET_GLOBAL),
+        # and unsigned decoding turns -3.0 (0xFFE2) into 6550.6.
+        signed = min_val < 0 or (format_type == "tem" and len(data) >= 2)
 
         # Get raw integer value
         if len(data) == 1:
@@ -362,7 +378,8 @@ class ValueEncoder:
             >>> ValueEncoder.encode_by_format(53.0, 'tem')
             b'\\x02\\x12'  # 530 = 53.0 / 0.1
         """
-        signed = min_val < 0
+        # Mirror decode_by_format: multi-byte 'tem' is always signed.
+        signed = min_val < 0 or (format_type == "tem" and size_bytes >= 2)
 
         # Handle format-specific encoding
         if format_type == "tem":
@@ -427,7 +444,7 @@ class ValueEncoder:
             >>> ValueEncoder.encode_tem(29.15)
             292  # Rounded from 291.5
         """
-        return int(temp_celsius / 0.1 + 0.5)
+        return _scale_to_raw(temp_celsius, 0.1)
 
     # =========================================================================
     # Power Formats (pw2, pw3)
@@ -474,7 +491,7 @@ class ValueEncoder:
             12345
         """
         factor = get_format_factor(format_type)
-        return int(power_kw / factor + 0.5)
+        return _scale_to_raw(power_kw, factor)
 
     # =========================================================================
     # Time Formats (hm1, hm2)

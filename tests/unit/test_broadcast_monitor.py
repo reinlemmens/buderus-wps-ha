@@ -184,7 +184,7 @@ class TestGetKnownName:
             timestamp=0.0,
         )
         name = monitor.get_known_name(reading)
-        assert name == "RC10_C3_DEMAND_TEMP"
+        assert name == "C3_MODULE_ACTIVE_SETPOINT"
 
     def test_known_dhw_temp(self, monitor: BroadcastMonitor) -> None:
         """Test get_known_name returns correct name for DHW temperature.
