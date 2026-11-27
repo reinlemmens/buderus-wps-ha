@@ -224,6 +224,16 @@ while the *Alarm log* menu was opened and scrolled through 17 entries and the
 ordinary recording, no burst and no frame longer than the clock broadcast. The
 panel is the pump controller itself; the log stays inside it.
 
+`REMOTE_GET_DISPLAY` does not give the screen either. On the reference pump a
+read returns one byte, 0. A write of 1 is accepted and read back, but in the
+28 s the value was 1, with an alarm popup open on the panel, the pump sent
+nothing extra: no new CAN id, no burst, no frame longer than the clock
+broadcast. (On the Rego 800 a read of this variable streams screen data,
+according to the esphome-rego800 project.) Only the value 1 was tried. The
+parameters right after it in the element table are `RESET_LARMHISTORY`,
+`RESET_LARMINFO`, `RESET_LARMLOG` and `RESET_SYSVAR`, and indices shift between
+firmware versions, so never write in this area by a fixed index.
+
 What the pump does expose is one status value: parameter
 `RTU800B_SYSTEM_STATUS`. Always look it up by name. Its index differs per
 firmware (2182 in `parameter_data.py` and on the reference Logatherm WPS 17-1,
