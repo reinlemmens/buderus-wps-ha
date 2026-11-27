@@ -218,12 +218,16 @@ The stored alarm log, the alarm texts and their timestamps are **not** readable
 over CAN. The whole parameter index space (type 1, idx 0..4095) and the service
 index space (type 0, idx 0..0xFFF at node 0x3FE0) were swept with read requests
 only, and a bus recording made while six alarm popups were confirmed on the
-panel shows no frame per alarm and none per OK press. The panel is the pump
-controller itself; the log stays inside it.
+panel shows no frame per alarm and none per OK press. A second recording, made
+while the *Alarm log* menu was opened and scrolled through 17 entries and the
+(empty) *Information log* was opened, contains no CAN id that is absent from an
+ordinary recording, no burst and no frame longer than the clock broadcast. The
+panel is the pump controller itself; the log stays inside it.
 
 What the pump does expose is one status value: parameter
 `RTU800B_SYSTEM_STATUS`. Always look it up by name. Its index differs per
-firmware (2178 in the built-in table, 2182 on the reference Logatherm WPS 17-1).
+firmware (2182 in `parameter_data.py` and on the reference Logatherm WPS 17-1,
+2178 in the FHEM-numbered `parameter_defaults.py`).
 Read it with a plain RTR read; the element table lists its range as 0..0, so a
 range-validating read rejects the real values.
 
@@ -247,8 +251,11 @@ the popup appearing on the panel. Dismissing that popup with the panel's return
 button (instead of OK) took the value from 4 back to 1; a step through 3 was
 not seen at that resolution.
 
-Not observed yet: a second alarm arriving while the value is already 4, and
-alarm categories other than G and H.
+A further alarm arriving while the value is already 4 leaves it at 4 (seen once,
+with the value read once a minute), so only the first alarm of a pending period
+is visible.
+
+Not observed yet: alarm categories other than G and H.
 
 ## Implementation Notes
 
